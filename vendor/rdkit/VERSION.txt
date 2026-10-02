@@ -1,0 +1,1 @@
+@rdkit/rdkit 2026.3.6 (BSD-3-Clause), from https://unpkg.com/@rdkit/rdkit@2026.3.6/dist/

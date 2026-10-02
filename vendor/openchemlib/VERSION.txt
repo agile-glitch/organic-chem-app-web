@@ -1,0 +1,6 @@
+openchemlib 9.25.0 (BSD-3-Clause; JavaScript build of the OpenChemLib Java library), from https://registry.npmjs.org/openchemlib/-/openchemlib-9.25.0.tgz
+tarball sha512-FGTaZLJRTGXNC7khx8QvX/EiQBHpH1ncUbT7YXDJhw/Y/aDUKe5WrUIqTguMEtSs3GUHcRUjNUhfkpxulx2UXw== (verified against the npm registry's dist.integrity)
+openchemlib.js = dist/openchemlib.js wrapped as a classic script by tools/vendor_ocl.py; openchemlib-resources.js = dist/resources.json as globalThis.OCL_RESOURCES
+sha256 openchemlib.js d6660005c25a9cbeb57ef3058e99b03d0338402aeee9be9eef0e1a4c1e83ada9
+sha256 openchemlib-resources.js b33cccce159d54e1c6b50179da0a29d2d49b42a33b62c09042b7af6afc563089
+sha256 LICENSE.txt 38dc3aed3def8cc4dd15ac879daa4af9b0d71af86fef82611ca1752497c6f464

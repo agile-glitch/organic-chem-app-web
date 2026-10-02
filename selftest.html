@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Self-test</title>
+  <style>body{font:14px system-ui,sans-serif;margin:24px}#out{white-space:pre-wrap}</style>
+</head>
+<body>
+<h2>Self-test: does the reaction predictor load and run here?</h2>
+<p>Open this file the same way you open <code>index.html</code> (double-click, or through a server). After a few
+seconds it should say <b>PASS</b>. It loads RDKit.js and the knowledge base the way the Reactions page does and
+predicts three reactions whose products are known.</p>
+<div id="out">running…</div>
+<script src="js/rdkit_load.js"></script>
+<script src="js/rxnkb.js"></script>
+<script>
+  (async () => {
+    const out = document.getElementById('out'), lines = [], say = s => { lines.push(s); out.textContent = lines.join('\n'); };
+    const t0 = performance.now();
+    try {
+      say('page opened from: ' + location.protocol);
+      const meta = await window.RXNKB.load(() => {});
+      say(`knowledge base: ${meta.n.toLocaleString()} reactions, ${meta.n_templates.toLocaleString()} templates, loaded in ${Math.round(performance.now() - t0)} ms`);
+      const cases = [
+        [['CC(=O)Cl', 'Nc1ccccc1'], ['CCN(CC)CC'], 'CC(=O)Nc1ccccc1'],
+        [['Brc1ccccc1', 'OB(O)c1ccccc1'], ['O=C([O-])[O-]', '[K+]'], 'c1ccc(-c2ccccc2)cc1'],
+        [['O=C1CCCCC1'], ['[Na+]', '[BH4-]'], 'OC1CCCCC1'],
+      ];
+      let ok = 0;
+      for (const [r, a, want] of cases) {
+        const res = window.RXNKB.predict({ reactants: r, agents: a });
+        const got = res.candidates[0] ? res.candidates[0].smiles : '(none)', w = window.RXNKB.canonical(want);
+        const pass = res.candidates[0] && w && res.candidates[0].flat === w.flat; ok += pass;
+        say(`${pass ? 'ok  ' : 'FAIL'} ${r.join(' + ')} → ${got}   (${Math.round(res.ms.total)} ms)`);
+      }
+      const ev = await window.RXNKB.evidence([0]);
+      say('evidence readable: ' + (ev.length && ev[0].product ? 'yes' : 'no'));
+      say(ok === cases.length && ev.length ? 'PASS' : 'FAIL');
+    } catch (e) { say('FAIL: ' + (e && e.message || e)); }
+    document.title = lines[lines.length - 1];
+  })();
+</script>
+</body>
+</html>

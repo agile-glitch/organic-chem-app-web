@@ -1,0 +1,5 @@
+three 0.185.1 (MIT), from https://registry.npmjs.org/three/-/three-0.185.1.tgz
+tarball sha512-5aojFCXKwnjBRZvUnt3WFfEcvUJgkN5LlijRFN95hMy8WVkG4I0QNcJE+OuWvuJ0bOdStrbfXn0pkd6/QyiAlg==
+three.js = build/three.cjs (sha256 a681da9aba775c1de422367863efda9e5638847e6e1fccc51ba57e8a8124fc07, 441 exports) wrapped unchanged to define window.THREE;
+no edits to three's code. 0.185.1 is the last release with a self-contained CommonJS build.
+No classic-script addons exist for this version (examples/js was removed in r148); addons are ES modules only.
