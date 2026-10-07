@@ -19,8 +19,9 @@ real molecule moves with its substituents (tools/effects.py reads that, molecule
 Geometry: RDKit conformers, then GFN2-xTB (tblite) optimisation of the lowest few, lowest energy kept.
 Electronic structure: B3LYP/def2-SVP (def2 ECP for Sn, I), ddCOSMO water continuum (lmax 4, Lebedev 11) so that anions behave, PySCF.
   * HOMO / LUMO energies are Kohn-Sham orbital energies: use them to RANK fragments, not as ionisation energies.
-  * atomic shares of an orbital: Lowdin populations (orthogonalised AOs); they stand in for the Fukui functions
-    f- (HOMO, where an electrophile attacks) and f+ (LUMO, where a nucleophile attacks), the frontier-orbital approximation.
+  * atomic shares of an orbital: Lowdin populations (orthogonalised AOs), averaged over the orbitals within 0.05 eV of the HOMO
+    (LUMO), so that a degenerate pair gives an answer that does not depend on its orientation; they stand in for the Fukui
+    functions f- (HOMO, where an electrophile attacks) and f+ (LUMO, where a nucleophile attacks), the frontier-orbital approximation.
   * hardness eta = (E_LUMO - E_HOMO)/2, softness S = 1/eta, local softness s = S * share, electrophilicity
     omega = mu^2 / (2 eta) with mu = (E_HOMO + E_LUMO)/2 (Parr, Pearson).
   * polarisability: static, isotropic, by finite electric field (forward difference, 0.002 a.u.) in the same continuum.
@@ -287,7 +288,11 @@ def dft(nums, xyz, charge, polarisability=True):
     Co = Sh @ mf.mo_coeff                                   # Lowdin-orthogonalised coefficients
     sl = mol.aoslice_by_atom()
     share = lambda k: np.array([float((Co[p0:p1, k] ** 2).sum()) for (_, _, p0, p1) in sl])
-    hs, ls = share(homo), share(homo + 1)
+    # a degenerate (or nearly degenerate, within 0.05 eV) set of orbitals can be rotated into each other, so the share of one of them on
+    # an atom is arbitrary: average over the set (benzene's HOMO pair, the two p lone pairs of a halide, the pi pairs of an alkyne ...)
+    hgrp = [k for k in range(homo + 1) if e[homo] - e[k] <= 0.05]
+    lgrp = [k for k in range(homo + 1, len(e)) if e[k] - e[homo + 1] <= 0.05]
+    hs = np.mean([share(k) for k in hgrp], axis=0); ls = np.mean([share(k) for k in lgrp], axis=0)
     dm = mf.make_rdm1()
     pop = np.array([float((Co[p0:p1, :nocc] ** 2).sum()) * 2 for (_, _, p0, p1) in sl])
     charges = np.array([mol.atom_charge(i) for i in range(mol.natm)]) - pop
@@ -295,7 +300,7 @@ def dft(nums, xyz, charge, polarisability=True):
     mu = (mol.atom_charges()[:, None] * mol.atom_coords()).sum(0) - np.einsum('xij,ji->x', r1, dm)
     out = dict(E_homo=float(e[homo]), E_lumo=float(e[homo + 1]), homo_share=hs.tolist(), lumo_share=ls.tolist(), lowdin=charges.tolist(),
                converged=bool(mf.converged), E_homo_1=float(e[homo - 1]) if homo > 0 else None, E_lumo_1=float(e[homo + 2]) if len(e) > homo + 2 else None,
-               dipole_D=float(np.linalg.norm(mu)) * 2.541746)
+               dipole_D=float(np.linalg.norm(mu)) * 2.541746, homo_degeneracy=len(hgrp), lumo_degeneracy=len(lgrp))
     if polarisability:                                      # forward difference in a field F along each axis, warm-started
         r = mol.intor('int1e_r', comp=3); h0 = mf.get_hcore(); F = 2e-3; alpha = []
         for a in range(3):
@@ -442,7 +447,7 @@ def describe(fragment, model, label, defaults, partners, frags_q, quick=False):
     row['raw'] = dict(atoms=[at.GetSymbol() for at in mh.GetAtoms()], reacting_index=x, xyz_A=(xyz * BOHR).round(4).tolist(), E_xtb_Eh=exb,
                       E_homo_eV=eh, E_lumo_eV=el, E_homo_1_eV=d['E_homo_1'], E_lumo_1_eV=d['E_lumo_1'], dipole_D=round(d['dipole_D'], 3),
                       homo_share=np.round(hs, 4).tolist(), lumo_share=np.round(ls, 4).tolist(), lowdin=np.round(d['lowdin'], 4).tolist(),
-                      alpha_au=d['alpha_au'], method='B3LYP/def2-SVP, ddCOSMO water (lmax 4, Lebedev 11), geometry GFN2-xTB')
+                      alpha_au=d['alpha_au'], homo_degeneracy=d['homo_degeneracy'], lumo_degeneracy=d['lumo_degeneracy'], method='B3LYP/def2-SVP, ddCOSMO water (lmax 4, Lebedev 11), geometry GFN2-xTB')
     return row
 
 
@@ -466,6 +471,7 @@ def main():
     ap.add_argument('--quick', action='store_true', help='skip geometry and DFT (tables and rules only)')
     ap.add_argument('--rechoose', action='store_true', help='forget the cached model compounds and choose again')
     ap.add_argument('--resume', action='store_true', help='continue a run that stopped: reuse the finished rows of <out>.partial.jsonl')
+    ap.add_argument('--ids', default='', help='comma-separated fragment IDs to compute (default: all)')
     ap.add_argument('--reverse', action='store_true', help='work through the fragments from the last to the first (a second process can share a run)')
     ap.add_argument('--refresh', action='store_true', help='recompute the table-based columns of the existing output and keep its DFT values')
     ap.add_argument('--out', default=OUT)
@@ -474,7 +480,8 @@ def main():
     frags = fragments(); t0 = time.time()
     models = choose_models(frags, rechoose=a.rechoose)
     print(f'model compounds chosen for {len(models)} of {len(frags)} fragments ({time.time() - t0:.0f} s)', flush=True)
-    todo = [f for f in frags if a.only.lower() in str(f['Fragment name']).lower() and f['Fragment ID'] in models]
+    ids = set(filter(None, a.ids.split(',')))
+    todo = [f for f in frags if a.only.lower() in str(f['Fragment name']).lower() and f['Fragment ID'] in models and (not ids or f['Fragment ID'] in ids)]
     defaults, partners = PK.fragment_defaults(), acid_base_partners()
     smarts = {f['Fragment ID']: f['SMARTS pattern'] for f in frags}
     jobs = [(f, models[f['Fragment ID']], defaults, partners, smarts, a.quick) for f in todo]
@@ -484,7 +491,7 @@ def main():
         rows = []
         for j in jobs:
             fid = j[0]['Fragment ID']
-            new = run_one(j[:5] + (True,))
+            new = run_one(j[:5] + (True,)); new.pop('seconds', None)        # keep the DFT run time
             rows.append({**old.get(fid, {}), **new} if 'error' not in new else new)
         order = {f['Fragment ID']: k for k, f in enumerate(frags)}; rows.sort(key=lambda r: order[r['Fragment ID']])
         json.dump(rows, open(a.out, 'w', encoding='utf-8'), indent=1, ensure_ascii=False)

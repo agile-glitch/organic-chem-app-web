@@ -47,6 +47,10 @@ r = P('alkyl iodide'); check(r['lumo_share_pct'] > 15 and r['lumo_top'].startswi
 r = P('Grignard'); check(r['homo_top'].startswith('C') and r['lumo_top'].startswith('Mg'), f'Grignard: HOMO on carbon, LUMO on Mg ({r["homo_top"]}, {r["lumo_top"]})')
 r = P('carboxylate anion'); check(r['homo_top'].startswith('O'), f'carboxylate: the HOMO is on oxygen ({r["homo_top"]})')
 r = P('alcohol (1°)'); check(r['homo_share_pct'] > r['lumo_share_pct'] and r['frontier_character'].startswith('nucleophile'), f'alcohol O: HOMO-like (nucleophile): {r["frontier_character"]}')
+r = P('arene C–H'); check(abs(r['homo_share_pct'] - 100 / 6) < 1.0 and abs(r['lumo_share_pct'] - 100 / 6) < 1.0 and r['raw']['homo_degeneracy'] == 2,
+                          f'benzene: the degenerate HOMO and LUMO pairs are averaged, every carbon gets 1/6 (HOMO {r["homo_share_pct"]}%, LUMO {r["lumo_share_pct"]}%)')
+degenerate = [x for x in props.values() if x['raw']['E_homo_eV'] - x['raw']['E_homo_1_eV'] < 0.05 and x['raw'].get('homo_degeneracy', 0) < 2]
+check(not degenerate, 'every fragment with a near-degenerate HOMO has its shares averaged over the set')
 check(P('carboxylic acid')['oxidation_state'] == 3.0 and P('alcohol (1°)')['oxidation_state'] == -2.0, 'oxidation states: acid C +3, alcohol O −2')
 check(P('alkyl iodide')['weakest_bond'].startswith('C–I') and P('alkyl iodide')['weakest_bond_kJ'] < P('alkyl bromide')['weakest_bond_kJ'] < P('alkyl chloride')['weakest_bond_kJ'], 'weakest bond: C–I < C–Br < C–Cl')
 check(P('nitroarene')['sigma_p'] > 0.7 and P('phenol')['sigma_p'] < 0 and P('nitroarene')['sigma_character'].startswith('−I'), 'Hammett: nitro withdraws, hydroxy donates')
