@@ -31,9 +31,9 @@ for fr in rows("molecule_data.xlsx", "Fragments"):
         fragments[str(fr["Fragment ID"]).strip()] = {"name": fr["Fragment name"], "smarts": fr["SMARTS pattern"],
                                                      "pKa": first_num(fr.get("pKa (its most acidic H)")),
                                                      "pKaH": first_num(fr.get("pKa of its conjugate acid (how basic)"))}
-FID = re.compile(r"F\d{3}")
+FID = re.compile(r"F_[A-Z0-9]+(?:_[A-Z0-9]+)*")   # descriptive fragment ID, e.g. F_ALDEHYDE (tools/data/fragment_ids.json)
 def frag_items(text):
-    """'F018 aldehyde | F019 ketone + F017 1,2-diol' -> [["F018", "F019"], ["F017"]]: all items needed, any id within one"""
+    """'F_ALDEHYDE aldehyde | F_KETONE ketone + F_DIOL_1_2 1,2-diol' -> [["F_ALDEHYDE", "F_KETONE"], ["F_DIOL_1_2"]]: all items needed, any id within one"""
     return [ids for ids in (FID.findall(part) for part in str(text or "").split("+")) if ids]
 
 def find(row, start):
@@ -61,9 +61,9 @@ def requirement(text):
         return {"tmin": None, "tmax": a, "label": f"≤ {fmt(a)} °C"}
     return {"tmin": a - 5, "tmax": a + 5, "label": f"{fmt(a)} °C"}
 
-AB_RE = re.compile(r"(acid|base)\s*:\s*(F\d{3})\s*,?\s*(?:ΔpKa|dpKa|pKa)?\s*(?:≥|>=)\s*([-−]?\d+(?:\.\d+)?)", re.I)
+AB_RE = re.compile(r"(acid|base)\s*:\s*(F_[A-Z0-9]+(?:_[A-Z0-9]+)*)\s*,?\s*(?:ΔpKa|dpKa|pKa)?\s*(?:≥|>=)\s*([-−]?\d+(?:\.\d+)?)", re.I)
 def acid_base(text):
-    """'base: F019, ΔpKa ≥ -5' -> {"role": "base", "frag": "F019", "min": -5}"""
+    """'base: F_KETONE, ΔpKa ≥ -5' -> {"role": "base", "frag": "F_KETONE", "min": -5}"""
     m = AB_RE.search(str(text or ""))
     return {"role": m.group(1).lower(), "frag": m.group(2), "min": float(m.group(3).replace("−", "-"))} if m else None
 

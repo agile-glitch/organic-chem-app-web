@@ -60,7 +60,7 @@ def props(smiles):
         pk = ''
     import effects as EF
     try:                                                 # steric and electronic effects at each fragment's reacting atom
-        E = [e for e in EF.effects_of(m, _P['frags']) if e['fragment'] != 'F009']
+        E = [e for e in EF.effects_of(m, _P['frags']) if e['fragment'] != 'F_ARENE_CH']
         st = '; '.join(f'{e["fragment"]} {e["steric"]["text"]}' for e in E)
         el = '; '.join(f'{e["fragment"]} {e["electronic"]["text"]}' for e in E)
         tf = '; '.join(f'{e["fragment"]} ' + ', '.join(x for x in (
@@ -223,7 +223,7 @@ def write(rows, frags, n_rx):
     fsheet = L.read_sheet(os.path.join(APP, 'molecule_data.xlsx'), 'Fragments')
     keep = ['Fragment ID', 'Fragment name', 'SMARTS pattern', 'Reactive atom(s)', 'Role', 'pKa (its most acidic H)',
             'pKa of its conjugate acid (how basic)', 'Leaving group', 'Steric hindrance (at the reactive atom)', 'Notes']
-    sheet('Fragments', keep, [11, 30, 40, 24, 40, 22, 22, 30, 34, 50], [[f.get(k) for k in keep] for f in fsheet if str(f.get('Fragment ID', '')).startswith('F')])
+    sheet('Fragments', keep, [30, 30, 40, 24, 40, 22, 22, 30, 34, 50], [[f.get(k) for k in keep] for f in fsheet if str(f.get('Fragment ID', '')).startswith('F')])
     head = ['Molecule ID', 'SMILES', 'Formula', 'Molecular weight (g/mol)', 'Monoisotopic mass', 'InChI', 'InChIKey', 'Page can read it',
             'Starting material in (learned reactions)', 'Product of (learned reactions)', 'Fragments (ID name ×occurrences)',
             'pKa of its acidic (pKa) and basic (pKaH) sites in THIS molecule (measured, estimated or typical)',

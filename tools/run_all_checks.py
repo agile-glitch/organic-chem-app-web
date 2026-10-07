@@ -40,8 +40,27 @@ for m in sheet("reaction_rules.xlsx", "Mechanism"):
         mech_rows.setdefault(str(m["Reaction ID"]), []).append(m)
 mstat, _ = statuses()
 
+# fragment ID rule: a descriptive ID (F_NAME) per structurally distinct SMARTS; no two fragments share an ID or a pattern
+def check_fragment_ids():
+    rows = sheet("molecule_data.xlsx", "Fragments"); bad = []
+    ids, pats = {}, {}
+    for f in rows:
+        fid, sm = str(f["Fragment ID"]).strip(), str(f.get("SMARTS pattern") or "").strip()
+        if not re.fullmatch(r"F_[A-Z0-9]+(?:_[A-Z0-9]+)*", fid): bad.append("bad ID format: " + fid)
+        if fid in ids: bad.append("duplicate ID: " + fid)
+        ids[fid] = sm
+        q = Chem.MolFromSmarts(sm) if sm else None
+        if q is None: bad.append(fid + ": missing or invalid SMARTS"); continue
+        key = Chem.MolToSmarts(q)
+        if key in pats: bad.append(f"{fid} and {pats[key]} have the same SMARTS")
+        pats.setdefault(key, fid)
+    return bad
+_bad_ids = check_fragment_ids()
+if _bad_ids:
+    print("FRAGMENT ID CHECK FAILED:\n  " + "\n  ".join(_bad_ids)); sys.exit(1)
+
 def items(text):
-    return [re.findall(r"F\d{3}", part) for part in str(text or "").split("+") if re.findall(r"F\d{3}", part)]
+    return [re.findall(r"F_[A-Z0-9]+(?:_[A-Z0-9]+)*", part) for part in str(text or "").split("+") if re.findall(r"F_[A-Z0-9]+(?:_[A-Z0-9]+)*", part)]
 
 rows, fails, nomechs = [], 0, 0
 for t in tests["reactions"]:

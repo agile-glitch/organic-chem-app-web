@@ -1232,7 +1232,7 @@
   function effectLabels(cs, kind) {
     const N = cs.record.atoms.length, out = new Array(N).fill('');
     for (const e of cs.effects || []) {
-      if (e.fragment === 'F009' || e.atom >= N || out[e.atom]) continue;
+      if (e.fragment === 'F_ARENE_CH' || e.atom >= N || out[e.atom]) continue;
       if (kind === 'taft') {
         const t = e.taft || {}, sg = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2);
         out[e.atom] = t.sigmaStar == null && t.EsMin == null ? '' : `${t.sigmaStar != null ? sg(t.sigmaStar) : '–'}/${t.EsMin != null ? sg(t.EsMin) : '–'}`;   // σ*/Es: short, so it fits beside a crowded atom
@@ -1765,7 +1765,7 @@
       }
       if (S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft') {
         const taftText = e => [e.taft && e.taft.electronicText, e.taft && e.taft.stericText].filter(Boolean).join('; ') || 'no group with a Taft value on it';
-        const list = (cs.effects || []).filter(e => e.fragment !== 'F009').map(e => `${esc(e.name)} (atom ${e.atom + 1}): ${esc(S.labels === 'steric' ? e.steric.text : S.labels === 'taft' ? taftText(e) : e.electronic.text)}`);
+        const list = (cs.effects || []).filter(e => e.fragment !== 'F_ARENE_CH').map(e => `${esc(e.name)} (atom ${e.atom + 1}): ${esc(S.labels === 'steric' ? e.steric.text : S.labels === 'taft' ? taftText(e) : e.electronic.text)}`);
         t += list.length ? ': ' + list.join(' · ') : ': no fragment of the Fragments sheet found';
       }
       if (S.labels === 'electrons') {
