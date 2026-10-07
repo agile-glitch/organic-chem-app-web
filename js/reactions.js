@@ -164,6 +164,9 @@
         <div class="rxn-set-sep"></div>
         <div class="rxn-set-head">Tests</div>
         <button type="button" class="rxn-set-btn" id="rxn-run-tests"><b>Run all tests</b><span>every reaction in the workbook (its stored reaction code) plus the feature cases in tools/reaction_tests.json, through this page</span></button>
+      <div class="rxn-set-sep"></div>
+      <div class="rxn-set-head">Reactions</div>
+      <button type="button" class="rxn-set-btn" id="rxn-open-common"><b>Common reactions</b><span>browse the known reactions, search them and load one into the code bar</span></button>
       </div></div>
     <div id="rxn-common" hidden role="dialog" aria-label="Common reactions">
       <div class="rxn-c-head"><b>Common reactions</b><span id="rxn-c-sum"></span><button type="button" id="rxn-c-close" title="Close" aria-label="Close">×</button></div>
@@ -2723,6 +2726,7 @@
     } finally { commonBusy = false; }
   }
   commonBtn.addEventListener('click', e => { e.stopPropagation(); toggleCommon(); });
+  document.getElementById('rxn-open-common').addEventListener('click', () => toggleCommon(true));   // the same list, from the settings menu
   document.getElementById('rxn-c-close').addEventListener('click', () => toggleCommon(false));
   commonQ.addEventListener('input', renderCommon);
   commonQ.addEventListener('keydown', e => {

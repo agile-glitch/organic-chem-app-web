@@ -30,6 +30,15 @@ const check = (ok, what) => { console.log((ok ? 'PASS  ' : 'FAIL  ') + what); if
   const [bc, bb, bg] = [await box('#rxn-code'), await box('#rxn-common-btn'), await box('#rxn-gear')];
   check(bc.r <= bb.l + 0.5 && bb.r <= bg.l + 0.5 && bb.b - bb.t > 20, 'the code box, the Common reactions button and the gear sit side by side without overlap');
 
+  // the settings menu has it too, under "Run all tests"
+  await page.click('#rxn-gear');
+  const yTests = (await box('#rxn-run-tests')).t, yCommon = (await box('#rxn-open-common')).t;
+  check(yCommon > yTests && /Common reactions/.test(await page.textContent('#rxn-open-common')), 'the settings menu lists Common reactions below Run all tests');
+  await page.click('#rxn-open-common');
+  await page.waitForSelector('#rxn-common', { state: 'visible' });
+  check(await page.isHidden('#rxn-settings') && await page.locator('.rxn-c-item').count() === rules.length, 'choosing it closes the menu and opens the list of all reactions');
+  await page.click('#rxn-c-close');
+
   // open the list
   await page.click('#rxn-common-btn');
   await page.waitForSelector('#rxn-common', { state: 'visible' });
