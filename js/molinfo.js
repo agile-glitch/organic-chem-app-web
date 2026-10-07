@@ -129,7 +129,11 @@
   const supDigits = s => s.replace(/\d/g, d => SUP[+d]);
   const chargeSup = c => (c === 0 ? '' : (Math.abs(c) > 1 ? supDigits(String(Math.abs(c))) : '') + (c > 0 ? '⁺' : '⁻'));
   const chargeLabel = c => (c === 0 ? '' : (Math.abs(c) > 1 ? Math.abs(c) : '') + (c > 0 ? '+' : MINUS));
-  const atomName = (record, i) => record.atoms[i].el + (i + 1);
+  /* Atoms are named per element: C1, C2, C3, N1 … each element counted on its own in atom order (the H the app adds
+     continue the H count after any H written in the input). */
+  const EL_NUM = new WeakMap();
+  const elNumbers = atoms => { if (!EL_NUM.has(atoms)) { const c = {}; EL_NUM.set(atoms, atoms.map(a => (c[a.el] = (c[a.el] || 0) + 1))); } return EL_NUM.get(atoms); };
+  const atomName = (record, i) => record.atoms[i].el + elNumbers(record.atoms)[i];
   const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many || one + 's');
   const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
   const countWord = n => WORDS[n] || String(n);
@@ -163,7 +167,8 @@
     esp: 'Coulomb potential of Gasteiger point charges on the van der Waals surface — a model, not a quantum-chemical ESP',
     namer: "name from the app's namer, checked: the app's name parser reads it back to exactly this structure (stereo " +
       'included). It may differ from the preferred IUPAC name in style',
-    namerUnchecked: "from the app's namer (not independently checked)",
+    axial: 'each end of the axis carries two different groups, so its two configurations are mirror images; the SMILES cannot record which one is meant (RDKit keeps no allene or atropisomer configuration), so no Ra/Sa is given. A biaryl axis counts as hindered with three or more ortho groups',
+    namerUnchecked: "from the app's namer, NOT checked: the app's name parser cannot read this name back, so it has not been confirmed to describe exactly this structure",
     aromaticModel: "RDKit's aromaticity model (it also counts 2-pyridone, uracil and caffeine's six-membered ring as aromatic)",
     sssr: 'rings of the smallest set of smallest rings (SSSR)',
     cip: "CIP rules (RDKit's new CIP labeller)",
@@ -1214,8 +1219,8 @@
     return out;
   }
 
-  /* Chirality (41 reference cases in the fixtures): refuse for '*' / non-tetrahedral stereo; flag and refuse allenes,
-     hindered biaryls and E double bonds in 8–11 rings; one unspecified centre → chiral; a molecule is chiral when its
+  /* Chirality (41 reference cases in the fixtures): refuse for '*' / non-tetrahedral stereo; flag and refuse spiro and
+     alkylidene-ring axes and E double bonds in 8–11 rings; one stereogenic allene or hindered-biaryl axis alone → chiral; one unspecified centre → chiral; a molecule is chiral when its
      mirror image (every @ ↔ @@) has a different canonical SMILES, cross-checked with standard InChI; meso (IUPAC Gold
      Book: an achiral member of a set of stereoisomers that also has chiral members) if inverting a subset of the
      centres gives a chiral isomer (≤ 10 centres). */
@@ -1266,11 +1271,47 @@
     if (alkylidene) out.push('ring with an exocyclic double bond (alkylidene ring): axial chirality possible, not assessed');
     return out;
   }
+  /* Stereogenic axes, which the tetrahedral tests (RDKit's labels, the mirror test by SMILES and InChI) cannot see.
+     An allene C=C=C is one when each end carbon carries two different substituents (an implicit H counts); a hindered
+     biaryl axis (hinderedBiarylBonds) is one when, at each end, the two ring atoms flanking the axis atom differ.
+     "Different" means not symmetry-equivalent (symmetryClasses: RDKit's CIP ranks are not always in its JSON, BINOL has
+     none). Longer cumulenes are not handled. RDKit keeps no configuration for either kind (it drops C=[C@]=C), so none
+     can be named. → [{kind: 'allene' | 'biaryl', atoms, bond?}] */
+  function symmetryClasses(g) {                       // atoms in the same class are constitutionally equivalent
+    const compress = keys => { const u = [...new Set(keys)].sort(); return keys.map(k => u.indexOf(k)); };
+    let c = compress(g.atoms.map((a, i) => [a.z, a.chg, a.iso || 0, a.hs, g.adj[i].length, a.arom ? 1 : 0].join(',')));
+    for (let it = 0; it < g.atoms.length; it++) {
+      const next = compress(g.atoms.map((a, i) => c[i] + '|' +
+        g.adj[i].map(e => c[e.nb] + ':' + (g.bonds[e.bond].arom ? 'a' : g.bonds[e.bond].order)).sort().join(',')));
+      const done = new Set(next).size === new Set(c).size;
+      c = next;
+      if (done) break;
+    }
+    return c;
+  }
+  function axialElements(g) {
+    const ranks = symmetryClasses(g), out = [];
+    const twoDifferent = (x, not) => {
+      const ex = g.adj[x].filter(e => e.nb !== not).map(e => e.nb), h = g.atoms[x].hs;
+      if (ex.length + h !== 2 || h === 2) return false;
+      return h === 1 ? true : ranks[ex[0]] !== ranks[ex[1]];
+    };
+    const dbl = e => g.bonds[e.bond].order === 2 && !g.bonds[e.bond].arom;
+    g.atoms.forEach((a, c) => {
+      if (a.z !== 6 || a.arom || a.hs || g.adj[c].length !== 2 || !g.adj[c].every(e => dbl(e) && g.atoms[e.nb].z === 6)) return;
+      const [e1, e2] = g.adj[c].map(e => e.nb);
+      if ([e1, e2].some(x => g.adj[x].some(f => f.nb !== c && dbl(f)))) return;          // part of a longer cumulene
+      if (twoDifferent(e1, c) && twoDifferent(e2, c)) out.push({ kind: 'allene', atoms: [e1, c, e2] });
+    });
+    for (const k of hinderedBiarylBonds(g)) {
+      const b = g.bonds[k], flanks = (x, other) => g.adj[x].filter(e => e.nb !== other).map(e => e.nb);
+      const fa = flanks(b.a, b.b), fb = flanks(b.b, b.a);
+      if (fa.length === 2 && fb.length === 2 && ranks[fa[0]] !== ranks[fa[1]] && ranks[fb[0]] !== ranks[fb[1]]) out.push({ kind: 'biaryl', atoms: [b.a, b.b], bond: k });
+    }
+    return out;
+  }
   function axialPlanarFlags(R, m, g) {
     const flags = [];
-    const has = sm => { const q = R.get_qmol(sm); if (!q) return []; try { return substructMatches(m, q); } finally { q.delete(); } };
-    if (has('[CX3;!H2]=[CX2]=[CX3;!H2]').length) flags.push('allene: axial chirality possible, not assessed');
-    if (hinderedBiarylBonds(g).size) flags.push('hindered biaryl: atropisomerism (axial chirality) possible, not assessed');
     flags.push(...ringAxisFlags(g));
     const tags = JSON.parse(m.get_stereo_tags());
     for (const [a, b, lab] of tags.CIP_bonds) if (lab === '(E)' && g.rings.some(r => r.length >= 8 && r.length <= 11 && r.includes(a) && r.includes(b)))
@@ -1297,9 +1338,9 @@
   function chirality(R, input, opts) {
     opts = opts || {};
     const m = R.get_mol(input); if (!m) return { verdict: 'not determined', reason: 'could not read the structure' };
-    let tags, flags, g, fixedBridge;
+    let tags, flags, g, fixedBridge, axes;
     try {
-      tags = JSON.parse(m.get_stereo_tags()); g = fromRDKitJson(JSON.parse(m.get_json())); flags = axialPlanarFlags(R, m, g);
+      tags = JSON.parse(m.get_stereo_tags()); g = fromRDKitJson(JSON.parse(m.get_json())); flags = axialPlanarFlags(R, m, g); axes = axialElements(g);
       fixedBridge = fixedBridgeheads(R, m, g, tags);
     } finally { m.delete(); }
     // not stereocentres: tautomeric P/S oxo centres (their tags are removed below) and the bridgeheads of a small
@@ -1313,6 +1354,15 @@
     const upper = tags.CIP_atoms.filter(t => /\((R|S)\)/.test(t[1]) && !drop.has(t[0])).length;
     const ring = opts.ringOpen || { atoms: [], isomers: null };
     if (flags.length) return { verdict: 'not determined', reason: flags.join('; ') };
+    if (axes.length) {
+      // like a single stereocentre: one stereogenic axis and no other stereo element makes the molecule chiral, whichever
+      // of its two configurations it has (RDKit cannot record which). With anything more, the combination is not assessed.
+      const what = axes.map(x => (x.kind === 'allene' ? 'an allene' : 'a hindered biaryl axis (atropisomers)'));
+      if (axes.length === 1 && nUn === 0 && nTok === 0 && !ring.atoms.length)
+        return { verdict: 'chiral', reason: `one stereogenic axis, ${what[0]}: chiral whichever configuration it has (the SMILES cannot record which, so no Ra/Sa is given)` };
+      return { verdict: 'not determined', reason: (axes.length === 1 ? 'a stereogenic axis' : `${axes.length} stereogenic axes`) + ` (${what.join(', ')})` +
+        (nUn || nTok || ring.atoms.length ? ' together with stereocentres' : '') + ': the combination is not assessed' };
+    }
     if (nUn > 0) {
       if (nUn === 1 && nTok === 0) return { verdict: 'chiral', reason: 'one stereocentre (configuration not given): chiral whichever it is' };
       return { verdict: 'not determined', reason: `${nUn} stereocentre${nUn > 1 ? 's' : ''} without a configuration` };
@@ -1663,7 +1713,7 @@
       const b = g.bonds[k], T = tb[k], A = atoms[b.a], B = atoms[b.b];
       const pol = T.polarity;
       const lengthOrder = b.arom ? 1.5 : b.order;
-      bonds.push(bondRecord({
+      bonds.push(bondRecord({ atoms,
         index: k, a: b.a, b: b.b, order: b.order, aromatic: b.arom, T, pol, A, B,
         doubleIn: kek.capped ? null : kek.doubleIn[k], structures: kek.capped ? null : kek.structuresOf[k],
         enthalpy: b.arom || resonant.has(k) ? null : MD().bondEnthalpy(A.el, B.el, b.order), resonance: resonant.has(k),
@@ -1678,7 +1728,7 @@
       const ha = A.hybridization.label && !['sp3d', 'sp3d2'].includes(A.hybridization.label) ? hybText(A.hybridization.label) : null;
       const T = { type: 'single', kekule: null, bondOrder: 1, sigma: 1, pi: 0, piNote: null,
         sigmaOverlap: ha ? `σ: ${A.el}(${ha})–H(1s)` : null, piOverlap: null, polarity: polarity(A.z, 1), amideCN: false };
-      bonds.push(bondRecord({
+      bonds.push(bondRecord({ atoms,
         index: k, a: p, b: h, order: 1, aromatic: false, T, pol: T.polarity, A, B, doubleIn: null, structures: null,
         enthalpy: MD().bondEnthalpy(A.el, 'H', 1), resonance: false,
         typical: typicalOf(p, h, 1, true),
@@ -1715,6 +1765,15 @@
     const douStructure = g.bonds.length - n + comps.length + g.bonds.reduce((s, b) => s + (b.order - 1), 0);
     if (dou !== null && douStructure !== dou) douNote = `the drawn structure has ${douStructure} ring${douStructure === 1 ? '' : 's'} + π bond${douStructure === 1 ? '' : 's'} in total`;
     const isomeric = M.get_smiles();
+    // where each atom is written in that SMILES: RDKit records the order it wrote the atoms in (read it now, before
+    // the next get_smiles overwrites it), and the k-th atom token of the string is the k-th atom of that order
+    let smilesAt = null;
+    try {
+      const order = JSON.parse(M.get_prop('_smilesAtomOutputOrder')), at = new Array(n).fill(null);
+      let k = 0;
+      isomeric.replace(SMILES_ATOM, (tok, off) => { const i = order[k++]; if (i != null && i < n) at[i] = [off, off + tok.length]; return tok; });
+      if (k === order.length) smilesAt = at;
+    } catch (e) { smilesAt = null; }
     // without stereo but with the isotope labels (RDKit's doIsomericSmiles:false would drop both): the stereo marks
     // are removed from the isomeric SMILES and the result is canonicalised again
     let noStereo = isomeric;
@@ -1740,7 +1799,7 @@
       // stereo.ignored: centres RDKit proposes that are not stereocentres (two H; tautomeric P/S oxo). A view that
       // lists open stereo from another source (the 3D engine) should leave these atoms out too.
       stereo: { atoms: stereoAtoms, bonds: stereoBonds, ignored: stereo.ignored }, chirality: chir,
-      smiles, inchi, inchikey, formula, formulaText: formula ? hillText(W.counts, charge) : null,
+      axial: axialElements(g), smiles, smilesAt, inchi, inchikey, formula, formulaText: formula ? hillText(W.counts, charge) : null,
       isotopicFormula: W.isotopes ? isotopicFormula(g.atoms) + chargeSup(charge) : null,
       charge, chargedAtoms, radicals, components: comps.length,
       mw: { value: W.mw, rounded: W.rounded, method: W.method, note: W.note }, composition: W.composition,
@@ -1849,7 +1908,7 @@
       overlap: [T.sigmaOverlap, T.piOverlap].filter(Boolean), piNote: T.piNote || null,
       kekuleDouble: o.aromatic && o.structures ? { times: o.doubleIn, of: o.structures } : null,
       dEN: pol ? pol.dEN : null,
-      polarity: pol ? polarityInfo(pol, o.a, o.b, A, B) : null,
+      polarity: pol ? polarityInfo(pol, o.a, o.b, A, B, o.atoms) : null,
       enthalpy: o.enthalpy ? { kJ: o.enthalpy.kJ, source: o.enthalpy.source, note: o.enthalpy.note } : null,
       resonance: !!o.resonance,      // equivalent by resonance to another bond of its group: no single average enthalpy
       typical: o.typical ? { A: o.typical.A, sd: o.typical.sd, n: o.typical.n, source: o.typical.source, sub: o.typical.sub,
@@ -1863,10 +1922,10 @@
     };
     return b;
   }
-  function polarityInfo(pol, ia, ib, A, B) {
+  function polarityInfo(pol, ia, ib, A, B, atoms) {
     const neg = pol.negativeEnd === 'a' ? ia : pol.negativeEnd === 'b' ? ib : null;
     const pos = neg === null ? null : neg === ia ? ib : ia;
-    const nm = i => (i === ia ? A : B).el + (i + 1);
+    const nm = i => (i === ia ? A : B).el + elNumbers(atoms)[i];
     let text;
     if (pol.cls === 'largely ionic') text = `largely ionic (ΔEN ${pol.dEN.toFixed(2)})`;
     else if (pol.cls === 'polar covalent') text = `polar covalent (ΔEN ${pol.dEN.toFixed(2)}): δ+ on ${nm(pos)}, δ− on ${nm(neg)}`;
@@ -2362,7 +2421,7 @@
     const a = record.atoms[i], rows = [];
     if (!a) return rows;
     const e = EL(a.z);
-    rows.push(row('atom', 'Atom', `${a.el}${i + 1} · ${a.name.toLowerCase()}` + (a.appended ? ` (on ${atomName(record, a.parent)})` : ''), 'exact', null, true));
+    rows.push(row('atom', 'Atom', `${atomName(record, i)} · ${a.name.toLowerCase()}` + (a.appended ? ` (on ${atomName(record, a.parent)})` : ''), 'exact', null, true));
     rows.push(row('z', 'Atomic number', a.z, 'exact'));
     if (!a.appended) rows.push(row('charge', 'Formal charge', intSigned(a.charge), 'convention', 'bookkeeping ' + TEXT.asDrawn +
       ', not the real charge distribution (see the partial charge)', a.charge !== 0));
@@ -2440,11 +2499,26 @@
       ({ Bondi1964: 'Bondi 1964', RowlandTaylor1996: 'Rowland & Taylor 1996', Mantina2009: 'Mantina et al. 2009', Alvarez2013: 'Alvarez 2013' }[e.src && e.src.rvdw] || '') +
       (e.vdwNote ? '. ' + e.vdwNote : '')));
     if (a.groups.length) rows.push(row('groups', 'Functional group', a.groups.join('; '), 'convention', TEXT.functionalGroups, true));
+    const allene = (record.axial || []).find(x => x.kind === 'allene' && x.atoms[1] === i);
+    if (allene) rows.push(row('axis', 'Stereogenic axis', `allene ${allene.atoms.map(x => atomName(record, x)).join('=')}: axial chirality`, 'exact', TEXT.axial, true));
+    // the canonical SMILES with this atom's symbol marked (row.mark = [start, end) for the view to underline); an
+    // implicit H is not written in a SMILES, so its parent atom is marked
+    const loc = smilesLocOf(record);
+    if (loc) {
+      const host = i < record.n ? i : (a.neighbours[0] ? a.neighbours[0].atom : null), at = host !== null ? loc.at[host] : null;
+      if (at) {
+        const x = row('smilespos', 'Location in SMILES', loc.text, 'exact',
+          i >= record.n ? `an implicit H is not written in a SMILES; it belongs to ${atomName(record, host)}, which is marked`
+            : loc.canonical ? 'this atom in the RDKit canonical SMILES (the one under Identity)' : 'this atom in the SMILES as it was entered', true);
+        x.mark = at;
+        rows.push(x);
+      }
+    }
     if (a.neighbours.length >= 2) {
       if (!geo) { /* no 3D model shown */ }
       else if (!geo.optimised) rows.push(row('angles', 'Bond angles (this conformer)', TEXT.notOptimised, '3d', TEXT.notOptimisedBanner, true));
       else {
-        const fmt = x => `${atomName(record, x.i)}–${a.el}${i + 1}–${atomName(record, x.j)} ${x.deg.toFixed(1)}°`;
+        const fmt = x => `${atomName(record, x.i)}–${atomName(record, i)}–${atomName(record, x.j)} ${x.deg.toFixed(1)}°`;
         const L = geo.angles[i], bad = L.filter(x => x.unreliable), good = L.filter(x => !x.unreliable);
         // angles that involve an atom of a flagged bond say so (all of them: once, at the end; some: listed apart)
         const v = !bad.length ? L.map(fmt).join(', ') : !good.length ? L.map(fmt).join(', ') + ' ' + TEXT.unreliableHere
@@ -2453,6 +2527,34 @@
       }
     }
     return rows;
+  }
+
+  // record.smilesLoc (set by the view): the SMILES as the user typed it; otherwise RDKit's canonical SMILES
+  function smilesLocOf(record) {
+    return record.smilesLoc || (record.smilesAt ? { text: record.smiles.isomeric, at: record.smilesAt, canonical: true } : null);
+  }
+  /* The parts of the SMILES that write bond a-b: both atom symbols, plus the bond symbol (= # / \ : -) when it is
+     written between them, or the shared ring-closure number (with its bond symbol) for a ring bond. → [[start, end), ...] */
+  function bondMarks(text, ra, rb) {
+    const [lo, hi] = ra[0] < rb[0] ? [ra, rb] : [rb, ra];
+    const gap = text.slice(lo[1], hi[0]);
+    if (/^[-=#$:\/\\]?$/.test(gap)) return [[lo[0], hi[1]]];                     // written side by side: CC, C=O
+    const marks = [lo, hi];
+    // consecutive atoms with only ring numbers of the first between them (c1ccccc1c1…: the bond joining the rings) are
+    // bonded along the chain; those ring numbers belong to other bonds and are not marked
+    if (/^(?:[-=#$:\/\\]?(?:\d|%\d\d))+[-=#$:\/\\]?$/.test(gap)) {
+      const sym = /(?:\d|%\d\d)([-=#$:\/\\])$/.exec(gap);
+      return sym ? [lo, [hi[0] - 1, hi[0]], hi] : marks;
+    }
+    // a ring closure: the same ring number follows both atoms (c1ccccc1, C=1CC1)
+    const labels = r => { const out = [], m = /^(?:[-=#$:\/\\]?(?:\d|%\d\d))+/.exec(text.slice(r[1])); if (!m) return out;
+      for (const x of m[0].matchAll(/[-=#$:\/\\]?(\d|%\d\d)/g)) out.push({ id: x[1], at: [r[1] + x.index, r[1] + x.index + x[0].length] }); return out; };
+    const la = labels(lo), lb = labels(hi), common = la.find(x => lb.some(y => y.id === x.id));
+    if (common) return [lo, common.at, lb.find(y => y.id === common.id).at, hi].sort((p, q) => p[0] - q[0]);
+    // a branch: C(=O)… opens with the bond symbol after "(", and …(C)=C closes with it before the next atom
+    const sym = /[-=#$:\/\\]$/.exec(gap);
+    if (sym) marks.splice(1, 0, [hi[0] - 1, hi[0]]);
+    return marks;
   }
 
   function bondRows(record, k, geo) {
@@ -2506,6 +2608,20 @@
     if (!b.isHBond) rows.push(row('ring', 'In ring', b.inRing ? 'yes (' + b.ringSizes.join('- and ') + '-membered)' : 'no', 'exact', TEXT.sssr));
     if (b.ez) rows.push(row('ez', 'E/Z', b.ez === 'unspecified' ? 'E/Z possible: not specified in the input' : `(${b.ez})`, b.ez === 'unspecified' ? 'exact' : 'convention', TEXT.cip, true));
     if (b.groups.length) rows.push(row('groups', 'Functional group', b.groups.join('; '), 'convention', TEXT.functionalGroups));
+    if ((record.axial || []).some(x => x.kind === 'biaryl' && x.bond === k))
+      rows.push(row('axis', 'Stereogenic axis', 'hindered biaryl axis: atropisomers (axial chirality)', 'exact', TEXT.axial, true));
+    const loc = smilesLocOf(record);
+    if (loc) {
+      const ra = b.a < record.n ? loc.at[b.a] : null, rb = b.b < record.n ? loc.at[b.b] : null;
+      if (ra || rb) {
+        const x = row('smilespos', 'Location in SMILES', loc.text, 'exact',
+          !(ra && rb) ? 'a bond to an implicit H is not written in a SMILES; the atom carrying the H is marked'
+            : (loc.canonical ? 'this bond in the RDKit canonical SMILES (the one under Identity)' : 'this bond in the SMILES as it was entered') +
+              ': both atoms, and the bond symbol or ring-closure number where one is written', true);
+        x.mark = ra && rb ? bondMarks(loc.text, ra, rb) : [ra || rb];
+        rows.push(x);
+      }
+    }
     void A; void B;
     return rows;
   }
@@ -2519,8 +2635,9 @@
       (extra.component.formula ? ` (${extra.component.formula})` : ''), 'exact', 'a salt or mixture: each component is analysed on its own', true));
     const nm = extra.names;
     if (nm) {
+      id.push(row('iupac', 'IUPAC name', nm.iupac || '—', nm.iupac && nm.iupacChecked === false ? 'unchecked' : 'convention',
+        nm.iupac ? (nm.iupacChecked === false ? TEXT.namerUnchecked : TEXT.namer) : nm.iupacNote, true));
       if (nm.common) id.push(row('common', 'Common name', nm.common, 'exact', "from the app's compound library (identity checked by SMILES)", true));
-      id.push(row('iupac', 'Systematic name', nm.iupac || '—', 'convention', nm.iupac ? TEXT.namer : nm.iupacNote, true));
       if (nm.cas) id.push(row('cas', 'CAS number', nm.cas, 'exact', "from the app's compound library (identity checked by SMILES)"));
     }
     id.push(row('formula', 'Molecular formula', r.formulaText || 'not defined (unspecified atom *)', 'exact', 'Hill order', true));
@@ -2578,6 +2695,8 @@
       'convention', TEXT.cip + (atomsS.some(s => s.label === 'r' || s.label === 's') ? '; lowercase r/s = pseudoasymmetric' : '') +
       (r.stereo.atoms.some(s => s.kind === 'ring') ? '; cis/trans: which face of the ring a substituent or a ring junction is on (RDKit lists these only once they are specified)' : '') +
       (r.stereo.ignored && r.stereo.ignored.length ? '. Not counted: ' + r.stereo.ignored.map(x => `${atomName(r, x.index)} (${x.reason})`).join('; ') : '')));
+    if (r.axial && r.axial.length) sc.push(row('axes', 'Stereogenic axes', r.axial.map(x => x.kind === 'allene'
+      ? `allene ${x.atoms.map(i => atomName(r, i)).join('=')}` : `biaryl axis ${atomName(r, x.atoms[0])}–${atomName(r, x.atoms[1])} (atropisomers)`).join(', '), 'exact', TEXT.axial, true));
     const ez = r.stereo.bonds.filter(s => s.label !== 'unspecified'), ezU = r.stereo.bonds.filter(s => s.label === 'unspecified');
     if (ez.length) sc.push(row('ez', 'Double-bond geometry', ez.map(s => `${atomName(r, r.bonds[s.index].a)}=${atomName(r, r.bonds[s.index].b)} (${s.label})`).join(', '), 'convention', TEXT.cip));
     const unC = unspec.filter(s => s.kind !== 'ring'), unRing = kind => unspec.filter(s => s.kind === 'ring' && s.ring === kind);
@@ -2642,7 +2761,7 @@
     const A = record.atoms;
     switch (mode) {
       case 'element': return A.map(a => a.el);
-      case 'index': return A.map((a, i) => a.el + (i + 1));
+      case 'index': return A.map((a, i) => a.el + elNumbers(A)[i]);
       case 'cip': return A.map(a => (a.cip ? a.cip : ''));
       case 'hybridization': return A.map(a => (a.isH || !a.hybridization.label ? '' : hybText(a.hybridization.label)));
       case 'formal': return A.map(a => chargeLabel(a.charge));
@@ -2671,8 +2790,9 @@
      443 (C=N/N=N/N=O 224, R/S/E/Z unlike RDKit's 117, N–O 93, charge 6, cumulated 3); of the other 5,446 the parser
      read back 103: 100 the same structure, 3 not (2 wrong names that leave out a C=C, 1 right name to which the parser
      adds an E); 5,343 could not be read back. 2 wrong of 103 read back = 1.9 % > 0.5 %, so a name that cannot be read
-     back is not shown either (showUnchecked false): only read-back names are shown. */
-  const NAMES_RULE = { showUnchecked: false, measured: { structures: 10961, readBack: 103, wrong: 2, unreadable: 5343 } };
+     back was not shown (showUnchecked false). It is now shown (showUnchecked true), always tagged "unchecked" where it
+     appears, and never used where no tag can go (the panel heading, export file names). */
+  const NAMES_RULE = { showUnchecked: true, measured: { structures: 10961, readBack: 103, wrong: 2, unreadable: 5343 } };
   function namerRefusal(g, tags, name) {                // → reason the namer's name cannot be trusted, or null
     if (g.atoms.some(a => a.chg)) return 'the structure has a formal charge, which the namer does not write';
     if (g.atoms.some(a => a.rad)) return 'the structure is a radical, which the namer does not write';

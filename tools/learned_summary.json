@@ -1,0 +1,10 @@
+{
+ "checked": 1107514,
+ "learned": 1090843,
+ "why_not": {
+  "no structure (*) in the record": 0,
+  "template does not give the recorded product": 16400,
+  "same reaction recorded again (counted)": 219,
+  "no carbon-containing starting material": 52
+ }
+}

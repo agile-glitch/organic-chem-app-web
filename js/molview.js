@@ -43,7 +43,9 @@
   const MINUS = '−';
   const num = (v, dp) => (v < 0 ? MINUS + (-v).toFixed(dp) : v.toFixed(dp));
   const signed = (v, dp) => { const r = Number(v.toFixed(dp)); return r === 0 ? (0).toFixed(dp) : (r > 0 ? '+' : MINUS) + Math.abs(r).toFixed(dp); };
-  const atomName = (rec, i) => rec.atoms[i].el + (i + 1);
+  const EL_NUM = new WeakMap();   // per-element atom numbers (C1, C2, N1 …), as MolInfo names atoms
+  const elNum = rec => { if (!EL_NUM.has(rec.atoms)) { const c = {}; EL_NUM.set(rec.atoms, rec.atoms.map(a => (c[a.el] = (c[a.el] || 0) + 1))); } return EL_NUM.get(rec.atoms); };
+  const atomName = (rec, i) => rec.atoms[i].el + elNum(rec)[i];
   const THREE_SRC = 'vendor/three/three.js';
   const MAX_3D_ATOMS = 999;      // a V2000 molfile (the 3D builder's input and every 3D export) holds at most 999 atoms
   const NAMER_MAX_HEAVY = 100;   // the app's namer takes seconds (and more) above this size
@@ -55,10 +57,15 @@
     model: { tag: 'model', title: "a model's estimate, not a measured value" },
     table: { tag: 'table', title: 'a tabulated average or constant, not a value for this molecule' },
     '3d': { tag: '3D', title: 'measured on the 3D model shown (this one conformer)' },
+    unchecked: { tag: 'unchecked', title: "the app's namer wrote this name, but it could not be read back to confirm it describes exactly this structure" },
   };
   const LABEL_TEXT = { none: '', element: 'element', index: 'atom number', cip: 'R/S', hybridization: 'hybridization',
     formal: 'formal charge', partial: 'Gasteiger–Marsili partial charge (model)', oxidation: 'oxidation state', lonepairs: 'lone pairs',
-    electrons: 'electrons — each lone pair as two dots (the bonds are the bonding pairs)' };
+    electrons: 'electrons — each lone pair as two dots (the bonds are the bonding pairs)',
+    pka: 'pKa of each acidic site and pKaH of each basic site, in THIS molecule',
+    steric: 'steric crowding at the reacting atom of each fragment, in THIS molecule (open / moderately hindered / hindered / very hindered)',
+    electronic: 'electronic effects at the reacting atom of each fragment, in THIS molecule (partial charge, ring Σσ, conjugation)',
+    taft: 'Taft parameters of the groups on the reacting atom of each fragment, in THIS molecule, shown as Σσ*/Es: Σσ* (polar, > 0 pulls electrons, < 0 pushes) / Es of the bulkiest group (steric, more negative = bulkier); CH3 = 0 for both, – = no value' };
 
   /* ================================================================ state */
   const S = {
@@ -98,7 +105,7 @@
   const fileSafe = s => String(s).replace(/[\/\\:*?"<>|]/g, ch => FILE_SAFE[ch]).replace(/[\x00-\x1f]/g, '').replace(/[. ]+$/g, '');
   function exportName(cs) {
     const smi = (cs.record && cs.record.smiles && cs.record.smiles.isomeric) || '';
-    const nm = cs.names || {}, names = [nm.common, nm.iupac].filter(Boolean);
+    const nm = cs.names || {}, names = [nm.common, nm.iupacChecked === false ? null : nm.iupac].filter(Boolean);   // an unchecked name only appears where it is tagged
     let name = smi ? fileSafe(smi) : slug(titleOf(cs));
     if (names.length) name += ' (' + fileSafe(names.join(', ')) + ')';
     if (name.length > 180) {
@@ -342,9 +349,11 @@
       return { ok: false, error: e.message };
     }
     // components (salts, mixtures): each is analysed on its own
-    let frags = null;
+    let frags = null, fragAtoms = null;
+    const typed = typedSmiles(input, got.mol);
     try {
       const f = got.mol.get_frags();
+      try { fragAtoms = JSON.parse(f.mappings).fragsMolAtomMapping; } catch (e) { fragAtoms = null; }
       const ml = f.molList, n = ml.size();
       if (n > 1) { frags = []; for (let i = 0; i < n; i++) frags.push(ml.at(i)); }
       else if (n === 1) { const c = ml.at(0); c.delete(); }
@@ -374,7 +383,8 @@
     S.full = got.mol; S.mols.push(got.mol);
     if (frags) S.mols.push(...frags);
     $('molSide').scrollTop = 0;                    // a new molecule starts at its name, not mid-list
-    S.comps = mols.map((m, i) => ({ i, mol: m, heavy: heavy[i], record: null, b3d: null }));
+    S.typed = typed && (!frags || fragAtoms) ? typed : null;
+    S.comps = mols.map((m, i) => ({ i, mol: m, heavy: heavy[i], record: null, b3d: null, typedAtoms: frags ? (fragAtoms ? fragAtoms[i] : null) : null }));
     if (frags) { try { S.combined = MI.combined(S.R, S.full); } catch (e) { S.combined = null; } }
     if (opts.view === '2d' || opts.view === '3d') S.view = opts.view;
     const ok = activate(best);
@@ -393,6 +403,20 @@
     }
     return { ok: true };
   }
+  /* The typed SMILES and where each of its atoms is written, when the molecule was read straight from that text:
+     RDKit numbers the atoms in the order they are typed, so the k-th atom token is atom k. Anything else (a name, a
+     drawing, a file, or a SMILES whose explicit [H] atoms RDKit removed) gives null, and the canonical SMILES is used. */
+  const SMILES_ATOM = /\[[^\]]+\]|Br|Cl|[BCNOPSFIbcnops*]/g;
+  function typedSmiles(input, mol) {
+    const text = typeof input === 'string' ? input.trim() : '';
+    if (!text || !looksLikeSmiles(text)) return null;
+    const at = [];
+    text.replace(SMILES_ATOM, (tok, off) => { at.push([off, off + tok.length]); return tok; });
+    if (at.length !== mol.get_num_atoms()) return null;
+    let m = null;
+    try { m = S.R.get_mol(text); return m && m.get_smiles() === mol.get_smiles() ? { text, at } : null; }
+    catch (e) { return null; } finally { if (m) m.delete(); }
+  }
   function countHeavy(m) { try { return JSON.parse(m.get_descriptors()).NumHeavyAtoms; } catch (e) { return 0; } }
 
   function prepareComponent(cs) {
@@ -404,6 +428,12 @@
       // layout (which has to draw an open C=C one way or the other) would decide it — checked: CC=CC got
       // (E)-but-2-ene's InChIKey after set_new_coords(). Coordinates the input brought (a drawing, a file) stay.
       cs.record = MI.analyse(S.R, M);
+      cs.pka = window.MoleculePka ? window.MoleculePka.forMol(S.R, M) : null;   // js/reactions.js: measured, estimated or typical
+      cs.effects = window.MoleculeEffects ? window.MoleculeEffects.forMol(S.R, M, cs.record) : null;   // steric / electronic per fragment
+      if (S.typed) {   // "Location in SMILES" shows the SMILES as typed: this component's atom j is typed atom typedAtoms[j]
+        const at = cs.record.atoms.slice(0, cs.record.n).map((x, j) => S.typed.at[cs.typedAtoms ? cs.typedAtoms[j] : j] || null);
+        if (at.every(Boolean)) cs.record.smilesLoc = { text: S.typed.text, at };
+      }
       if (cs.from3D && S.fileBlock && S.comps.length === 1) cs.fileConf = fileConformer(cs, S.fileBlock);
       if (hc !== 2) layout2D(cs);                    // no coordinates, or a 3D file: RDKit's 2D layout for the drawing
       // RDKit's bond length (1.5): names, drawings and CoordGen come at 1.0, where add_hs_in_place piles H onto
@@ -426,19 +456,34 @@
   /* RDKit's default 2D layout; CoordGen for macrocycles (a ring of 8 or more atoms) or when the default layout
      stretches a bond past 1.3 × the median (vancomycin: 1.71 × by default, 1.14 × with CoordGen). CoordGen's layout
      is kept only if it reads back with the same stereochemistry. */
-  function layout2D(cs) {
-    const M = cs.mol;
+  function layout2D(cs) { layoutMol(S.R, cs.mol, cs.record.rings.some(ring => ring.length >= 8)); }
+  function layoutMol(R, M, macrocycle) {
     M.set_new_coords();
-    if (!cs.record.rings.some(ring => ring.length >= 8) && bondSpread(M.get_molblock()) <= 1.3) return;
+    if (!macrocycle && bondSpread(M.get_molblock()) <= 1.3) return;
     const smi = M.get_smiles();
     let same = false;
     try {
       M.set_new_coords(true);
-      const back = rdMol(M.get_molblock());
+      const back = R.get_mol(M.get_molblock(), JSON.stringify({ removeHs: true }));
       same = !!back && back.get_smiles() === smi;
       if (back) back.delete();
     } catch (e) { same = false; }
     if (!same) M.set_new_coords();
+  }
+  /* This tab's 2D drawing of a SMILES, for other pages (the Reactions page) to draw a molecule the same way: the same
+     layout steps and the same final normalisation as prepareComponent. RDKit numbers the atoms in the order the SMILES
+     writes them. → {atoms: [{x, y, el}], bonds: [{a, b, order, flag}]} (flag 1 = wedge, 6 = hash, narrow end at a) or null */
+  function depict2D(R, smiles) {
+    let m = null;
+    try { m = R.get_mol(smiles); } catch (e) { m = null; }
+    if (!m) return null;
+    try {
+      if ((m.is_valid && !m.is_valid()) || !m.get_num_atoms()) return null;
+      const J = JSON.parse(m.get_json()), ext = (J.molecules[0].extensions || []).find(e => e.name === 'rdkitRepresentation') || {};
+      layoutMol(R, m, (ext.atomRings || []).some(ring => ring.length >= 8));
+      try { m.normalize_depiction(0, -1); } catch (e) {}
+      return parseMolblock(m.get_molblock());
+    } catch (e) { return null; } finally { m.delete(); }
   }
   function bondSpread(mb) {                          // longest bond / median bond of a 2D molblock
     const P = parseMolblock(mb), L = P.bonds.map(b => Math.hypot(P.atoms[b.a].x - P.atoms[b.b].x, P.atoms[b.a].y - P.atoms[b.b].y)).sort((a, b) => a - b);
@@ -1108,7 +1153,7 @@
       if (!rows.length) { hideCard(); return; }
       const head = rows[0], rest = rows.slice(1);
       card.innerHTML = `<div class="mv-card-h">${esc(head.value)}</div>` +
-        rest.map(rw => `<div class="mv-card-r"><span class="mv-k">${esc(rw.label)}</span><span class="mv-v">${esc(rw.value)}${tagHTML(rw.kind)}</span></div>`).join('') +
+        rest.map(rw => `<div class="mv-card-r"><span class="mv-k">${esc(rw.label)}</span><span class="mv-v${rw.mark ? ' mv-mono' : ''}">${valueHTML(rw)}${tagHTML(rw.kind)}</span></div>`).join('') +
         `<div class="mv-card-f">${S.measureN && S.view === '3d' ? 'click to pick this atom for the measurement' : 'click to pin every value, with notes and sources'}</div>`;
     }
     card.hidden = false;
@@ -1174,19 +1219,44 @@
   function unknownLonePairs(record) {
     return record.atoms.filter(a => !a.isH && a.lonePairs === null).length;
   }
+  /* 'pKa' labels: the acidic atom of each acidic site "pKa 7.15", the basic atom of each basic site "pKaH 4.6" (sites,
+     values and sources from js/reactions.js moleculePkas: measured IUPAC value, Hammett estimate or typical value) */
+  function pkaLabels(cs) {
+    const N = cs.record.atoms.length, out = new Array(N).fill('');
+    if (!cs.pka) return out;
+    for (const s_ of cs.pka.acid) for (const a of s_.atoms || [s_.atom]) if (a < N) out[a] = 'pKa ' + String(s_.pKa).replace('-', '−');
+    for (const s_ of cs.pka.base) for (const a of s_.atoms || [s_.atom]) if (a < N) out[a] = (out[a] ? out[a] + ' / ' : '') + 'pKaH ' + String(s_.pKa).replace('-', '−');
+    return out;
+  }
+  /* 'Steric' / 'Electronic' labels: on each fragment's reacting atom (js/reactions.js effectsOfMol) */
+  function effectLabels(cs, kind) {
+    const N = cs.record.atoms.length, out = new Array(N).fill('');
+    for (const e of cs.effects || []) {
+      if (e.fragment === 'F009' || e.atom >= N || out[e.atom]) continue;
+      if (kind === 'taft') {
+        const t = e.taft || {}, sg = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2);
+        out[e.atom] = t.sigmaStar == null && t.EsMin == null ? '' : `${t.sigmaStar != null ? sg(t.sigmaStar) : '–'}/${t.EsMin != null ? sg(t.EsMin) : '–'}`;   // σ*/Es: short, so it fits beside a crowded atom
+        continue;
+      }
+      out[e.atom] = kind === 'steric' ? e.steric.cls : (e.electronic.charge != null ? `δ ${e.electronic.charge >= 0 ? '+' : '−'}${Math.abs(e.electronic.charge).toFixed(2)}` : '')
+        + (kind === 'electronic' && e.electronic.sigma != null ? ` Σσ ${e.electronic.sigma >= 0 ? '+' : '−'}${Math.abs(e.electronic.sigma).toFixed(2)}` : '');
+    }
+    return out;
+  }
   function applyLabels2D() {
     if (!v2 || !v2info || !S.cs || !S.cs.record) return;
     const r = S.cs.record;
     v2.setElectrons(S.labels === 'electrons' ? lonePairCounts(r).slice(0, v2info.N) : null);
     if (S.labels === 'none' || S.labels === 'electrons') { v2.setAnnotations(null); return; }
-    const all = MI.labelsFor(r, S.labels);
+    const all = S.labels === 'pka' ? pkaLabels(S.cs) : S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft' ? effectLabels(S.cs, S.labels) : MI.labelsFor(r, S.labels);
     v2.setAnnotations(all.slice(0, v2info.N));
   }
   function applyLabels3D() {
     if (!v3 || v3cs !== S.cs || !S.cs) return;
     const r = S.cs.record;
     v3.setElectrons(S.labels === 'electrons' ? lonePairCounts(r) : null);
-    v3.setLabels(S.labels === 'none' || S.labels === 'electrons' ? null : MI.labelsFor(r, S.labels));
+    v3.setLabels(S.labels === 'none' || S.labels === 'electrons' ? null : S.labels === 'pka' ? pkaLabels(S.cs)
+      : S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft' ? effectLabels(S.cs, S.labels) : MI.labelsFor(r, S.labels));
   }
   function renderLabels() { applyLabels2D(); applyLabels3D(); renderFoot(); }
 
@@ -1687,6 +1757,17 @@
     }
     if (S.labels !== 'none') {
       let t = 'Labels: ' + LABEL_TEXT[S.labels];
+      if (S.labels === 'pka') {
+        const P = cs.pka, F = ((window.REACTION_RULES || {}).fragments) || {};
+        const item = (s_, kind) => `${esc([...new Set(s_.fragments)].map(f => F[f] ? F[f].name : f).join(' / '))} ${kind} ${esc(String(s_.pKa))} (${esc(s_.source)})`;
+        const list = P ? P.acid.map(s_ => item(s_, 'pKa')).concat(P.base.map(s_ => item(s_, 'pKaH'))) : [];
+        t += list.length ? ': ' + list.join(' · ') : ': no acidic or basic site found by the Fragments sheet';
+      }
+      if (S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft') {
+        const taftText = e => [e.taft && e.taft.electronicText, e.taft && e.taft.stericText].filter(Boolean).join('; ') || 'no group with a Taft value on it';
+        const list = (cs.effects || []).filter(e => e.fragment !== 'F009').map(e => `${esc(e.name)} (atom ${e.atom + 1}): ${esc(S.labels === 'steric' ? e.steric.text : S.labels === 'taft' ? taftText(e) : e.electronic.text)}`);
+        t += list.length ? ': ' + list.join(' · ') : ': no fragment of the Fragments sheet found';
+      }
       if (S.labels === 'electrons') {
         const unk = unknownLonePairs(r);
         t += ' · ' + MI.TEXT.asDrawn + (unk ? ` · ${unk} atom${unk === 1 ? '' : 's'} with an unusual electron count get none` : '');
@@ -1710,14 +1791,49 @@
   function rowHTML(rw, opts) {
     opts = opts || {};
     const note = rw.note ? `<div class="mv-note">${esc(rw.note)}</div>` : '';
-    const mono = /^(smiles|smiles0|inchi|inchikey)$/.test(rw.key) ? ' mv-mono' : '';
+    const mono = /^(smiles|smiles0|smilespos|inchi|inchikey)$/.test(rw.key) ? ' mv-mono' : '';
     return `<div class="mv-row${rw.note ? ' mv-has-note' : ''}${opts.click ? ' mv-click' : ''}${opts.on ? ' mv-on' : ''}"${opts.attrs || ''}>` +
       `<span class="mv-k">${esc(rw.label)}${rw.note ? '<span class="mv-i" title="show the note">i</span>' : ''}</span>` +
-      `<span class="mv-v${mono}">${esc(rw.value)}${tagHTML(rw.kind)}</span>${note}</div>`;
+      `<span class="mv-v${mono}${copyable(rw) ? ` mv-copy" data-copy="${esc(copyValue(rw))}" title="${rw.mark ? 'Click to copy the underlined part' : 'Click to copy'}` : ''}">${valueHTML(rw)}${tagHTML(rw.kind)}</span>${note}</div>`;
+  }
+  // the naming rows (IUPAC and common name, CAS, SMILES, InChI, InChIKey): click the value to copy it
+  const copyable = rw => /^(iupac|common|cas|formula|isoformula|smiles|smiles0|smilespos|inchi|inchikey)$/.test(rw.key) && rw.value && rw.value !== '—' && !/^not defined/.test(rw.value);
+  // formulas are shown with sub/superscript digits (C₉H₈O₄); they are copied as plain text (C9H8O4) so they paste anywhere
+  const SUBSUP = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9',
+    '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁺': '+', '⁻': '-' };
+  const plainFormula = t => String(t).replace(/[₀-₉⁰¹²³⁴-⁹⁺⁻]/g, c => SUBSUP[c] || c);
+  // "Location in SMILES" copies only what is underlined (several underlined pieces, as for a ring bond, joined in order)
+  const copyValue = rw => {
+    if (/formula$/.test(rw.key)) return plainFormula(rw.value);
+    if (!rw.mark) return rw.value;
+    const marks = typeof rw.mark[0] === 'number' ? [rw.mark] : rw.mark;
+    return marks.slice().sort((p, q) => p[0] - q[0]).map(([a, b]) => String(rw.value).slice(a, b)).join('');
+  };
+  function copyText(text, done) {
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { if (document.execCommand('copy')) done(); } catch (e) { /* nothing more to try */ }
+      ta.remove();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+  // a row's value; row.mark = [start, end) or a list of them underlines those parts ("Location in SMILES")
+  function valueHTML(rw) {
+    if (!rw.mark) return esc(rw.value);
+    const s = String(rw.value), marks = typeof rw.mark[0] === 'number' ? [rw.mark] : rw.mark;
+    let html = '', pos = 0;
+    for (const [a, b] of marks.slice().sort((p, q) => p[0] - q[0])) {
+      if (a < pos) continue;
+      html += esc(s.slice(pos, a)) + '<u class="mv-mark">' + esc(s.slice(a, b)) + '</u>';
+      pos = b;
+    }
+    return html + esc(s.slice(pos));
   }
   function titleOf(cs) {
     const nm = cs.names;
-    return (nm && (nm.common || nm.iupac)) || cs.formula || 'molecule';
+    return (nm && (nm.common || (nm.iupacChecked === false ? null : nm.iupac))) || cs.formula || 'molecule';
   }
   function renderHead() {
     const box = $('molHead'), cs = S.cs;
@@ -1726,7 +1842,7 @@
     const title = titleOf(cs);
     const sub = [r.formulaText, r.mw ? r.mw.rounded.toFixed(2) + ' g/mol' : null].filter(Boolean).join(' · ');
     box.innerHTML = `<h2>${esc(title)}</h2><div class="mv-sub">${esc(sub)}${nm ? '' : ' <span class="mv-dim">(looking up names…)</span>'}</div>
-      <div class="mv-legendline">Tags: ${['model', 'table', '3d', 'convention'].map(k => tagHTML(k) + ' ' + esc(KIND[k].title.split(',')[0])).join(' · ')}; untagged values follow exactly from the structure.</div>
+      <div class="mv-legendline">Tags: ${['model', 'table', '3d', 'convention', 'unchecked'].map(k => tagHTML(k) + ' ' + esc(KIND[k].title.split(',')[0])).join(' · ')}; untagged values follow exactly from the structure.</div>
       <label class="mv-notes-t"><input type="checkbox" id="molNotesAll"${S.notesOpen ? ' checked' : ''}> show every note (method, source, caveat)</label>`;
     $('molNotesAll').addEventListener('change', e => { S.notesOpen = e.target.checked; $('molSide').classList.toggle('mv-notes-open', S.notesOpen); });
   }
@@ -1832,7 +1948,7 @@
   function atomRowsTable(r) {
     return r.atoms.map((a, i) => ({
       i, key: { i, el: a.el, charge: a.charge, q: a.gasteiger ?? -99, hyb: a.hybridization.label || '', h: a.hCount, lp: a.lonePairs ?? -1, ox: a.oxidationState.value ?? -99, cip: a.cip || '', arom: a.aromatic ? 1 : 0 },
-      cells: [a.el + (i + 1), a.el, a.isH ? '—' : a.hybridization.label ? MI.util.hybText(a.hybridization.label) : '—', a.cip || '',
+      cells: [atomName(r, i), a.el, a.isH ? '—' : a.hybridization.label ? MI.util.hybText(a.hybridization.label) : '—', a.cip || '',
         a.charge ? signed(a.charge, 0) : '0', a.gasteiger === null ? '—' : signed(a.gasteiger, 3), a.isH ? '' : String(a.hCount),
         a.lonePairs === null ? '—' : String(a.lonePairs), a.oxidationState.text, a.aromatic ? '✓' : ''],
     }));
@@ -2148,6 +2264,17 @@
   page.addEventListener('click', e => {
     const ex = e.target.closest('[data-example]');
     if (ex) { input.value = ex.dataset.example; submit(ex.dataset.example); return; }
+    const cp = e.target.closest('.mv-copy');
+    if (cp && $('molSide').contains(cp)) {           // a name or identifier: copy it (clicking the label still opens the note)
+      copyText(cp.dataset.copy, () => {
+        if (cp.dataset.busy) return;
+        cp.dataset.busy = '1';
+        const was = cp.innerHTML;
+        cp.textContent = 'Copied';
+        setTimeout(() => { cp.innerHTML = was; delete cp.dataset.busy; }, 900);
+      });
+      return;
+    }
     const t = e.target.closest('[data-act]');
     if (!t || !page.contains(t)) {
       const noteRow = e.target.closest('.mv-has-note');
@@ -2196,6 +2323,7 @@
 
   window.MolView = {
     show: (textOrGraph, opts) => showMolecule(textOrGraph, opts || {}),
+    depict2D,
     // for tests (molview_selftest.html, browser checks): the page state and the two views; not for page code
     _debug: { state: S, views: () => ({ v2, v3 }), hover: (hit, x, y) => onHover(hit, x, y, S.view),
       ringCisTrans, ringCandidates, axialOpen, legendInfo, measureText: (atoms, c) => measureText({ atoms }, c || currentConf(S.cs)) },

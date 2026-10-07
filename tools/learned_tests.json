@@ -1,0 +1,454 @@
+{
+ "learned": [
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0000001 (template T000001)",
+   "code": "NCCc1ccccc1[N+](=O)[O-]~[Pd]~ethanol~",
+   "expect": "L0000001",
+   "products": [
+    "NCCc1ccccc1N"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0021817 (template T022029)",
+   "code": "O=Cc1c[nH]c2ncccc12.O=C1CSC(=S)N1~CC(=O)[O-].[Na+]~acetic acid, water~",
+   "expect": "L0021817",
+   "products": [
+    "O=C1NC(=S)SC1=Cc1c[nH]c2ncccc12"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0043633 (template T044184)",
+   "code": "COC(=O)Nc1ccccc1~[Rh]~isopropanol~",
+   "expect": "L0043633",
+   "products": [
+    "COC(=O)NC1CCCCC1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0065449 (template T066451)",
+   "code": "COc1ccc(C(=O)C(Br)c2ccc(SC)cc2)cc1.COc1cc(OC)nc(N)n1~O=C([O-])O.[Na+]~acetonitrile, ethyl acetate~",
+   "expect": "L0065449",
+   "products": [
+    "COc1ccc(-c2nc3nc(O)cc(OC)n3c2-c2ccc(SC)cc2)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0087265 (template T088644)",
+   "code": "CC(CSC(=O)c1ccc(Cl)c(S(N)(=O)=O)c1)C(=O)Cl.O=C(O)[C@@H]1CCCN1.O=C([O-])[O-]~[K+]~diethyl ether~",
+   "expect": "L0087265",
+   "products": [
+    "C1CCC(NC2CCCCC2)CC1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0109081 (template T110927)",
+   "code": "CC(=O)OCC(=O)N(CCOC(C)C)c1ccc(C(=O)N2CCN(CCc3ccc(Cl)cc3)CC2)cc1~CC(=O)OCC(=O)Cl.Cl~~",
+   "expect": "L0109081",
+   "products": [
+    "CC(C)OCCNc1ccc(C(=O)N2CCN(CCc3ccc(Cl)cc3)CC2)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0130897 (template T133343)",
+   "code": "CCc1c(OC)cc(C(C(=O)OC)C(=O)C(=O)OC)cc1OC~C=O.CCc1c(OC)cc(CC(=O)OC)cc1OC.COC(=O)C(=O)OC.O=C([O-])[O-].[H-].[K+].[Na+]~tetrahydrofuran, toluene, water~",
+   "expect": "L0130897",
+   "products": [
+    "C=C(C(=O)OC)c1cc(OC)c(CC)c(OC)c1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0152713 (template T155774)",
+   "code": "CCOC(=O)c1nn(-c2ccc3c(c2)OCO3)c2c1CN(C(C)=O)c1ccc(N)cc1-2~N~ethanol~",
+   "expect": "L0152713",
+   "products": [
+    "CC(=O)N1Cc2c(C(N)=O)nn(-c3ccc4c(c3)OCO4)c2-c2cc(N)ccc21"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0174529 (template T178173)",
+   "code": "CC(C)[SiH](Cl)C(C)C.CCCCC~[Cl-].[NH4+]~tetrahydrofuran~",
+   "expect": "L0174529",
+   "products": [
+    "CCCC[SiH](C(C)C)C(C)C"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0196345 (template T200492)",
+   "code": "COC(=O)N1CC(c2c[nH]c3cc(F)ccc23)C2C1CCN2C(=O)C(NC(=O)OC(C)(C)C)C1CCCCC1.CCOC(=O)CBr~O=C([O-])[O-].[K+]~acetonitrile, water~",
+   "expect": "L0196345",
+   "products": [
+    "CCOC(=O)CN1CC(c2c[nH]c3cc(F)ccc23)C2C1CCN2C(=O)C(NC(=O)OC(C)(C)C)C1CCCCC1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0218161 (template T222819)",
+   "code": "Cc1c(C(O)CN2CCN(C(=O)OC(C)(C)C)CC2=O)ccc2c1COC2=O~[OH-].[Pd+2]~methanol~",
+   "expect": "L0218161",
+   "products": [
+    "Cc1c(CCN2CCNCC2=O)ccc2c1COC2=O"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0239977 (template T245152)",
+   "code": "Cc1nc(C(=N)N(C)C)sc1C(=O)C=CN(C)C.N=C(N)Nc1ccc(N2CCOCC2)cc1~O=[N+]([O-])O~~",
+   "expect": "L0239977",
+   "products": [
+    "Cc1nc(N)sc1-c1ccnc(Nc2ccc(N3CCOCC3)cc2)n1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0261793 (template T267480)",
+   "code": "COC(=O)c1ccc2c(c1)C(B1OC(C)(C)C(C)(C)O1)=CCC2.Fc1cnccc1Cl~C=C.CC(=O)[O-].COc1cccc(OC)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1.O=P([O-])([O-])[O-].[K+].[Pd+2]~water~",
+   "expect": "L0261793",
+   "products": [
+    "COC(=O)c1ccc2c(c1)C(c1ccncc1F)=CCC2"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0283609 (template T289899)",
+   "code": "CC1(C=O)NC=CN1Cc1ccccc1.CCOC(=O)CCC(=O)OCC.CC[O-]~[Na+]~ethanol~",
+   "expect": "L0283609",
+   "products": [
+    "CCOC(=O)/C(=C/c1cnc(C)n1Cc1ccccc1)CC(=O)O"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0305425 (template T018059)",
+   "code": "Cc1ccc(N2CCNCC2)cc1C.Cc1ccc(N2CCNCC2)cc1~~~",
+   "expect": "L0305425",
+   "products": [
+    "Cc1ccc(N2CCN(Cc3ccc4c(c3)NCCN4)CC2)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0327241 (template T040276)",
+   "code": "C[Si](C)(C)CCOCN(COCC[Si](C)(C)C)c1cc(Cl)nc2c(-c3cnc4ccccc4c3)cnn12.COC(=O)C1CCNC1~CCN(C(C)C)C(C)C~DMF~",
+   "expect": "L0327241",
+   "products": [
+    "COC(=O)C1CCN(c2cc(N)n3ncc(-c4cnc5ccccc5c4)c3n2)C1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0349057 (template T062561)",
+   "code": "C=CCN1CCCC[C@H]1[C@@H](Nc1cc(C)nc2c(OCCNS(C)(=O)=O)cccc12)c1ccccc1~Cl.O=C(O)c1ccccc1S.[Na+].[OH-].c1ccc(P(CCCCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1~isopropanol, tetrahydrofuran, water~",
+   "expect": "L0349057",
+   "products": [
+    "Cc1cc(N[C@@H](c2ccccc2)[C@@H]2CCCCN2)c2cccc(OCCNS(C)(=O)=O)c2n1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0370873 (template T011246)",
+   "code": "CC(C)(C)C(=O)Nc1nc(Cl)c2c(I)c[nH]c2n1.COc1c(C)cnc(CCl)c1C~Cl.O=C([O-])[O-].[K+]~DMF~",
+   "expect": "L0370873",
+   "products": [
+    "COc1c(C)cnc(Cn2cc(I)c3c(Cl)nc(NC(=O)C(C)(C)C)nc32)c1C"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0392689 (template T033440)",
+   "code": "CCOC(=O)C=P(c1ccccc1)(c1ccccc1)c1ccccc1.O=Cc1cnc(Oc2ccc(Cl)cc2)s1~~toluene~",
+   "expect": "L0392689",
+   "products": [
+    "CCOC(=O)/C=C/c1cnc(Oc2ccc(Cl)cc2)s1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0414505 (template T012281)",
+   "code": "Cc1c(C)c2c(c(C)c1NC(=O)CC(C)(C)C)C(c1ccc(C=O)cc1)CO2.CCOC(C)=O~~~",
+   "expect": "L0414505",
+   "products": [
+    "CCOC(=O)/C=C/c1ccc(C2COc3c(C)c(C)c(NC(=O)CC(C)(C)C)c(C)c32)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0436321 (template T003519)",
+   "code": "O=C1c2cc(Br)ccc2OCC12CC2.CC(C)(C)S(N)=O~CC[O-].[Ti+4]~tetrahydrofuran, water~",
+   "expect": "L0436321",
+   "products": [
+    "CC(C)(C)S(=O)N=C1c2cc(Br)ccc2OCC12CC2"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0458137 (template T001563)",
+   "code": "OC(c1cccs1)(c1cccs1)C12CCN(CC1)CC2.BrCCc1ccccc1~~methanol~",
+   "expect": "L0458137",
+   "products": [
+    "OC(c1cccs1)(c1cccs1)C12CC[N+](CCc3ccccc3)(CC1)CC2"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0479953 (template T003820)",
+   "code": "O=C1CCN(CCc2ccccc2)CC1.Nc1ccccc1.[C-]#N~[K+]~acetic acid, water~",
+   "expect": "L0479953",
+   "products": [
+    "N#CC1(Nc2ccccc2)CCN(CCc2ccccc2)CC1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0501769 (template T008958)",
+   "code": "CCC#CCC(C)C(=O)/C=C/[C@@H]1[C@H]2CC(=O)O[C@H]2C[C@H]1OC(=O)c1ccccc1~[BH4-].[Na+]~diethyl ether, methanol~",
+   "expect": "L0501769",
+   "products": [
+    "CCC#CCC(C)[C@H](O)/C=C/[C@@H]1[C@H]2CC(=O)O[C@H]2C[C@H]1OC(=O)c1ccccc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0523585 (template T003317)",
+   "code": "CC(=O)c1cc(Cl)c2cccnc2c1OS(=O)(=O)C(F)(F)F.N#CC1CCNCC1~CC(=O)[O-].O=C([O-])[O-].[Cs+].[Pd+2].c1ccc(P(c2ccccc2)c2ccc3ccccc3c2-c2c(P(c3ccccc3)c3ccccc3)ccc3ccccc23)cc1~dichloromethane, tetrahydrofuran~",
+   "expect": "L0523585",
+   "products": [
+    "CC(=O)c1cc(Cl)c2cccnc2c1N1CCC(C#N)CC1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0545401 (template T003144)",
+   "code": "N=C(NO)c1ccc(-c2ccc(O)c(-c3nc4cc(C(=N)NO)ccc4[nH]3)c2)cc1~N#Cc1ccc(-c2cccc(-c3nc4cc(C#N)ccc4[nH]3)c2)cc1~~",
+   "expect": "L0545401",
+   "products": [
+    "N=C(NO)c1ccc(-c2cccc(-c3nc4cc(C(=N)NO)ccc4[nH]3)c2)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0567217 (template T006718)",
+   "code": "CCc1ccc(NC(=O)Nc2ccc(Cc3cc(N)ncn3)cc2)cc1~~DMF~",
+   "expect": "L0567217",
+   "products": [
+    "Cc1ccc(NC(=O)Nc2ccc(Cc3cc(N)ncn3)cc2)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0589033 (template T005754)",
+   "code": "COC(=O)c1ccc(OC(C)c2nc(-c3ccc(F)cc3)oc2Sc2ccc(Cl)cn2)cc1.CN~~~",
+   "expect": "L0589033",
+   "products": [
+    "CNC(=O)c1ccc(OC(C)c2nc(-c3ccc(F)cc3)oc2Sc2ccc(Cl)cn2)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0610849 (template T003239)",
+   "code": "Cc1cc(CCC(=O)O)no1.CCOCC~FB(F)F~methanol~",
+   "expect": "L0610849",
+   "products": [
+    "COC(=O)CCc1cc(C)on1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0632665 (template T000884)",
+   "code": "CCOC(=O)c1c(O)c2ncc(Cc3ccccc3)cc2[nH]c1=O.NC1CC1~~DMA~",
+   "expect": "L0632665",
+   "products": [
+    "O=C(NC1CC1)c1c(O)c2ncc(Cc3ccccc3)cc2[nH]c1=O"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0654481 (template T003114)",
+   "code": "CNC(=O)c1ncc(Nc2nccc(N3C[C@H]4CC[C@@H](C3)N4)n2)cc1C.CCNC(=O)n1ccnc1~Cl~~",
+   "expect": "L0654481",
+   "products": [
+    "CCNC(=O)N1[C@@H]2CC[C@H]1CN(c1ccnc(Nc3cnc(C(=O)NC)c(C)c3)n1)C2"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0676297 (template T002584)",
+   "code": "CC1(C)SC(=NO)N=C1C1CCCCC1.CN=C=O~~~",
+   "expect": "L0676297",
+   "products": [
+    "CNC(=O)ON=C1N=C(C2CCCCC2)C(C)(C)S1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0698113 (template T001342)",
+   "code": "CCC(C(N)=O)c1ccccc1C#Cc1nc(Nc2ccc(C3CCN(C(=O)OC(C)(C)C)CC3)cc2)ncc1C(F)(F)F~CCN(CC)CC.[Pd]~DMF, ethyl acetate~",
+   "expect": "L0698113",
+   "products": [
+    "CCC(C(N)=O)c1ccccc1CCc1nc(Nc2ccc(C3CCN(C(=O)OC(C)(C)C)CC3)cc2)ncc1C(F)(F)F"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0719929 (template T000777)",
+   "code": "Cc1c(N)cccc1Cl.O=Cc1ccccc1Cl~~ethanol~",
+   "expect": "L0719929",
+   "products": [
+    "Cc1c(Cl)cccc1N=Cc1ccccc1Cl"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0741745 (template T001349)",
+   "code": "CC(=O)c1ccc2c(c1)ncn2-c1cccc(C2=CCCN(C)C2)c1.CCON~Cl~ethanol~",
+   "expect": "L0741745",
+   "products": [
+    "CCON=C(C)c1ccc2c(c1)ncn2-c1cccc(C2=CCCN(C)C2)c1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0763561 (template T001136)",
+   "code": "N[C@@H](Cc1ccc(Oc2nccc3ccc(Br)cc23)cc1)C(=O)O.O=C(O)c1cc2cc(Cl)ccc2nc1Cl~~DMSO~",
+   "expect": "L0763561",
+   "products": [
+    "O=C(O)c1cc2cc(Cl)ccc2nc1N[C@@H](Cc1ccc(Oc2nccc3ccc(Br)cc23)cc1)C(=O)O"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0785377 (template T000707)",
+   "code": "COC(=O)c1ccc(O)c(Cl)c1.O=S(=O)(OS(=O)(=O)C(F)(F)F)C(F)(F)F~c1ccncc1~~",
+   "expect": "L0785377",
+   "products": [
+    "COC(=O)c1ccc(OS(=O)(=O)C(F)(F)F)c(Cl)c1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0807193 (template T000364)",
+   "code": "Nc1ccc(C(O)(C(F)(F)F)C(F)(F)F)cc1F~Cl.O=N[O-].[I-].[K+].[Na+]~diethyl ether, DMF, water~",
+   "expect": "L0807193",
+   "products": [
+    "OC(c1ccc(I)c(F)c1)(C(F)(F)F)C(F)(F)F"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0829009 (template T000006)",
+   "code": "CC(C)(C)OC(=O)NCCc1ccc(Oc2c(Cl)cc([N+](=O)[O-])cc2Cl)cc1~O=C(O)C(F)(F)F~ethyl acetate~",
+   "expect": "L0829009",
+   "products": [
+    "NCCc1ccc(Oc2c(Cl)cc([N+](=O)[O-])cc2Cl)cc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0850825 (template T000165)",
+   "code": "c1csc(CN2CCNCC2)c1.FC(F)(Cl)c1nnc2ccc(Cl)nn12~~~",
+   "expect": "L0850825",
+   "products": [
+    "FC(F)(Cl)c1nnc2ccc(N3CCN(Cc4cccs4)CC3)nn12"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0872641 (template T000242)",
+   "code": "COC(=O)c1cc(Cl)c(N)cc1O.C=CCBr~O=C([O-])[O-].[K+]~acetone~",
+   "expect": "L0872641",
+   "products": [
+    "C=CCOc1cc(N)c(Cl)cc1C(=O)OC"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0894457 (template T000237)",
+   "code": "COC(=O)C[C@@H]1COc2cc(O[C@@H]3CCc4c(Oc5ccc(O)cc5)ccc(F)c43)ccc21.Cc1ccc(S(=O)(=O)OCCC(C)(C)O)cc1~~~",
+   "expect": "L0894457",
+   "products": [
+    "COC(=O)C[C@@H]1COc2cc(O[C@@H]3CCc4c(Oc5ccc(OCCC(C)(C)O)cc5)ccc(F)c43)ccc21"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0916273 (template T000095)",
+   "code": "O=C(C1CC1)N1CC[C@@H](Cc2n[nH]c(=O)n2-c2ccc(Br)cc2Cl)C1.CC1(C)OB(c2ccc3[nH]ccc3c2)OC1(C)C~O=C([O-])[O-].[K+].c1ccc([P](c2ccccc2)(c2ccccc2)[Pd]([P](c2ccccc2)(c2ccccc2)c2ccccc2)([P](c2ccccc2)(c2ccccc2)c2ccccc2)[P](c2ccccc2)(c2ccccc2)c2ccccc2)cc1~1,4-dioxane, water~",
+   "expect": "L0916273",
+   "products": [
+    "O=C(C1CC1)N1CC[C@@H](Cc2n[nH]c(=O)n2-c2ccc(-c3ccc4[nH]ccc4c3)cc2Cl)C1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0938089 (template T000085)",
+   "code": "CCOC(=O)c1cnn(CC(=O)OC(C)(C)C)c1~O=C(O)C(F)(F)F~~",
+   "expect": "L0938089",
+   "products": [
+    "CCOC(=O)c1cnn(CC(=O)O)c1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0959905 (template T000064)",
+   "code": "O=C(O)C(CCBr)c1ccccc1.CO~O=S(Cl)Cl~~",
+   "expect": "L0959905",
+   "products": [
+    "COC(=O)C(CCBr)c1ccccc1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L0981721 (template T000080)",
+   "code": "Cc1c(C(=O)CC2CCN(C(=O)OC(C)(C)C)CC2)ccc2c1COC2=O~[BH4-].[Na+]~methanol~",
+   "expect": "L0981721",
+   "products": [
+    "Cc1c(C(O)CC2CCN(C(=O)OC(C)(C)C)CC2)ccc2c1COC2=O"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L1003537 (template T000004)",
+   "code": "CC(C)(C)OC(=O)N1CCC(CN)(C(=O)Nc2ccccn2)CC1~Cl~1,4-dioxane~",
+   "expect": "L1003537",
+   "products": [
+    "NCC1(C(=O)Nc2ccccn2)CCNCC1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L1025353 (template T000015)",
+   "code": "O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1cc(-c2cccc(OCc3ccccc3)c2)on1~[Pd]~methanol~",
+   "expect": "L1025353",
+   "products": [
+    "O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1cc(-c2cccc(O)c2)on1"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L1047169 (template T000014)",
+   "code": "COc1cc(C(=O)N2[C@@H](c3nccs3)[C@@H](c3cnccn3)C[C@]2(Cc2ccccn2)C(=O)OC(C)(C)C)ccc1C(C)(C)C~O=C(O)C(F)(F)F~~",
+   "expect": "L1047169",
+   "products": [
+    "COc1cc(C(=O)N2[C@@H](c3nccs3)[C@@H](c3cnccn3)C[C@]2(Cc2ccccn2)C(=O)O)ccc1C(C)(C)C"
+   ]
+  },
+  {
+   "feature": "learned reactions (looked up)",
+   "name": "L1068985 (template T000001)",
+   "code": "NC(=O)c1cc(S(=O)(=O)c2ccccc2)ccc1[N+](=O)[O-]~O=C[O-].[NH4+].[Pd]~ethanol, water~",
+   "expect": "L1068985",
+   "products": [
+    "NC(=O)c1cc(S(=O)(=O)c2ccccc2)ccc1N"
+   ]
+  }
+ ]
+}

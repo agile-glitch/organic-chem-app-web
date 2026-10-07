@@ -1,0 +1,7 @@
+# over GitHub's 100 MB file limit: rebuild with python tools/learn_reactions.py
+learned_reactions.xlsx
+# Excel lock files and lock-safe save copies
+~$*.xlsx
+*(new).xlsx
+__pycache__/
+*.pyc

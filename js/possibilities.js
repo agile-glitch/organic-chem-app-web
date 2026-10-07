@@ -142,7 +142,7 @@
         card.appendChild(M.svg(res.major.graph, 110, 70));
         const txt = el('div', 'txt', `<b>${esc(res.major.name)}</b><div class="sub">${esc(sub.name)} + ${esc(p.label)}` +
           (res.outcomes.length > 1 ? ` · ${Math.round(res.major.share * 100)}% major` : '') + (res.major.stereo ? ' · ' + esc(res.major.stereo.kind) : '') + '</div>');
-        const go = el('button', 'plan', 'Open in Reactions'); go.addEventListener('click', () => { document.querySelector('.tab[data-page="reactions"]').click(); window.Reactions.set(p.g ? [sub.smiles, smilesOf(p.g)] : [sub.smiles], p.g ? '' : p.label); });
+        const go = el('button', 'plan', 'Open in Reactions'); go.addEventListener('click', () => { document.querySelector('.tab[data-page="reactions"]').click(); window.Reactions?.set(p.g ? [sub.smiles, smilesOf(p.g)] : [sub.smiles], p.g ? '' : p.label); });
         txt.appendChild(go); card.appendChild(txt); pairs.appendChild(card);
       }
     }

@@ -10,8 +10,20 @@ function makeChem() {
                     Li: 1, Na: 1, K: 1, Mg: 2, Ca: 2, Zn: 2, Cu: 2, Fe: 3, Al: 3,
                     // the reagent metals the reaction player draws: permanganate,
                     // chromate, osmium tetroxide, a palladium surface
-                    Mn: 7, Cr: 6, Os: 8, Pd: 2, Pt: 2 };
-  const NO_IMPLICIT_H = ['Li', 'Na', 'K', 'Mg', 'Ca', 'Zn', 'Cu', 'Fe', 'Al', 'Mn', 'Cr', 'Os', 'Pd', 'Pt'];
+                    Mn: 7, Cr: 6, Os: 8, Pd: 2, Pt: 2,
+                    // mercury(II) salts (alkyne hydration, oxymercuration) and the lead in Lindlar's catalyst
+                    Hg: 2, Pb: 4,
+                    // silver(I) in Tollens' reagent
+                    Ag: 1,
+                    // metals in recorded reactions (learned_reactions.xlsx): bases (Cs2CO3), catalysts (Ni, Rh, Ru, Ir,
+                    // Co, Au), Lewis acids (Ti, Ce, Yb, Sc, In, Zr), oxidants (Mo, W). Their usual oxidation state;
+                    // complexes with more ligands are allowed by EXPANDED_VALENCE below.
+                    Cs: 1, Rb: 1, Ba: 2, Sr: 2, Ni: 2, Co: 2, Rh: 3, Ru: 3, Ir: 3, Au: 1, Ti: 4, Zr: 4, Ce: 3,
+                    Yb: 3, Sc: 3, In: 3, La: 3, Sm: 3, Bi: 3, Mo: 6, W: 6, V: 5, Cd: 2,
+                    // main-group elements of recorded reagents and products
+                    As: 3, Sb: 3, Ge: 4, Te: 2 };
+  const NO_IMPLICIT_H = ['Li', 'Na', 'K', 'Mg', 'Ca', 'Zn', 'Cu', 'Fe', 'Al', 'Mn', 'Cr', 'Os', 'Pd', 'Pt', 'Hg', 'Pb', 'Ag',
+                         'Cs', 'Rb', 'Ba', 'Sr', 'Ni', 'Co', 'Rh', 'Ru', 'Ir', 'Au', 'Ti', 'Zr', 'Ce', 'Yb', 'Sc', 'In', 'La', 'Sm', 'Bi', 'Mo', 'W', 'V', 'Cd'];
   const HALOGENS = ['F', 'Cl', 'Br', 'I'];
 
   function neighbors(g, id) {
@@ -30,23 +42,34 @@ function makeChem() {
          charge costs a bonding position:  CH3+ = 3 H,  CH3- = 3 H.
        - Atoms that carry lone pairs (N, O, S, P, halogens) GAIN a bond when
          positive and lose one when negative:  H3O+ = 3 H,  HO- = 1 H,  NH4+ = 4 H.
+       - Lewis-acid atoms (B, Al and the metals) take an extra electron pair as an
+         "ate" complex, so they GAIN a bond when negative and lose one when
+         positive:  BH4- = 4 H,  AlCl4- and FeBr4- = 4 bonds,  BrMg+ = 1 bond.
      This is what makes hydronium and oxonium ions come out right. */
   const ARROW_COLOR = '#c2185b';   // crimson, as textbooks draw electron-pushing arrows
-  const ELECTRON_DEFICIENT = ['C', 'B'];
+  const ELECTRON_DEFICIENT = ['C'];
+  const ATE_FORMERS = ['B', 'Al', 'Li', 'Na', 'K', 'Mg', 'Ca', 'Zn', 'Cu', 'Fe', 'Mn', 'Cr', 'Os', 'Pd', 'Pt', 'Hg', 'Pb', 'Sn', 'Ag',
+                       'Cs', 'Rb', 'Ba', 'Sr', 'Ni', 'Co', 'Rh', 'Ru', 'Ir', 'Au', 'Ti', 'Zr', 'Ce', 'Yb', 'Sc', 'In', 'La', 'Sm', 'Bi', 'Mo', 'W', 'V', 'Cd'];
   function effectiveValence(atom) {
     const base = VALENCE[atom.element] || 0;
     const c = atom.charge || 0;
+    if (ATE_FORMERS.includes(atom.element)) return base - c;
     return ELECTRON_DEFICIENT.includes(atom.element) ? base - Math.abs(c) : base + c;
   }
   function implicitH(g, atom) {
     if (NO_IMPLICIT_H.includes(atom.element)) return 0;
     /* an unpaired electron occupies one valence: CH₃• has three hydrogens, not four */
-    return Math.max(0, effectiveValence(atom) - usedValence(g, atom.id) - (atom.radical ? 1 : 0));
+    return Math.max(0, effectiveValence(atom) - usedValence(g, atom.id) - (atom.radical === true ? 1 : (atom.radical || 0)));
   }
   /* S and P legitimately expand the octet (sulfate, PBr3 chemistry runs to
      PBr5, phosphate); everything else is held to its real valence, so a
      pentavalent carbon is refused instead of quietly producing C6H15. */
-  const EXPANDED_VALENCE = { S: 6, P: 5, Se: 6, Si: 4, Mn: 7, Cr: 6, Os: 8 };
+  const EXPANDED_VALENCE = { S: 6, P: 6, Se: 6, Si: 4, Mn: 7, Cr: 6, Os: 8,
+    // hypervalent halogens: Dess-Martin periodinane and IBX (I 3-5), periodate (I 7), perchlorate (Cl 7), bromate (Br 5);
+    // As/Sb (AsF6-, SbF6-: 6), Te
+    I: 7, Cl: 7, Br: 5, As: 6, Sb: 6, Te: 6,
+    // transition-metal complexes: each ligand (PPh3, dba, CO, Cl) is written as one bond to the metal
+    Pd: 6, Pt: 6, Ni: 6, Co: 6, Fe: 6, Rh: 6, Ru: 6, Ir: 6, Cu: 4, Au: 4, Ti: 6, Zr: 6, Ce: 6, Yb: 6, Sc: 6, In: 4, Mo: 6, W: 6, Sn: 6 };
   function validateValences(g) {
     for (const a of g.atoms) {
       const used = usedValence(g, a.id);
@@ -726,6 +749,8 @@ function makeChem() {
      leaving group, `lgId` the leaving group atom. */
   function buildMechanism(g0, cId, lgId, reagentKey, opts) {
     const call = chooseMechanism(g0, cId, reagentKey, opts);
+    // the Reactions page decides the pathway from its Halide_Pathways sheet and passes it in as opts.force
+    if (call && opts && opts.force) { call.major = opts.force; call.minor = opts.forceMinor || null; }
     if (!call || call.major === 'none') return call ? { ...call, steps: [] } : null;
     const type = call.major;
     const spec = call.spec;
@@ -831,6 +856,14 @@ function makeChem() {
           const s4 = clone(s3);
           const chg = s4.atoms.find(a => a.id === nu3.id);
           if (chg) chg.charge = 0;
+          /* the proton really moves: off the nucleophile's O and onto the solvent molecule (H3O+). Leaving it on a
+             neutral O was only right by accident for water; with an alcohol it gave an impossible three-bonded O. */
+          if (hOn) {
+            const hb = s4.bonds.find(b => (b.a === nu3.id && b.b === hOn) || (b.b === nu3.id && b.a === hOn));
+            const sO = s4.atoms.find(a => a.id === ms.get(solv.headId));
+            const h = s4.atoms.find(a => a.id === hOn);
+            if (hb && sO && h) { hb.a = sO.id; hb.b = hOn; sO.charge = 1; h.x = sO.x + 30; h.y = sO.y - 22; }
+          }
           steps.push({ title: 'Product', kind: 'product', graph: s4, arrows: [],
             note: 'Racemic at the carbon that ionised, because the flat cation was attacked from both faces.' });
         } else {
@@ -4092,7 +4125,7 @@ function makeChem() {
       const tx = ar.x2 - c2x, ty = ar.y2 - c2y;
       const tl = Math.hypot(tx, ty) || 1;
       const ux = tx / tl, uy = ty / tl;
-      const L = Math.min(10, Math.max(6, len * 0.4)), W = L / 2;     // a short hook gets a small head
+      const L = Math.min(11, Math.max(9, len * 0.45)), W = L * 0.55;  // even a short hook keeps a head big enough to see
       ctx.fillStyle = ARROW_COLOR;
       ctx.beginPath();
       ctx.moveTo(ar.x2, ar.y2);
@@ -5286,8 +5319,8 @@ function makeChem() {
       const heavy = bs.length;
       if (a.element === 'C') { if (heavy <= 3 && !a.charge) needs.add(a.id); return; }
       if (a.element === 'N') {
-        if (a.__brH) return;                                     // [nH]: pyrrole-type
-        if (heavy >= 3) return;                                  // N-substituted, donates its pair
+        if (a.__brH && !(a.charge > 0)) return;                  // [nH]: pyrrole-type ([nH+], pyridinium, still needs its C=N)
+        if (heavy >= 3 && !(a.charge > 0)) return;               // N-substituted, donates its pair (N+-R: pyridinium, N-oxide, still needs its C=N)
         if (a.charge < 0) return;
         needs.add(a.id); return;
       }
@@ -5416,7 +5449,7 @@ function makeChem() {
         const end = s.indexOf(']', i);
         if (end < 0) throw new Error('Unclosed "[" in the SMILES string.');
         const body = s.slice(i + 1, end);
-        const m = body.match(/^(\d+)?([A-Za-z][a-z]?)(@{1,2})?(H\d*)?((?:[+-]\d*)+)?$/);
+        const m = body.match(/^(\d+)?([A-Za-z][a-z]?)(@{1,2})?(H\d*)?((?:[+-]\d*)+)?(?::(\d+))?$/);
         if (!m) throw new Error('Could not read the bracket atom "[' + body + ']".');
         let charge = 0;
         const cs = m[5];
@@ -5430,6 +5463,8 @@ function makeChem() {
           ? lowEl[0].toUpperCase() + lowEl.slice(1) : lowEl, charge);
         if (/^[bcnops]$/.test(lowEl)) bracketAtom.__arom = true;
         if (m[4]) bracketAtom.__brH = m[4] === 'H' ? 1 : parseInt(m[4].slice(1), 10);
+        bracketAtom.__bracket = m[4] ? (m[4] === 'H' ? 1 : parseInt(m[4].slice(1), 10)) : 0;   // its H count is exactly what is written
+        if (m[6]) bracketAtom.mapNum = parseInt(m[6], 10);            // atom-map number [CH3:1] (mechanism arrows use it)
         attach(bracketAtom);
         if (m[3]) bracketAtom.__chiralSymbol = m[3];                 // @ or @@
         // a hydrogen written inside the brackets takes its place in the
@@ -5462,6 +5497,16 @@ function makeChem() {
     if (!g.atoms.length) throw new Error('No atoms found in that SMILES string.');
 
     kekulize(g);
+
+    /* A bracket atom has exactly the hydrogens written in it ([CH2] has two), so any valence
+       still open is an unpaired electron: C[CH2] is the ethyl radical, [Br] a bromine atom. */
+    g.atoms.forEach(a => {
+      const brH = a.__bracket, wasBracket = a.__bracket !== undefined;
+      delete a.__bracket;
+      if (!wasBracket || NO_IMPLICIT_H.includes(a.element) || a.element === 'H') return;
+      const open = effectiveValence(a) - usedValence(g, a.id) - brH;
+      if (open > 0) a.radical = open;
+    });
 
     // convert each written @/@@ into a parity bit against canonical order
     g.atoms.forEach(atom => {

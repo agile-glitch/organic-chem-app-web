@@ -1,0 +1,433 @@
+{
+ "held_out_tested": 4000,
+ "learned_from": 60000,
+ "candidates_from": {
+  "reagent": 2741,
+  "none": 848,
+  "parts": 411
+ },
+ "methods": {
+  "count": {
+   "top1": 0.4165,
+   "top3": 0.4955,
+   "product_among_any": 0.5248
+  },
+  "count*winrate": {
+   "top1": 0.4375,
+   "top3": 0.5095,
+   "product_among_any": 0.5248
+  },
+  "count*winrate^2": {
+   "top1": 0.4465,
+   "top3": 0.5128,
+   "product_among_any": 0.5248
+  },
+  "winrate-sum": {
+   "top1": 0.4527,
+   "top3": 0.5132,
+   "product_among_any": 0.5248
+  },
+  "winrate-max": {
+   "top1": 0.4595,
+   "top3": 0.516,
+   "product_among_any": 0.5248
+  }
+ },
+ "additions": {
+  "C#N": {
+   "count": {
+    "top1": 0.4853,
+    "tested": 68
+   },
+   "count*winrate": {
+    "top1": 0.5,
+    "tested": 68
+   },
+   "count*winrate^2": {
+    "top1": 0.5,
+    "tested": 68
+   },
+   "winrate-sum": {
+    "top1": 0.4853,
+    "tested": 68
+   },
+   "winrate-max": {
+    "top1": 0.5,
+    "tested": 68
+   }
+  },
+  "all additions": {
+   "count": {
+    "top1": 0.3806,
+    "tested": 607
+   },
+   "count*winrate": {
+    "top1": 0.3937,
+    "tested": 607
+   },
+   "count*winrate^2": {
+    "top1": 0.4069,
+    "tested": 607
+   },
+   "winrate-sum": {
+    "top1": 0.4069,
+    "tested": 607
+   },
+   "winrate-max": {
+    "top1": 0.4119,
+    "tested": 607
+   }
+  },
+  "C=N": {
+   "count": {
+    "top1": 0.2424,
+    "tested": 99
+   },
+   "count*winrate": {
+    "top1": 0.2626,
+    "tested": 99
+   },
+   "count*winrate^2": {
+    "top1": 0.2626,
+    "tested": 99
+   },
+   "winrate-sum": {
+    "top1": 0.2727,
+    "tested": 99
+   },
+   "winrate-max": {
+    "top1": 0.2828,
+    "tested": 99
+   }
+  },
+  "C#C": {
+   "count": {
+    "top1": 0.4091,
+    "tested": 22
+   },
+   "count*winrate": {
+    "top1": 0.4091,
+    "tested": 22
+   },
+   "count*winrate^2": {
+    "top1": 0.4545,
+    "tested": 22
+   },
+   "winrate-sum": {
+    "top1": 0.4545,
+    "tested": 22
+   },
+   "winrate-max": {
+    "top1": 0.4545,
+    "tested": 22
+   }
+  },
+  "C=O": {
+   "count": {
+    "top1": 0.4772,
+    "tested": 241
+   },
+   "count*winrate": {
+    "top1": 0.4813,
+    "tested": 241
+   },
+   "count*winrate^2": {
+    "top1": 0.4979,
+    "tested": 241
+   },
+   "winrate-sum": {
+    "top1": 0.4855,
+    "tested": 241
+   },
+   "winrate-max": {
+    "top1": 0.4772,
+    "tested": 241
+   }
+  },
+  "C=C": {
+   "count": {
+    "top1": 0.2825,
+    "tested": 177
+   },
+   "count*winrate": {
+    "top1": 0.3051,
+    "tested": 177
+   },
+   "count*winrate^2": {
+    "top1": 0.322,
+    "tested": 177
+   },
+   "winrate-sum": {
+    "top1": 0.339,
+    "tested": 177
+   },
+   "winrate-max": {
+    "top1": 0.3559,
+    "tested": 177
+   }
+  }
+ },
+ "examples": [
+  {
+   "id": "L0010190",
+   "recorded": "CCOCc1nc2cnc3ccccc3c2n1N=CC(C)C",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0010438",
+   "recorded": "NC(=O)c1ncc(N[C@@H]2CCCC[C@@H]2N)nc1Nc1snc2ncccc12",
+   "count": [
+    "NC(=O)c1ncc(N[C@@H]2CCCC[C@@H]2N)nc1Nc1snc2ncccc12"
+   ],
+   "count*winrate": [
+    "NC(=O)c1ncc(N[C@@H]2CCCC[C@@H]2N)nc1Nc1snc2ncccc12"
+   ]
+  },
+  {
+   "id": "L0010694",
+   "recorded": "CC(C)CC(C(=O)O)C(=O)NOC(=O)C(C)(C)C",
+   "count": [
+    "CC(C)CC(C(=O)NO)C(=O)OC(=O)C(C)(C)C"
+   ],
+   "count*winrate": [
+    "CC(C)CC(C(=O)NO)C(=O)OC(=O)C(C)(C)C"
+   ]
+  },
+  {
+   "id": "L0011000",
+   "recorded": "CC(=S)OCc1snc(Cl)c1Cl",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0011170",
+   "recorded": "CC(C)(C)OC(=O)N(CC=CCl)c1ccccc1Br",
+   "count": [
+    "CC(C)(C)OC(=O)N(CC=CCl)c1ccccc1Br"
+   ],
+   "count*winrate": [
+    "CC(C)(C)OC(=O)N(CC=CCl)c1ccccc1Br"
+   ]
+  },
+  {
+   "id": "L0011559",
+   "recorded": "CC[C@@H](/C=C/C(=O)N1Cc2ccccc2C1)NC(=O)[C@H](C)N",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0011748",
+   "recorded": "Cc1cc(NC2=NCCN2)n(C(C)C)n1",
+   "count": [
+    "Cc1cc(NC2=NCCN2)n(C(C)C)n1"
+   ],
+   "count*winrate": [
+    "Cc1cc(NC2=NCCN2)n(C(C)C)n1"
+   ]
+  },
+  {
+   "id": "L0011987",
+   "recorded": "O=C(CCl)C1CCOC1",
+   "count": [
+    "O=C(CCl)C1CCOC1"
+   ],
+   "count*winrate": [
+    "O=C(CCl)C1CCOC1"
+   ]
+  },
+  {
+   "id": "L0012274",
+   "recorded": "O=C1Nc2ccc(F)cc2C2CCCC12",
+   "count": [
+    "O=C1Nc2ccc(F)cc2C2CCCC12"
+   ],
+   "count*winrate": [
+    "O=C1Nc2ccc(F)cc2C2CCCC12"
+   ]
+  },
+  {
+   "id": "L0012414",
+   "recorded": "Cn1c(C(N)=O)cc2cc(F)cc(Br)c21",
+   "count": [
+    "Cn1c(C(N)=O)cc2cc(F)cc(Br)c21"
+   ],
+   "count*winrate": [
+    "Cn1c(C(N)=O)cc2cc(F)cc(Br)c21"
+   ]
+  },
+  {
+   "id": "L0012678",
+   "recorded": "CC1(C)C(=O)N(C2C3CC4CC(C3)CC2C4)N1C(=O)c1ccccc1",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0012901",
+   "recorded": "CCc1cccc(-c2c(C#N)cc(O)c(O)c2C#N)c1",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0013133",
+   "recorded": "CC(=O)Nc1cnc(N2CCN(c3nnc(Cc4ccccc4)c4ccccc34)CC2)nc1",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0013296",
+   "recorded": "O=C(CC(O)CCc1ccc(-c2ccccc2)cc1)N1CCSC1",
+   "count": [
+    "O=C(CC(O)CCc1ccc(-c2ccccc2)cc1)N1CCSC1"
+   ],
+   "count*winrate": [
+    "O=C(CC(O)CCc1ccc(-c2ccccc2)cc1)N1CCSC1"
+   ]
+  },
+  {
+   "id": "L0013513",
+   "recorded": "CC(C)N(C(C)C)P(OCCNC(=O)OCc1ccccc1)OCc1ccccc1",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0013829",
+   "recorded": "CN(C)C(=O)c1ccc(Br)cc1",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0014165",
+   "recorded": "CCOc1ccc(-c2nc(-c3ccc(Br)cc3)no2)cc1OCC",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0014449",
+   "recorded": "CC1(C)C=C(c2ccc(Br)cc2)C=C2C=c3cc4c5ccccc5c5ccccc5c4cc3=C21",
+   "count": [
+    "CC1(C)C=C(c2ccc(Br)cc2)C=C2C=c3cc4c5ccccc5c5ccccc5c4cc3=C21"
+   ],
+   "count*winrate": [
+    "CC1(C)C=C(c2ccc(Br)cc2)C=C2C=c3cc4c5ccccc5c5ccccc5c4cc3=C21"
+   ]
+  },
+  {
+   "id": "L0014728",
+   "recorded": "CC1(C)C(NN)=Nc2ccccc2C1(O)c1ccccc1",
+   "count": [
+    "CC1(C)C(NN)=Nc2ccccc2C1(O)c1ccccc1"
+   ],
+   "count*winrate": [
+    "CC1(C)C(NN)=Nc2ccccc2C1(O)c1ccccc1"
+   ]
+  },
+  {
+   "id": "L0014983",
+   "recorded": "O=C1CCC(c2ccc(Cn3cccn3)s2)=NN1",
+   "count": [
+    "O=C1CCC(c2ccc(Cn3cccn3)s2)=NN1"
+   ],
+   "count*winrate": [
+    "O=C1CCC(c2ccc(Cn3cccn3)s2)=NN1"
+   ]
+  },
+  {
+   "id": "L0000018",
+   "recorded": "Brc1cnccc1CN1CCCC1",
+   "count": [
+    "Brc1cnccc1CN1CCCC1"
+   ],
+   "count*winrate": [
+    "Brc1cnccc1CN1CCCC1"
+   ]
+  },
+  {
+   "id": "L0000337",
+   "recorded": "CC(C)CCSCCCN1CCCCC1",
+   "count": [
+    "CC(C)CCSCCCN1CCCCC1"
+   ],
+   "count*winrate": [
+    "CC(C)CCSCCCN1CCCCC1"
+   ]
+  },
+  {
+   "id": "L0000501",
+   "recorded": "N#Cc1ccc(C(N)=O)cc1",
+   "count": [
+    "N#Cc1ccc(C(N)=O)cc1"
+   ],
+   "count*winrate": [
+    "N#Cc1ccc(C(N)=O)cc1"
+   ]
+  },
+  {
+   "id": "L0000765",
+   "recorded": "OCCc1cn(CCCBr)nn1",
+   "count": [
+    "OCCc1cn(CCCBr)nn1"
+   ],
+   "count*winrate": [
+    "OCCc1cn(CCCBr)nn1"
+   ]
+  },
+  {
+   "id": "L0001022",
+   "recorded": "Cc1cccc2c1CCN2",
+   "count": [
+    "Cc1cccc2c1CCN2"
+   ],
+   "count*winrate": [
+    "Cc1cccc2c1CCN2"
+   ]
+  },
+  {
+   "id": "L0001262",
+   "recorded": "COC(=O)c1ccc(-c2cccnc2)cc1",
+   "count": [
+    "COC(=O)c1ccc(-c2cccnc2)cc1"
+   ],
+   "count*winrate": [
+    "COC(=O)c1ccc(-c2cccnc2)cc1"
+   ]
+  },
+  {
+   "id": "L0001498",
+   "recorded": "CS(=O)(=O)c1cccc(F)c1",
+   "count": [
+    "CS(=O)(=O)c1cccc(F)c1"
+   ],
+   "count*winrate": [
+    "CS(=O)(=O)c1cccc(F)c1"
+   ]
+  },
+  {
+   "id": "L0001702",
+   "recorded": "CNCCCOc1ccc(O)cc1",
+   "count": [
+    "CNCCCOc1ccc(O)cc1"
+   ],
+   "count*winrate": [
+    "CNCCCOc1ccc(O)cc1"
+   ]
+  },
+  {
+   "id": "L0001943",
+   "recorded": "[N-]=[N+]=NCc1cccc2ncccc12",
+   "count": [],
+   "count*winrate": []
+  },
+  {
+   "id": "L0002177",
+   "recorded": "Brc1ccc(-c2nc3ccccc3s2)cc1",
+   "count": [
+    "Sc1ccccc1N=Cc1ccc(Br)cc1"
+   ],
+   "count*winrate": [
+    "Sc1ccccc1N=Cc1ccc(Br)cc1"
+   ]
+  }
+ ],
+ "best": "winrate-max"
+}

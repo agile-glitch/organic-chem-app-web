@@ -92,7 +92,7 @@
                 <select id="molLabels">
                   <option value="none">none</option><option value="element">element</option><option value="index">atom number</option>
                   <option value="cip">R/S and E/Z</option><option value="hybridization">hybridization</option><option value="formal">formal charge</option>
-                  <option value="partial">partial charge</option><option value="oxidation">oxidation state</option><option value="lonepairs">lone pairs</option>
+                  <option value="partial">partial charge</option><option value="oxidation">oxidation state</option><option value="lonepairs">lone pairs</option><option value="pka">pKa</option><option value="steric">steric</option><option value="electronic">electronic</option><option value="taft">Taft σ* / Es</option>
                   <option value="electrons">electrons (lone pairs as dots)</option>
                 </select></label>
               <button id="molSpin" class="mv-toggle mv-3d-only" aria-pressed="false" title="Turn the model slowly (Space while the model has focus)">Spin</button>
@@ -174,40 +174,7 @@
         </div>
       </div>
     </section>
-    <section class="page" id="page-reactions">
-      <div class="rxn">
-        <!-- a reaction scheme: the molecules that end up in the product, then what goes over the arrow -->
-        <div class="rxn-form card">
-          <div class="rxn-line">
-            <span class="rxn-lbl">Reactants</span>
-            <div id="rxnReactants" class="rxn-reactants"></div>
-            <button id="rxnAdd" class="use" title="Add another reactant (up to four)">+ reactant</button>
-            <button id="rxnFromSketch" class="use" title="Use the molecule(s) drawn on the Sketcher tab">From sketcher</button>
-          </div>
-          <div class="rxn-line">
-            <span class="rxn-lbl">Reagents</span>
-            <span class="import-wrap"><input id="rxnB" placeholder="over the arrow, optional — e.g. NaBH4, MeOH  ·  Pd(PPh3)4, K2CO3  ·  HBr  ·  mCPBA" spellcheck="false" autocomplete="off"><div class="suggest" id="rxnBSuggest" hidden></div></span>
-            <button id="rxnGo" class="primary">Predict</button>
-          </div>
-          <details class="rxn-adv">
-            <summary>Conditions for the mechanistic model</summary>
-            <div class="toolbar rxn-cond">
-              <label>T <input id="rxnT" type="number" placeholder="auto" style="width:64px"> °C</label>
-              <label>pH <input id="rxnPH" type="number" step="0.5" placeholder="auto" style="width:60px"></label>
-              <label>Solvent <select id="rxnSolv"><option value="auto">reagent's usual</option><option value="water">water</option><option value="protic">protic (alcohol)</option><option value="aprotic">polar aprotic (DMSO, DMF)</option><option value="nonpolar">nonpolar (CH₂Cl₂, hexane)</option><option value="ether">ether / THF</option><option value="neat">neat</option></select></label>
-              <label><input id="rxnLight" type="checkbox"> hν (light)</label>
-              <label>Reagent <select id="rxnEquiv"><option value="1">1 equivalent</option><option value="excess">excess</option></select></label>
-            </div>
-          </details>
-        </div>
-        <div id="rxnStatus" class="rxn-status"></div>
-        <div id="rxnOut" class="rxn-out">
-          <p class="hint">Enter the reactants (names, SMILES or CAS numbers) and, if you like, the reagents. The prediction comes from the most similar
-            recorded reactions: it is shown with those precedents, their patents, and a confidence that was measured on reactions the program had
-            never seen. Where the mechanistic model knows the reagent, its reasoning and stereochemistry are shown alongside.</p>
-        </div>
-      </div>
-    </section>
+    <section class="page" id="page-reactions"></section>
     <section class="page" id="page-possib">
       <div class="poss">
         <div class="poss-inv card">
@@ -251,7 +218,7 @@
           <select id="validMode" title="What is being graded">
             <option value="rules">mechanistic model (rules)</option>
             <option value="kb">precedent-based (nearest recorded reactions)</option>
-            <option value="combined">combined, as on the Reactions page</option>
+            <option value="combined">combined (precedents checked against the mechanistic model)</option>
           </select>
           <button id="validRun" class="primary">Run the benchmark</button>
           <button id="validStop" disabled>Stop</button>
@@ -282,6 +249,8 @@
   <script src="js/rxnkb.js"></script>
   <script src="js/reagents.js"></script>
   <script src="js/rxn_equation.js"></script>
+  <script src="data/reaction_rules.js"></script>
+  <script src="data/pka.js"></script>
   <script src="js/reactions.js"></script>
   <script src="js/possibilities.js"></script>
   <script src="js/validation.js"></script>

@@ -165,8 +165,8 @@
   /* ---- grading the precedent-based predictor (js/rxnkb.js), alone or combined with the rules as on the page ----
      The recorded product is compared as RDKit canonical SMILES without stereo. `conf` keeps the confidence the
      predictor stated, so the run can check that "High" really is right more often than "Low". */
-  /* The arbitration the Reactions page uses (js/reactions.js, decide()), repeated here so the benchmark measures
-     exactly what a user sees:
+  /* The arbitration the Reactions page used before its rework (precedents + mechanistic model), kept here so the benchmark measures
+     exactly what a user saw:
        - no calibrated confidence, or below RELIABLE → the precedents are not relied on; the mechanistic answer, if any
        - the mechanistic model's committed answer equals the precedent's first → that answer ("agree")
        - it is among the precedent's top 3 → the mechanistic answer ("pick")
@@ -267,7 +267,7 @@
     };
     /* does the stated confidence mean anything? first answers grouped by the label the predictor gave them */
     if (Object.values(rows).some(r => r.conf != null)) {
-      out.appendChild(el('h2', null, 'Is the stated confidence honest? <small>first answers, by the label shown on the Reactions page</small>'));
+      out.appendChild(el('h2', null, 'Is the stated confidence honest? <small>first answers, by their confidence label</small>'));
       const bands = [['High (≥ 80 %)', 0.8, 1.01], ['Medium (50–80 %)', 0.5, 0.8], ['Low (25–50 %)', 0.25, 0.5], ['Very low (< 25 %)', 0, 0.25]];
       const t = el('table'); t.innerHTML = '<thead><tr><th>Stated</th><th class="num">answers</th><th class="num">right</th><th class="num">measured here</th></tr></thead>';
       const tb = el('tbody');
@@ -314,7 +314,7 @@
             `<div class="hint">engine (via ${esc(r.label)}): <span class="mono">${esc(r.got || '')}</span></div>`);
         if (r.sub != null && r.via) {
           const b = el('button', 'use', 'Open in Reactions'); b.style.marginTop = '4px';
-          b.addEventListener('click', () => { document.querySelector('.tab[data-page="reactions"]').click(); window.Reactions.set(x.r.map(i => M[i].s), r.via.startsWith('mol:') ? '' : String(r.label || '').replace(' [ext]', '')); });
+          b.addEventListener('click', () => { document.querySelector('.tab[data-page="reactions"]').click(); window.Reactions?.set(x.r.map(i => M[i].s), r.via.startsWith('mol:') ? '' : String(r.label || '').replace(' [ext]', '')); });
           m.appendChild(b);
         }
         list.appendChild(m);

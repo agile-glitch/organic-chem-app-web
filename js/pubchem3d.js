@@ -260,7 +260,8 @@ window.PubChem3D = (() => {
   function queryOf(M, record) {
     const j = molJson(M), n = j.atoms.length, hOf = Array.from({ length: n }, () => []);
     const bad = msg => { throw new Fail('internal', 'Internal atom-mapping check failed (' + msg + '), so PubChem\'s 3D model is not used.'); };
-    const nm = i => sym(j.atoms[i].z) + (i + 1);   // "C3", as the app names atoms
+    const elNo = (() => { const c = {}; return j.atoms.map(a => { const e = sym(a.z); return (c[e] = (c[e] || 0) + 1); }); })();
+    const nm = i => sym(j.atoms[i].z) + elNo[i];   // "C3": per element, as the app names atoms
     let N = n;
     if (record) {
       const atoms = record.atoms || [];
@@ -273,7 +274,7 @@ window.PubChem3D = (() => {
       }
       for (let i = n; i < N; i++) {
         const a = atoms[i], p = a.parent;
-        if (!(a.isH || a.el === 'H' || a.z === 1) || !(p >= 0 && p < n)) bad('added hydrogen H' + (i + 1));
+        if (!(a.isH || a.el === 'H' || a.z === 1) || !(p >= 0 && p < n)) bad('added hydrogen number ' + (i + 1));
         hOf[p].push(i);
       }
       for (let i = 0; i < n; i++) if (hOf[i].length !== j.atoms[i].hs) bad('hydrogen count of ' + nm(i));
@@ -434,7 +435,8 @@ window.PubChem3D = (() => {
 
       /* stereo the user left open: name what PubChem's conformer has there, atoms named as elsewhere in the app ("C3":
          the element, then the 1-based record index) */
-      const assigned = [], atomWords = [], bondWords = [], name = i => (i < q.n ? sym(q.j.atoms[i].z) : 'H') + (i + 1);
+      const elNo = (() => { const c = {}; return q.j.atoms.map(a => { const e = sym(a.z); return (c[e] = (c[e] || 0) + 1); }); })(), hWritten = q.j.atoms.filter(a => sym(a.z) === 'H').length;
+      const assigned = [], atomWords = [], bondWords = [], name = i => (i < q.n ? sym(q.j.atoms[i].z) + elNo[i] : 'H' + (hWritten + i - q.n + 1));
       q.cip.forEach((lab, i) => {
         if (lab !== '?') return;
         const got = gTags.atoms.get(perm[i]);

@@ -397,6 +397,9 @@ html, body { margin: 0; height: 100%; background: #fff; color: #111;
 .mv-row .mv-k { color: #666; }
 .mv-row .mv-v { color: #111; overflow-wrap: anywhere; }
 .mv-mono { font: 12px/1.4 ui-monospace, Consolas, monospace; word-break: break-all; }
+.mv-copy { cursor: pointer; border-radius: 3px; }
+.mv-copy:hover { background: #eef3ff; }
+.mv-mark { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
 .mv-note { grid-column: 1 / -1; display: none; color: #6a6a6a; font-size: 12px; background: #fafafa; border-left: 2px solid #ddd; padding: 2px 6px; margin-top: 2px; }
 .mv-row.mv-open .mv-note, .mv-notes-open .mv-note { display: block; }
 .mv-has-note { cursor: help; }
@@ -410,6 +413,7 @@ html, body { margin: 0; height: 100%; background: #fff; color: #111;
 .mv-tag-table { background: #e8eefb; color: #2f4fd8; }
 .mv-tag-three { background: #f1e6f8; color: #7a3fa0; }
 .mv-tag-convention { background: #eee; color: #555; }
+.mv-tag-unchecked { background: #fde8e6; color: #b3261e; }
 .mv-chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 2px; }
 .mv-chip { font: 12px system-ui, sans-serif; border: 1px solid #bbb; border-radius: 999px; background: #fafafa; padding: 2px 9px; cursor: pointer; color: #222; }
 .mv-chip:hover { background: #dbe8ff; border-color: #2f6fd8; }

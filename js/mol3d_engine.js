@@ -316,7 +316,8 @@ window.Mol3DEngine = (() => {
       rest.forEach(([po], k) => bonds.push([po, n0 + k, 1]));
       for (const [a, b] of bonds) if (withH.getBond(out2model[a], out2model[b]) < 0) return { error: MAPFAIL + ' (bond missing in the model)' };
       if (bonds.length !== withH.getAllBonds()) return { error: MAPFAIL + ' (model bond count)' };
-      const lab = o => elements[o] + (o + 1);             // "C3": 1-based, like a molfile
+      const elNo = (() => { const c = {}; return elements.map(e => (c[e] = (c[e] || 0) + 1)); })();
+      const lab = o => elements[o] + elNo[o];             // "C3": per element, as the app names atoms
 
       // stereo the input leaves open (the model then shows one arbitrary configuration)
       const unspecified = [], open = { atoms: [], bonds: [] };      // output indices / model indices
