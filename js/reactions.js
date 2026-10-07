@@ -52,6 +52,26 @@
       .rxn-t-f .d { color:#555; font-size:12px; margin-top:2px; word-break:break-all; }
       .rxn-t-f code { font:11px monospace; }
       .rxn-t-done { color:#1e7d32; padding:6px 0; }
+      #rxn-common-btn { position:absolute; top:8px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; background:#fff; border:1px solid #ddd;
+                        border-radius:4px; color:#555; cursor:pointer; font:13px Arial,sans-serif; white-space:nowrap; }
+      #rxn-common-btn:hover, #rxn-common-btn.on { border-color:#888; color:#222; }
+      #rxn-common { position:fixed; top:96px; right:12px; bottom:12px; width:440px; max-width:calc(100vw - 24px); box-sizing:border-box; background:#fff;
+                    border:1px solid #ccc; border-radius:8px; box-shadow:0 6px 24px rgba(0,0,0,.16); z-index:8; display:flex; flex-direction:column; font:13px Arial,sans-serif; color:#333; }
+      #rxn-common[hidden] { display:none; }
+      .rxn-c-head { display:flex; align-items:center; gap:10px; padding:10px 12px 6px; }
+      .rxn-c-head span { flex:1; color:#555; }
+      #rxn-c-close { border:0; background:none; font-size:20px; line-height:1; cursor:pointer; color:#777; }
+      #rxn-c-q { margin:4px 12px 6px; padding:6px 8px; font:13px Arial,sans-serif; border:1px solid #ccc; border-radius:4px; }
+      #rxn-c-q:focus { border-color:#888; outline:none; }
+      #rxn-c-list { flex:1; overflow:auto; padding:0 12px 12px; }
+      .rxn-c-h { margin:10px 0 4px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:.04em; display:flex; justify-content:space-between; }
+      .rxn-c-item { display:block; width:100%; text-align:left; border:1px solid #e4e4e4; background:#fafafa; border-radius:6px; padding:6px 8px; margin:4px 0; cursor:pointer;
+                    font:13px Arial,sans-serif; color:#333; }
+      .rxn-c-item:hover, .rxn-c-item:focus { border-color:#888; background:#f2f6ff; outline:none; }
+      .rxn-c-item .n { font-weight:bold; }
+      .rxn-c-item .i { float:right; color:#999; font:11px monospace; }
+      .rxn-c-item .d { display:block; color:#666; font-size:12px; margin-top:2px; }
+      .rxn-c-none { color:#777; padding:12px 0; }
       #rxn-code:focus { color:#333; border-color:#888; }
       #rxn-code.bad { color:#b3261e; border-color:#b3261e; }
       #rxn-reag:hover { border-color:#ddd; }
@@ -136,6 +156,7 @@
       .rxn-mol-smiles:hover { color:#666; }
     </style>
     <div id="rxn-codebar"><input id="rxn-code" type="text" placeholder="Reaction code: starting materials~reagent~conditions~products" spellcheck="false" autocomplete="off"><button id="rxn-gear" type="button" title="Settings: Basic / Advanced" aria-label="Settings"><svg viewBox="0 0 24 24" width="62%" height="62%" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.03.63.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg></button>
+      <button id="rxn-common-btn" type="button" aria-expanded="false" aria-controls="rxn-common" title="Browse the common reactions and load one">Common reactions</button>
       <div id="rxn-settings" hidden>
         <div class="rxn-set-head">Show</div>
         <label class="rxn-set-opt"><input type="radio" name="rxn-mode" value="basic"> <b>Basic</b><span>the products and a one-line verdict</span></label>
@@ -144,6 +165,11 @@
         <div class="rxn-set-head">Tests</div>
         <button type="button" class="rxn-set-btn" id="rxn-run-tests"><b>Run all tests</b><span>every reaction in the workbook (its stored reaction code) plus the feature cases in tools/reaction_tests.json, through this page</span></button>
       </div></div>
+    <div id="rxn-common" hidden role="dialog" aria-label="Common reactions">
+      <div class="rxn-c-head"><b>Common reactions</b><span id="rxn-c-sum"></span><button type="button" id="rxn-c-close" title="Close" aria-label="Close">×</button></div>
+      <input id="rxn-c-q" type="search" placeholder="Search: name, reagent, group (e.g. Grignard, alkene, NaBH4)" spellcheck="false" autocomplete="off" aria-label="Search the common reactions">
+      <div id="rxn-c-list"></div>
+    </div>
     <div id="rxn-tests" hidden>
       <div class="rxn-t-head"><b>Tests</b><span id="rxn-t-sum"></span><button type="button" id="rxn-t-close" title="Close">×</button></div>
       <div class="rxn-t-bar"><div id="rxn-t-fill"></div></div>
@@ -2451,7 +2477,9 @@
     const h = codeBar.getBoundingClientRect().height;       // exact (offsetHeight rounds to whole pixels)
     if (!h) return;
     gear.style.width = gear.style.height = h + 'px';
-    codeBar.style.right = (10 + h + 6) + 'px';
+    const cb = document.getElementById('rxn-common-btn');                 // the Common reactions button sits left of the gear
+    cb.style.height = h + 'px'; cb.style.right = (10 + h + 6) + 'px';
+    codeBar.style.right = (10 + h + 6 + cb.getBoundingClientRect().width + 6) + 'px';
   }
   new ResizeObserver(sizeGear).observe(codeBar);
   sizeGear();
@@ -2585,6 +2613,7 @@
     const R = await loadRD();
     if (!R) return;
     settings.hidden = true; gear.classList.remove('on'); testsPanel.hidden = false;
+    commonPanel.hidden = true; commonBtn.classList.remove('on'); commonBtn.setAttribute('aria-expanded', 'false');
     let cases = await loadTestCases();
     if (onlyFailed) { const names = new Set(lastResults.filter(x => !x.ok).map(x => x.t.name)); cases = cases.filter(c => names.has(c.name)); }
     const saved = codeBar.value, wasOn = products.classList.contains('on');
@@ -2609,6 +2638,108 @@
   document.getElementById('rxn-t-stop').addEventListener('click', () => { if (testRun) testRun.stop = true; });
   document.getElementById('rxn-t-close').addEventListener('click', () => { if (testRun) testRun.stop = true; testsPanel.hidden = true; });
   window.ReactionsTests = { run: runTests, results: () => lastResults, running: () => !!testRun };
+
+  /* Common reactions: the workbook's reactions (window.REACTION_RULES.rules) as a searchable list. Clicking one puts its
+     reaction code into the code bar exactly as typing it and pressing Enter would, then clicks the arrow, so the page
+     predicts the products itself from the rules (the stored products are left out, as the test runner leaves them out).
+     The families come from the first fragment each rule consumes (FAMILIES maps fragment names to a family); a rule
+     whose fragment is in no family is listed under "Other". */
+  const commonBtn = document.getElementById('rxn-common-btn'), commonPanel = document.getElementById('rxn-common');
+  const commonQ = document.getElementById('rxn-c-q'), commonList = document.getElementById('rxn-c-list'), commonSum = document.getElementById('rxn-c-sum');
+  const FAMILIES = [
+    ['Alkenes and alkynes', ['alkene', 'alkyne', 'conjugated diene', 'allylic CH2']],
+    ['Alkyl halides', ['alkyl bromide', 'alkyl chloride', 'alkyl iodide', 'alkyl halide', 'methyl halide', 'vicinal dibromide', 'benzylic bromide', 'halohydrin']],
+    ['Alcohols, ethers and epoxides', ['alcohol', '1,2-diol', 'epoxide', 'ether', 'acetal']],
+    ['Aldehydes and ketones', ['aldehyde', 'ketone', 'enone', 'oxime', 'imine']],
+    ['Carboxylic acids and their derivatives', ['carboxylic acid', 'ester', 'amide', 'acyl chloride', 'carboxylic anhydride', 'nitrile']],
+    ['Aromatic compounds', ['arene', 'aryl', 'phenol', 'nitroarene', 'alkyl arene']],
+    ['Organometallic reagents', ['Grignard', 'aluminium hydride']],
+  ];
+  const RRC = window.REACTION_RULES || {};
+  const SPECTATORS = new Set(['counter-ion / spectator ion', 'salt (work-up or additive)']);
+  const familyOf = rule => {
+    const first = ((rule.consumes || [])[0] || [])[0];
+    const nm = first && RRC.fragments && RRC.fragments[first] ? RRC.fragments[first].name : '';
+    const f = FAMILIES.find(([, pre]) => pre.some(p => nm.startsWith(p)));
+    return f ? f[0] : 'Other';
+  };
+  const reagentText = reagentPart => {                          // the reagent part of the code as names (abbreviations), spectator ions left out
+    const out = [];
+    for (const c of String(reagentPart || '').split('.').filter(Boolean)) {
+      const e = (RRC.reagents || {})[c];
+      if (e && SPECTATORS.has(e.role)) continue;
+      const t = e ? (e.abbr || e.name) : (c === 'O' ? 'H2O' : c);
+      if (!out.includes(t)) out.push(t);
+    }
+    return out.join(' + ');
+  };
+  const COMMON = (RRC.rules || []).filter(r => { const p = String(r.code || '').split('~'); return p.length >= 4 && p[0]; }).map(r => {
+    const parts = r.code.split('~'), fam = familyOf(r), reag = reagentText(parts[1]), cond = parts[2] || '';
+    const frs = [].concat(...(r.consumes || []), ...(r.forms || [])).map(id => ((RRC.fragments || {})[id] || {}).name || '');
+    return { r, parts, fam, sub: [reag, cond].filter(Boolean).join(' · '), text: [r.id, r.name, fam, reag, cond, ...frs].join(' ').toLowerCase() };
+  });
+  const COMMON_ORDER = FAMILIES.map(f => f[0]).concat('Other');
+  function renderCommon() {
+    const q = commonQ.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const hits = COMMON.filter(c => q.every(t => c.text.includes(t)));
+    commonSum.textContent = hits.length === COMMON.length ? COMMON.length + ' reactions' : hits.length + ' of ' + COMMON.length;
+    commonList.textContent = '';
+    if (!hits.length) { const d = document.createElement('div'); d.className = 'rxn-c-none'; d.textContent = 'No reaction matches. Try a shorter word.'; commonList.appendChild(d); return; }
+    for (const fam of COMMON_ORDER) {
+      const g = hits.filter(c => c.fam === fam);
+      if (!g.length) continue;
+      const h = document.createElement('div'); h.className = 'rxn-c-h';
+      const a = document.createElement('span'); a.textContent = fam; const b = document.createElement('span'); b.textContent = g.length;
+      h.append(a, b); commonList.appendChild(h);
+      for (const c of g) {
+        const it = document.createElement('button'); it.type = 'button'; it.className = 'rxn-c-item'; it.dataset.id = c.r.id;
+        const i = document.createElement('span'); i.className = 'i'; i.textContent = c.r.id;
+        const n = document.createElement('span'); n.className = 'n'; n.textContent = c.r.name;
+        const d = document.createElement('span'); d.className = 'd'; d.textContent = c.sub;
+        it.append(i, n, d); commonList.appendChild(it);
+      }
+    }
+  }
+  function toggleCommon(open) {
+    if (testRun) return;                                        // the tests own the page while they run
+    const show = open === undefined ? commonPanel.hidden : open;
+    commonPanel.hidden = !show; commonBtn.classList.toggle('on', show); commonBtn.setAttribute('aria-expanded', String(show));
+    if (show) { settings.hidden = true; gear.classList.remove('on'); testsPanel.hidden = true; renderCommon(); commonQ.focus(); commonQ.select(); }
+  }
+  let commonBusy = false;
+  async function loadCommon(id) {
+    const c = COMMON.find(x => x.r.id === id);
+    if (!c || commonBusy) return;
+    commonBusy = true;
+    try {
+      toggleCommon(false);
+      const arrow = document.getElementById('rxn-arrow');
+      if (products.classList.contains('on')) { arrow.dispatchEvent(new MouseEvent('click', { bubbles: true })); await new Promise(r => setTimeout(r, 80)); }
+      codeBar.value = c.parts.slice(0, 3).join('~') + '~';
+      codeBar.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      await codeBarBusy;                                        // the boxes are filled
+      await new Promise(r => setTimeout(r, 150));
+      arrow.dispatchEvent(new MouseEvent('click', { bubbles: true }));   // run the rules
+    } finally { commonBusy = false; }
+  }
+  commonBtn.addEventListener('click', e => { e.stopPropagation(); toggleCommon(); });
+  document.getElementById('rxn-c-close').addEventListener('click', () => toggleCommon(false));
+  commonQ.addEventListener('input', renderCommon);
+  commonQ.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { toggleCommon(false); commonBtn.focus(); }
+    else if (e.key === 'Enter') { const first = commonList.querySelector('.rxn-c-item'); if (first) loadCommon(first.dataset.id); }
+    else if (e.key === 'ArrowDown') { const first = commonList.querySelector('.rxn-c-item'); if (first) { e.preventDefault(); first.focus(); } }
+  });
+  commonList.addEventListener('click', e => { const b = e.target.closest('.rxn-c-item'); if (b) loadCommon(b.dataset.id); });
+  commonList.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { toggleCommon(false); commonBtn.focus(); return; }
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const items = [...commonList.querySelectorAll('.rxn-c-item')], k = items.indexOf(document.activeElement);
+    if (k < 0) return;
+    e.preventDefault();
+    if (e.key === 'ArrowUp' && k === 0) commonQ.focus(); else (items[k + (e.key === 'ArrowDown' ? 1 : -1)] || items[k]).focus();
+  });
+  window.ReactionsCommon = { list: () => COMMON.map(c => ({ id: c.r.id, name: c.r.name, family: c.fam, sub: c.sub })), load: loadCommon, open: () => toggleCommon(true) };
 
   window.Reactions = { set: () => {} };
 })();
