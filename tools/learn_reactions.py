@@ -311,6 +311,8 @@ def run_template(smarts, subs, extras=(), want=None, detail=False, screen=False)
     ({pool index: set of atom indices})."""
     from rdkit import Chem
     from rdkit.Chem import AllChem
+    if len(_W['rxn']) > 20000:                      # bounded: an unbounded cache of the 294,000 templates grew past 4.8 GB per worker
+        _W['rxn'].clear(); _W.get('qfp', {}).clear()   # (qfp is keyed by id(rx), so it must go with the reactions)
     rx = _W['rxn'].get(smarts)
     if rx is None:
         try: rx = AllChem.ReactionFromSmarts(smarts); rx.Initialize()
