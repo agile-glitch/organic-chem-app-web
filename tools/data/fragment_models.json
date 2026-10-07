@@ -1,0 +1,414 @@
+{
+ "F_7TP4VNHE": [
+  "reagents.json: ethylamine",
+  "CCN"
+ ],
+ "F_WH4T6PP5": [
+  "Molecules sheet: acetic acid",
+  "CC(=O)O"
+ ],
+ "F_CQJBM3VA": [
+  "Molecules sheet: ethanol",
+  "CCO"
+ ],
+ "F_7WIM5VKY": [
+  "Molecules sheet: 1-propanol",
+  "CCCO"
+ ],
+ "F_N4PYCJQX": [
+  "reagents.json: methyl acetate",
+  "COC(C)=O"
+ ],
+ "F_5T3LDTFX": [
+  "recorded reactions (data/learned/rx)",
+  "CC#N"
+ ],
+ "F_674FQ44T": [
+  "Molecules sheet: propene",
+  "C=CC"
+ ],
+ "F_43XPC2LW": [
+  "Molecules sheet: propene",
+  "C=CC"
+ ],
+ "F_EDNDOOMT": [
+  "Molecules sheet: bromoethane",
+  "CCBr"
+ ],
+ "F_FJ2AGXG4": [
+  "recorded reactions (data/learned/rx)",
+  "CC(Br)CO"
+ ],
+ "F_Z6ABGO4G": [
+  "reagents.json: tert-amyl alcohol (2-methyl-2-butanol)",
+  "CCC(C)(C)O"
+ ],
+ "F_OSWUXBJP": [
+  "reagents.json: 1-iodopropane",
+  "CCCI"
+ ],
+ "F_DHYVCP7A": [
+  "recorded reactions (data/learned/rx)",
+  "C=CCC"
+ ],
+ "F_D6B2Q4UF": [
+  "recorded reactions (data/learned/rx)",
+  "CC(Br)CBr"
+ ],
+ "F_4KF4VNAH": [
+  "recorded reactions (data/learned/rx)",
+  "CCC(C)I"
+ ],
+ "F_NBVC3ZK3": [
+  "reagents.json: tert-butyl hydroperoxide",
+  "CC(C)(C)OO"
+ ],
+ "F_7GV2Y2WW": [
+  "Molecules sheet: benzene",
+  "c1ccccc1"
+ ],
+ "F_YYVXALOV": [
+  "Molecules sheet: chlorobenzene",
+  "Clc1ccccc1"
+ ],
+ "F_GUG35WZM": [
+  "Molecules sheet: propylene oxide",
+  "CC1CO1"
+ ],
+ "F_JIOCZMVT": [
+  "reagents.json: 2-butanol",
+  "CCC(C)O"
+ ],
+ "F_VHRSWB64": [
+  "reagents.json: propylene glycol (1,2-propanediol)",
+  "CC(O)CO"
+ ],
+ "F_ADOAMFFM": [
+  "reagents.json: propanal (propionaldehyde)",
+  "CCC=O"
+ ],
+ "F_CFJ46WPI": [
+  "recorded reactions (data/learned/rx)",
+  "CCC(C)=O"
+ ],
+ "F_F3X5X5PO": [
+  "reagents.json: acetamide",
+  "CC(N)=O"
+ ],
+ "F_ZTFQ2FCA": [
+  "reagents.json: acetamide",
+  "CC(N)=O"
+ ],
+ "F_YAW5EFKQ": [
+  "Molecules sheet: propyne",
+  "C#CC"
+ ],
+ "F_UNMQWRQR": [
+  "Molecules sheet: propyne",
+  "C#CC"
+ ],
+ "F_H6H7YAKN": [
+  "Molecules sheet: bromobenzene",
+  "Brc1ccccc1"
+ ],
+ "F_5J6B3EOP": [
+  "Molecules sheet: nitrobenzene",
+  "O=[N+]([O-])c1ccccc1"
+ ],
+ "F_7W5VQUT2": [
+  "Molecules sheet: acetyl chloride",
+  "CC(=O)Cl"
+ ],
+ "F_YUNA7OOT": [
+  "Molecules sheet: tert-amyl bromide",
+  "CCC(C)(C)Br"
+ ],
+ "F_77XITLZ4": [
+  "recorded reactions (data/learned/rx)",
+  "CCCl"
+ ],
+ "F_W4GPHE3A": [
+  "Molecules sheet: toluene",
+  "Cc1ccccc1"
+ ],
+ "F_W7EG4A5W": [
+  "Molecules sheet: toluene",
+  "Cc1ccccc1"
+ ],
+ "F_J2RF4BYK": [
+  "Molecules sheet: benzyl bromide",
+  "BrCc1ccccc1"
+ ],
+ "F_UY2ANYI2": [
+  "Molecules sheet: aniline",
+  "Nc1ccccc1"
+ ],
+ "F_UUBBBRAY": [
+  "Molecules sheet: benzenediazonium",
+  "N#[N+]c1ccccc1"
+ ],
+ "F_NY7AYBRA": [
+  "Molecules sheet: sodium cyanide",
+  "[C-]#N"
+ ],
+ "F_OWKLY6DL": [
+  "recorded reactions (data/learned/rx)",
+  "CC#N"
+ ],
+ "F_BLUS3XKO": [
+  "Molecules sheet: sodium methoxide",
+  "C[O-]"
+ ],
+ "F_GWWY5MAP": [
+  "Molecules sheet: diethyl ether",
+  "CCOCC"
+ ],
+ "F_OM2L6LN4": [
+  "reagents.json: iodoethane",
+  "CCI"
+ ],
+ "F_WYH6KVDM": [
+  "Molecules sheet: lithium aluminium hydride",
+  "[AlH4-]"
+ ],
+ "F_F6IICZMJ": [
+  "reagents.json: ethylmagnesium bromide",
+  "C[CH2][Mg][Br]"
+ ],
+ "F_TH2DYID6": [
+  "Molecules sheet: benzenesulfonic acid",
+  "O=S(=O)(O)c1ccccc1"
+ ],
+ "F_Z7L4L6RQ": [
+  "recorded reactions (data/learned/rx)",
+  "CCOCOCC"
+ ],
+ "F_LPMNZ3FU": [
+  "recorded reactions (data/learned/rx)",
+  "CC=NC(C)(C)C"
+ ],
+ "F_AOQ6WODX": [
+  "reagents.json: N-methylethylamine",
+  "CCNC"
+ ],
+ "F_QTJCKBIJ": [
+  "recorded reactions (data/learned/rx)",
+  "CC=CC(C)=O"
+ ],
+ "F_WR22PQX5": [
+  "Molecules sheet: pyridine",
+  "c1ccncc1"
+ ],
+ "F_EBFEFTNC": [
+  "Molecules sheet: phenol",
+  "Oc1ccccc1"
+ ],
+ "F_IOJJ46QM": [
+  "Molecules sheet: acetic anhydride",
+  "CC(=O)OC(C)=O"
+ ],
+ "F_DRXF7R5Y": [
+  "recorded reactions (data/learned/rx)",
+  "C=CC=CC"
+ ],
+ "F_RNHVSGOQ": [
+  "reagents.json: methylhydrazine",
+  "CNN"
+ ],
+ "F_RF6WHWKN": [
+  "Molecules sheet: N,N-dimethylethylamine",
+  "CCN(C)C"
+ ],
+ "F_EJHA2TYP": [
+  "reagents.json: malononitrile",
+  "N#CCC#N"
+ ],
+ "F_66D4FM65": [
+  "Molecules sheet: DMSO + oxalyl chloride (Swern)",
+  "CS(C)=O"
+ ],
+ "F_WUYH6XV3": [
+  "recorded reactions (data/learned/rx)",
+  "CCSCC"
+ ],
+ "F_KKIIQEFP": [
+  "recorded reactions (data/learned/rx)",
+  "CC(C)=NO"
+ ],
+ "F_IV5D5PBX": [
+  "recorded reactions (data/learned/rx)",
+  "CNO"
+ ],
+ "F_KNBZHWVH": [
+  "Molecules sheet: iodomethane",
+  "CI"
+ ],
+ "F_UHD3N3ZP": [
+  "Molecules sheet: anisole",
+  "COc1ccccc1"
+ ],
+ "F_3UVA2HDQ": [
+  "recorded reactions (data/learned/rx)",
+  "CCC(=O)[O-]"
+ ],
+ "F_CRK5A7KB": [
+  "reagents.json: pyrrole",
+  "c1cc[nH]c1"
+ ],
+ "F_OE4EQYFD": [
+  "recorded reactions (data/learned/rx)",
+  "CCOC(N)=O"
+ ],
+ "F_L6MZYAQB": [
+  "recorded reactions (data/learned/rx)",
+  "CCS(=O)(=O)Cl"
+ ],
+ "F_UCXTN7QM": [
+  "recorded reactions (data/learned/rx)",
+  "C[SiH](C)Cl"
+ ],
+ "F_NATCGA6A": [
+  "recorded reactions (data/learned/rx)",
+  "CS(=O)[O-]"
+ ],
+ "F_QRDE5U55": [
+  "recorded reactions (data/learned/rx)",
+  "C=CI"
+ ],
+ "F_Y7BIL7MW": [
+  "recorded reactions (data/learned/rx)",
+  "CCOS(C)(=O)=O"
+ ],
+ "F_QE3E5NK3": [
+  "recorded reactions (data/learned/rx)",
+  "CCO[PH](C)=O"
+ ],
+ "F_EKZKEVUW": [
+  "recorded reactions (data/learned/rx)",
+  "COC(C)(C)C"
+ ],
+ "F_EERNJGZA": [
+  "recorded reactions (data/learned/rx)",
+  "COC(C)=N"
+ ],
+ "F_6OE4YDC3": [
+  "reagents.json: trimethylsilylacetylene",
+  "C#C[Si](C)(C)C"
+ ],
+ "F_PURMGXG6": [
+  "recorded reactions (data/learned/rx)",
+  "CCS(N)(=O)=O"
+ ],
+ "F_EITZ3KQK": [
+  "reagents.json: iodobenzene",
+  "Ic1ccccc1"
+ ],
+ "F_BPZQSOZQ": [
+  "reagents.json: diethyl carbonate",
+  "CCOC(=O)OCC"
+ ],
+ "F_RTHLR62E": [
+  "reagents.json: methanethiol (methyl mercaptan)",
+  "CS"
+ ],
+ "F_ZQNACBZ5": [
+  "recorded reactions (data/learned/rx)",
+  "CCB(O)O"
+ ],
+ "F_GQ7G2E2T": [
+  "recorded reactions (data/learned/rx)",
+  "CC(N)=S"
+ ],
+ "F_J2K7DGKF": [
+  "recorded reactions (data/learned/rx)",
+  "CCO[SiH](C)C"
+ ],
+ "F_VOBBL45A": [
+  "reagents.json: cyanogen bromide",
+  "N#CBr"
+ ],
+ "F_IT7SFBHB": [
+  "recorded reactions (data/learned/rx)",
+  "Fc1ccccn1"
+ ],
+ "F_GHNV6FIP": [
+  "recorded reactions (data/learned/rx)",
+  "CNc1ccccc1"
+ ],
+ "F_R65BRROR": [
+  "recorded reactions (data/learned/rx)",
+  "CC(=O)n1ccnc1"
+ ],
+ "F_DF5HIJE7": [
+  "reagents.json: methyl isocyanate",
+  "CN=C=O"
+ ],
+ "F_6UCNUCGB": [
+  "reagents.json: 2-pyridone",
+  "O=c1cccc[nH]1"
+ ],
+ "F_MZ5ZIRZW": [
+  "reagents.json: tributyl(vinyl)tin",
+  "C=[CH][Sn]([CH2]CCC)([CH2]CCC)[CH2]CCC"
+ ],
+ "F_E6XU5RMC": [
+  "reagents.json: nitroethane",
+  "CC[N+](=O)[O-]"
+ ],
+ "F_RU2YM6UG": [
+  "recorded reactions (data/learned/rx)",
+  "[O-][n+]1ccccc1"
+ ],
+ "F_JXENEJS4": [
+  "recorded reactions (data/learned/rx)",
+  "Fc1ccccn1"
+ ],
+ "F_D6D2SHBS": [
+  "recorded reactions (data/learned/rx)",
+  "CC(C)B1OC(C)(C)C(C)(C)O1"
+ ],
+ "F_ELZWELDO": [
+  "recorded reactions (data/learned/rx)",
+  "CCCCCCCN=[N+]=[N-]"
+ ],
+ "F_NNHZ2V7J": [
+  "recorded reactions (data/learned/rx)",
+  "CC(=O)SC(C)(C)C"
+ ],
+ "F_3SKBXPIY": [
+  "recorded reactions (data/learned/rx)",
+  "CCNS(C)(=O)=O"
+ ],
+ "F_3Y23J4GX": [
+  "recorded reactions (data/learned/rx)",
+  "CC(C)(C)S(N)=O"
+ ],
+ "F_SZF3ZRNG": [
+  "recorded reactions (data/learned/rx)",
+  "N=C(N)Cl"
+ ],
+ "F_TYND2WUY": [
+  "recorded reactions (data/learned/rx)",
+  "CC(=N)NO"
+ ],
+ "F_RCVURP73": [
+  "recorded reactions (data/learned/rx)",
+  "CCC(=N)N"
+ ],
+ "F_L6VTMA27": [
+  "recorded reactions (data/learned/rx)",
+  "C=CS(=O)(=O)Oc1ccccc1"
+ ],
+ "F_S7TAL57S": [
+  "recorded reactions (data/learned/rx)",
+  "CC(N=O)C(C)(C)Cl"
+ ],
+ "F_54IEU5KA": [
+  "recorded reactions (data/learned/rx)",
+  "CC([O-])=S"
+ ],
+ "F_7YSU7T4D": [
+  "recorded reactions (data/learned/rx)",
+  "O=S1(=O)CCCS(=O)(=O)N1"
+ ]
+}

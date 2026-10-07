@@ -5,3 +5,6 @@ learned_reactions.xlsx
 *(new).xlsx
 __pycache__/
 *.pyc
+
+# resumable intermediates of the fragment property run
+*.partial.jsonl
