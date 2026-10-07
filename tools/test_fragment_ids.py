@@ -49,7 +49,7 @@ try:
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zo:
         for it in zin.infolist():
             d = zin.read(it.filename)
-            if it.filename.startswith("xl/worksheets/"):
+            if it.filename.startswith("xl/worksheets/") or it.filename == "xl/sharedStrings.xml":     # inline strings or the shared string table
                 esc = lambda s: s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
                 d = d.decode().replace(">" + esc(old_sm) + "<", ">" + esc(new_sm) + "<").encode()
             zo.writestr(it, d)

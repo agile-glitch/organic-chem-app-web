@@ -23,12 +23,12 @@ def apply_map(mapping):
     p = lambda f: os.path.join(ROOT, f)
     for f in TEXT_FILES:
         s = open(p(f), encoding="utf8").read(); open(p(f), "w", encoding="utf8").write(_sub(mapping, s))
-    for f in BOOKS:                                   # only inside <t> text nodes (cell refs like F100 stay alone)
+    for f in BOOKS:                                   # only inside <t> text nodes of inline strings and sharedStrings.xml (cell refs stay alone)
         tmp = p(f) + ".tmp"
         with zipfile.ZipFile(p(f)) as zi, zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zo:
             for it in zi.infolist():
                 d = zi.read(it.filename)
-                if it.filename.startswith("xl/worksheets/"):
+                if it.filename.startswith("xl/worksheets/") or it.filename == "xl/sharedStrings.xml":
                     d = re.sub(r"(<t(?: [^>]*)?>)([^<]*)(</t>)", lambda m: m.group(1) + _sub(mapping, m.group(2)) + m.group(3), d.decode("utf8")).encode("utf8")
                 zo.writestr(it, d)
         os.replace(tmp, p(f))
@@ -39,6 +39,21 @@ def apply_map(mapping):
             for i in (3, 4): r[i] = _sub(mapping, r[i])
         b = base64.b64encode(gzip.compress(json.dumps(rows, separators=(",", ":"), ensure_ascii=False).encode("utf8"), 9)).decode("ascii")
         open(f, "w", encoding="utf8").write(s[:mm.start(1)] + b + s[mm.end(1):])
+
+DATA_BY_ID = ['tools/data/fragment_models.json', 'tools/data/fragment_properties.json', 'tools/data/fragment_conditions.json']
+
+
+def forget(ids):
+    """drop the generated rows (model compound, properties, conditions) of fragments whose SMARTS, and so ID, changed: they described the
+    old pattern. tools/fragment_properties.py and tools/fragment_conditions.py then compute the new ones."""
+    for f in DATA_BY_ID:
+        p = os.path.join(ROOT, f)
+        if not os.path.exists(p): continue
+        d = json.load(open(p, encoding="utf-8"))
+        if isinstance(d, list): d = [r for r in d if r.get("Fragment ID") not in ids]
+        else: d = {k: v for k, v in d.items() if k not in ids}
+        json.dump(d, open(p, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+
 
 def sheet_rows():
     from openpyxl import load_workbook
@@ -54,9 +69,9 @@ if __name__ == "__main__":
     m = stale()
     for a, b in m.items(): print(a, "->", b)
     if "--fix" in sys.argv and m:
-        apply_map(m)
+        apply_map(m); forget(set(m) | set(m.values()))
         path = os.path.join(ROOT, "tools", "data", "fragment_ids.json"); old = json.load(open(path, encoding="utf8"))
         json.dump({k: m.get(v, v) for k, v in old.items()}, open(path, "w", encoding="utf8"), indent=1, ensure_ascii=False)
-        print("re-ID'd", len(m), "fragment(s); run tools/rules_to_js.py and tools/run_all_checks.py")
+        print("re-ID'd", len(m), "fragment(s); run tools/rules_to_js.py, tools/fragment_properties.py --resume (computes only the re-ID'd fragments), tools/fragment_conditions.py, tools/fragment_properties_sheet.py and tools/run_all_checks.py")
     elif m: print(len(m), "ID(s) out of date; run with --fix"); sys.exit(1)
     else: print("all fragment IDs match their SMARTS")
