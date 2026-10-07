@@ -466,6 +466,7 @@ def main():
     ap.add_argument('--quick', action='store_true', help='skip geometry and DFT (tables and rules only)')
     ap.add_argument('--rechoose', action='store_true', help='forget the cached model compounds and choose again')
     ap.add_argument('--resume', action='store_true', help='continue a run that stopped: reuse the finished rows of <out>.partial.jsonl')
+    ap.add_argument('--reverse', action='store_true', help='work through the fragments from the last to the first (a second process can share a run)')
     ap.add_argument('--refresh', action='store_true', help='recompute the table-based columns of the existing output and keep its DFT values')
     ap.add_argument('--out', default=OUT)
     a = ap.parse_args()
@@ -477,6 +478,7 @@ def main():
     defaults, partners = PK.fragment_defaults(), acid_base_partners()
     smarts = {f['Fragment ID']: f['SMARTS pattern'] for f in frags}
     jobs = [(f, models[f['Fragment ID']], defaults, partners, smarts, a.quick) for f in todo]
+    if a.reverse: jobs.reverse()
     if a.refresh:
         old = {r['Fragment ID']: r for r in json.load(open(a.out, encoding='utf-8'))}
         rows = []
