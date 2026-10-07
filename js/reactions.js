@@ -867,8 +867,8 @@
     return { problems, passed };
   }
   /* Acid/base by pKa ('Acid/base needed' in reaction_rules.xlsx, sheet Acids_Bases): a rule that says
-     'base: F_KETONE, ΔpKa ≥ -5' takes any base from the sheet whose conjugate acid pKa minus F_KETONE's pKa is at least -5;
-     'acid: F_CARBOXYLIC_ACID, ΔpKa ≥ -5' takes any acid where the pKa of the protonated fragment minus the acid's pKa is at least -5.
+     'base: F_CFJ46WPI, ΔpKa ≥ -5' takes any base from the sheet whose conjugate acid pKa minus F_CFJ46WPI's pKa is at least -5;
+     'acid: F_WH4T6PP5, ΔpKa ≥ -5' takes any acid where the pKa of the protonated fragment minus the acid's pKa is at least -5.
      K ≈ 10^ΔpKa for that proton transfer. */
   const abKeys = new Map();
   function acidBaseEntry(R, role, key) {
@@ -901,9 +901,9 @@
     ['methyl', '[CH3;!$(C~[!#6;!#1]):1]', -0.07, -0.17, -0.17], ['alkyl', '[CX4;!$(C~[!#6;!#1]):1]', -0.07, -0.15, -0.15],
     ['phenyl', '[c:1]', 0.06, -0.01, 0.02], ['vinyl', '[CX3:1]=[CX3]', 0.06, -0.04, -0.08]];
   const HAMMETT = {
-    F_PHENOL: { kind: 'acid', smarts: '[c:1][OX2H1]', pKa0: 9.99, rho: 2.23, para: 'sigma-', name: 'phenol' },
-    F_CARBOXYLIC_ACID: { kind: 'acid', smarts: '[c:1][CX3](=O)[OX2H1]', pKa0: 4.20, rho: 1.00, para: 'sigma', name: 'benzoic acid' },
-    F_ARYLAMINE: { kind: 'base', smarts: '[c:1][NX3;H2;+0]', pKa0: 4.60, rho: 2.89, para: 'sigma-', name: 'anilinium' } };
+    F_EBFEFTNC: { kind: 'acid', smarts: '[c:1][OX2H1]', pKa0: 9.99, rho: 2.23, para: 'sigma-', name: 'phenol' },
+    F_WH4T6PP5: { kind: 'acid', smarts: '[c:1][CX3](=O)[OX2H1]', pKa0: 4.20, rho: 1.00, para: 'sigma', name: 'benzoic acid' },
+    F_UY2ANYI2: { kind: 'base', smarts: '[c:1][NX3;H2;+0]', pKa0: 4.60, rho: 2.89, para: 'sigma-', name: 'anilinium' } };
   const pkaQ = {}, pkaCache = new Map();
   const qmolOf = (R, sm) => { if (!(sm in pkaQ)) { try { pkaQ[sm] = R.get_qmol(sm); } catch (e) { pkaQ[sm] = null; } } return pkaQ[sm]; };
   const EL = { 1: 'H', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 15: 'P', 16: 'S', 17: 'Cl', 35: 'Br', 53: 'I' };
@@ -1024,7 +1024,7 @@
       const co = matchesOf(m, qmolOf(R, '[CX3;$([CH1](=O)[#6]),$([CH2]=O),$(C(=O)([#6])[#6])]=[OX1]'));
       if (co.length && measAcid.length && Math.min(...measAcid) < 15 && !out.acid.some(x => ['O', 'N', 'S'].includes(atoms[x.atom].el))) {
         const v = Math.min(...measAcid); measAcid.splice(measAcid.indexOf(v), 1);
-        hydrate = { atom: co[0].atoms[1], atoms: [co[0].atoms[1]], fragments: [atoms[co[0].atoms[0]].h > 0 ? 'F_ALDEHYDE' : 'F_KETONE'], typical: v, pKa: v,
+        hydrate = { atom: co[0].atoms[1], atoms: [co[0].atoms[1]], fragments: [atoms[co[0].atoms[0]].h > 0 ? 'F_ADOAMFFM' : 'F_CFJ46WPI'], typical: v, pKa: v,
           source: 'measured (IUPAC Digitized pKa Dataset) in water, where the C=O is partly hydrated: the O–H of the hydrate R2C(OH)2' };
       }
       // a measured pKaH below 0 is the protonation of a very weak base (C=O, ether: acetone -7.2), not a basic site here
@@ -1219,11 +1219,11 @@
     return { ok, d, text: `${text}${srcNote}: ΔpKa ${d > 0 ? '+' : ''}${minus(d)}, K ≈ 10^${minus(d)} — needs ΔpKa ≥ ${minus(ab.min)}` };
   }
   /* SN1 / SN2 / E1 / E2 for alkyl halides, decided from fragments (sheets Halide_Pathways, Nucleophiles, Solvents in
-     reaction_rules.xlsx): substrate class from F_METHYL_HALIDE methyl / F_ALKYL_HALIDE_1 1° / F_ALKYL_HALIDE_2 2° / F_ALKYL_HALIDE_3 3°, reagent class from the
+     reaction_rules.xlsx): substrate class from F_KNBZHWVH methyl / F_OSWUXBJP 1° / F_4KF4VNAH 2° / F_YUNA7OOT 3°, reagent class from the
      Nucleophiles sheet (no reagent + a protic solvent = solvolysis, the solvent is the nucleophile), solvent type and heat.
      The first matching table row gives the pathway; the app's mechanism engine (Chem.buildMechanism) builds that
      pathway's steps, arrows and product. */
-  const HALIDE_CLASS = [['F_METHYL_HALIDE', 'methyl'], ['F_ALKYL_HALIDE_1', '1°'], ['F_ALKYL_HALIDE_2', '2°'], ['F_ALKYL_HALIDE_3', '3°']];
+  const HALIDE_CLASS = [['F_KNBZHWVH', 'methyl'], ['F_OSWUXBJP', '1°'], ['F_4KF4VNAH', '2°'], ['F_YUNA7OOT', '3°']];
   function halidePathway(R, subs, read, reagent, reagentKey, P, condText, reagentFrags) {
     const RR = window.REACTION_RULES || {}, table = RR.halidePathways || [], nucs = RR.nucleophiles || [];
     if (!table.length || !window.Chem.buildMechanism) return null;
@@ -2150,7 +2150,7 @@
     const learned = await learnedReaction(R, subs, reagent, reagentKey, condText, read, reagentFrags);
     if (learned && learned.products) return learned;
     // unknown: say so, and what the app does know about these fragments and this reagent
-    const fr = [...presentSubs].filter(id => !['F_ARENE_CH'].includes(id) || presentSubs.size === 1);
+    const fr = [...presentSubs].filter(id => !['F_7GV2Y2WW'].includes(id) || presentSubs.size === 1);
     const forFrags = RR.rules.filter(r => (r.consumes || []).some(alt => alt.some(id => presentSubs.has(id)))).map(r => `${r.id} ${r.name}`);
     const forReagent = reagentKey ? RR.rules.filter(r => r.reagents.includes(reagentKey) || (r.acidBase && acidBaseEntry(R, r.acidBase.role, reagentKey))).map(r => `${r.id} ${r.name}`) : [];
     return { reading, kind: 'unknown', note: `Unknown: nothing in reaction_rules.xlsx covers ${fr.length ? fr.map(fragName).join(', ') : 'these molecules'} ${reagent ? 'with this reagent' : 'with no reagent'}, so the app cannot say whether they react (this is not the same as "no reaction").` +
@@ -2275,7 +2275,7 @@
     let E = []; try { E = moleculeEffects(RD, smiles); } catch (e) { E = []; }
     const seen = new Set(), items = [];
     for (const e of E) {
-      if (e.fragment === 'F_ARENE_CH') continue;                         // every arene C-H: too many to list
+      if (e.fragment === 'F_7GV2Y2WW') continue;                         // every arene C-H: too many to list
       const k = e.fragment; if (seen.has(k)) continue; seen.add(k);
       items.push(`${esc(fragName(e.fragment))}: ${esc(e.steric.cls)}; ${esc(e.electronic.text)}`);
     }

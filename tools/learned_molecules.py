@@ -60,7 +60,7 @@ def props(smiles):
         pk = ''
     import effects as EF
     try:                                                 # steric and electronic effects at each fragment's reacting atom
-        E = [e for e in EF.effects_of(m, _P['frags']) if e['fragment'] != 'F_ARENE_CH']
+        E = [e for e in EF.effects_of(m, _P['frags']) if e['fragment'] != 'F_7GV2Y2WW']
         st = '; '.join(f'{e["fragment"]} {e["steric"]["text"]}' for e in E)
         el = '; '.join(f'{e["fragment"]} {e["electronic"]["text"]}' for e in E)
         tf = '; '.join(f'{e["fragment"]} ' + ', '.join(x for x in (

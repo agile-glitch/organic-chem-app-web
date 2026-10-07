@@ -11,9 +11,9 @@ protonated form of its basic sites.
 
 Estimates (Hammett equation, pKa = pKa0 - rho * sum of sigma, for meta and para substituents on a benzene ring;
 sigma, sigma- and rho from C. Hansch, A. Leo, R. W. Taft, Chem. Rev. 1991, 91, 165 and standard tables):
-  phenol (F_PHENOL):            pKa0 9.99, rho 2.23, para resonance-withdrawing groups use sigma- (4-nitrophenol: 9.99 - 2.23*1.27 = 7.16)
-  benzoic acid (F_CARBOXYLIC_ACID on an aryl ring): pKa0 4.20, rho 1.00, sigma
-  anilinium (F_ARYLAMINE, pKaH):   pKa0 4.60, rho 2.89, para resonance-withdrawing groups use sigma-
+  phenol (F_EBFEFTNC):            pKa0 9.99, rho 2.23, para resonance-withdrawing groups use sigma- (4-nitrophenol: 9.99 - 2.23*1.27 = 7.16)
+  benzoic acid (F_WH4T6PP5 on an aryl ring): pKa0 4.20, rho 1.00, sigma
+  anilinium (F_UY2ANYI2, pKaH):   pKa0 4.60, rho 2.89, para resonance-withdrawing groups use sigma-
 An ortho substituent, a fused ring (any ring atom shared with another ring), another heteroaromatic ring, or an unknown substituent: no estimate (the typical value is
 used and the page says why). The page's fragmentPka (js/reactions.js) computes the same.
 """
@@ -58,9 +58,9 @@ SIGMA = [
 ]
 # the acid/base sites estimated: fragment, which pKa, SMARTS of the site ([*:1] = the ring atom it sits on / the ring N)
 HAMMETT = {
-    'F_PHENOL': dict(kind='acid', smarts='[c:1][OX2H1]', pKa0=9.99, rho=2.23, para='sigma-', name='phenol'),
-    'F_CARBOXYLIC_ACID': dict(kind='acid', smarts='[c:1][CX3](=O)[OX2H1]', pKa0=4.20, rho=1.00, para='sigma', name='benzoic acid'),
-    'F_ARYLAMINE': dict(kind='base', smarts='[c:1][NX3;H2;+0]', pKa0=4.60, rho=2.89, para='sigma-', name='anilinium'),
+    'F_EBFEFTNC': dict(kind='acid', smarts='[c:1][OX2H1]', pKa0=9.99, rho=2.23, para='sigma-', name='phenol'),
+    'F_WH4T6PP5': dict(kind='acid', smarts='[c:1][CX3](=O)[OX2H1]', pKa0=4.20, rho=1.00, para='sigma', name='benzoic acid'),
+    'F_UY2ANYI2': dict(kind='base', smarts='[c:1][NX3;H2;+0]', pKa0=4.60, rho=2.89, para='sigma-', name='anilinium'),
 }
 # (pyridinium, pKa0 5.25 rho 5.90, was tested and dropped: within 0.5 of the measured value for only about half of 63
 #  measured pyridines; pyridines use measured values or the fragment's typical value)
@@ -130,8 +130,8 @@ def hammett(m, fid):
         if len(rings) != 1 or any(ri.NumAtomRings(i) != 1 for i in rings[0]):
             out.append((None, 'fused ring: no estimate')); continue
         ring = rings[0]
-        if any(not m.GetAtomWithIdx(i).GetIsAromatic() for i in ring) or (fid != 'F_AZINE_N' and any(m.GetAtomWithIdx(i).GetSymbol() != 'C' for i in ring)) \
-                or (fid == 'F_AZINE_N' and sum(1 for i in ring if m.GetAtomWithIdx(i).GetSymbol() != 'C') != 1):
+        if any(not m.GetAtomWithIdx(i).GetIsAromatic() for i in ring) or (fid != 'F_WR22PQX5' and any(m.GetAtomWithIdx(i).GetSymbol() != 'C' for i in ring)) \
+                or (fid == 'F_WR22PQX5' and sum(1 for i in ring if m.GetAtomWithIdx(i).GetSymbol() != 'C') != 1):
             out.append((None, 'not a benzene (or simple pyridine) ring: no estimate')); continue
         pos = {i: min(abs(ring.index(i) - ring.index(site)), 6 - abs(ring.index(i) - ring.index(site))) for i in ring}
         own = set(match)
@@ -232,7 +232,7 @@ def molecule_pkas(smiles, frags, defaults, measured):
     co = m.GetSubstructMatches(_q('[CX3;$([CH1](=O)[#6]),$([CH2]=O),$(C(=O)([#6])[#6])]=[OX1]'))
     if co and meas_acid and min(meas_acid) < 15 and not any(m.GetAtomWithIdx(x['atom']).GetSymbol() in ('O', 'N', 'S') for x in out['acid']):
         v = min(meas_acid); meas_acid.remove(v)
-        fid = 'F_ALDEHYDE' if m.GetAtomWithIdx(co[0][0]).GetTotalNumHs() > 0 else 'F_KETONE'
+        fid = 'F_ADOAMFFM' if m.GetAtomWithIdx(co[0][0]).GetTotalNumHs() > 0 else 'F_CFJ46WPI'
         hydrate = {'atom': co[0][1], 'atoms': [co[0][1]], 'fragments': [fid], 'typical': v, 'pKa': v,
                    'source': 'measured (IUPAC Digitized pKa Dataset) in water, where the C=O is partly hydrated: the O-H of the hydrate R2C(OH)2'}
     groups = out['acid'] + out['base']

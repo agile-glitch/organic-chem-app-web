@@ -16,6 +16,7 @@ from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem
 from openpyxl import load_workbook
 from check_mechanisms import statuses, canon_set
+from fragment_id import fragment_id
 RDLogger.DisableLog("rdApp.*")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,13 +41,13 @@ for m in sheet("reaction_rules.xlsx", "Mechanism"):
         mech_rows.setdefault(str(m["Reaction ID"]), []).append(m)
 mstat, _ = statuses()
 
-# fragment ID rule: a descriptive ID (F_NAME) per structurally distinct SMARTS; no two fragments share an ID or a pattern
+# fragment ID rule: the ID is generated from the SMARTS (tools/fragment_id.py); no two fragments share an ID or a pattern
 def check_fragment_ids():
     rows = sheet("molecule_data.xlsx", "Fragments"); bad = []
     ids, pats = {}, {}
     for f in rows:
         fid, sm = str(f["Fragment ID"]).strip(), str(f.get("SMARTS pattern") or "").strip()
-        if not re.fullmatch(r"F_[A-Z0-9]+(?:_[A-Z0-9]+)*", fid): bad.append("bad ID format: " + fid)
+        if fid != fragment_id(sm): bad.append(f"{fid} does not match its SMARTS (should be {fragment_id(sm)}; run tools/fragment_id.py --fix)")
         if fid in ids: bad.append("duplicate ID: " + fid)
         ids[fid] = sm
         q = Chem.MolFromSmarts(sm) if sm else None

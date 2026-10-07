@@ -14,20 +14,20 @@ window.REACTION_RULES = {
    "conditions": "60–120 °C: reflux in excess ethanol (78 °C) or toluene (111 °C, Dean–Stark), or heat to a set temperature",
    "consumes": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_ALCOHOL_1"
+     "F_7WIM5VKY"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "acidBase": {
     "role": "acid",
-    "frag": "F_CARBOXYLIC_ACID",
+    "frag": "F_WH4T6PP5",
     "min": -5.0
    },
    "group": "esterification",
@@ -167,12 +167,12 @@ window.REACTION_RULES = {
    "conditions": "Br2, water as the solvent, rt",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_BROMOHYDRIN"
+     "F_FJ2AGXG4"
     ]
    ],
    "acidBase": null,
@@ -269,12 +269,12 @@ window.REACTION_RULES = {
    "conditions": "Br2, CH2Cl2, rt, dark",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_VICINAL_DIBROMIDE"
+     "F_D6B2Q4UF"
     ]
    ],
    "acidBase": null,
@@ -345,12 +345,12 @@ window.REACTION_RULES = {
    "conditions": "HBr, ROOR or hv",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -447,12 +447,12 @@ window.REACTION_RULES = {
    "conditions": "HBr, no peroxide, no light",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -529,12 +529,12 @@ window.REACTION_RULES = {
    "conditions": "dilute aqueous H2SO4",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_3"
+     "F_Z6ABGO4G"
     ]
    ],
    "acidBase": null,
@@ -637,12 +637,12 @@ window.REACTION_RULES = {
    "conditions": "BH3 in THF, 0 °C; then H2O2, NaOH",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_1"
+     "F_7WIM5VKY"
     ]
    ],
    "acidBase": null,
@@ -773,7 +773,7 @@ window.REACTION_RULES = {
    "conditions": "H2 (1 atm), Pd/C, EtOH, rt",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [],
@@ -867,12 +867,12 @@ window.REACTION_RULES = {
    "conditions": "mCPBA, CH2Cl2, rt",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_EPOXIDE"
+     "F_GUG35WZM"
     ]
    ],
    "acidBase": null,
@@ -923,12 +923,12 @@ window.REACTION_RULES = {
    "conditions": "OsO4 (cat.), NMO, acetone/water, rt",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_DIOL_1_2"
+     "F_VHRSWB64"
     ]
    ],
    "acidBase": null,
@@ -999,15 +999,15 @@ window.REACTION_RULES = {
    "conditions": "O3, CH2Cl2, -78 °C; then Me2S",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_ALDEHYDE"
+     "F_ADOAMFFM"
     ],
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -1128,12 +1128,12 @@ window.REACTION_RULES = {
    "conditions": "NBS, CCl4, hv",
    "consumes": [
     [
-     "F_ALLYLIC_CH2"
+     "F_DHYVCP7A"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -1250,7 +1250,7 @@ window.REACTION_RULES = {
    "conditions": "H2 (excess), Pd/C, rt",
    "consumes": [
     [
-     "F_ALKYNE"
+     "F_YAW5EFKQ"
     ]
    ],
    "forms": [],
@@ -1322,12 +1322,12 @@ window.REACTION_RULES = {
    "conditions": "H2, Lindlar catalyst, quinoline, rt",
    "consumes": [
     [
-     "F_ALKYNE"
+     "F_YAW5EFKQ"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "acidBase": null,
@@ -1398,12 +1398,12 @@ window.REACTION_RULES = {
    "conditions": "Na, NH3 (l), -33 °C",
    "consumes": [
     [
-     "F_ALKYNE"
+     "F_YAW5EFKQ"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "acidBase": null,
@@ -1522,12 +1522,12 @@ window.REACTION_RULES = {
    "conditions": "HgSO4, aqueous H2SO4, warm",
    "consumes": [
     [
-     "F_ALKYNE_TERMINAL"
+     "F_UNMQWRQR"
     ]
    ],
    "forms": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -1666,12 +1666,12 @@ window.REACTION_RULES = {
    "conditions": "Br2, FeBr3 (Lewis acid), anhydrous",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ]
    ],
    "forms": [
     [
-     "F_ARYL_BROMIDE"
+     "F_H6H7YAKN"
     ]
    ],
    "acidBase": null,
@@ -1772,12 +1772,12 @@ window.REACTION_RULES = {
    "conditions": "conc. HNO3 + conc. H2SO4 (NO2+), 50 °C",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ]
    ],
    "forms": [
     [
-     "F_NITROARENE"
+     "F_5J6B3EOP"
     ]
    ],
    "acidBase": null,
@@ -1900,15 +1900,15 @@ window.REACTION_RULES = {
    "conditions": "RCOCl, AlCl3, anhydrous; then water",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ],
     [
-     "F_ACYL_CHLORIDE"
+     "F_7W5VQUT2"
     ]
    ],
    "forms": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -2029,15 +2029,15 @@ window.REACTION_RULES = {
    "conditions": "R–Cl, AlCl3, anhydrous",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ],
     [
-     "F_ALKYL_CHLORIDE"
+     "F_77XITLZ4"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_ARENE"
+     "F_W4GPHE3A"
     ]
    ],
    "acidBase": null,
@@ -2164,12 +2164,12 @@ window.REACTION_RULES = {
    "conditions": "NBS, CCl4, hv",
    "consumes": [
     [
-     "F_ARYL_METHYL"
+     "F_W7EG4A5W"
     ]
    ],
    "forms": [
     [
-     "F_BENZYLIC_BROMIDE"
+     "F_J2RF4BYK"
     ]
    ],
    "acidBase": null,
@@ -2286,12 +2286,12 @@ window.REACTION_RULES = {
    "conditions": "KMnO4, water, reflux; then acid",
    "consumes": [
     [
-     "F_ARYL_METHYL"
+     "F_W7EG4A5W"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -2435,12 +2435,12 @@ window.REACTION_RULES = {
    "conditions": "Fe, HCl (aq), heat; then base",
    "consumes": [
     [
-     "F_NITROARENE"
+     "F_5J6B3EOP"
     ]
    ],
    "forms": [
     [
-     "F_ARYLAMINE"
+     "F_UY2ANYI2"
     ]
    ],
    "acidBase": null,
@@ -2553,12 +2553,12 @@ window.REACTION_RULES = {
    "conditions": "NaNO2, HCl (aq), 0-5 °C",
    "consumes": [
     [
-     "F_ARYLAMINE"
+     "F_UY2ANYI2"
     ]
    ],
    "forms": [
     [
-     "F_ARYL_DIAZONIUM"
+     "F_UUBBBRAY"
     ]
    ],
    "acidBase": null,
@@ -2699,12 +2699,12 @@ window.REACTION_RULES = {
    "conditions": "CuBr, rt to warm",
    "consumes": [
     [
-     "F_ARYL_DIAZONIUM"
+     "F_UUBBBRAY"
     ]
    ],
    "forms": [
     [
-     "F_ARYL_BROMIDE"
+     "F_H6H7YAKN"
     ]
    ],
    "acidBase": null,
@@ -2777,12 +2777,12 @@ window.REACTION_RULES = {
    "conditions": "NaCN, polar aprotic solvent (DMSO)",
    "consumes": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "forms": [
     [
-     "F_NITRILE"
+     "F_OWKLY6DL"
     ]
    ],
    "acidBase": null,
@@ -2851,12 +2851,12 @@ window.REACTION_RULES = {
    "conditions": "NaOEt, EtOH",
    "consumes": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "forms": [
     [
-     "F_ETHER_DIALKYL"
+     "F_GWWY5MAP"
     ]
    ],
    "acidBase": null,
@@ -2909,12 +2909,12 @@ window.REACTION_RULES = {
    "conditions": "NaI, acetone, reflux",
    "consumes": [
     [
-     "F_ALKYL_CHLORIDE"
+     "F_77XITLZ4"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_IODIDE"
+     "F_OM2L6LN4"
     ]
    ],
    "acidBase": null,
@@ -2974,12 +2974,12 @@ window.REACTION_RULES = {
    "conditions": "t-BuOK, t-BuOH or THF",
    "consumes": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "acidBase": null,
@@ -3033,12 +3033,12 @@ window.REACTION_RULES = {
    "conditions": "NaOEt, EtOH, heat",
    "consumes": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "acidBase": null,
@@ -3097,12 +3097,12 @@ window.REACTION_RULES = {
    "conditions": "PBr3, ether, 0 °C",
    "consumes": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -3176,12 +3176,12 @@ window.REACTION_RULES = {
    "conditions": "SOCl2 (pyridine), reflux",
    "consumes": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_CHLORIDE"
+     "F_77XITLZ4"
     ]
    ],
    "acidBase": null,
@@ -3272,13 +3272,13 @@ window.REACTION_RULES = {
    "conditions": "PCC, CH2Cl2, anhydrous",
    "consumes": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "forms": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -3355,12 +3355,12 @@ window.REACTION_RULES = {
    "conditions": "CrO3, aqueous H2SO4, acetone, 0 °C",
    "consumes": [
     [
-     "F_ALCOHOL_1"
+     "F_7WIM5VKY"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -3493,17 +3493,17 @@ window.REACTION_RULES = {
    "conditions": "conc. H2SO4, 160 °C, distil the alkene",
    "consumes": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "acidBase": {
     "role": "acid",
-    "frag": "F_ALCOHOL_SP3",
+    "frag": "F_CQJBM3VA",
     "min": -5.0
    },
    "group": "",
@@ -3610,12 +3610,12 @@ window.REACTION_RULES = {
    "conditions": "SOCl2, reflux",
    "consumes": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "forms": [
     [
-     "F_ACYL_CHLORIDE"
+     "F_7W5VQUT2"
     ]
    ],
    "acidBase": null,
@@ -3726,13 +3726,13 @@ window.REACTION_RULES = {
    "conditions": "NaBH4, MeOH, 0 °C",
    "consumes": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -3803,12 +3803,12 @@ window.REACTION_RULES = {
    "conditions": "LiAlH4, dry THF; then aqueous acid",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -3925,13 +3925,13 @@ window.REACTION_RULES = {
    "conditions": "MeMgBr, dry ether; then aqueous acid",
    "consumes": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -4008,12 +4008,12 @@ window.REACTION_RULES = {
    "conditions": "CO2, dry ether; then aqueous acid",
    "consumes": [
     [
-     "F_GRIGNARD"
+     "F_F6IICZMJ"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -4092,13 +4092,13 @@ window.REACTION_RULES = {
    "conditions": "Ph3P=CH2, THF, rt",
    "consumes": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "acidBase": null,
@@ -4191,21 +4191,21 @@ window.REACTION_RULES = {
    "conditions": "ethylene glycol, TsOH, toluene, reflux (Dean–Stark)",
    "consumes": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ],
     [
-     "F_DIOL_1_2"
+     "F_VHRSWB64"
     ]
    ],
    "forms": [
     [
-     "F_ACETAL_KETAL"
+     "F_Z7L4L6RQ"
     ]
    ],
    "acidBase": {
     "role": "acid",
-    "frag": "F_KETONE",
+    "frag": "F_CFJ46WPI",
     "min": -6.0
    },
    "group": "carbonyl addition",
@@ -4365,17 +4365,17 @@ window.REACTION_RULES = {
    "conditions": "primary amine, acid catalyst, remove water",
    "consumes": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ],
     [
-     "F_AMINE_1",
-     "F_ARYLAMINE"
+     "F_7TP4VNHE",
+     "F_UY2ANYI2"
     ]
    ],
    "forms": [
     [
-     "F_IMINE"
+     "F_LPMNZ3FU"
     ]
    ],
    "acidBase": null,
@@ -4508,17 +4508,17 @@ window.REACTION_RULES = {
    "conditions": "amine, NaBH3CN, MeOH, pH 6",
    "consumes": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ],
     [
-     "F_AMINE_1",
-     "F_AMINE_2"
+     "F_7TP4VNHE",
+     "F_AOQ6WODX"
     ]
    ],
    "forms": [
     [
-     "F_AMINE_2"
+     "F_AOQ6WODX"
     ]
    ],
    "acidBase": null,
@@ -4631,20 +4631,20 @@ window.REACTION_RULES = {
    "conditions": "NaOH, EtOH/water, rt",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ],
     [
-     "F_ALDEHYDE"
+     "F_ADOAMFFM"
     ]
    ],
    "forms": [
     [
-     "F_ENONE"
+     "F_QTJCKBIJ"
     ]
    ],
    "acidBase": {
     "role": "base",
-    "frag": "F_KETONE",
+    "frag": "F_CFJ46WPI",
     "min": -5.0
    },
    "group": "",
@@ -4776,12 +4776,12 @@ window.REACTION_RULES = {
    "conditions": "mCPBA, CH2Cl2, rt",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "acidBase": null,
@@ -4872,15 +4872,15 @@ window.REACTION_RULES = {
    "conditions": "NaOH (aq), reflux; then HCl",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -4999,16 +4999,16 @@ window.REACTION_RULES = {
    "conditions": "amine, pyridine, CH2Cl2, 0 °C",
    "consumes": [
     [
-     "F_ACYL_CHLORIDE"
+     "F_7W5VQUT2"
     ],
     [
-     "F_AMINE_1",
-     "F_ARYLAMINE"
+     "F_7TP4VNHE",
+     "F_UY2ANYI2"
     ]
    ],
    "forms": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "acidBase": null,
@@ -5101,12 +5101,12 @@ window.REACTION_RULES = {
    "conditions": "Ac2O, a drop of H3PO4, 85 °C",
    "consumes": [
     [
-     "F_PHENOL"
+     "F_EBFEFTNC"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "acidBase": null,
@@ -5205,12 +5205,12 @@ window.REACTION_RULES = {
    "conditions": "dilute aqueous H2SO4, rt",
    "consumes": [
     [
-     "F_EPOXIDE"
+     "F_GUG35WZM"
     ]
    ],
    "forms": [
     [
-     "F_DIOL_1_2"
+     "F_VHRSWB64"
     ]
    ],
    "acidBase": null,
@@ -5305,15 +5305,15 @@ window.REACTION_RULES = {
    "conditions": "diene + dienophile, xylene, reflux",
    "consumes": [
     [
-     "F_CONJUGATED_DIENE"
+     "F_DRXF7R5Y"
     ],
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "acidBase": null,
@@ -5372,15 +5372,15 @@ window.REACTION_RULES = {
    "conditions": "MeMgBr (2 equiv), dry ether; then aqueous acid",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_3"
+     "F_Z6ABGO4G"
     ],
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -5497,12 +5497,12 @@ window.REACTION_RULES = {
    "conditions": "HCl, no peroxide",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_CHLORIDE"
+     "F_77XITLZ4"
     ]
    ],
    "acidBase": null,
@@ -5532,12 +5532,12 @@ window.REACTION_RULES = {
    "conditions": "HI",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_IODIDE"
+     "F_OM2L6LN4"
     ]
    ],
    "acidBase": null,
@@ -5567,12 +5567,12 @@ window.REACTION_RULES = {
    "conditions": "Cl2, CH2Cl2, rt, dark",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_CHLORIDE"
+     "F_77XITLZ4"
     ]
    ],
    "acidBase": null,
@@ -5602,12 +5602,12 @@ window.REACTION_RULES = {
    "conditions": "Hg(OAc)2, THF/water; then NaBH4",
    "consumes": [
     [
-     "F_ALKENE_TERMINAL"
+     "F_674FQ44T"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_3"
+     "F_Z6ABGO4G"
     ]
    ],
    "acidBase": null,
@@ -5643,12 +5643,12 @@ window.REACTION_RULES = {
    "conditions": "hot, concentrated KMnO4; acid work-up",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -5684,12 +5684,12 @@ window.REACTION_RULES = {
    "conditions": "Br2 (2 equiv), CH2Cl2",
    "consumes": [
     [
-     "F_ALKYNE"
+     "F_YAW5EFKQ"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -5719,12 +5719,12 @@ window.REACTION_RULES = {
    "conditions": "HBr (2 equiv)",
    "consumes": [
     [
-     "F_ALKYNE_TERMINAL"
+     "F_UNMQWRQR"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -5754,12 +5754,12 @@ window.REACTION_RULES = {
    "conditions": "9-BBN (bulky borane), THF; then H2O2, NaOH",
    "consumes": [
     [
-     "F_ALKYNE_TERMINAL"
+     "F_UNMQWRQR"
     ]
    ],
    "forms": [
     [
-     "F_ALDEHYDE"
+     "F_ADOAMFFM"
     ]
    ],
    "acidBase": null,
@@ -5789,7 +5789,7 @@ window.REACTION_RULES = {
    "conditions": "CH2I2, Zn–Cu couple, ether",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [],
@@ -5823,7 +5823,7 @@ window.REACTION_RULES = {
    "consumes": [],
    "forms": [
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -5861,12 +5861,12 @@ window.REACTION_RULES = {
    "conditions": "Cl2, FeCl3 (Lewis acid)",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ]
    ],
    "forms": [
     [
-     "F_ARYL_CHLORIDE"
+     "F_YYVXALOV"
     ]
    ],
    "acidBase": null,
@@ -5902,12 +5902,12 @@ window.REACTION_RULES = {
    "conditions": "SO3 in H2SO4",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ]
    ],
    "forms": [
     [
-     "F_ARENESULFONIC_ACID"
+     "F_TH2DYID6"
     ]
    ],
    "acidBase": null,
@@ -5937,12 +5937,12 @@ window.REACTION_RULES = {
    "conditions": "Zn(Hg) amalgam, conc. HCl, reflux",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_ALKYL_ARENE"
+     "F_W4GPHE3A"
     ]
    ],
    "acidBase": null,
@@ -5981,7 +5981,7 @@ window.REACTION_RULES = {
    "conditions": "hydrazine, KOH, ethylene glycol, 200 °C",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [],
@@ -6020,12 +6020,12 @@ window.REACTION_RULES = {
    "conditions": "Na, liquid NH3, EtOH, -33 °C",
    "consumes": [
     [
-     "F_ARENE_CH"
+     "F_7GV2Y2WW"
     ]
    ],
    "forms": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "acidBase": null,
@@ -6065,12 +6065,12 @@ window.REACTION_RULES = {
    "conditions": "Br2, water, rt",
    "consumes": [
     [
-     "F_PHENOL"
+     "F_EBFEFTNC"
     ]
    ],
    "forms": [
     [
-     "F_ARYL_BROMIDE"
+     "F_H6H7YAKN"
     ]
    ],
    "acidBase": null,
@@ -6109,12 +6109,12 @@ window.REACTION_RULES = {
    "conditions": "SOCl2, reflux",
    "consumes": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "forms": [
     [
-     "F_NITRILE"
+     "F_OWKLY6DL"
     ]
    ],
    "acidBase": null,
@@ -6152,12 +6152,12 @@ window.REACTION_RULES = {
    "conditions": "aqueous H2SO4, reflux",
    "consumes": [
     [
-     "F_NITRILE"
+     "F_OWKLY6DL"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -6196,12 +6196,12 @@ window.REACTION_RULES = {
    "conditions": "LiAlH4, dry THF; then water",
    "consumes": [
     [
-     "F_NITRILE"
+     "F_OWKLY6DL"
     ]
    ],
    "forms": [
     [
-     "F_AMINE_1"
+     "F_7TP4VNHE"
     ]
    ],
    "acidBase": null,
@@ -6237,7 +6237,7 @@ window.REACTION_RULES = {
    "conditions": "LiAlH4, dry THF; then water",
    "consumes": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "forms": [],
@@ -6274,12 +6274,12 @@ window.REACTION_RULES = {
    "conditions": "LiAlH4, dry THF; then acid",
    "consumes": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_1"
+     "F_7WIM5VKY"
     ]
    ],
    "acidBase": null,
@@ -6315,12 +6315,12 @@ window.REACTION_RULES = {
    "conditions": "DIBAL-H, CH2Cl2, -78 °C; then water",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "forms": [
     [
-     "F_ALDEHYDE"
+     "F_ADOAMFFM"
     ]
    ],
    "acidBase": null,
@@ -6358,12 +6358,12 @@ window.REACTION_RULES = {
    "conditions": "PhMgBr, dry ether; then acid",
    "consumes": [
     [
-     "F_EPOXIDE"
+     "F_GUG35WZM"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_1"
+     "F_7WIM5VKY"
     ]
    ],
    "acidBase": null,
@@ -6399,12 +6399,12 @@ window.REACTION_RULES = {
    "conditions": "n-BuLi, THF, -78 °C; then acid",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_ALCOHOL_3"
+     "F_Z6ABGO4G"
     ]
    ],
    "acidBase": null,
@@ -6440,12 +6440,12 @@ window.REACTION_RULES = {
    "conditions": "Me2CuLi, ether, 0 °C; then water",
    "consumes": [
     [
-     "F_ENONE"
+     "F_QTJCKBIJ"
     ]
    ],
    "forms": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -6481,18 +6481,18 @@ window.REACTION_RULES = {
    "conditions": "NaOEt (cat.), EtOH",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ],
     [
-     "F_ENONE"
+     "F_QTJCKBIJ"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ],
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -6522,15 +6522,15 @@ window.REACTION_RULES = {
    "conditions": "NaOEt, EtOH, reflux; then acid",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ],
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -6560,15 +6560,15 @@ window.REACTION_RULES = {
    "conditions": "conc. NaOH, heat; then acid",
    "consumes": [
     [
-     "F_ALDEHYDE"
+     "F_ADOAMFFM"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -6604,12 +6604,12 @@ window.REACTION_RULES = {
    "conditions": "I2, NaOH; acid work-up",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -6641,15 +6641,15 @@ window.REACTION_RULES = {
    "conditions": "Br2, AcOH",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ],
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -6687,15 +6687,15 @@ window.REACTION_RULES = {
    "conditions": "Br2, PBr3 (cat.); then water",
    "consumes": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_ALKYL_BROMIDE"
+     "F_EDNDOOMT"
     ]
    ],
    "acidBase": null,
@@ -6725,15 +6725,15 @@ window.REACTION_RULES = {
    "conditions": "aqueous H2SO4, reflux",
    "consumes": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_ARYLAMINE"
+     "F_UY2ANYI2"
     ]
    ],
    "acidBase": null,
@@ -6774,15 +6774,15 @@ window.REACTION_RULES = {
    "conditions": "ROH, pyridine, CH2Cl2, 0 °C",
    "consumes": [
     [
-     "F_ACYL_CHLORIDE"
+     "F_7W5VQUT2"
     ],
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "acidBase": null,
@@ -6814,12 +6814,12 @@ window.REACTION_RULES = {
    "conditions": "water, rt",
    "consumes": [
     [
-     "F_ACYL_CHLORIDE"
+     "F_7W5VQUT2"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -6851,13 +6851,13 @@ window.REACTION_RULES = {
    "conditions": "Ac2O, rt",
    "consumes": [
     [
-     "F_ARYLAMINE",
-     "F_AMINE_1"
+     "F_UY2ANYI2",
+     "F_7TP4VNHE"
     ]
    ],
    "forms": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "acidBase": null,
@@ -6887,12 +6887,12 @@ window.REACTION_RULES = {
    "conditions": "Br2, NaOH (aq), warm",
    "consumes": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "forms": [
     [
-     "F_ARYLAMINE"
+     "F_UY2ANYI2"
     ]
    ],
    "acidBase": null,
@@ -6928,15 +6928,15 @@ window.REACTION_RULES = {
    "conditions": "dilute aqueous acid",
    "consumes": [
     [
-     "F_ACETAL_KETAL"
+     "F_Z7L4L6RQ"
     ]
    ],
    "forms": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ],
     [
-     "F_DIOL_1_2"
+     "F_VHRSWB64"
     ]
    ],
    "acidBase": null,
@@ -6972,12 +6972,12 @@ window.REACTION_RULES = {
    "conditions": "Ag(NH3)2+, NH3 (aq); then acid",
    "consumes": [
     [
-     "F_ALDEHYDE"
+     "F_ADOAMFFM"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -7009,13 +7009,13 @@ window.REACTION_RULES = {
    "conditions": "DMSO, oxalyl chloride, CH2Cl2, -78 °C; then Et3N",
    "consumes": [
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "forms": [
     [
-     "F_ALDEHYDE",
-     "F_KETONE"
+     "F_ADOAMFFM",
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -7055,12 +7055,12 @@ window.REACTION_RULES = {
    "conditions": "H2SO4, heat",
    "consumes": [
     [
-     "F_DIOL_1_2"
+     "F_VHRSWB64"
     ]
    ],
    "forms": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "acidBase": null,
@@ -7096,12 +7096,12 @@ window.REACTION_RULES = {
    "conditions": "conc. H2SO4 (or PCl5), heat",
    "consumes": [
     [
-     "F_OXIME"
+     "F_KKIIQEFP"
     ]
    ],
    "forms": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "acidBase": null,
@@ -7139,12 +7139,12 @@ window.REACTION_RULES = {
    "conditions": "hydroxylamine, mild acid",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_OXIME"
+     "F_KKIIQEFP"
     ]
    ],
    "acidBase": null,
@@ -7174,15 +7174,15 @@ window.REACTION_RULES = {
    "conditions": "HCN with a little KCN",
    "consumes": [
     [
-     "F_KETONE"
+     "F_CFJ46WPI"
     ]
    ],
    "forms": [
     [
-     "F_NITRILE"
+     "F_OWKLY6DL"
     ],
     [
-     "F_ALCOHOL_3"
+     "F_Z6ABGO4G"
     ]
    ],
    "acidBase": null,
@@ -7214,15 +7214,15 @@ window.REACTION_RULES = {
    "conditions": "DCC, CH2Cl2, rt",
    "consumes": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_AMINE_1"
+     "F_7TP4VNHE"
     ]
    ],
    "forms": [
     [
-     "F_AMIDE"
+     "F_F3X5X5PO"
     ]
    ],
    "acidBase": null,
@@ -7252,15 +7252,15 @@ window.REACTION_RULES = {
    "conditions": "dilute acid, excess water, reflux",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ],
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -7299,18 +7299,18 @@ window.REACTION_RULES = {
    "conditions": "ethanol (solvent, excess), NaOEt",
    "consumes": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ],
     [
-     "F_ALCOHOL_1"
+     "F_7WIM5VKY"
     ]
    ],
    "forms": [
     [
-     "F_ESTER"
+     "F_N4PYCJQX"
     ],
     [
-     "F_ALCOHOL_SP3"
+     "F_CQJBM3VA"
     ]
    ],
    "acidBase": null,
@@ -7340,10 +7340,10 @@ window.REACTION_RULES = {
    "conditions": "NaOH (makes the phenoxide), MeI",
    "consumes": [
     [
-     "F_PHENOL"
+     "F_EBFEFTNC"
     ],
     [
-     "F_METHYL_HALIDE"
+     "F_KNBZHWVH"
     ]
    ],
    "forms": [],
@@ -7374,15 +7374,15 @@ window.REACTION_RULES = {
    "conditions": "NaOMe, MeOH",
    "consumes": [
     [
-     "F_EPOXIDE"
+     "F_GUG35WZM"
     ]
    ],
    "forms": [
     [
-     "F_ETHER_DIALKYL"
+     "F_GWWY5MAP"
     ],
     [
-     "F_ALCOHOL_2"
+     "F_JIOCZMVT"
     ]
    ],
    "acidBase": null,
@@ -7412,12 +7412,12 @@ window.REACTION_RULES = {
    "conditions": "O3, -78 °C; then H2O2",
    "consumes": [
     [
-     "F_ALKENE"
+     "F_43XPC2LW"
     ]
    ],
    "forms": [
     [
-     "F_CARBOXYLIC_ACID"
+     "F_WH4T6PP5"
     ]
    ],
    "acidBase": null,
@@ -7455,12 +7455,12 @@ window.REACTION_RULES = {
    "conditions": "NaNH2 (2 equiv), liquid NH3",
    "consumes": [
     [
-     "F_VICINAL_DIBROMIDE"
+     "F_D6B2Q4UF"
     ]
    ],
    "forms": [
     [
-     "F_ALKYNE"
+     "F_YAW5EFKQ"
     ]
    ],
    "acidBase": null,
@@ -8712,619 +8712,619 @@ window.REACTION_RULES = {
   }
  },
  "fragments": {
-  "F_CARBOXYLIC_ACID": {
+  "F_WH4T6PP5": {
    "name": "carboxylic acid",
    "smarts": "[#6X3;$([#6](=[OX1])~[#6]),$([#6;H1]=[OX1])](=[OX1])[OX2H1]",
    "pKa": 4.8,
    "pKaH": -6.0
   },
-  "F_AMINE_1": {
+  "F_7TP4VNHE": {
    "name": "amine (1°)",
    "smarts": "[NX3;H2;+0;!$(N~[!#6;!#1]);!$(N-[#6]=[!#6]);!$(N-[#6]#[!#6])]-[#6]",
    "pKa": 35.0,
    "pKaH": 10.7
   },
-  "F_ALCOHOL_1": {
+  "F_7WIM5VKY": {
    "name": "alcohol (1°)",
    "smarts": "[OX2H1]-[CX4;!$(C(-[OX2H1])-[!#6;!#1]);!$(C(-[#6])-[#6])]-[#6]",
    "pKa": 16.0,
    "pKaH": -2.0
   },
-  "F_ESTER": {
+  "F_N4PYCJQX": {
    "name": "ester",
    "smarts": "[#6X3;$([#6](=[OX1])~[#6]),$([#6;H1]=[OX1])](=[OX1])[#8X2][#6]",
    "pKa": 25.0,
    "pKaH": -6.5
   },
-  "F_ALKENE": {
+  "F_43XPC2LW": {
    "name": "alkene (C=C)",
    "smarts": "[CX3]=[CX3]",
    "pKa": 44.0,
    "pKaH": null
   },
-  "F_ALKENE_TERMINAL": {
+  "F_674FQ44T": {
    "name": "alkene, terminal (=CH2)",
    "smarts": "[CX3]=[CX3;H2]",
    "pKa": 44.0,
    "pKaH": null
   },
-  "F_ALKYNE": {
+  "F_YAW5EFKQ": {
    "name": "alkyne (C≡C)",
    "smarts": "[CX2]#[CX2]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYNE_TERMINAL": {
+  "F_UNMQWRQR": {
    "name": "alkyne, terminal (C≡C–H)",
    "smarts": "[CX2]#[CX2;H1]",
    "pKa": 25.0,
    "pKaH": null
   },
-  "F_ARENE_CH": {
+  "F_7GV2Y2WW": {
    "name": "arene C–H",
    "smarts": "[cH]",
    "pKa": 43.0,
    "pKaH": null
   },
-  "F_ALKYL_BROMIDE": {
+  "F_EDNDOOMT": {
    "name": "alkyl bromide",
    "smarts": "[CX4][Br]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYL_CHLORIDE": {
+  "F_77XITLZ4": {
    "name": "alkyl chloride",
    "smarts": "[CX4][Cl]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYL_IODIDE": {
+  "F_OM2L6LN4": {
    "name": "alkyl iodide",
    "smarts": "[CX4][I]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARYL_BROMIDE": {
+  "F_H6H7YAKN": {
    "name": "aryl bromide",
    "smarts": "c[Br]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALCOHOL_SP3": {
+  "F_CQJBM3VA": {
    "name": "alcohol (on sp3 C)",
    "smarts": "[CX4][OX2H]",
    "pKa": 16.0,
    "pKaH": -2.0
   },
-  "F_ALCOHOL_2": {
+  "F_JIOCZMVT": {
    "name": "alcohol (2°)",
    "smarts": "[CX4;H1]([#6])([#6])[OX2H]",
    "pKa": 17.0,
    "pKaH": -2.0
   },
-  "F_ALCOHOL_3": {
+  "F_Z6ABGO4G": {
    "name": "alcohol (3°)",
    "smarts": "[CX4;H0]([#6])([#6])([#6])[OX2H]",
    "pKa": 18.0,
    "pKaH": -2.0
   },
-  "F_DIOL_1_2": {
+  "F_VHRSWB64": {
    "name": "1,2-diol",
    "smarts": "[OX2H][CX4][CX4][OX2H]",
    "pKa": 15.0,
    "pKaH": null
   },
-  "F_ALDEHYDE": {
+  "F_ADOAMFFM": {
    "name": "aldehyde",
    "smarts": "[CX3H1](=O)[#6]",
    "pKa": 17.0,
    "pKaH": -8.0
   },
-  "F_KETONE": {
+  "F_CFJ46WPI": {
    "name": "ketone",
    "smarts": "[#6][CX3](=O)[#6]",
    "pKa": 19.0,
    "pKaH": -7.0
   },
-  "F_ACYL_CHLORIDE": {
+  "F_7W5VQUT2": {
    "name": "acyl chloride",
    "smarts": "[CX3](=O)Cl",
    "pKa": null,
    "pKaH": null
   },
-  "F_AMIDE": {
+  "F_F3X5X5PO": {
    "name": "amide",
    "smarts": "[CX3](=O)[NX3]",
    "pKa": 17.0,
    "pKaH": -0.5
   },
-  "F_NITRILE": {
+  "F_OWKLY6DL": {
    "name": "nitrile",
    "smarts": "[CX2]#[NX1]",
    "pKa": 31.0,
    "pKaH": -10.0
   },
-  "F_EPOXIDE": {
+  "F_GUG35WZM": {
    "name": "epoxide",
    "smarts": "[CX4]1[OX2][CX4]1",
    "pKa": null,
    "pKaH": null
   },
-  "F_ETHER_DIALKYL": {
+  "F_GWWY5MAP": {
    "name": "ether (dialkyl)",
    "smarts": "[OD2;!$(O[#6]=O);!$(O1CC1)]([CX4])[CX4]",
    "pKa": null,
    "pKaH": -3.5
   },
-  "F_NITROARENE": {
+  "F_5J6B3EOP": {
    "name": "nitroarene",
    "smarts": "c[N+](=O)[O-]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARYLAMINE": {
+  "F_UY2ANYI2": {
    "name": "arylamine (aniline NH2)",
    "smarts": "c[NX3;H2]",
    "pKa": 30.0,
    "pKaH": 4.6
   },
-  "F_ARYL_DIAZONIUM": {
+  "F_UUBBBRAY": {
    "name": "aryl diazonium",
    "smarts": "c[N+]#N",
    "pKa": null,
    "pKaH": null
   },
-  "F_PHENOL": {
+  "F_EBFEFTNC": {
    "name": "phenol",
    "smarts": "c[OX2H]",
    "pKa": 10.0,
    "pKaH": null
   },
-  "F_GRIGNARD": {
+  "F_F6IICZMJ": {
    "name": "Grignard (C–MgBr)",
    "smarts": "[#6][Mg]Br",
    "pKa": 45.0,
    "pKaH": null
   },
-  "F_CONJUGATED_DIENE": {
+  "F_DRXF7R5Y": {
    "name": "conjugated diene",
    "smarts": "[CX3]=[CX3][CX3]=[CX3]",
    "pKa": null,
    "pKaH": null
   },
-  "F_IMINE": {
+  "F_LPMNZ3FU": {
    "name": "imine",
    "smarts": "[CX3]=[NX2]",
    "pKa": null,
    "pKaH": 7.0
   },
-  "F_VICINAL_DIBROMIDE": {
+  "F_D6B2Q4UF": {
    "name": "vicinal dibromide",
    "smarts": "[CX4](Br)[CX4]Br",
    "pKa": null,
    "pKaH": null
   },
-  "F_BROMOHYDRIN": {
+  "F_FJ2AGXG4": {
    "name": "halohydrin (bromohydrin)",
    "smarts": "[CX4]([OX2H])[CX4]Br",
    "pKa": null,
    "pKaH": null
   },
-  "F_AMINE_2": {
+  "F_AOQ6WODX": {
    "name": "amine (2°)",
    "smarts": "[NX3;H1;!$(NC=O);!$(N-c)]([CX4])[CX4]",
    "pKa": 36.0,
    "pKaH": 11.0
   },
-  "F_ARYL_METHYL": {
+  "F_W7EG4A5W": {
    "name": "aryl methyl (benzylic C–H)",
    "smarts": "c[CH3]",
    "pKa": 41.0,
    "pKaH": null
   },
-  "F_BENZYLIC_BROMIDE": {
+  "F_J2RF4BYK": {
    "name": "benzylic bromide",
    "smarts": "c[CH2]Br",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALLYLIC_CH2": {
+  "F_DHYVCP7A": {
    "name": "allylic CH2",
    "smarts": "[CX3]=[CX3][CH2]",
    "pKa": 43.0,
    "pKaH": null
   },
-  "F_ALKYL_ARENE": {
+  "F_W4GPHE3A": {
    "name": "alkyl arene (aryl–C sp3)",
    "smarts": "c[CX4]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ACETAL_KETAL": {
+  "F_Z7L4L6RQ": {
    "name": "acetal / ketal",
    "smarts": "[CX4](-[OX2]-[#6])-[OX2]-[#6]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ENONE": {
+  "F_QTJCKBIJ": {
    "name": "enone (α,β-unsaturated carbonyl)",
    "smarts": "[CX3]=[CX3][CX3](=O)[#6]",
    "pKa": null,
    "pKaH": null
   },
-  "F_METHYL_HALIDE": {
+  "F_KNBZHWVH": {
    "name": "methyl halide",
    "smarts": "[CH3X4][Cl,Br,I]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYL_HALIDE_1": {
+  "F_OSWUXBJP": {
    "name": "alkyl halide (1°)",
    "smarts": "[CH2X4]([#6])[Cl,Br,I]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYL_HALIDE_2": {
+  "F_4KF4VNAH": {
    "name": "alkyl halide (2°)",
    "smarts": "[CH1X4]([#6])([#6])[Cl,Br,I]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYL_HALIDE_3": {
+  "F_YUNA7OOT": {
    "name": "alkyl halide (3°)",
    "smarts": "[CX4H0]([#6])([#6])([#6])[Cl,Br,I]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALUMINIUM_HYDRIDE": {
+  "F_WYH6KVDM": {
    "name": "aluminium hydride (LiAlH4)",
    "smarts": "[AlH4-]",
    "pKa": null,
    "pKaH": 35.0
   },
-  "F_ANHYDRIDE": {
+  "F_IOJJ46QM": {
    "name": "carboxylic anhydride",
    "smarts": "[CX3](=O)[OX2][CX3](=O)",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARYL_CHLORIDE": {
+  "F_YYVXALOV": {
    "name": "aryl chloride",
    "smarts": "c[Cl]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARENESULFONIC_ACID": {
+  "F_TH2DYID6": {
    "name": "arenesulfonic acid",
    "smarts": "cS(=O)(=O)[OX2H1]",
    "pKa": -2.8,
    "pKaH": null
   },
-  "F_OXIME": {
+  "F_KKIIQEFP": {
    "name": "oxime",
    "smarts": "[CX3]=[NX2][OX2H1]",
    "pKa": 11.0,
    "pKaH": null
   },
-  "F_ARYL_ALKYL_ETHER": {
+  "F_UHD3N3ZP": {
    "name": "aryl alkyl ether (Ar–O–R; anisole-type, incl. methoxy-azines)",
    "smarts": "[c]-[OX2]-[CX4;!$(C(F)F)]",
    "pKa": 43.0,
    "pKaH": -6.5
   },
-  "F_IMIDATE": {
+  "F_EERNJGZA": {
    "name": "imidate / lactim ether (R–O–C=N, incl. 2-/4-alkoxy-azines)",
    "smarts": "[CX4]-[OX2]-[$(c:[nX2]),$(c1:a:a:[nX2]:a:a:1),$([CX3]=[NX2])]",
    "pKa": null,
    "pKaH": 3.3
   },
-  "F_SILYL_ETHER": {
+  "F_J2K7DGKF": {
    "name": "silyl ether / N-silyl (TMS, TES, TBS, TIPS, TBDPS on O or N)",
    "smarts": "[$([OX2]-[#6]),$([#7;X3;+0;!$([#7]([Si])[Si])])]-[Si;X4;$([Si]-[#6])]",
    "pKa": 16.0,
    "pKaH": -2.0
   },
-  "F_C_SILYL": {
+  "F_6OE4YDC3": {
    "name": "C-silyl group (organosilane: TMS/TES/TIPS-alkyne, aryl-SiR3, Me3Si–CH2 groups)",
    "smarts": "[Si;X4;!$([Si]-C#N)](-[#6])(-[#6])(-[#6])-[#6]",
    "pKa": 25.0,
    "pKaH": null
   },
-  "F_CHLOROSILANE": {
+  "F_UCXTN7QM": {
    "name": "chlorosilane (R3SiCl, RSiCl3)",
    "smarts": "[SiX4]-Cl",
    "pKa": null,
    "pKaH": null
   },
-  "F_AZIDE": {
+  "F_ELZWELDO": {
    "name": "organic azide (R–N3, alkyl or aryl)",
    "smarts": "[#6]-[NX2]=[N+]=[N-]",
    "pKa": 3.0,
    "pKaH": -5.0
   },
-  "F_NITROALKANE": {
+  "F_E6XU5RMC": {
    "name": "nitroalkane (R–NO2 on sp3 C)",
    "smarts": "[CX4]-[N+](=[OX1])-[OX1-]",
    "pKa": 10.0,
    "pKaH": -12.0
   },
-  "F_NITROSO": {
+  "F_S7TAL57S": {
    "name": "nitroso (C–N=O or N–N=O)",
    "smarts": "[#6,#7]-[NX2]=[OX1]",
    "pKa": null,
    "pKaH": null
   },
-  "F_CARBOXYLATE": {
+  "F_3UVA2HDQ": {
    "name": "carboxylate anion (RCO2⁻ salt)",
    "smarts": "[#6]-[CX3](=[OX1])-[OX1-]",
    "pKa": null,
    "pKaH": 4.8
   },
-  "F_SULFINATE_SULFONATE": {
+  "F_NATCGA6A": {
    "name": "sulfinate / sulfonate anion (RSO2⁻, RSO3⁻ salt)",
    "smarts": "[#6]-[S;$([SX3](=[OX1])-[OX1-]),$([SX4](=[OX1])(=[OX1])-[OX1-])]",
    "pKa": null,
    "pKaH": 2.0
   },
-  "F_HYDROXIDE_ALKOXIDE": {
+  "F_BLUS3XKO": {
    "name": "hydroxide / alkoxide (HO⁻, MeO⁻, EtO⁻, tBuO⁻)",
    "smarts": "[O-;X1;$([OH-]),$([O-]-[CX4])]",
    "pKa": null,
    "pKaH": 2.0
   },
-  "F_CYANIDE": {
+  "F_NY7AYBRA": {
    "name": "cyanide (CN⁻ salts, CuCN, Zn(CN)2, TMSCN)",
    "smarts": "[C;$([C-]#[NX1]),$(C(#[NX1])[Cu,Zn,Si])]",
    "pKa": null,
    "pKaH": 9.2
   },
-  "F_CYANOGEN_HALIDE": {
+  "F_VOBBL45A": {
    "name": "cyanogen halide (BrCN, ClCN)",
    "smarts": "[CX2](#[NX1])-[Cl,Br,I]",
    "pKa": null,
    "pKaH": null
   },
-  "F_PEROXIDE": {
+  "F_NBVC3ZK3": {
    "name": "peroxide oxidant (O–O: H2O2, peracids, Oxone)",
    "smarts": "[OX2]-[OX2]",
    "pKa": 11.6,
    "pKaH": null
   },
-  "F_SULFONYL_CHLORIDE": {
+  "F_L6MZYAQB": {
    "name": "sulfonyl chloride and other sulfonylating agents (R–SO2Cl, sulfamoyl chloride, Tf2O, C6F5O-sulfonate)",
    "smarts": "[#6,#7]-[SX4](=[OX1])(=[OX1])-[$([Cl]),$([OX2](-[SX4](=[OX1])=[OX1])-[SX4](=[OX1])=[OX1]),$([OX2]-c1c(F)c(F)c(F)c(F)c1F)]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARYL_ENOL_SULFONATE": {
+  "F_L6VTMA27": {
    "name": "aryl / enol sulfonate ester (Ar–OTf, vinyl-OTf, Ar–OMs, Ar–OTs)",
    "smarts": "[$(c),$([CX3]=[CX3])]-[OX2]-[SX4](=[OX1])(=[OX1])-[#6]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ALKYL_SULFONATE": {
+  "F_Y7BIL7MW": {
    "name": "alkyl sulfonate / sulfate ester (R–OMs, R–OTs, R–OTf, Me2SO4, cyclic sulfamidate)",
    "smarts": "[CX4]-[OX2]-[SX4](=[OX1])(=[OX1])-[#6,#7,$([OX2]-[CX4])]",
    "pKa": null,
    "pKaH": null
   },
-  "F_SULFONAMIDE_1": {
+  "F_PURMGXG6": {
    "name": "sulfonamide, primary (R–SO2NH2)",
    "smarts": "[NX3;H2;+0]-[SX4](=[OX1])(=[OX1])-[#6,#7]",
    "pKa": 10.1,
    "pKaH": -6.0
   },
-  "F_SULFONAMIDE_2": {
+  "F_3SKBXPIY": {
    "name": "sulfonamide N–H, secondary (R–SO2NH–R′, incl. sultam)",
    "smarts": "[NX3;H1;+0;!$(N-C=O)](-[#6])-[SX4](=[OX1])(=[OX1])-[#6,#7]",
    "pKa": 8.5,
    "pKaH": -6.0
   },
-  "F_BIS_SULFONYLAMINE": {
+  "F_7YSU7T4D": {
    "name": "N,N-bis(sulfonyl)amine (over-sulfonylated aniline, ArN(SO2R)2)",
    "smarts": "[NX3;+0](-[SX4](=[OX1])(=[OX1])-[#6])-[SX4](=[OX1])(=[OX1])-[#6]",
    "pKa": null,
    "pKaH": null
   },
-  "F_SULFINAMIDE": {
+  "F_3Y23J4GX": {
    "name": "sulfinamide / N-sulfinyl imine (Ellman tert-butanesulfinyl)",
    "smarts": "[#6]-[SX3](=[OX1])-[#7]",
    "pKa": 25.0,
    "pKaH": 0.0
   },
-  "F_SULFONE_SULFOXIDE": {
+  "F_66D4FM65": {
    "name": "sulfone / sulfoxide (incl. 2-alkylsulfonyl-azine SNAr leaving group)",
    "smarts": "[#6]-[S;$([SX3]=[OX1]),$([SX4](=[OX1])=[OX1])]-[#6]",
    "pKa": 29.0,
    "pKaH": -2.0
   },
-  "F_THIOL": {
+  "F_RTHLR62E": {
    "name": "thiol / thiolate (R–SH, Ar–SH, RS⁻; heteroaryl thiol ⇌ thione)",
    "smarts": "[#16;$([SX2H1]-[#6;!$([#6]=[O,S])]),$([SX1-]-[#6;!$([#6]=[O,S])]),$([SX1]=c:[nH])]",
    "pKa": 6.6,
    "pKaH": -7.0
   },
-  "F_THIOETHER": {
+  "F_WUYH6XV3": {
    "name": "thioether (dialkyl / aryl alkyl sulfide, incl. 2-methylthio-azine)",
    "smarts": "[#6;!$([#6]=[O,S,N])]-[SX2;+0]-[#6;!$([#6]=[O,S,N])]",
    "pKa": 42.0,
    "pKaH": -7.0
   },
-  "F_THIOESTER": {
+  "F_NNHZ2V7J": {
    "name": "thioester (S-acyl: thioacetate R–SAc, S-alkyl thiocarbonate)",
    "smarts": "[#6]-[SX2]-[CX3]=[OX1]",
    "pKa": 21.0,
    "pKaH": null
   },
-  "F_THIOACETATE_ANION": {
+  "F_54IEU5KA": {
    "name": "thioacetate anion (KSAc, RC(O)S⁻)",
    "smarts": "[#6]-[CX3;$(C(=[OX1])-[SX1-]),$(C(=[SX1])-[OX1-])]",
    "pKa": null,
    "pKaH": 3.4
   },
-  "F_THIOCARBONYL": {
+  "F_GQ7G2E2T": {
    "name": "thiocarbonyl (thioamide / thiolactam, thiourea, thionoester, dithiocarbamate)",
    "smarts": "[SX1]=[CX3;!a;!$(C-[OX1-])]-[#7,#8,#16]",
    "pKa": 13.0,
    "pKaH": -1.0
   },
-  "F_CARBAMATE": {
+  "F_OE4EQYFD": {
    "name": "carbamate (N–CO2R: Boc, Cbz, Moc, Eoc)",
    "smarts": "[#7]-[CX3](=[OX1])-[OX2]-[CX4]",
    "pKa": 24.0,
    "pKaH": -1.0
   },
-  "F_TERT_BUTYL_GROUP": {
+  "F_EKZKEVUW": {
    "name": "tert-butyl protecting group (Boc, t-Bu ester / ether / carbonate / phosphate, N-t-Bu azole, N-t-Bu sulfonamide / aminoazine)",
    "smarts": "[CH3][CX4]([CH3])([CH3])-[$([OX2H0]),$(n),$([NX3;H1]-[SX4](=[OX1])=[OX1]),$([NX3;H1]-c:[nX2])]",
    "pKa": null,
    "pKaH": -6.5
   },
-  "F_CARBONATE": {
+  "F_BPZQSOZQ": {
    "name": "carbonate ester (aryl/alkyl carbonate, O-Boc phenol)",
    "smarts": "[#6;!$([#6]=[O,S])]-[OX2]-[CX3](=[OX1])-[OX2]-[#6;!$([#6]=[O,S])]",
    "pKa": null,
    "pKaH": null
   },
-  "F_N_ACYL_AZOLE": {
+  "F_R65BRROR": {
    "name": "N-acyl / N-alkoxycarbonyl / N-sulfonyl azole (activated azolide)",
    "smarts": "[n;r5]-[$([CX3](=[OX1])[#6,#8]),$([SX4](=[OX1])(=[OX1])[#6])]",
    "pKa": null,
    "pKaH": 3.6
   },
-  "F_BORONIC_ACID": {
+  "F_ZQNACBZ5": {
    "name": "boronic acid (aryl / heteroaryl / vinyl / cyclopropyl B(OH)2)",
    "smarts": "[#6]-[BX3](-[OX2H1])-[OX2H1]",
    "pKa": 8.8,
    "pKaH": null
   },
-  "F_PINACOL_BORONATE": {
+  "F_D6D2SHBS": {
    "name": "pinacol boronate ester (Ar/vinyl–Bpin)",
    "smarts": "[#6]-[BX3]1-[OX2]-C(-[CH3])(-[CH3])-C(-[CH3])(-[CH3])-[OX2]-1",
    "pKa": 2.0,
    "pKaH": null
   },
-  "F_ORGANOSTANNANE": {
+  "F_MZ5ZIRZW": {
    "name": "organostannane (R–SnBu3, Stille reagent)",
    "smarts": "[Sn](-[#6])(-[#6])(-[#6])-[#6]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARYL_IODIDE": {
+  "F_EITZ3KQK": {
    "name": "aryl iodide (Ar–I, incl. heteroaryl iodides)",
    "smarts": "c-[I;X1]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ARYL_FLUORIDE_SNAR": {
+  "F_JXENEJS4": {
    "name": "aryl fluoride, SNAr-activated (o/p-EWG or ring N)",
    "smarts": "[c;$(c:n),$(c1:a:a:n:a:a:1),$(c:c-[$([N+](=O)[O-]),$(C#N),$([CX3]=[OX1]),$([SX4](=O)=O),$(C(F)(F)F)]),$(c1:a:a:c(-[$([N+](=O)[O-]),$(C#N),$([CX3]=[OX1]),$([SX4](=O)=O),$(C(F)(F)F)]):a:a:1),$(c:c(:c=[OX1])),$(c1:a:a:c(:c=[OX1]):a:a:1)]-[F;X1]",
    "pKa": null,
    "pKaH": null
   },
-  "F_HALO_AZINE": {
+  "F_IT7SFBHB": {
    "name": "2-/4-halo-azine (SNAr-activated heteroaryl halide)",
    "smarts": "[F,Cl,Br,I]-[c;r6;$(c:[nX2;r6]),$(c1:a:a:[nX2]:a:a:1)]",
    "pKa": null,
    "pKaH": 0.7
   },
-  "F_VINYL_ALKYNYL_HALIDE": {
+  "F_QRDE5U55": {
    "name": "vinyl / alkynyl halide (alkenyl Br/Cl/I, α-/β-halo enone, 1-bromoalkyne)",
    "smarts": "[Cl,Br,I]-[C;$([CX3]=[CX3]),$([CX2]#[CX2])]",
    "pKa": null,
    "pKaH": null
   },
-  "F_IMIDOYL_CHLORIDE": {
+  "F_SZF3ZRNG": {
    "name": "imidoyl chloride (C(Cl)=N; hydrazonoyl chloride, chloro-imine of lactams)",
    "smarts": "Cl-[CX3]=[NX2]",
    "pKa": null,
    "pKaH": null
   },
-  "F_AZOLE_NH": {
+  "F_CRK5A7KB": {
    "name": "azole N–H (pyrrole, indole, azaindole, imidazole, benzimidazole, pyrazole, indazole, triazole, tetrazole; 5-ring lactam N–H)",
    "smarts": "[nH;r5;+0]",
    "pKa": 17.5,
    "pKaH": 7.0
   },
-  "F_PYRIDONE_NH": {
+  "F_6UCNUCGB": {
    "name": "2-/4-pyridone-type aromatic lactam N–H (pyridone, quinolone, quinazolinone, pyrimidinone, uracil)",
    "smarts": "[nH;r6;+0;$([nH]:c=[OX1]),$([nH]:a:a:c=[OX1])]",
    "pKa": 2.0,
    "pKaH": 2.0
   },
-  "F_AZINE_N": {
+  "F_WR22PQX5": {
    "name": "pyridine-type ring N (azine N)",
    "smarts": "[nX2;r6;+0]",
    "pKa": null,
    "pKaH": 5.2
   },
-  "F_AZINE_N_OXIDE": {
+  "F_RU2YM6UG": {
    "name": "azine N-oxide (pyridine N-oxide)",
    "smarts": "[n+;X3]-[OX1-]",
    "pKa": null,
    "pKaH": 0.8
   },
-  "F_AMINE_3": {
+  "F_RF6WHWKN": {
    "name": "amine 3° (trialkylamine, N,N-dialkylaniline, enamine)",
    "smarts": "[NX3;H0;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-C#N);!$(N-[#7,#8,#16])](-[#6])(-[#6])-[#6]",
    "pKa": 40.0,
    "pKaH": 10.0
   },
-  "F_ARYLAMINE_2": {
+  "F_GHNV6FIP": {
    "name": "secondary aryl amine (N-alkyl / N-aryl aniline, diarylamine, 2-alkylamino-azine, indoline)",
    "smarts": "[NX3;H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8,#16])](-c)-[#6]",
    "pKa": 29.5,
    "pKaH": 4.85
   },
-  "F_AMIDE_NH": {
+  "F_ZTFQ2FCA": {
    "name": "amide / lactam / carbamate / urea / imide N–H",
    "smarts": "[NX3;H1,H2;+0;!a]-[CX3;!a](=[OX1])",
    "pKa": 17.0,
    "pKaH": -0.5
   },
-  "F_HYDRAZINE": {
+  "F_RNHVSGOQ": {
    "name": "hydrazine / hydrazide NH2 (α-effect N)",
    "smarts": "[NX3;H2;+0]-[NX3;+0]",
    "pKa": 13.0,
    "pKaH": 8.1
   },
-  "F_HYDROXYLAMINE": {
+  "F_IV5D5PBX": {
    "name": "hydroxylamine / alkoxyamine N–H (NH2OH, MeONH2, BnONH2, R–NHOH)",
    "smarts": "[NX3;H1,H2;!$(N-C=[O,S,N]);!$(N-[SX4])]-[OX2]",
    "pKa": 13.7,
    "pKaH": 3.0
   },
-  "F_AMIDINE": {
+  "F_RCVURP73": {
    "name": "amidine (C(=NH)NH2)",
    "smarts": "[#6]-[CX3;!a](=[NX2;!a;!$(N-[OX2])])-[NX3;!a;H2]",
    "pKa": 25.0,
    "pKaH": 12.4
   },
-  "F_AMIDOXIME": {
+  "F_TYND2WUY": {
    "name": "amidoxime (C(=NOH)NH2 ⇌ C(=NH)NHOH)",
    "smarts": "[#6]-[CX3;!a;$(C(-[NX3])=[NX2]-[OX2H1]),$(C(=[NX2])-[NX3]-[OX2H1])]",
    "pKa": 12.0,
    "pKaH": 5.0
   },
-  "F_ISOCYANATE": {
+  "F_DF5HIJE7": {
    "name": "isocyanate / isothiocyanate (R–N=C=O, R–N=C=S; incl. TMS-NCO, ClSO2NCO)",
    "smarts": "[NX2]=[CX2]=[OX1,SX1]",
    "pKa": null,
    "pKaH": null
   },
-  "F_ENOLISABLE_CH": {
+  "F_5T3LDTFX": {
    "name": "enolisable α-C–H (α to ketone, aldehyde, ester, nitrile or sulfone)",
    "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-[CX3]=[OX1]);!$(C(-[CX3]=[OX1])-C#N);!$(C(-C#N)-C#N);$(C-[$([CX3H1](=[OX1])[#6]),$([CX3](=[OX1])([#6])[#6]),$([CX3](=[OX1])([#6])[OX2;H0;+0][#6]),$([CX2]#[NX1]),$([SX4](=[OX1])(=[OX1])([#6])[#6])])]",
    "pKa": 17.0,
    "pKaH": -7.0
   },
-  "F_ACTIVE_METHYLENE": {
+  "F_EJHA2TYP": {
    "name": "active methylene CH2 (1,3-dicarbonyl, malonate, β-keto ester, cyanoacetate, malononitrile)",
    "smarts": "[CX4;H2](-[$([CX3]=[OX1]),$([CX2]#[NX1])])-[$([CX3]=[OX1]),$([CX2]#[NX1])]",
    "pKa": 1.0,
    "pKaH": null
   },
-  "F_PHOSPHONATE": {
+  "F_QE3E5NK3": {
    "name": "phosphonate / phosphinate / phosphate alkyl ester (P(=O)–O–alkyl)",
    "smarts": "[PX4](=[OX1])-[OX2]-[CX4]",
    "pKa": 27.0,
@@ -9333,7 +9333,7 @@ window.REACTION_RULES = {
  },
  "fragmentConditions": [
   {
-   "frag": "F_GRIGNARD",
+   "frag": "F_F6IICZMJ",
    "requires": [
     [
      {
@@ -9359,18 +9359,18 @@ window.REACTION_RULES = {
     }
    ],
    "forbidFrags": [
-    "F_CARBOXYLIC_ACID",
-    "F_ALCOHOL_SP3",
-    "F_PHENOL",
-    "F_AMINE_1",
-    "F_ARYLAMINE",
-    "F_ALKYNE_TERMINAL"
+    "F_WH4T6PP5",
+    "F_CQJBM3VA",
+    "F_EBFEFTNC",
+    "F_7TP4VNHE",
+    "F_UY2ANYI2",
+    "F_UNMQWRQR"
    ],
    "except": [],
    "reason": "The C–Mg carbon is a very strong base (its conjugate acid, the C–H, has pKa ≈ 45–50). Any O–H or N–H (water pKa 15.7, alcohols ≈ 16, acids ≈ 5, amines ≈ 35, terminal alkynes ≈ 25) protonates it first and destroys the Grignard."
   },
   {
-   "frag": "F_ALUMINIUM_HYDRIDE",
+   "frag": "F_WYH6KVDM",
    "requires": [
     [
      {
@@ -9400,7 +9400,7 @@ window.REACTION_RULES = {
    "reason": "Hydride is a very strong base (H2 pKa ≈ 35): water and alcohols destroy LiAlH4 violently (H2 gas). Use dry ether or THF; water only in the work-up."
   },
   {
-   "frag": "F_ACYL_CHLORIDE",
+   "frag": "F_7W5VQUT2",
    "requires": [],
    "forbids": [
     {
@@ -9412,7 +9412,7 @@ window.REACTION_RULES = {
    "reason": "Water attacks the acyl chloride (Cl⁻ is an excellent leaving group) and hydrolyses it to the carboxylic acid + HCl before the intended reaction."
   },
   {
-   "frag": "F_ARYL_DIAZONIUM",
+   "frag": "F_UUBBBRAY",
    "requires": [
     [
      {
@@ -9862,184 +9862,184 @@ window.REACTION_RULES = {
  ],
  "conditionSuggestions": [
   {
-   "frag": "F_ALLYLIC_CH2",
+   "frag": "F_DHYVCP7A",
    "suggest": "light",
    "why": "Radical bromination at the allylic C–H (with NBS) needs light (or a radical initiator)."
   },
   {
-   "frag": "F_ARYL_METHYL",
+   "frag": "F_W7EG4A5W",
    "suggest": "light",
    "why": "Radical bromination at the benzylic C–H (with NBS) needs light."
   },
   {
-   "frag": "F_ARYL_METHYL",
+   "frag": "F_W7EG4A5W",
    "suggest": "reflux in water",
    "why": "KMnO4 oxidises a benzylic C–H to COOH in hot water."
   },
   {
-   "frag": "F_GRIGNARD",
+   "frag": "F_F6IICZMJ",
    "suggest": "anhydrous, diethyl ether",
    "why": "Grignards are made and used in dry ether (any O–H destroys them)."
   },
   {
-   "frag": "F_GRIGNARD",
+   "frag": "F_F6IICZMJ",
    "suggest": "anhydrous, tetrahydrofuran",
    "why": "THF is the other usual dry ether for Grignards."
   },
   {
-   "frag": "F_ALUMINIUM_HYDRIDE",
+   "frag": "F_WYH6KVDM",
    "suggest": "anhydrous, tetrahydrofuran",
    "why": "LiAlH4 reacts violently with water and alcohols: dry THF or ether."
   },
   {
-   "frag": "F_ARYL_DIAZONIUM",
+   "frag": "F_UUBBBRAY",
    "suggest": "0 °C, water",
    "why": "Diazonium salts are made and kept at 0–5 °C."
   },
   {
-   "frag": "F_ACYL_CHLORIDE",
+   "frag": "F_7W5VQUT2",
    "suggest": "dichloromethane, 0 °C",
    "why": "Acyl chlorides react fast: a dry, non-nucleophilic solvent, cold."
   },
   {
-   "frag": "F_ALKYL_HALIDE_1",
+   "frag": "F_OSWUXBJP",
    "suggest": "DMSO",
    "why": "SN2 on a primary carbon is fastest in a polar aprotic solvent."
   },
   {
-   "frag": "F_ALKYL_HALIDE_2",
+   "frag": "F_4KF4VNAH",
    "suggest": "DMSO",
    "why": "With a nucleophile that is a weak base: SN2 in a polar aprotic solvent."
   },
   {
-   "frag": "F_ALKYL_HALIDE_2",
+   "frag": "F_4KF4VNAH",
    "suggest": "reflux in ethanol",
    "why": "With a strong base: E2, and heat favours elimination."
   },
   {
-   "frag": "F_ALKYL_HALIDE_3",
+   "frag": "F_YUNA7OOT",
    "suggest": "water, rt",
    "why": "Solvolysis: SN1 in a protic solvent."
   },
   {
-   "frag": "F_ALKYL_HALIDE_3",
+   "frag": "F_YUNA7OOT",
    "suggest": "reflux in ethanol",
    "why": "Heat in a protic solvent: E1 (or E2 with a strong base)."
   },
   {
-   "frag": "F_CONJUGATED_DIENE",
+   "frag": "F_DRXF7R5Y",
    "suggest": "reflux in xylene",
    "why": "Diels–Alder reactions are run hot (80–160 °C)."
   },
   {
-   "frag": "F_DIOL_1_2",
+   "frag": "F_VHRSWB64",
    "suggest": "reflux in toluene",
    "why": "Acetal formation: reflux in toluene with a Dean–Stark trap to remove water."
   },
   {
-   "frag": "F_CARBOXYLIC_ACID",
+   "frag": "F_WH4T6PP5",
    "suggest": "reflux in ethanol",
    "why": "Fischer esterification: reflux in the alcohol (60–120 °C) with an acid catalyst."
   },
   {
-   "frag": "F_ALCOHOL_SP3",
+   "frag": "F_CQJBM3VA",
    "suggest": "160 °C",
    "why": "Acid-catalysed dehydration needs a high temperature (120–180 °C)."
   }
  ],
  "reactivity": {
   "carbonyl addition": {
-   "F_ALDEHYDE": {
+   "F_ADOAMFFM": {
     "rank": 1.0,
     "why": "Aldehydes are more electrophilic (one alkyl group donates less than two) and less hindered (an H instead of a second R) than ketones."
    },
-   "F_KETONE": {
+   "F_CFJ46WPI": {
     "rank": 2.0,
     "why": "Two alkyl groups: less electrophilic and more crowded than an aldehyde."
    },
-   "F_ESTER": {
+   "F_N4PYCJQX": {
     "rank": 3.0,
     "why": "The OR lone pair donates into the C=O: an ester is less electrophilic than a ketone."
    }
   },
   "alcohol oxidation": {
-   "F_ALCOHOL_1": {
+   "F_7WIM5VKY": {
     "rank": 1.0,
     "why": "A primary carbinol C–H is the least hindered: oxidised fastest."
    },
-   "F_ALCOHOL_2": {
+   "F_JIOCZMVT": {
     "rank": 2.0,
     "why": "Secondary: more hindered, slower (gives a ketone)."
    }
   },
   "alcohol substitution": {
-   "F_ALCOHOL_1": {
+   "F_7WIM5VKY": {
     "rank": 1.0,
     "why": "SN2 at the C–O carbon (PBr3, SOCl2) is fastest at a primary carbon."
    },
-   "F_ALCOHOL_2": {
+   "F_JIOCZMVT": {
     "rank": 2.0,
     "why": "Secondary: slower SN2."
    }
   },
   "esterification": {
-   "F_ALCOHOL_1": {
+   "F_7WIM5VKY": {
     "rank": 1.0,
     "why": "Primary alcohols are the least hindered nucleophiles: esterified first."
    },
-   "F_ALCOHOL_2": {
+   "F_JIOCZMVT": {
     "rank": 2.0,
     "why": "Secondary alcohols are slower; tertiary hardly react (they eliminate)."
    }
   },
   "hydrogenation (H2, Pd)": {
-   "F_ALKYNE": {
+   "F_YAW5EFKQ": {
     "rank": 1.0,
     "why": "Alkynes bind the metal surface more strongly and are hydrogenated before alkenes."
    },
-   "F_ALKENE": {
+   "F_43XPC2LW": {
     "rank": 2.0,
     "why": "Alkenes react once the alkyne is gone."
    }
   },
   "peracid oxidation (mCPBA)": {
-   "F_ALKENE": {
+   "F_43XPC2LW": {
     "rank": 1.0,
     "why": "Electron-rich C=C reacts with the electrophilic peracid O much faster than a ketone undergoes Baeyer–Villiger."
    },
-   "F_KETONE": {
+   "F_CFJ46WPI": {
     "rank": 2.0,
     "why": "Baeyer–Villiger is slower than epoxidation."
    }
   },
   "acylation of a nucleophile": {
-   "F_AMINE_1": {
+   "F_7TP4VNHE": {
     "rank": 1.0,
     "why": "Alkylamines are the strongest nucleophiles here (lone pair not delocalised)."
    },
-   "F_ARYLAMINE": {
+   "F_UY2ANYI2": {
     "rank": 2.0,
     "why": "The aniline lone pair is shared with the ring: weaker nucleophile."
    },
-   "F_ALCOHOL_SP3": {
+   "F_CQJBM3VA": {
     "rank": 3.0,
     "why": "O is less nucleophilic than N: amines are acylated before alcohols."
    },
-   "F_PHENOL": {
+   "F_EBFEFTNC": {
     "rank": 4.0,
     "why": "The phenol O lone pair is delocalised into the ring."
    }
   },
   "SN2 at an alkyl halide": {
-   "F_METHYL_HALIDE": {
+   "F_KNBZHWVH": {
     "rank": 1.0,
     "why": "SN2 rate: methyl > 1° > 2° (backside attack gets more crowded); 3° does not react by SN2."
    },
-   "F_ALKYL_HALIDE_1": {
+   "F_OSWUXBJP": {
     "rank": 2.0,
     "why": ""
    },
-   "F_ALKYL_HALIDE_2": {
+   "F_4KF4VNAH": {
     "rank": 3.0,
     "why": ""
    }
@@ -10186,79 +10186,79 @@ window.REACTION_RULES = {
   {
    "reagent": "[BH4-].[Na+]",
    "name": "NaBH4",
-   "frag": "F_ESTER",
+   "frag": "F_N4PYCJQX",
    "why": "NaBH4 is too weak a hydride donor for esters: the OR lone pair makes the ester C=O much less electrophilic than a ketone's."
   },
   {
    "reagent": "[BH4-].[Na+]",
    "name": "NaBH4",
-   "frag": "F_CARBOXYLIC_ACID",
+   "frag": "F_WH4T6PP5",
    "why": "The acid is deprotonated to a carboxylate, which hydride cannot attack."
   },
   {
    "reagent": "[BH4-].[Na+]",
    "name": "NaBH4",
-   "frag": "F_AMIDE",
+   "frag": "F_F3X5X5PO",
    "why": "Amides are the least electrophilic acid derivatives (N lone pair donates into the C=O)."
   },
   {
    "reagent": "[BH4-].[Na+]",
    "name": "NaBH4",
-   "frag": "F_ALKENE",
+   "frag": "F_43XPC2LW",
    "why": "Hydride does not add to an isolated C=C: there is no electrophilic carbon."
   },
   {
    "reagent": "[AlH4-].[Li+]",
    "name": "LiAlH4",
-   "frag": "F_ALKENE",
+   "frag": "F_43XPC2LW",
    "why": "LiAlH4 does not reduce an isolated C=C (no electrophilic carbon)."
   },
   {
    "reagent": "BrBr",
    "name": "Br2 (no Lewis acid)",
-   "frag": "F_ARENE_CH",
+   "frag": "F_7GV2Y2WW",
    "why": "Without a Lewis acid (FeBr3) Br2 is not electrophilic enough to break the ring's aromaticity: alkenes react, benzene does not."
   },
   {
    "reagent": "Br",
    "name": "HBr",
-   "frag": "F_ARENE_CH",
+   "frag": "F_7GV2Y2WW",
    "why": "HBr does not add to an aromatic ring: addition would destroy the aromatic stabilisation."
   },
   {
    "reagent": "O=C(OO)c1cccc(Cl)c1",
    "name": "mCPBA",
-   "frag": "F_ARENE_CH",
+   "frag": "F_7GV2Y2WW",
    "why": "Peracids do not epoxidise aromatic rings (aromatic stabilisation)."
   },
   {
    "reagent": "[H][H]",
    "name": "H2, Pd/C (1 atm)",
-   "frag": "F_ARENE_CH",
+   "frag": "F_7GV2Y2WW",
    "why": "Benzene rings are not hydrogenated under the mild conditions that reduce alkenes (needs high pressure and temperature)."
   },
   {
    "reagent": "O=[Cr](=O)(Cl)[O-].c1cc[nH+]cc1",
    "name": "PCC",
-   "frag": "F_ALCOHOL_3",
+   "frag": "F_Z6ABGO4G",
    "why": "No H on the carbinol carbon: tertiary alcohols cannot be oxidised."
   },
   {
    "reagent": "O=[Cr](=O)=O.O=S(=O)(O)O",
    "name": "Jones reagent",
-   "frag": "F_ALCOHOL_3",
+   "frag": "F_Z6ABGO4G",
    "why": "No H on the carbinol carbon: tertiary alcohols cannot be oxidised."
   },
   {
    "reagent": "any nucleophile",
    "name": "",
-   "frag": "F_ARYL_BROMIDE",
+   "frag": "F_H6H7YAKN",
    "why": "No SN2 at an sp2 aryl carbon (the ring blocks backside attack) and no SN1 (an aryl cation is far too unstable)."
   },
   {
    "reagent": "any nucleophile",
    "name": "",
-   "frag": "F_ALKENE",
+   "frag": "F_43XPC2LW",
    "why": "An isolated C=C is electron-rich: it reacts with electrophiles, not nucleophiles."
   }
  ],
