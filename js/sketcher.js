@@ -606,7 +606,7 @@
   }
 
   /* ================= toolbar ================= */
-  function loadGraph(parsed) {
+  function loadGraph(parsed, source) {
     snapshot();
     g = { atoms: parsed.atoms.map(a => ({ id: a.id, element: a.element, charge: a.charge || 0, ...(a.radical ? { radical: true } : {}), x: a.x || 0, y: a.y || 0 })),
           bonds: parsed.bonds.map(b => ({ a: b.a, b: b.b, order: b.order || 1, ...(b.stereo ? { stereo: b.stereo, narrow: b.narrow } : {}) })),
@@ -614,17 +614,22 @@
     selected.clear();
     cleanLayout();
     render();
-    rdkitMacrocycleLayout();
+    rdkitMacrocycleLayout(source);
   }
-  /* Chem's layout draws rings of up to 16 atoms and leaves a bigger ring's closing bond as one long line across the
-     page (a 38-membered macrolide came out with a bond 27 times the standard length). RDKit's layout is what the
-     Molecule tab draws, so a molecule with such a ring is laid out by RDKit once it has started (a few seconds the
-     first time) and the drawing is redrawn. It is used only when RDKit reads the new drawing as exactly the same
-     molecule (configuration of every stereocentre and double bond included); otherwise the drawing stays as it was. */
-  function hasMacrocycle(gr) {
+  /* Chem's layout cannot draw two kinds of molecule, and RDKit's layout (the Molecule tab's) can:
+       * a ring of more than 16 atoms: Chem leaves its closing bond as one long line across the page (a 38-membered
+         macrolide came out with a bond 27 times the standard length);
+       * a double bond in a ring of 8 to 16 atoms: Chem draws the ring as a regular polygon, whose double bond can only
+         be cis, so a trans (E) one comes out as Z. RDKit draws the ring bent so that the double bond is trans.
+     A molecule with either is laid out by RDKit once it has started (a few seconds the first time) and redrawn. When the
+     text that was typed is a SMILES RDKit can read, the drawing is made from that text (it still says E or Z; Chem's graph
+     no longer does), otherwise from the drawing. It is used only if RDKit reads the new drawing as exactly the same molecule
+     (every stereocentre and double bond); otherwise the drawing stays as it was. */
+  function ringBondSizes(gr) {                         // [{bond, size}] the smallest ring through each ring bond
     const adj = new Map(gr.atoms.map(a => [a.id, []]));
     gr.bonds.forEach(b => { adj.get(b.a).push(b.b); adj.get(b.b).push(b.a); });
-    for (const b of gr.bonds) {                       // the smallest ring through each bond: the shortest path between its ends that avoids it
+    const out = [];
+    for (const b of gr.bonds) {                       // the shortest path between its ends that avoids it
       const dist = new Map([[b.a, 0]]), queue = [b.a];
       while (queue.length) {
         const cur = queue.shift();
@@ -634,43 +639,67 @@
           if (!dist.has(nb)) { dist.set(nb, dist.get(cur) + 1); queue.push(nb); }
         }
       }
-      if (dist.has(b.b) && dist.get(b.b) + 1 > 16) return true;
+      if (dist.has(b.b)) out.push({ bond: b, size: dist.get(b.b) + 1 });
     }
-    return false;
+    return out;
   }
-  async function rdkitMacrocycleLayout() {
-    if (!window.RDKitLoad || !g.atoms.length || !hasMacrocycle(g) || componentsNow().length !== 1) return;
+  const needsRDKitLayout = gr => ringBondSizes(gr).some(r => r.size > 16 || (r.bond.order === 2 && r.size >= 8));
+  async function rdkitMacrocycleLayout(source) {
+    if (!window.RDKitLoad || !g.atoms.length || !needsRDKitLayout(g) || componentsNow().length !== 1) return;
     const mine = g, n = g.atoms.length, m = g.bonds.length;
     try {
       const R = await window.RDKitLoad();
       if (g !== mine || g.atoms.length !== n || g.bonds.length !== m) return;          // the drawing was replaced or edited meanwhile
       const mb = C.toMolfile(g, '');
-      const ref = R.get_mol(mb);
-      if (!ref) return;
-      const want = ref.get_smiles(); ref.delete();
-      const M = R.get_mol(mb);
-      M.set_new_coords(true); M.normalize_depiction(0, -1);
-      const mb2 = M.get_molblock(); M.delete();
-      const back = R.get_mol(mb2), same = !!back && back.get_smiles() === want;
-      if (back) back.delete();
-      if (!same) return;
+      const noDbl = mol => { const t = R.get_mol(mol.get_smiles().replace(/[\/\\@]/g, '')); const o = t ? t.get_smiles() : null; if (t) t.delete(); return o; };   // the molecule with every stereo mark removed
+      /* the molecule to draw: the typed SMILES when RDKit reads it as the same structure as the drawing (same atoms and
+         bonds; stereo set aside, because that is what Chem's drawing of such a ring can get wrong: the double bond's E/Z
+         and, with it, the stereocentres), else the drawing itself */
+      let base = null, want = null;
+      if (source && /^[^\s]+$/.test(source.trim()) && /[\/\\]/.test(source)) {
+        const typed = R.get_mol(source.trim()), drawn = R.get_mol(mb);
+        if (typed && drawn && typed.get_num_atoms() === drawn.get_num_atoms() && noDbl(typed) === noDbl(drawn)) { base = source.trim(); want = typed.get_smiles(); }
+        if (typed) typed.delete(); if (drawn) drawn.delete();
+      }
+      if (!base) { const ref = R.get_mol(mb); if (!ref) return; want = ref.get_smiles(); ref.delete(); }
+      /* RDKit's own layouts, plain then CoordGen (as the Molecule tab tries them): the first that keeps the molecule */
+      let mb2 = null;
+      for (const coordgen of [false, true]) {
+        const M = base ? R.get_mol(base) : R.get_mol(mb);
+        if (!M) continue;
+        M.set_new_coords(coordgen); M.normalize_depiction(0, -1);
+        const blk = M.get_molblock(); M.delete();
+        const back = R.get_mol(blk), same = !!back && back.get_smiles() === want;
+        if (back) back.delete();
+        if (same) { mb2 = blk; break; }
+      }
+      if (!mb2) return;
       const p = C.parseMolfile(mb2);
       if (p.atoms.length !== n) return;
-      const idOf = new Map(p.atoms.map((a, i) => [a.id, g.atoms[i].id]));              // the molfile keeps the atom order
       const lens = p.bonds.map(b => { const u = p.atoms.find(a => a.id === b.a), v = p.atoms.find(a => a.id === b.b); return Math.hypot(u.x - v.x, u.y - v.y); }).filter(l => l > 0).sort((u, v) => u - v);
       const xs = p.atoms.map(a => a.x), ys = p.atoms.map(a => a.y), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
-      const box = svg.getBoundingClientRect();
-      let k = BOND / (lens[lens.length >> 1] || 1);
+      const box = svg.getBoundingClientRect(), med = lens[lens.length >> 1] || 1;
+      let k = BOND / med;
       if (w * k > box.width * 0.92) k = box.width * 0.92 / w;                          // a big ring is drawn smaller to fit the canvas (not below half a bond)
       if (h * k > box.height * 0.92) k = Math.min(k, box.height * 0.92 / h);
-      k = Math.max(k, 0.5 * BOND / (lens[lens.length >> 1] || 1));
+      k = Math.max(k, 0.5 * BOND / med);
       const cx = box.width / 2 - k * (Math.min(...xs) + Math.max(...xs)) / 2, cy = box.height / 2 - k * (Math.min(...ys) + Math.max(...ys)) / 2;
-      p.atoms.forEach((a, i) => { g.atoms[i].x = a.x * k + cx; g.atoms[i].y = a.y * k + cy; });
-      g.bonds.forEach(b => {                                                           // wedges and dashes as RDKit drew them
-        delete b.stereo; delete b.narrow;
-        const q = p.bonds.find(x => (idOf.get(x.a) === b.a && idOf.get(x.b) === b.b) || (idOf.get(x.a) === b.b && idOf.get(x.b) === b.a));
-        if (q && q.stereo) { b.stereo = q.stereo; if (q.narrow != null) b.narrow = idOf.get(q.narrow); }
-      });
+      /* the molfile's atoms are RDKit's, in the order of the text it was made from: when that text was used, this is the
+         graph RDKit drew, so the drawing is replaced; when the drawing was used, atom i is atom i and only the places change */
+      if (base) {
+        g = { atoms: p.atoms.map(a => ({ id: a.id, element: a.element, charge: a.charge || 0, ...(a.radical ? { radical: true } : {}), x: a.x * k + cx, y: a.y * k + cy })),
+              bonds: p.bonds.map(b => ({ a: b.a, b: b.b, order: b.order || 1, ...(b.stereo ? { stereo: b.stereo, narrow: b.narrow } : {}) })),
+              nextId: Math.max(0, ...p.atoms.map(a => a.id)) + 1 };
+        selected.clear();
+      } else {
+        const idOf = new Map(p.atoms.map((a, i) => [a.id, g.atoms[i].id]));
+        p.atoms.forEach((a, i) => { g.atoms[i].x = a.x * k + cx; g.atoms[i].y = a.y * k + cy; });
+        g.bonds.forEach(b => {                                                         // wedges and dashes as RDKit drew them
+          delete b.stereo; delete b.narrow;
+          const q = p.bonds.find(x => (idOf.get(x.a) === b.a && idOf.get(x.b) === b.b) || (idOf.get(x.a) === b.b && idOf.get(x.b) === b.a));
+          if (q && q.stereo) { b.stereo = q.stereo; if (q.narrow != null) b.narrow = idOf.get(q.narrow); }
+        });
+      }
       render();
     } catch (e) { /* RDKit unavailable or refused: the drawing stays as Chem laid it out */ }
   }
@@ -687,7 +716,7 @@
       if ((/[a-z]{3}/i.test(text) || /^\d{2,7}-\d\d-\d$/.test(text)) && !/[=#\[\]@]/.test(text)) { importFallback(text, error); return; }
       alert('Could not read "' + text.slice(0, 60) + '".\n' + error); return;
     }
-    loadGraph(parsed);
+    loadGraph(parsed, text);
   }
   /* a name or CAS number the curated library does not know: the saved PubChem lookups and the broad offline library
      first (js/pclib.js; no internet), then, asked first, PubChem itself */
@@ -718,7 +747,7 @@
   function importSmiles(smiles, note) {
     let g2 = null;
     try { g2 = C.parseSmiles(smiles); } catch (e) { render(); alert('The structure found could not be read: ' + e.message); return; }
-    loadGraph(g2);
+    loadGraph(g2, smiles);
     notice = note;
     render();
   }
