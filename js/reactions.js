@@ -126,6 +126,9 @@
       .rxn-cond-text { font:14px Arial,sans-serif; color:#555; text-align:center; word-break:break-word; max-width:360px; margin:auto; cursor:pointer; }
       #rxn-above { top:calc(var(--ay) - 10px - var(--rxn-gap)); transform:translate(-50%,-100%); }
       #rxn-below { top:calc(var(--ay) + 10px + var(--rxn-gap)); }
+      /* the transform makes each box its own layer, and with no z-index that layer is painted under #rxn-lower (z-index 1),
+         so the list a + opens (z-index 5, but only inside that layer) had the molecules and text behind it drawn over it */
+      #rxn-above, #rxn-below { z-index:4; }
       .rxn-slot input { width:100%; min-width:70px; box-sizing:border-box; padding:8px; font:15px monospace; border:1px solid #888; border-radius:4px; }
       .rxn-slot input.bad { border-color:#b3261e; }
       .rxn-msg { margin-top:8px; min-height:18px; font:12px Arial,sans-serif; color:#b3261e; text-align:center; }
