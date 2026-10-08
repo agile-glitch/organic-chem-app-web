@@ -4248,11 +4248,13 @@ function makeChem() {
      Comparing two descriptors as strings reproduces CIP priority for
      ordinary textbook cases (it is not the full hierarchical-digraph
      algorithm, so exotic tie-breaking cases can differ). */
+  let cipCut = false, cipBudget = Infinity;      // set while cipRanked looks deeper: was a branch cut off, and how many atoms may still be visited
   function cipDescriptor(g, atomId, fromId, depth) {
     const atom = g.atoms.find(a => a.id === atomId);
     if (!atom) return padZ(0);
+    if (--cipBudget < 0) throw new Error('cip budget');
     const self = padZ(ATOMIC[atom.element] || 0);
-    if (depth <= 0) return self;
+    if (depth <= 0) { if (neighbors(g, atomId).some(n => n.atom && n.atom.id !== fromId)) cipCut = true; return self; }
     const kids = [];
     neighbors(g, atomId).forEach(n => {
       if (!n.atom) return;
@@ -4270,15 +4272,35 @@ function makeChem() {
 
   // The four things attached to an atom, ranked highest CIP priority first.
   function cipRanked(g, centerId) {
-    const items = [];
-    neighbors(g, centerId).forEach(n => {
-      if (!n.atom) return;
-      items.push({ kind: 'atom', id: n.atom.id, element: n.atom.element, bond: n.bond,
-                   desc: cipDescriptor(g, n.atom.id, centerId, 8) });
-    });
-    const center = g.atoms.find(a => a.id === centerId);
-    for (let i = 0; i < implicitH(g, center); i++) items.push({ kind: 'H', element: 'H', desc: padZ(1) });
-    items.sort((p, q) => (p.desc < q.desc ? 1 : p.desc > q.desc ? -1 : 0));
+    const build = depth => {
+      const items = [];
+      neighbors(g, centerId).forEach(n => {
+        if (!n.atom) return;
+        items.push({ kind: 'atom', id: n.atom.id, element: n.atom.element, bond: n.bond,
+                     desc: cipDescriptor(g, n.atom.id, centerId, depth) });
+      });
+      const center = g.atoms.find(a => a.id === centerId);
+      for (let i = 0; i < implicitH(g, center); i++) items.push({ kind: 'H', element: 'H', desc: padZ(1) });
+      items.sort((p, q) => (p.desc < q.desc ? 1 : p.desc > q.desc ? -1 : 0));
+      return items;
+    };
+    /* two real substituents with the same description */
+    const tied = its => its.some((x, i) => i && x.kind !== 'H' && its[i - 1].kind !== 'H' && x.desc === its[i - 1].desc);
+    let items = build(8);
+    /* A tie at 8 bonds is not yet a tie: the two arms of a centre in a long repeating chain (a polyol, a macrolide) can
+       look the same for more than 8 bonds and differ further out. Look deeper while they tie AND a branch was cut off
+       (when nothing was cut off, deeper cannot change anything), within a budget so a symmetric ring system cannot
+       blow up; if the budget runs out the 8-bond answer stands. */
+    if (tied(items)) {
+      for (const d of [16, 32, 64]) {
+        cipCut = false; cipBudget = 60000;
+        let next = null;
+        try { next = build(d); } catch (e) { next = null; } finally { cipBudget = Infinity; }
+        if (!next) break;
+        items = next;
+        if (!tied(items) || !cipCut) break;
+      }
+    }
     return items;
   }
 
@@ -5454,12 +5476,30 @@ function makeChem() {
     const ezRef = new Map(), ezState = new Map();
     {
       const ringIds = new Set(ringAtomsOf(g));
+      /* atoms in the smallest ring through a bond (its ends' shortest other path), or 0 when it is in no ring */
+      const ringSizeThrough = db => {
+        const dist = new Map([[db.a, 1]]), queue = [db.a];
+        while (queue.length) {
+          const cur = queue.shift();
+          if (cur === db.b) return dist.get(cur);
+          for (const nb of adj.get(cur)) {
+            if (cur === db.a && nb.id === db.b) continue;
+            if (!dist.has(nb.id)) { dist.set(nb.id, dist.get(cur) + 1); queue.push(nb.id); }
+          }
+        }
+        return 0;
+      };
       g.bonds.forEach(db => {
         if (db.order !== 2) return;
-        if (ringIds.has(db.a) && ringIds.has(db.b)) return;
+        /* a double bond in a small ring (up to 7 atoms) can only be cis, so there is nothing to write; in a larger ring
+           (a macrolide) it can be E or Z and the drawing says which */
+        if (ringIds.has(db.a) && ringIds.has(db.b) && ringSizeThrough(db) < 8) return;
         if (db.ezUnspec) return;                   // the input left this geometry open: write it open
         const A = atomOf(db.a), B = atomOf(db.b);
-        const pick = (c, other) => adj.get(c).find(nb => nb.id !== other && nb.order === 1 && treeEdges.has(key(c, nb.id)));
+        /* the single bond whose / or \ mark carries the geometry: a tree edge when there is one; else a ring-closure
+           bond, whose mark is written on its ring digit at the atom written first */
+        const pick = (c, other) => adj.get(c).find(nb => nb.id !== other && nb.order === 1 && treeEdges.has(key(c, nb.id)))
+          || adj.get(c).find(nb => nb.id !== other && nb.order === 1 && ringOn.has(key(c, nb.id)));
         const ra = pick(db.a, db.b), rb = pick(db.b, db.a);
         if (!ra || !rb) return;
         const X = atomOf(ra.id), Y = atomOf(rb.id);
@@ -5519,7 +5559,11 @@ function makeChem() {
       }
 
       let out = token(a, stereoTok);
-      (ringOn.get('atom' + id) || []).forEach(r => { out += r; });
+      /* ring digits; a / or \ on a ring-closure bond goes at the atom written first (read as the direction from it to its partner) */
+      (ringOn.get('atom' + id) || []).forEach((r, i) => {
+        const q = ringP[i];
+        out += (q !== undefined && !written.has(q) ? dirMark(id, q) : '') + r;
+      });
       kids.forEach((nb, idx) => {
         const branch = (nb.order === 1 ? dirMark(id, nb.id) : bsym(nb.order)) + walk(nb.id, id);
         out += (idx < kids.length - 1) ? '(' + branch + ')' : branch;
