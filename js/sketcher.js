@@ -613,8 +613,13 @@
           nextId: parsed.nextId || Math.max(0, ...parsed.atoms.map(a => a.id)) + 1 };
     selected.clear();
     cleanLayout();
-    render();
-    rdkitMacrocycleLayout(source);
+    /* a molecule Chem cannot lay out (see rdkitMacrocycleLayout) is not drawn the way Chem laid it out, not even for the
+       moment RDKit takes: the previous drawing stays, with a note, and the new one appears once RDKit's layout is ready
+       (or, if RDKit cannot do it, as Chem drew it) */
+    const wait = !!window.RDKitLoad && componentsNow().length === 1 && needsRDKitLayout(g);
+    if (wait) info.innerHTML = '<span class="hint">Laying out the large ring…</span>';
+    else render();
+    rdkitMacrocycleLayout(source, wait);
   }
   /* Chem's layout cannot draw two kinds of molecule, and RDKit's layout (the Molecule tab's) can:
        * a ring of more than 16 atoms: Chem leaves its closing bond as one long line across the page (a 38-membered
@@ -644,9 +649,10 @@
     return out;
   }
   const needsRDKitLayout = gr => ringBondSizes(gr).some(r => r.size > 16 || (r.bond.order === 2 && r.size >= 8));
-  async function rdkitMacrocycleLayout(source) {
-    if (!window.RDKitLoad || !g.atoms.length || !needsRDKitLayout(g) || componentsNow().length !== 1) return;
+  async function rdkitMacrocycleLayout(source, deferred) {
+    if (!window.RDKitLoad || !g.atoms.length || !needsRDKitLayout(g) || componentsNow().length !== 1) { if (deferred) render(); return; }
     const mine = g, n = g.atoms.length, m = g.bonds.length;
+    let done = false;
     try {
       const R = await window.RDKitLoad();
       if (g !== mine || g.atoms.length !== n || g.bonds.length !== m) return;          // the drawing was replaced or edited meanwhile
@@ -701,8 +707,12 @@
           if (q && q.stereo) { b.stereo = q.stereo; if (q.narrow != null) b.narrow = idOf.get(q.narrow); }
         });
       }
+      done = true;
       render();
-    } catch (e) { /* RDKit unavailable or refused: the drawing stays as Chem laid it out */ }
+    } catch (e) { /* RDKit unavailable or refused: the drawing stays as Chem laid it out */
+    } finally {
+      if (deferred && !done) render();                 // nothing better was found: draw it as Chem laid it out
+    }
   }
   function importText(text) {
     text = text.trim(); if (!text) return;
