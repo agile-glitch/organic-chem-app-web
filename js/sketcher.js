@@ -614,6 +614,65 @@
     selected.clear();
     cleanLayout();
     render();
+    rdkitMacrocycleLayout();
+  }
+  /* Chem's layout draws rings of up to 16 atoms and leaves a bigger ring's closing bond as one long line across the
+     page (a 38-membered macrolide came out with a bond 27 times the standard length). RDKit's layout is what the
+     Molecule tab draws, so a molecule with such a ring is laid out by RDKit once it has started (a few seconds the
+     first time) and the drawing is redrawn. It is used only when RDKit reads the new drawing as exactly the same
+     molecule (configuration of every stereocentre and double bond included); otherwise the drawing stays as it was. */
+  function hasMacrocycle(gr) {
+    const adj = new Map(gr.atoms.map(a => [a.id, []]));
+    gr.bonds.forEach(b => { adj.get(b.a).push(b.b); adj.get(b.b).push(b.a); });
+    for (const b of gr.bonds) {                       // the smallest ring through each bond: the shortest path between its ends that avoids it
+      const dist = new Map([[b.a, 0]]), queue = [b.a];
+      while (queue.length) {
+        const cur = queue.shift();
+        if (cur === b.b) break;
+        for (const nb of adj.get(cur)) {
+          if (cur === b.a && nb === b.b) continue;
+          if (!dist.has(nb)) { dist.set(nb, dist.get(cur) + 1); queue.push(nb); }
+        }
+      }
+      if (dist.has(b.b) && dist.get(b.b) + 1 > 16) return true;
+    }
+    return false;
+  }
+  async function rdkitMacrocycleLayout() {
+    if (!window.RDKitLoad || !g.atoms.length || !hasMacrocycle(g) || componentsNow().length !== 1) return;
+    const mine = g, n = g.atoms.length, m = g.bonds.length;
+    try {
+      const R = await window.RDKitLoad();
+      if (g !== mine || g.atoms.length !== n || g.bonds.length !== m) return;          // the drawing was replaced or edited meanwhile
+      const mb = C.toMolfile(g, '');
+      const ref = R.get_mol(mb);
+      if (!ref) return;
+      const want = ref.get_smiles(); ref.delete();
+      const M = R.get_mol(mb);
+      M.set_new_coords(true); M.normalize_depiction(0, -1);
+      const mb2 = M.get_molblock(); M.delete();
+      const back = R.get_mol(mb2), same = !!back && back.get_smiles() === want;
+      if (back) back.delete();
+      if (!same) return;
+      const p = C.parseMolfile(mb2);
+      if (p.atoms.length !== n) return;
+      const idOf = new Map(p.atoms.map((a, i) => [a.id, g.atoms[i].id]));              // the molfile keeps the atom order
+      const lens = p.bonds.map(b => { const u = p.atoms.find(a => a.id === b.a), v = p.atoms.find(a => a.id === b.b); return Math.hypot(u.x - v.x, u.y - v.y); }).filter(l => l > 0).sort((u, v) => u - v);
+      const xs = p.atoms.map(a => a.x), ys = p.atoms.map(a => a.y), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+      const box = svg.getBoundingClientRect();
+      let k = BOND / (lens[lens.length >> 1] || 1);
+      if (w * k > box.width * 0.92) k = box.width * 0.92 / w;                          // a big ring is drawn smaller to fit the canvas (not below half a bond)
+      if (h * k > box.height * 0.92) k = Math.min(k, box.height * 0.92 / h);
+      k = Math.max(k, 0.5 * BOND / (lens[lens.length >> 1] || 1));
+      const cx = box.width / 2 - k * (Math.min(...xs) + Math.max(...xs)) / 2, cy = box.height / 2 - k * (Math.min(...ys) + Math.max(...ys)) / 2;
+      p.atoms.forEach((a, i) => { g.atoms[i].x = a.x * k + cx; g.atoms[i].y = a.y * k + cy; });
+      g.bonds.forEach(b => {                                                           // wedges and dashes as RDKit drew them
+        delete b.stereo; delete b.narrow;
+        const q = p.bonds.find(x => (idOf.get(x.a) === b.a && idOf.get(x.b) === b.b) || (idOf.get(x.a) === b.b && idOf.get(x.b) === b.a));
+        if (q && q.stereo) { b.stereo = q.stereo; if (q.narrow != null) b.narrow = idOf.get(q.narrow); }
+      });
+      render();
+    } catch (e) { /* RDKit unavailable or refused: the drawing stays as Chem laid it out */ }
   }
   function importText(text) {
     text = text.trim(); if (!text) return;
