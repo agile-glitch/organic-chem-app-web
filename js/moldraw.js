@@ -19,7 +19,7 @@
      A wedge only means something next to the coordinates it was drawn on, so re-laying a
      molecule out and then putting the old wedges back can silently produce the mirror image
      (that is how L-alanine came back as D-alanine). Chem already solves this when it redraws
-     an AGILES parse: read the configuration first (R/S per centre, E/Z per double bond),
+     a parse: read the configuration first (R/S per centre, E/Z per double bond),
      lay out, then draw that configuration again on the new coordinates and check it. If any
      centre or double bond would come out different, the old picture is kept instead.
 

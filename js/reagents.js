@@ -288,7 +288,7 @@ function resolvePredReagent(text, _noForms) {
   for (const id in RULE_REAGENTS) {
     if (RULE_REAGENTS[id].formulas.includes(norm)) return { id, via: 'formula' };
   }
-  /* structure: AGILES, SMILES or IUPAC name — spectator Na+/K+/Li+ stripped,
+  /* structure: SMILES or IUPAC name — spectator Na+/K+/Li+ stripped,
      then matched by canonical structure against the taught reagents */
   let g = null;
   try { g = Chem.searchMolecule(raw).graph; } catch (e) { return { error: e.message }; }

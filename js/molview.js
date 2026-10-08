@@ -1412,7 +1412,7 @@
     if (I.label) { box.innerHTML = `<span class="mv-via">${esc(I.label)}</span>`; return; }
     if (I.source === 'sketcher' && !I.matched) { box.innerHTML = '<span class="mv-via">From the Sketcher drawing</span>'; return; }
     const how = { 'common name': 'a common name', 'molecule library': "the app's molecule library", 'CAS number': 'a CAS number', 'IUPAC name': 'an IUPAC name',
-      'closest name': 'the closest known name', acronym: 'an acronym', 'AGILES code': 'an AGILES code' }[I.via];
+      'closest name': 'the closest known name', acronym: 'an acronym' }[I.via];
     let h = `<span class="mv-via">` + (I.matched && how
       ? `Read as <b>${esc(I.matched)}</b> (from ${esc(how)})` : `Read as ${esc(I.via)}${I.matched && I.matched !== I.via ? ': <b>' + esc(I.matched) + '</b>' : ''}`) + '</span>';
     if (I.warn) h += ` <span class="mv-warn">${esc(I.warn)}</span>`;

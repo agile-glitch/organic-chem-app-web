@@ -455,7 +455,7 @@ function makeChem() {
      and whether it is too bulky to reach a carbon. Those three facts are
      what decide SN1 / SN2 / E1 / E2. */
   /* Each reagent carries a structure (SMILES of its active species) so a
-     pasted SMILES or AGILES code can be matched back to the reagent it is. */
+     pasted SMILES can be matched back to the reagent it is. */
   const NUCLEOPHILES = {
     'NaOH':   { smiles: '[OH-]', text: 'HO⁻',    nuc: 'strong', base: 'strong', bulky: false, charge: -1, head: 'O', tail: [] },
     'KOH':    { smiles: '[OH-]', text: 'HO⁻',    nuc: 'strong', base: 'strong', bulky: false, charge: -1, head: 'O', tail: [] },
@@ -474,8 +474,7 @@ function makeChem() {
   };
 
   /* Turn whatever was typed in the reagent box into a known reagent:
-     its key (NaOEt), a loose name (hydroxide, OH-), or a pasted SMILES /
-     AGILES code, which is parsed and matched against the table by structure.
+     its key (NaOEt), a loose name (hydroxide, OH-), or a pasted SMILES, which is parsed and matched against the table by structure.
      Counterions like Na⁺ or K⁺ in the pasted code are ignored — the metal is
      a spectator, the anion is the reagent. */
   let _nucKeyIndex = null;
@@ -511,9 +510,9 @@ function makeChem() {
     if (exact) return { key: exact, via: 'name' };
     const alias = REAGENT_ALIASES[raw.toLowerCase()];
     if (alias) return { key: alias, via: 'name' };
-    // 2. a pasted SMILES or AGILES code — match by structure
+    // 2. a pasted SMILES — match by structure
     let g = reagentGraphOf(raw);
-    if (!g) return { error: 'not a known reagent name, and could not be read as an IUPAC name, SMILES or AGILES code.' };
+    if (!g) return { error: 'not a known reagent name, and could not be read as an IUPAC name or SMILES.' };
     // drop spectator metal cations (Na+, K+, Li+) so "[Na+].[OH-]" still matches
     const comps = componentsOf(g);
     if (comps.length > 1) {
@@ -1087,7 +1086,7 @@ function makeChem() {
     'h3po4': 'H3PO4', 'phosphoric acid': 'H3PO4' };
   let _acidKeyIndex = null;
   /* a reagent typed as a code OR as a name (IUPAC, common, CAS) — the name
-     tables are consulted when the text is not a SMILES / AGILES code */
+     tables are consulted when the text is not a SMILES */
   function reagentGraphOf(raw) {
     try { return parseSmiles(raw); } catch (e) {}
     try { const r = searchMolecule(raw); if (r && r.graph) return r.graph; } catch (e) {}
@@ -3857,7 +3856,7 @@ function makeChem() {
          physically bridges one side of the ring — it cannot straddle it — so a
          wedge on one and a dash on the other would be a structure that does not
          exist. This is a drawing convention only; nothing is written into the
-         graph, so the SMILES and AGILES stay free of invented stereochemistry. */
+         graph, so the SMILES stays free of invented stereochemistry. */
       let stereo = b.stereo, narrow = b.narrow;
       if (!stereo && epoxideBonds && epoxideBonds.has(b)) {
         stereo = 'wedge';
@@ -4407,7 +4406,7 @@ function makeChem() {
     let nbrs = neighbors(g, centerId).filter(n => n.atom);
     /* WHICH bond gets the wedge has to be decided from the CHEMISTRY, not
        from whatever order the parser happened to store the neighbours in.
-       Otherwise the same molecule, read back from its own SMILES or AGILES,
+       Otherwise the same molecule, read back from its own SMILES,
        lands its wedge on a different substituent every time the atom order
        changes — the configuration stays right, but the picture visibly
        moves, which is alarming and looks like a bug.
@@ -4474,7 +4473,7 @@ function makeChem() {
       return dp < dq ? 1 : dp > dq ? -1 : 0;
     });
     centres.forEach(atom => {
-      if (atom.__rs) {                       // AGILES {R}/{S}
+      if (atom.__rs) {                       // a stereo label (R or S) asked for by a name
         const want = atom.__rs;
         realizeStereo(g, atom.id, () => { const r = assignRS(g, atom.id); return !!(r && r.label === want); });
         delete atom.__rs;
@@ -4495,232 +4494,11 @@ function makeChem() {
   const ORGANIC = ['Cl', 'Br', 'B', 'C', 'N', 'O', 'P', 'S', 'F', 'I'];
 
 
-  /* =========================================================
-     AGILES bracket notation (Chris's format).
-
-       .CH3-{C-'Br-(CH2-CH3)-"H-.CH3}
-
-     { }   the braces hold a stereocentre; the first atom in them IS that centre
-     -     a bond          '  wedge (toward you)        "  dash (away from you)
-     Groups inside the bracket are read CLOCKWISE from 12 o'clock: 12, 4, 6, 8.
-     Anything written before the bracket bonds in at the remaining position.
-     A fragment keeps chaining to the next one until its valence is full, so
-     CH2-CH3 is one ethyl group (CH2 still has a slot; CH3 does not).
-     ========================================================= */
-  const AGILES_CLOCK = [12, 4, 6, 8];
-  const clockDir = h => {
-    const th = (h % 12) / 12 * Math.PI * 2;      // clockwise from 12 o'clock
-    return { x: Math.sin(th), y: -Math.cos(th) };
-  };
-
-  function looksLikeAgilesBrackets(str) {
-    const brace = str.match(/\{([^}]*)\}/);
-    if (brace && brace[1].includes('-')) return true;          // {C-'Br-...}
-    // legacy [C-'Br-...] — a hyphen FOLLOWED BY a group, so [OH-] is not this
-    const sq = str.match(/\[([^\]]*)\]/);
-    return !!(sq && /-\s*['".(]?[A-Za-z(]/.test(sq[1]));
-  }
-
   // "CH3" -> {el:'C', h:3}   "Br" -> {el:'Br', h:0}   "OH" -> {el:'O', h:1}
   /* A fragment may carry a locant, written either before or after the element:
      C[3]H2, [3]CH2, and on a stereocentre also its configuration: C[2R]. */
-  /* [pos] / [neg] mark formal charge, written in front of the atom they sit on:
-     [neg]O is a negatively charged oxygen, [pos]N a positively charged nitrogen.
-     [pos2] / [neg2] for anything past a single charge. */
-  function takeChargeMark(str) {
-    const m = str.match(/^\[(pos|neg)(\d*)\]/i);
-    if (!m) return null;
-    const n = m[2] ? parseInt(m[2], 10) : 1;
-    return { charge: (m[1].toLowerCase() === 'pos' ? 1 : -1) * n, rest: str.slice(m[0].length) };
-  }
-  function chargeMark(charge) {
-    if (!charge) return '';
-    const n = Math.abs(charge);
-    return '[' + (charge > 0 ? 'pos' : 'neg') + (n > 1 ? n : '') + ']';
-  }
 
-  function parseFragment(tok) {
-    let t = tok.trim(), locant = null, config = null, charge = 0;
-    const takeLoc = (str) => {
-      const m = str.match(/^\[(\d+)([RSrs])?\]/);
-      if (!m) return null;
-      locant = parseInt(m[1], 10);
-      if (m[2]) config = m[2].toUpperCase();
-      return str.slice(m[0].length);
-    };
-    for (;;) {                                                  // [2][neg]O or [neg][2]O
-      const cm = takeChargeMark(t);
-      if (cm) { charge = cm.charge; t = cm.rest; continue; }
-      const pre = takeLoc(t);
-      if (pre !== null) { t = pre; continue; }                   // [3]CH2
-      break;
-    }
-    const em = t.match(/^([A-Z][a-z]?)/);
-    if (!em) throw new Error('Could not read the group "' + tok + '".');
-    const el = em[1];
-    let rest = t.slice(el.length);
-    const post = takeLoc(rest);
-    if (post !== null) rest = post;                             // C[3]H2
-    const hm = rest.match(/^(?:H(\d*))?$/);
-    if (!hm) throw new Error('Could not read the group "' + tok + '".');
-    if (VALENCE[el] === undefined) throw new Error('Unknown element "' + el + '" in "' + tok + '".');
-    const h = hm[1] === undefined ? 0 : (hm[1] === '' ? 1 : parseInt(hm[1], 10));
-    return { el, h, locant, config, charge };
-  }
 
-  function parseAgilesBrackets(str) {
-    const text = str.trim().replace(/\s+/g, '');
-    // braces mark the stereocentre; square brackets are locants like C[3]H2
-    const hasBrace = text.indexOf('{') >= 0;
-    const open = hasBrace ? text.indexOf('{') : text.indexOf('[');
-    const closeCh = hasBrace ? '}' : ']';
-    const close = text.lastIndexOf(closeCh);
-    if (open < 0 || close < 0) throw new Error('AGILES needs one { ... } holding the stereocentre.');
-    if (text.slice(close + 1).replace(/-/g, '')) throw new Error('Nothing is supported after the closing "]" yet.');
-
-    const before = text.slice(0, open).replace(/-$/, '').replace(/^\./, '');
-    const inside = text.slice(open + 1, close);
-
-    const g = { atoms: [], bonds: [], nextId: 1 };
-    const addAtom = (el, h, x, y, charge) => {
-      const a = { id: g.nextId++, element: el, charge: charge || 0, x, y };
-      if (h !== null && h !== undefined) a._wantH = h;
-      g.atoms.push(a); return a;
-    };
-    const L = 46;
-
-    // --- the stereocentre itself ---
-    // split on hyphens, but never inside parentheses
-    const splitTop = (txt) => {
-      const parts = []; let buf = '', depth = 0;
-      for (const ch of txt) {
-        if (ch === '(') depth++;
-        if (ch === ')') depth--;
-        if (ch === '-' && depth === 0) { parts.push(buf); buf = ''; continue; }
-        buf += ch;
-      }
-      parts.push(buf);
-      return parts;
-    };
-    // "CH2CH3" or "CH2-CH3" -> [CH2, CH3]
-    const fragsOf = (txt) => {
-      const out = [];
-      txt.split(/-/).forEach(chunk => {
-        const re = /(\[\d+[RSrs]?\])?([A-Z][a-z]?)(\[\d+[RSrs]?\])?(H\d*)?/g;
-        let m;
-        while ((m = re.exec(chunk)) !== null) {
-          if (!m[0]) break;
-          out.push(parseFragment((m[1] || '') + m[2] + (m[3] || '') + (m[4] || '')));
-        }
-      });
-      if (!out.length) throw new Error('Empty group "( )" in the AGILES string.');
-      return out;
-    };
-    const insideTokens = splitTop(inside);
-    const centreTok = insideTokens.shift();
-    const centre = parseFragment(centreTok);
-    if (centre.el !== 'C') throw new Error('The first atom inside the brackets is the stereocentre — it should be C.');
-    const C = addAtom('C', null, 220, 200, centre.charge);
-
-    /* Group the remaining tokens: a fragment chains onward while it still has
-       an open valence (CH2 does, CH3 does not), which is what makes
-       "-CH2-CH3" a single ethyl rather than two separate groups. */
-    const groups = [];
-    let cur = null;
-    insideTokens.forEach(rawTok => {
-      let tok = rawTok, stereo = null;
-      if (tok.startsWith("'")) { stereo = 'wedge'; tok = tok.slice(1); }
-      else if (tok.startsWith('"')) { stereo = 'dash'; tok = tok.slice(1); }
-      if (tok.startsWith('.')) tok = tok.slice(1);   // "." just flags the repeated group
-      if (!tok) throw new Error('A bond marker has no group after it.');
-      if (tok.startsWith('(')) {                 // parentheses spell out one whole group
-        if (!tok.endsWith(')')) throw new Error('Unclosed "(" in the AGILES string.');
-        if (cur) { groups.push(cur); cur = null; }
-        groups.push({ stereo, frags: fragsOf(tok.slice(1, -1)) });
-        return;
-      }
-      // a bare multi-atom token like CH2CH3 is a whole group, same as (CH2CH3)
-      if (/^([A-Z][a-z]?(H\d*)?){2,}$/.test(tok)) {
-        if (cur) { groups.push(cur); cur = null; }
-        groups.push({ stereo, frags: fragsOf(tok) });
-        return;
-      }
-      const frag = parseFragment(tok);
-      if (cur) { cur.frags.push(frag); }
-      else { cur = { stereo, frags: [frag] }; }
-      const used = (cur.frags.length > 1 ? 2 : 1) + frag.h;      // bond in (+ bond back) + its H
-      if (used >= (VALENCE[frag.el] || 4)) { groups.push(cur); cur = null; }
-    });
-    if (cur) groups.push(cur);
-
-    // anything before the bracket is one more group, bonded in at the last clock slot
-    let leading = null;
-    if (before) {
-      const bare = before.startsWith('(') && before.endsWith(')') ? before.slice(1, -1) : before;
-      leading = { stereo: null, frags: fragsOf(bare).reverse() };   // the LAST written fragment touches the centre
-    }
-    /* The group written before the bracket may ALSO be spelled out as the last
-       group inside it — the same methyl said twice for readability. If the
-       bracket already lists four groups, the leading one is that repeat. */
-    /* The leading group was written OUTWARD from the centre but parsed and
-       reversed so its last fragment touches the centre — so compare it against
-       the inside group read the same way round. Comparing without the
-       un-reverse rejected every multi-atom repeated group ("[3]CH2-[4]CH3"),
-       a bug the hub parser had been masking for unconfigured molecules. */
-    const sameGroup = (p, q) => {
-      if (!p || !q || p.frags.length !== q.frags.length) return false;
-      const qr = q.frags.slice().reverse();
-      return p.frags.every((f, i) => f.el === qr[i].el && f.h === qr[i].h);
-    };
-    let all;
-    if (leading && groups.length === 4) {
-      if (!sameGroup(leading, groups[3]))
-        throw new Error('The group before the bracket does not match the last group inside it — ' +
-          'write it once, or write the same group in both places.');
-      all = groups;                      // the repeat is just a restatement
-    } else {
-      all = leading ? groups.concat([leading]) : groups;
-    }
-    if (all.length !== 4) throw new Error('A stereocentre needs exactly 4 groups — this one has ' + all.length + '.');
-
-    // --- place each group at its clock position ---
-    all.forEach((grp, gi) => {
-      const dir = clockDir(AGILES_CLOCK[gi]);
-      let prev = C, prevStereo = grp.stereo;
-      let ang = Math.atan2(dir.y, dir.x);
-      grp.frags.forEach((frag, fi) => {
-        // turn 60 degrees each step so a chain zig-zags at proper 120 degree
-        // bond angles instead of running out in a straight line
-        if (fi > 0) ang += (fi % 2 ? -1 : 1) * (Math.PI / 3);
-        const a = addAtom(frag.el, frag.h, prev.x + L * Math.cos(ang), prev.y + L * Math.sin(ang), frag.charge);
-        const bond = { a: prev.id, b: a.id, order: 1 };
-        if (fi === 0 && prevStereo) { bond.stereo = prevStereo; bond.narrow = C.id; }
-        g.bonds.push(bond);
-        prev = a;
-      });
-    });
-
-    /* An explicitly written H is only there to carry the wedge/dash. Read the
-       configuration off the drawing, then drop that H and re-express the same
-       configuration the normal way, so the result matches every other molecule
-       in the program. */
-    const rs = assignRS(g, C.id);
-    if (centre.config && rs && rs.label && centre.config !== rs.label)
-      throw new Error('You wrote C[' + (centre.locant || '') + centre.config + '] but the wedge/dash you drew gives ' +
-        rs.label + '. Flip the \' and " marks, or change the letter.');
-    const explicitH = g.atoms.filter(a => a.element === 'H');
-    if (explicitH.length) {
-      explicitH.forEach(h => removeAtom(g, h.id));
-      g.bonds.forEach(b => { delete b.stereo; delete b.narrow; });
-      if (rs && rs.label) {          // a real stereocentre: put the configuration back
-        const want = rs.label;
-        realizeStereo(g, C.id, () => { const r = assignRS(g, C.id); return !!(r && r.label === want); });
-      }
-      // otherwise there was no configuration to keep (two groups are identical)
-    }
-    g.atoms.forEach(a => { delete a._wantH; });
-    return g;
-  }
 
 
   /* =========================================================
@@ -4742,7 +4520,7 @@ function makeChem() {
 
     const out = [];
     out.push(title || '');
-    out.push('  AGILES    2D');
+    out.push('  OrgChem   2D');
     out.push('');
     out.push(p3(g.atoms.length) + p3(g.bonds.length) + '  0  0  0  0  0  0  0  0999 V2000');
 
@@ -4820,482 +4598,14 @@ function makeChem() {
 
 
   /* =========================================================
-     AGILES ring notation: lowercase means the atom is IN a ring,
-     and the chain closes back on itself.
-
-       [1]ch=[2]ch-[3]ch2-[4]ch2-[5]ch2-[6]ch2      cyclohexene
-
-     -  single bond      =  double bond      _  triple bond
-     The bond from the last atom back to the first is implied single
-     unless the string ends with one of the bond marks.
+     Aromatic (lowercase) SMILES atoms.
      ========================================================= */
   const LOWER_ELEMENTS = ['cl', 'br', 'c', 'n', 'o', 's', 'p', 'f', 'i', 'b'];
 
-  function looksLikeAgilesRing(str) {
-    /* Decided by the FIRST atom token: a ring string opens with a lowercase
-       element. Looking anywhere in the string used to fail on a substituted
-       ring, because "[1]c([7]CH3)=..." also contains an uppercase locant. */
-    const t = String(str).trim().replace(/\s+/g, '');
-    // a brace no longer rules a ring out — a fused ring carries one
-    return /^(\[\d+[a-z]?[RSZE]?\])?(\[(?:pos|neg)\d*\])?[a-z]{1,2}(h\d*)?([-=_({]|$)/.test(t);
-  }
 
-  function parseAgilesRing(str, ropts) {
-    // the hyphen between an atom and its own brace is punctuation, not a bond
-    const text = String(str).trim().replace(/\s+/g, '').replace(/-\{/g, '{');
 
-    /* Split into ring-atom pieces at top-level bond marks. Anything inside
-       parentheses belongs to a substituent and is left alone. */
-    const pieces = [], marks = [];
-    { let buf = '', depth = 0;
-      for (const ch of text) {
-        if (ch === '(' || ch === '{') depth++;
-        if (ch === ')' || ch === '}') depth--;
-        if (depth === 0 && (ch === '-' || ch === '=' || ch === '_')) {
-          marks.push(ch); pieces.push(buf); buf = ''; continue;
-        }
-        buf += ch;
-      }
-      // a trailing mark (no atom after it) is the bond that closes the ring
-      if (buf) pieces.push(buf);
-    }
-    if (pieces.length < 3) throw new Error('A ring needs at least three atoms.');
 
-    const g = { atoms: [], bonds: [], nextId: 1 };
-    const orderOf = mark => (mark === '=' ? 2 : mark === '_' ? 3 : 1);
-    const branches = [];                                // {hostIndex, text, order}
-    const braces = [];                                  // {hostIndex, text} — clock lists
 
-    pieces.forEach((piece, i) => {
-      /* Split the piece into the atom itself, its "(...)" substituents and its
-         "{...}" clock list. Square brackets are part of the atom and never nest,
-         so only the round and curly ones need depth tracking. */
-      let head = '', rest = '', brace = '', depth = 0, mode = 'head';
-      for (let k = 0; k < piece.length; k++) {
-        const ch = piece[k];
-        if (depth === 0 && ch === '(') { depth = 1; mode = 'paren'; rest += ch; continue; }
-        if (depth === 0 && ch === '{') { depth = 1; mode = 'brace'; continue; }
-        if (depth > 0) {
-          if (ch === '(' || ch === '{') depth++;
-          if (ch === ')' || ch === '}') {
-            depth--;
-            if (depth === 0) { if (mode === 'paren') rest += ch; mode = 'head'; continue; }
-          }
-          if (mode === 'paren') rest += ch; else brace += ch;
-          continue;
-        }
-        head += ch;
-      }
-      if (depth !== 0) throw new Error('Unbalanced brackets in "' + piece + '".');
-      if (brace) braces.push({ hostIndex: i, text: brace });
-      if (rest) {
-        let d = 0, buf = '';
-        for (const ch of rest) {
-          if (ch === '(') { d++; if (d === 1) { buf = ''; continue; } }
-          if (ch === ')') { d--; if (d === 0) { branches.push({ hostIndex: i, text: buf }); continue; } }
-          buf += ch;
-        }
-      }
-      let charge = 0, t0 = head;
-      const cm0 = takeChargeMark(t0);
-      if (cm0) { charge = cm0.charge; t0 = cm0.rest; }
-      else {
-        const after = t0.match(/^(\[\d+\])(\[(?:pos|neg)\d*\])(.*)$/i);
-        if (after) { charge = takeChargeMark(after[2]).charge; t0 = after[1] + after[3]; }
-      }
-      const m = t0.match(/^(?:\[(\d+[a-z]?)([RSZE])?\])?([a-z]{1,2})(h(\d*))?$/);
-      if (!m) throw new Error('Could not read ring atom "' + piece + '" — expected something like [3]ch2, or a bare "o" for a heteroatom.');
-      let sym = m[3], h;
-      if (!LOWER_ELEMENTS.includes(sym)) {
-        if (LOWER_ELEMENTS.includes(sym[0])) { h = 1; sym = sym[0]; }
-        else throw new Error('Unknown ring element "' + m[3] + '".');
-      }
-      const el = sym.charAt(0).toUpperCase() + sym.slice(1);
-      if (VALENCE[el] === undefined) throw new Error('Element "' + el + '" is not in the valence table yet.');
-      if (h === undefined) h = m[4] === undefined ? undefined : (m[5] === '' ? 1 : parseInt(m[5], 10));
-      const ringAtom = { id: g.nextId++, element: el, charge, x: 0, y: 0, _statedH: h, _ring: true };
-      if (m[1]) ringAtom._statedLoc = m[1];
-      if (m[2] === 'R' || m[2] === 'S') ringAtom.__rs = m[2];
-      g.atoms.push(ringAtom);
-    });
-
-    const ringAtoms = g.atoms.slice();
-    for (let i = 0; i < ringAtoms.length - 1; i++) {
-      g.bonds.push({ a: ringAtoms[i].id, b: ringAtoms[i + 1].id, order: orderOf(marks[i]) });
-    }
-    const closing = marks.length >= ringAtoms.length ? marks[ringAtoms.length - 1] : '-';
-    g.bonds.push({ a: ringAtoms[ringAtoms.length - 1].id, b: ringAtoms[0].id, order: orderOf(closing) });
-
-    /* ---- fusion tags: "(f4-5: ...)" welds another ring onto the 4-5 bond
-       (Chris's Option A ruling). Pulled out of the branch list here; they are
-       processed after the ordinary substituents are grafted, below. */
-    const locMap = new Map();
-    ringAtoms.forEach((a, i) => { if (!locMap.has(String(i + 1))) locMap.set(String(i + 1), a); });
-    ringAtoms.forEach(a => { if (a._statedLoc) locMap.set(a._statedLoc, a); });
-    const fuseQ = [];
-    for (let bi = branches.length - 1; bi >= 0; bi--) {
-      const fm = branches[bi].text.match(/^f(\d+[a-z]?)-(\d+[a-z]?)(?::([\s\S]*)|([-=_])?)$/);
-      if (fm) { fuseQ.unshift({ la: fm[1], lb: fm[2], body: fm[3], mk: fm[4] }); branches.splice(bi, 1); }
-    }
-
-    /* A brace on a ring atom lists everything around that atom. Most entries are
-       already known — the two ring neighbours, an H — but an entry naming a ring
-       position this atom is NOT yet bonded to is a fusion bond, which is the one
-       bond a walk round the perimeter can never reach. */
-    let bridges = [];
-    braces.forEach(br => {
-      const host = ringAtoms[br.hostIndex];
-      const parts = []; let buf = '', d2 = 0, pend = 1;
-      for (const ch of br.text) {
-        if (ch === '(' || ch === '{') d2++;
-        if (ch === ')' || ch === '}') d2--;
-        if (d2 === 0 && (ch === '-' || ch === '=' || ch === '_')) {
-          if (buf) parts.push({ tok: buf, order: pend });
-          buf = ''; pend = orderOf(ch); continue;
-        }
-        buf += ch;
-      }
-      if (buf) parts.push({ tok: buf, order: pend });
-      parts.forEach(({ tok, order }) => {
-        if (/^h\d*$/i.test(tok)) return;                        // the hydrogen slot
-        let other = null;
-        const m = tok.match(/^\[(\d+)[RSZE]?\]/);
-        if (m) {
-          other = ringAtoms[parseInt(m[1], 10) - 1];
-        } else {
-          /* No locant, so it is a heteroatom written as itself. Match it to a
-             ring atom of that element — preferring one this host is not bonded
-             to yet, since that is the bond the brace exists to declare. */
-          /* "nh" is nitrogen carrying one hydrogen, not the element Nh — take the
-             two-letter reading only when it is a real element. */
-          const em = tok.match(/^([a-z]{1,2})/);
-          if (!em) return;
-          let sym = em[1];
-          if (sym.length === 2 && !LOWER_ELEMENTS.includes(sym)) sym = sym[0];
-          if (!LOWER_ELEMENTS.includes(sym)) return;
-          const el = sym.charAt(0).toUpperCase() + sym.slice(1);
-          const joined = a => g.bonds.some(b =>
-            (b.a === host.id && b.b === a.id) || (b.b === host.id && b.a === a.id));
-          // if the walk already bonded this host to one of these, the entry is
-          // just describing that bond, not declaring a new one
-          if (ringAtoms.some(a => a.element === el && joined(a))) return;
-          const free = ringAtoms.filter(a => a.element === el && a.id !== host.id && !joined(a));
-          if (free.length === 1) other = free[0];
-          else if (free.length > 1) throw new Error('The brace names "' + tok + '" but more than one ' +
-            el + ' in the ring could be meant — give that one a locant.');
-          else {
-            /* Nothing in the ring fits, so this is an atom bridging across it —
-               the oxygen of an epoxide, written in the brace of each carbon it
-               joins. The same symbol in a second brace means the same atom, the
-               way a repeated locant does, so the two braces build one bridge
-               rather than two separate atoms. */
-            bridges = bridges || [];
-            const spare = bridges.find(x => x.element === el && !joined(x));
-            if (spare) other = spare;
-            else {
-              other = { id: g.nextId++, element: el, charge: 0, x: 0, y: 0 };
-              g.atoms.push(other); bridges.push(other);
-            }
-          }
-        }
-        if (!other || other.id === host.id) return;
-        const already = g.bonds.find(b => (b.a === host.id && b.b === other.id) ||
-                                          (b.b === host.id && b.a === other.id));
-        if (already) { if (order > 1) already.order = order; }
-        else g.bonds.push({ a: host.id, b: other.id, order });
-      });
-    });
-
-    // graft each substituent on, reusing the open-chain reader for its innards
-    const graftGroup = (hostAtom, text) => {
-      let txt = text, order = 1;
-      if (txt[0] === '=' || txt[0] === '_' || txt[0] === '-') { order = orderOf(txt[0]); txt = txt.slice(1); }
-      if (!txt) throw new Error('Empty substituent "( )".');
-      let sub;
-      /* Lowercase atoms inside the parentheses mean the group is a ring of its
-         own — the second ring of a biphenyl — so it is read with the ring
-         reader and closes back on itself. Uppercase is an ordinary chain. */
-      const isRingGroup = /^(\[\d+[a-z]?[RSZE]?\])?\[?(?:pos|neg)?\d*\]?[a-z]/.test(txt) &&
-                          (txt.match(/[a-z](?![a-z])/g) || []).length >= 3;
-      try { sub = isRingGroup ? parseAgilesRing(txt, { raw: true }) : parseAgilesChain(txt, { raw: true }); }
-      catch (e) { throw new Error('Could not read the group "(' + text + ')": ' + e.message); }
-      if (isRingGroup) sub.atoms.forEach(a => { delete a._statedH; });
-      const map = new Map();
-      sub.atoms.forEach(a => {
-        const copy = Object.assign({}, a, { id: g.nextId++, x: 0, y: 0 });
-        map.set(a.id, copy.id); g.atoms.push(copy);
-      });
-      sub.bonds.forEach(bd => {
-        const nb2 = { a: map.get(bd.a), b: map.get(bd.b), order: bd.order };
-        if (bd.stereo) { nb2.stereo = bd.stereo; nb2.narrow = map.get(bd.narrow); }
-        g.bonds.push(nb2);
-      });
-      g.bonds.push({ a: hostAtom.id, b: map.get(sub.atoms[0].id), order });
-    };
-    branches.forEach(br => graftGroup(ringAtoms[br.hostIndex], br.text));
-
-    /* ---- weld the fused rings on. The tag body is a walk of NEW atoms: the
-       first bonds to the atom at the tag's first locant, the last bonds back
-       to the atom at its second, and a leading/trailing mark carries those
-       weld bonds' orders. Tags nest — anthracene's third ring rides inside
-       the second ring's tag — and each carbon's stated locant joins the map
-       so deeper tags can point at it. */
-    const processFusion = fu => {
-      const A = locMap.get(fu.la), B = locMap.get(fu.lb);
-      if (!A || !B) throw new Error('The fusion tag "f' + fu.la + '-' + fu.lb + '" names a locant that has not been written yet.');
-      /* an empty tag — "(f4a-8a)" or "(f4a-8a=)" — declares the interior
-         fusion bond itself, Chris's Option B perimeter form */
-      if (fu.body === undefined) {
-        const ord = fu.mk ? orderOf(fu.mk) : 1;
-        const have = g.bonds.find(b => (b.a === A.id && b.b === B.id) || (b.b === A.id && b.a === B.id));
-        if (have) { if (ord > 1) have.order = ord; }
-        else g.bonds.push({ a: A.id, b: B.id, order: ord });
-        return;
-      }
-      let body = fu.body, lead = 1;
-      if (body[0] === '-' || body[0] === '=' || body[0] === '_') { lead = orderOf(body[0]); body = body.slice(1); }
-      const pcs = [], mks = [];
-      { let buf = '', depth = 0;
-        for (const ch of body) {
-          if (ch === '(' || ch === '{') depth++;
-          if (ch === ')' || ch === '}') depth--;
-          if (depth === 0 && (ch === '-' || ch === '=' || ch === '_')) { mks.push(ch); pcs.push(buf); buf = ''; continue; }
-          buf += ch;
-        }
-        if (buf) pcs.push(buf); }
-      if (!pcs.length || pcs.some(p => !p)) throw new Error('Could not read the fused ring "(f' + fu.la + '-' + fu.lb + ':...)".');
-      const made = [];
-      pcs.forEach(piece => {
-        let head = '', rest = '', depth = 0;
-        for (let k2 = 0; k2 < piece.length; k2++) {
-          const ch = piece[k2];
-          if (depth === 0 && ch === '(') { depth = 1; rest += ch; continue; }
-          if (depth > 0) {
-            if (ch === '(') depth++;
-            if (ch === ')') depth--;
-            rest += ch; continue;
-          }
-          head += ch;
-        }
-        const subs = [];
-        if (rest) {
-          let d3 = 0, buf3 = '';
-          for (const ch of rest) {
-            if (ch === '(') { d3++; if (d3 === 1) { buf3 = ''; continue; } }
-            if (ch === ')') { d3--; if (d3 === 0) { subs.push(buf3); continue; } }
-            buf3 += ch;
-          }
-        }
-        let charge = 0, t0 = head;
-        const cm0 = takeChargeMark(t0);
-        if (cm0) { charge = cm0.charge; t0 = cm0.rest; }
-        const m2 = t0.match(/^(?:\[(\d+[a-z]?)([RSZE])?\])?([a-z]{1,2})(h(\d*))?$/);
-        if (!m2) throw new Error('Could not read fused-ring atom "' + piece + '" — expected something like [7]ch.');
-        let sym = m2[3], hh;
-        if (!LOWER_ELEMENTS.includes(sym)) {
-          if (LOWER_ELEMENTS.includes(sym[0])) { hh = 1; sym = sym[0]; }
-          else throw new Error('Unknown ring element "' + m2[3] + '".');
-        }
-        const el = sym.charAt(0).toUpperCase() + sym.slice(1);
-        if (VALENCE[el] === undefined) throw new Error('Element "' + el + '" is not in the valence table yet.');
-        if (hh === undefined) hh = m2[4] === undefined ? undefined : (m2[5] === '' ? 1 : parseInt(m2[5], 10));
-        const at = { id: g.nextId++, element: el, charge, x: 0, y: 0, _statedH: hh, _ring: true };
-        if (m2[2] === 'R' || m2[2] === 'S') at.__rs = m2[2];
-        g.atoms.push(at);
-        if (m2[1]) locMap.set(m2[1], at);
-        made.push({ at, subs });
-      });
-      g.bonds.push({ a: A.id, b: made[0].at.id, order: lead });
-      for (let t = 0; t < made.length - 1; t++)
-        g.bonds.push({ a: made[t].at.id, b: made[t + 1].at.id, order: orderOf(mks[t]) });
-      const closeOrd = mks.length === pcs.length ? orderOf(mks[pcs.length - 1]) : 1;
-      g.bonds.push({ a: made[made.length - 1].at.id, b: B.id, order: closeOrd });
-      made.forEach(({ at, subs }) => {
-        subs.forEach(txt => {
-          const fm2 = txt.match(/^f(\d+[a-z]?)-(\d+[a-z]?)(?::([\s\S]*)|([-=_])?)$/);
-          if (fm2) { processFusion({ la: fm2[1], lb: fm2[2], body: fm2[3], mk: fm2[4] }); return; }
-          graftGroup(at, txt);
-        });
-      });
-    };
-    fuseQ.forEach(processFusion);
-
-    /* Now that everything is connected, the written H counts can be checked —
-       unless this ring is a substituent being read on its own, in which case one
-       bond back to the parent is still missing and the counts are one short. */
-    if (!(ropts && ropts.raw)) g.atoms.forEach(a => {
-      if (a._statedH === undefined) return;
-      const implied = implicitH(g, a);
-      if (implied !== a._statedH)
-        throw new Error(a.element + ' written with ' + a._statedH +
-          ' H, but its bonds leave room for ' + implied + '.');
-    });
-    g.atoms.forEach(a => { delete a._statedH; delete a._locant; delete a._ring; delete a._statedLoc; });
-
-    if (!(ropts && ropts.raw)) validateValences(g);
-    layoutGraph(g);
-    /* Only the OUTERMOST parse realizes stereo letters: a fragment's wedges
-       would be invalidated the moment the outer layout repositions it, so a
-       raw parse keeps the __rs marks and lets the final assembly place them. */
-    if (!(ropts && ropts.raw)) applyParsedStereo(g);
-    return g;
-  }
-
-  function looksLikeAgilesChain(str) {
-    const t = String(str).trim();
-    if (t.indexOf('{') >= 0) return false;
-    // numbered UPPERCASE atoms => the open-chain AGILES form.
-    // a charge marker may sit between the locant and the element: [2][pos2]C
-    if (/\[\d+[RSZE]?\]\s*(\[(?:pos|neg)\d*\]\s*)?[A-Z]/i.test(t) && /\[\d+[RSZE]?\]\s*(\[(?:pos|neg)\d*\]\s*)?[A-Z]/.test(t)) return true;
-    // a bare ion or group written the AGILES way: [neg]OH, [pos]NH4, OH-, NH4+
-    if (/^\[(pos|neg)\d*\]/i.test(t)) return true;
-    return /^[A-Z][a-z]?H\d*(\+\d*|-\d*)?$/.test(t) && t !== 'CH' && /H/.test(t);
-  }
-
-  /* Reads the open-chain AGILES form back into a molecule:
-        OH-[1]C(=O)-[2]CH3
-        [3]CH3-[4]CH2-O-[1]C(=O)-[2]CH3
-        [1]CH3-[2]CH([4]CH3)-[3]CH3
-     The [n] locants are labels for the reader — the structure comes from the
-     bonds and the parentheses, so they are checked but not needed. Written H
-     counts are verified against the valence, same as the ring form. */
-  /* Does this parenthesised group spell a ring? Ring atoms are written in
-     lowercase (ch, c, n, o), so a group that opens on a lowercase element and
-     holds at least three of them is a ring walk, not a chain. */
-  function looksAgilesRingGroup(txt) {
-    const t = String(txt).trim().replace(/^[-=_]/, '');
-    if (!/^(\[\d+[a-z]?[RSZE]?\])?(\[(?:pos|neg)\d*\])?[a-z]/.test(t)) return false;
-    const atoms = t.replace(/\([^)]*\)/g, '').match(/(?:^|[-=_\]])([a-z])(?![a-z0-9])/g) || [];
-    return (t.match(/(?:\]|^|[-=_])[a-z]/g) || []).length >= 3;
-  }
-
-  function parseAgilesChain(str, opts) {
-    const raw = !!(opts && opts.raw);   // a fragment being spliced onto something else
-    const text = String(str).trim().replace(/\s+/g, '');
-    const g = { atoms: [], bonds: [], nextId: 1 };
-    let i = 0;
-
-    const orderOf = m => (m === '=' ? 2 : m === '_' ? 3 : 1);
-    const readAtom = () => {
-      let locant = null, marked = 0, stLetter = null;
-      for (;;) {
-        const cm = takeChargeMark(text.slice(i));
-        if (cm) { marked = cm.charge; i = text.length - cm.rest.length; continue; }
-        const lm = /^\[(\d+)([RSZE])?\]/.exec(text.slice(i));
-        if (lm) { locant = parseInt(lm[1], 10); if (lm[2]) stLetter = lm[2]; i += lm[0].length; continue; }
-        break;
-      }
-      /* A lone "-" is ambiguous: it is a bond in "OH-[1]C" but a charge in
-         "OH-". Treat it as a charge only when nothing bondable follows. */
-      const am = /^([A-Z][a-z]?)(H(\d*))?(\+\d+|\++|-\d+|--+|-(?![\[A-Za-z(]))?/.exec(text.slice(i));
-      if (!am || !am[1]) throw new Error('Expected an atom at "' + text.slice(i, i + 10) + '".');
-      const el = am[1];
-      if (VALENCE[el] === undefined) throw new Error('Element "' + el + '" is not in the valence table yet.');
-      i += am[0].length;
-      let charge = marked;
-      if (!charge && am[4]) {                                   // old +/- suffix still reads
-        const sign = am[4][0] === '+' ? 1 : -1;
-        const digits = am[4].slice(1);
-        charge = sign * (digits && /\d/.test(digits) ? parseInt(digits, 10) : am[4].length);
-      }
-      const h = am[2] === undefined ? undefined : (am[3] === '' ? 1 : parseInt(am[3], 10));
-      const a = { id: g.nextId++, element: el, charge, x: 0, y: 0, _statedH: h, _locant: locant };
-      if (stLetter === 'R' || stLetter === 'S') a.__rs = stLetter;
-      else if (stLetter === 'Z' || stLetter === 'E') a.__ez = stLetter;
-      g.atoms.push(a);
-      return a;
-    };
-
-    // chain := atom ( branch* ( bond atom )? )*
-    const readChain = (attachTo, bondIn) => {
-      let prev = null, pendingOrder = bondIn;
-      for (;;) {
-        const a = readAtom();
-        if (prev) g.bonds.push({ a: prev.id, b: a.id, order: pendingOrder });
-        else if (attachTo) g.bonds.push({ a: attachTo.id, b: a.id, order: pendingOrder });
-        prev = a;
-        // branches on this atom
-        while (text[i] === '(') {
-          const openAt = i;
-          i++;
-          let ord = 1;
-          if (text[i] === '=' || text[i] === '_' || text[i] === '-') { ord = orderOf(text[i]); i++; }
-          /* A branch written in lowercase is a ring of its own — the phenyl of
-             benzophenone. Read it with the ring reader and graft it on whole. */
-          let d = 1, j = i;
-          while (j < text.length && d > 0) { if (text[j] === '(') d++; if (text[j] === ')') d--; if (d) j++; }
-          const inner = text.slice(i, j);
-          if (d === 0 && looksAgilesRingGroup(inner)) {
-            const sub = parseAgilesRing(inner, { raw: true });
-            const map = new Map();
-            sub.atoms.forEach(x => {
-              const copy = Object.assign({}, x, { id: g.nextId++, x: 0, y: 0 });
-              delete copy._statedH;
-              map.set(x.id, copy.id); g.atoms.push(copy);
-            });
-            sub.bonds.forEach(bd => {
-              const nb2 = { a: map.get(bd.a), b: map.get(bd.b), order: bd.order };
-              if (bd.stereo) { nb2.stereo = bd.stereo; nb2.narrow = map.get(bd.narrow); }
-              g.bonds.push(nb2);
-            });
-            g.bonds.push({ a: a.id, b: map.get(sub.atoms[0].id), order: ord });
-            i = j + 1; continue;
-          }
-          i = openAt + 1;
-          if (text[i] === '=' || text[i] === '_' || text[i] === '-') i++;
-          readChain(a, ord);
-          if (text[i] !== ')') throw new Error('Missing a closing bracket ")".');
-          i++;
-        }
-        if (text[i] === '-' || text[i] === '=' || text[i] === '_') {
-          pendingOrder = orderOf(text[i]); i++;
-          /* the chain may run straight into a ring: "O-[8]c=[9]ch-..." */
-          let d = 0, j = i;
-          while (j < text.length) { if (text[j] === '(') d++;
-            else if (text[j] === ')') { if (d === 0) break; d--; } j++; }
-          const tail = text.slice(i, j);
-          if (looksAgilesRingGroup(tail)) {
-            const sub = parseAgilesRing(tail, { raw: true });
-            const map = new Map();
-            sub.atoms.forEach(x => {
-              const copy = Object.assign({}, x, { id: g.nextId++, x: 0, y: 0 });
-              delete copy._statedH;
-              map.set(x.id, copy.id); g.atoms.push(copy);
-            });
-            sub.bonds.forEach(bd => {
-              const nb2 = { a: map.get(bd.a), b: map.get(bd.b), order: bd.order };
-              if (bd.stereo) { nb2.stereo = bd.stereo; nb2.narrow = map.get(bd.narrow); }
-              g.bonds.push(nb2);
-            });
-            g.bonds.push({ a: prev.id, b: map.get(sub.atoms[0].id), order: pendingOrder });
-            i = j; return;
-          }
-          continue;
-        }
-        return;
-      }
-    };
-
-    readChain(null, 1);
-    if (i < text.length) throw new Error('Could not read "' + text.slice(i) + '".');
-    if (!g.atoms.length) throw new Error('Nothing to draw.');
-
-    if (!raw) {
-      g.atoms.forEach(a => {
-        if (a._statedH === undefined) return;
-        const implied = implicitH(g, a);
-        if (implied !== a._statedH)
-          throw new Error(a.element + (a._locant ? ' [' + a._locant + ']' : '') + ' is written with ' +
-            a._statedH + ' H, but its bonds leave room for ' + implied + '.');
-      });
-      validateValences(g);
-      layoutGraph(g);
-      realizeEZ(g);                        // [2Z]/[2E] — mirror an end if needed
-      applyParsedStereo(g);                // [2R]/[3S] — wedge/dash each centre
-      g.atoms.forEach(a => { delete a._statedH; delete a._locant; });
-    }
-    return g;
-  }
 
   /* Lowercase SMILES writes an aromatic ring without saying where the double
      bonds go — "c1ccccc1" rather than "C1=CC=CC=C1". The program draws and
@@ -5351,42 +4661,8 @@ function makeChem() {
     g.atoms.forEach(a => { delete a.__arom; delete a.__brH; });
   }
 
-  /* An AGILES code is laid out by its own clock rules (12, 4, 6, 8 o'clock
-     round each bracket), which is faithful to the notation but often looks
-     cramped next to the same molecule drawn from its SMILES or CAS number,
-     which goes through the structure-diagram layout (regular rings, 120°
-     chains). So every AGILES parse is redrawn with that layout and the
-     configuration is put back — R/S by re-placing the wedges, E/Z by
-     flipping an alkene end — and checked centre by centre; if anything
-     would be lost the original AGILES picture is kept. */
-  function cleanAgilesLayout(g) {
-    if (!g || !g.atoms || g.atoms.length < 3) return g;
-    const rs = new Map(), ez = [];
-    try { g.atoms.forEach(a => { if (isStereocenter(g, a)) { const r = assignRS(g, a.id); if (r && r.label) rs.set(a.id, r.label); } }); } catch (e) { return g; }
-    try { g.bonds.forEach(b => { if (b.order === 2) { const e = assignEZ(g, b); if (e && e.label) ez.push({ a: b.a, b: b.b, label: e.label }); } }); } catch (e) { return g; }
-    let c;
-    try {
-      c = { atoms: g.atoms.map(a => { const o = Object.assign({}, a); delete o.__rs; return o; }), bonds: g.bonds.map(b => { const o = Object.assign({}, b); delete o.stereo; delete o.narrow; return o; }), nextId: g.nextId };
-      Object.keys(g).forEach(k => { if (!(k in c)) c[k] = g[k]; });
-      layoutGraph(c);
-      ez.forEach(x => { const e = assignEZ(c, bondBetween(c, x.a, x.b)); if (e && e.label !== x.label) flipAlkeneEnd(c, x.a, x.b); });
-      c.atoms.forEach(a => { if (rs.has(a.id)) a.__rs = rs.get(a.id); });
-      applyParsedStereo(c);
-      /* verify: every centre and every double bond must read the same */
-      for (const [id, label] of rs) { const r = assignRS(c, id); if (!r || r.label !== label) return g; }
-      for (const x of ez) { const e = assignEZ(c, bondBetween(c, x.a, x.b)); if (!e || e.label !== x.label) return g; }
-      if (!sameMolecule(g, c)) return g;
-    } catch (e) { return g; }
-    c.__cleanLayout = true;
-    return c;
-  }
   function parseSmiles(str) {
     if (!str || !str.trim()) throw new Error('Enter a SMILES string first.');
-    if (looksLikeAgilesRing(str)) return cleanAgilesLayout(parseAgilesRing(str));
-    if (looksLikeAgilesHub(str)) return cleanAgilesLayout(parseAgilesHub(str));
-    if (looksLikeAgilesCarboxyl(str)) return cleanAgilesLayout(parseAgilesCarboxyl(str));
-    if (looksLikeAgilesBrackets(str)) return cleanAgilesLayout(canonicaliseStereoLayout(parseAgilesBrackets(str)));
-    if (looksLikeAgilesChain(str)) return cleanAgilesLayout(parseAgilesChain(str));
     const s = str.trim().replace(/\s+/g, '');
     const stripped = s.replace(/\[[^\]]*\]/g, '').replace(/Cl/g, '').replace(/Br/g, '');
     const badLower = stripped.replace(/[bcnops]/g, '');
@@ -5472,15 +4748,6 @@ function makeChem() {
         if (m[4]) bracketAtom.__order.push({ kind: 'H' });
         i = end + 1; continue;
       }
-      if (ch === '{') {                        // AGILES stereo label, e.g. {R}
-        const end = s.indexOf('}', i);
-        if (end < 0) throw new Error('Unclosed "{" in the string.');
-        const label = s.slice(i + 1, end).toUpperCase();
-        if (label !== 'R' && label !== 'S') throw new Error('"{' + s.slice(i + 1, end) + '}" is not a stereo label — use {R} or {S}.');
-        if (!prev) throw new Error('A stereo label appears before any atom.');
-        prev.__rs = label;
-        i = end + 1; continue;
-      }
       const two = s.substr(i, 2);
       let el = ORGANIC.includes(two) ? two : (ORGANIC.includes(ch) ? ch : null);
       // a lowercase organic letter is an aromatic atom: c1ccccc1, n, o, s, p
@@ -5525,7 +4792,7 @@ function makeChem() {
     layoutGraph(g);
     applyParsedStereo(g);      // draw the stereochemistry as wedge/dash
     applyParsedEZ(g);          // F/C=C/F is trans, F/C=C\F is cis — drawn that way
-    return canonicaliseStereoLayout(g);
+    return g;
   }
 
   /* SMILES cis/trans marks. A '/' or '\' is the slope of the bond as written
@@ -5563,19 +4830,6 @@ function makeChem() {
     g.bonds.forEach(b => { delete b.__dir; delete b.__from; });
   }
 
-  /* Redraw a single-stereocentre molecule in the canonical AGILES arrangement
-     (priority 1 at 12 o'clock, 2 at 4, H at 6, 3 at 8; wedge on priority 1 for
-     R, dash for S). Without this the picture and the AGILES text can disagree —
-     both correct about R/S, but showing the wedge on different bonds. */
-  function canonicaliseStereoLayout(g) {
-    let canon = null;
-    try { canon = toAgilesBrackets(g); } catch (e) { return g; }
-    if (!canon) return g;
-    try {
-      const redrawn = parseAgilesBrackets(canon);
-      return sameMolecule(g, redrawn) ? redrawn : g;
-    } catch (e) { return g; }
-  }
 
   // Force-directed layout so parsed molecules get sensible 2D coordinates.
   /* Structure-diagram layout.
@@ -5842,99 +5096,8 @@ function makeChem() {
   }
 
 
-  /* Write AGILES in the bracket form: the stereocentre's four groups listed
-     clockwise 12 / 4 / 6 / 8, with the 8 o'clock group also written in front
-     as the reading-order entry point.
-     Canonical placement: CIP priority 1 at 12, 2 at 4, H at 6, 3 at 8;
-     R puts priority 1 on a wedge and H on a dash, S is the mirror. */
-  function agilesGroupText(g, startId, fromId, num) {
-    const parts = [];
-    let prev = fromId, cur = startId, guard = 0;
-    while (guard++ < 40) {
-      const a = g.atoms.find(x => x.id === cur);
-      if (!a) return null;
-      const h = implicitH(g, a);
-      const loc = num && num.get(a.id);
-      parts.push((loc ? '[' + loc + ']' : '') + chargeMark(a.charge) + a.element + (h === 1 ? 'H' : h > 1 ? 'H' + h : ''));
-      const onward = neighbors(g, cur).filter(n => n.atom && n.atom.id !== prev);
-      if (!onward.length) break;
-      if (onward.length > 1) return null;            // branched: not expressible yet
-      if (onward[0].bond.order !== 1) return null;   // multiple bonds: not expressible yet
-      prev = cur; cur = onward[0].atom.id;
-    }
-    return { text: parts.join('-'), atoms: parts.length };   // CH2-CH3, not CH2CH3
-  }
 
-  /* Every carbon in an AGILES string carries a locant, so when the IUPAC namer
-     cannot number a skeleton (ethers, thioethers, anything it does not name yet)
-     we still need numbers. Fall back to AGILES's own rule: walk the longest
-     carbon-only chain and number along it, then pick up any carbon left over.
-     Heteroatoms are never numbered. */
-  function agilesFallbackNumbering(g) {
-    const cs = g.atoms.filter(a => a.element === 'C').map(a => a.id);
-    const num = new Map();
-    if (!cs.length) return num;
-    const cSet = new Set(cs);
-    const cNbrs = id => neighbors(g, id).filter(n => n.atom && cSet.has(n.atom.id)).map(n => n.atom.id);
-    // longest carbon path, by breadth-first from each end candidate
-    const far = (start) => {
-      const dist = new Map([[start, 0]]), from = new Map(), q = [start];
-      let last = start;
-      while (q.length) {
-        const id = q.shift(); last = id;
-        cNbrs(id).forEach(o => { if (!dist.has(o)) { dist.set(o, dist.get(id) + 1); from.set(o, id); q.push(o); } });
-      }
-      const path = [last];
-      while (from.has(path[0])) path.unshift(from.get(path[0]));
-      return path;
-    };
-    let best = [];
-    cs.forEach(id => { const p = far(far(id)[0]); if (p.length > best.length) best = p; });
-    let next = 1;
-    best.forEach(id => num.set(id, next++));
-    // remaining carbons: nearest-first off the numbered chain
-    let added = true;
-    while (added) {
-      added = false;
-      for (const id of cs) {
-        if (num.has(id)) continue;
-        if (cNbrs(id).some(o => num.has(o))) { num.set(id, next++); added = true; }
-      }
-    }
-    cs.forEach(id => { if (!num.has(id)) num.set(id, next++); });
-    return num;
-  }
 
-  function toAgilesBrackets(g) {
-    const centres = g.atoms.filter(a => isStereocenter(g, a));
-    if (centres.length !== 1) return null;
-    const C = centres[0];
-    const rs = assignRS(g, C.id);
-    const label = rs && rs.label ? rs.label : null;   // null = drawn flat, configuration undefined
-    const ranked = cipRanked(g, C.id);
-    if (ranked.length !== 4 || ranked[3].kind !== 'H') return null;   // needs the H lowest
-    // reuse the numbering the IUPAC name uses, so C[2] here is C2 there
-    const num = new Map();
-    try { iupacNumbering(g).forEach((id, i) => num.set(id, i + 1)); } catch (e) { /* unnumbered */ }
-    if (!num.has(C.id)) { num.clear(); agilesFallbackNumbering(g).forEach((n, id) => num.set(id, n)); }
-    g.__agilesNum = num; g.__agilesLower = new Set();
-    const texts = [];
-    for (let i = 0; i < 3; i++) {
-      const t = agilesGroupText(g, ranked[i].id, C.id, num);
-      if (!t) return null;
-      texts.push(t);
-    }
-    // parenthesise only genuinely multi-ATOM groups (CH3 is one atom, CH2CH3 is two)
-    const wrap = t => (t.atoms > 1 ? '(' + t.text + ')' : t.text);
-    const [g1, g2, g3] = texts.map(wrap);
-    const markTop = label ? (label === 'R' ? "'" : '"') : '';
-    const markH   = label ? (label === 'R' ? '"' : "'") : '';
-    // a leading "." marks the group that is written twice: once for reading
-    // order, once again inside the bracket for its 8 o'clock position
-    const cLoc = num.get(C.id);
-    const centreTok = '[' + (cLoc ? cLoc : '') + (label || '') + ']' + chargeMark(C.charge) + 'C';
-    return g3 + '-{' + centreTok + '-' + markTop + g1 + '-' + g2 + '-' + markH + 'H-' + g3 + '}';
-  }
 
 
   /* Write a plain (unsubstituted) single ring in the lowercase ring notation. */
@@ -6031,136 +5194,7 @@ function makeChem() {
     return { cycle, bridge, feet };
   }
 
-  function toAgilesBridged(g) {
-    const br = bridgedRing(g);
-    if (!br) return null;
-    if (g.atoms.length !== ringAtomsOf(g).length) return null;   // substituted: not yet
-    const { cycle, bridge, feet } = br;
-    const pos = new Map(cycle.map((id, i) => [id, i + 1]));
-    const mark = o => (o === 2 ? '=' : o === 3 ? '_' : '-');
-    const body = (a) => {
-      const h = implicitH(g, a);
-      return chargeMark(a.charge) + a.element.toLowerCase() + (h === 1 ? 'h' : h > 1 ? 'h' + h : '');
-    };
-    const ref = id => {
-      const a = g.atoms.find(x => x.id === id);
-      return (a.element === 'C' && pos.has(id) ? '[' + pos.get(id) + ']' : '') + body(a);
-    };
-    /* Entries run clockwise from 12, read off the drawing — the same rule the
-       other braces use, rather than ring-position order. */
-    const braceFor = (id) => {
-      const a = g.atoms.find(x => x.id === id);
-      const outer = neighbors(g, id).filter(n => n.atom)
-        .map(n => {
-          let th = Math.atan2(n.atom.y - a.y, n.atom.x - a.x) + Math.PI / 2;   // 12 o'clock = 0
-          while (th < 0) th += 2 * Math.PI;
-          while (th >= 2 * Math.PI) th -= 2 * Math.PI;
-          return { tok: ref(n.atom.id), order: n.bond.order, th };
-        })
-        .sort((u, v) => u.th - v.th);
-      if (implicitH(g, a) > 0) outer.splice(outer.length - 1, 0, { tok: 'h', order: 1 });
-      return outer.map((sl, i) => ((i === 0 && sl.order === 1) ? '' : mark(sl.order)) + sl.tok).join('');
-    };
-    let out = '';
-    cycle.forEach((id, i) => {
-      out += ref(id);
-      if (feet.includes(id)) out += '-{' + braceFor(id) + '}';
-      if (i < cycle.length - 1) {
-        const b = bondBetween(g, id, cycle[i + 1]);
-        out += mark(b ? b.order : 1);
-      }
-    });
-    const closing = bondBetween(g, cycle[cycle.length - 1], cycle[0]);
-    if (closing && closing.order > 1) out += mark(closing.order);
-    const num = new Map(pos);
-    g.__agilesNum = num; g.__agilesLower = new Set(cycle.concat([bridge.id]));
-    return out;
-  }
 
-  function toAgilesFused(g) {
-    if (bridgedRing(g)) return null;          // a bridge reads better than a perimeter
-    const f = fusedPerimeter(g);
-    if (!f) return null;
-    const ringIds = ringAtomsOf(g);
-    const inRing = new Set(ringIds);
-    // everything not in the ring has to hang off it, not float separately
-    if (g.atoms.length !== ringIds.length) {
-      const seen = new Set(ringIds), st = ringIds.slice();
-      while (st.length) {
-        const id = st.pop();
-        neighbors(g, id).forEach(n => { if (n.atom && !seen.has(n.atom.id)) { seen.add(n.atom.id); st.push(n.atom.id); } });
-      }
-      if (seen.size !== g.atoms.length) return null;
-    }
-    const { cycle, junctions } = f;
-    const pos = new Map(cycle.map((id, i) => [id, i + 1]));
-    const num = new Map(pos);
-    const counter = { n: cycle.length + 1 };      // branch carbons carry on from here
-    const written = new Set(cycle);
-    const mark = o => (o === 2 ? '=' : o === 3 ? '_' : '-');
-    /* Two shapes for a ring atom. In the WALK an atom is being declared, so the
-       carbon-only locant rule applies and a heteroatom is written bare. Inside
-       the BRACE it is only being pointed at, and a pointer needs its number
-       whatever the element. */
-    const body = (a) => {
-      const h = implicitH(g, a);
-      return chargeMark(a.charge) + a.element.toLowerCase() + (h === 1 ? 'h' : h > 1 ? 'h' + h : '');
-    };
-    const tokOf = (id) => {
-      const a = g.atoms.find(x => x.id === id);
-      return (a.element === 'C' ? '[' + pos.get(id) + stereoLetterFor(g, id) + ']' : '') + body(a);
-    };
-    /* A heteroatom in the brace is written as itself — no locant, and its bond
-       mark tells you how it is attached, exactly like a substituent. Carbons
-       keep their number, because that is the only thing separating one ring
-       carbon from another. */
-    const tokRef = (id) => {
-      const a = g.atoms.find(x => x.id === id);
-      return (a.element === 'C' ? '[' + pos.get(id) + ']' : '') + body(a);
-    };
-    const subsOf = (id) => neighbors(g, id)
-      .filter(n => n.atom && !inRing.has(n.atom.id) && !written.has(n.atom.id))
-      .map(n => '(' + (n.bond.order === 1 ? '' : mark(n.bond.order)) +
-                agilesBranch(g, n.atom.id, id, num, counter, written) + ')').join('');
-    // the brace goes on whichever junction the walk started from
-    const host = junctions.includes(cycle[0]) ? cycle[0] : junctions[0];
-    /* The two perimeter bonds are already written out in the walk, so their
-       order does not need repeating here — only the fusion bond's does, since
-       the brace is the only place it appears. */
-    const hostAt = pos.get(host);
-    const adjacentInWalk = id => {
-      const d = Math.abs(pos.get(id) - hostAt);
-      return d === 1 || d === cycle.length - 1;
-    };
-    const slots = neighbors(g, host).filter(n => n.atom && inRing.has(n.atom.id))
-      .sort((u, v) => pos.get(u.atom.id) - pos.get(v.atom.id))
-      .map(n => ({ tok: tokRef(n.atom.id),
-                   // an un-numbered atom has only its mark to go on, so show the
-                   // real order; a numbered carbon only needs it for the fusion
-                   order: (n.atom.element !== 'C' || !adjacentInWalk(n.atom.id))
-                     ? n.bond.order : 1 }));
-    // an sp3 junction still has its hydrogen, and it sits at 6 o'clock —
-    // second from the end, the way every four-slot brace is written
-    if (implicitH(g, g.atoms.find(a => a.id === host)) > 0)
-      slots.splice(slots.length - 1, 0, { tok: 'h', order: 1 });
-    /* Each entry carries its own bond mark, so a double bond into the brace
-       survives — caffeine's two fusion carbons are joined by one. */
-    const braceTxt = slots.map((sl, i) =>
-      ((i === 0 && sl.order === 1) ? '' : mark(sl.order)) + sl.tok).join('');
-    let out = '';
-    for (let i = 0; i < cycle.length; i++) {
-      out += tokOf(cycle[i]) + subsOf(cycle[i]);
-      if (cycle[i] === host) out += '-{' + braceTxt + '}';
-      if (i < cycle.length - 1) {
-        const b = bondBetween(g, cycle[i], cycle[i + 1]);
-        out += mark(b ? b.order : 1);
-      }
-    }
-    const closing = bondBetween(g, cycle[cycle.length - 1], cycle[0]);
-    if (closing && closing.order > 1) out += mark(closing.order);
-    g.__agilesNum = num; g.__agilesLower = new Set(cycle);
-    return out;
-  }
 
   /* Split the ring atoms into separate ring systems — two rings joined only by
      an ordinary single bond (biphenyl) are two systems; two rings sharing a bond
@@ -6226,76 +5260,6 @@ function makeChem() {
     })[0];
   }
 
-  function toAgilesRing(g) {
-    /* Keep only atoms that really close a ring: two of their bonds have to be
-       ring bonds. The carbonyl carbon of benzophenone sits between two rings but
-       is not in either of them. */
-    const ringIds = trueRingAtoms(g);
-    if (!ringIds.length) return null;
-    /* Every ring atom must sit in exactly one ring — no fusion, no bridgeheads.
-       Count only bonds that are themselves ring bonds, so the single bond that
-       joins two rings (biphenyl) does not read as a third ring neighbour. */
-    const inRing = new Set(ringIds);
-    if (ringIds.some(id => neighbors(g, id)
-        .filter(n => n.atom && inRing.has(n.atom.id) && bondIsInRing(g, id, n.atom.id)).length !== 2))
-      return null;
-    /* Rings joined by an ordinary bond (biphenyl, nicotine) are separate ring
-       systems, not one ring. Write the senior one as the parent walk and let the
-       others hang off it in parentheses, exactly like any other substituent. */
-    const systems = ringSystemsOf(g, ringIds);
-    let cycle;
-    if (systems.length > 1) {
-      const parent = seniorRingSystem(g, systems);
-      cycle = orderCycle(g, parent);
-      if (cycle.length !== parent.length) return null;
-    } else {
-      cycle = orderCycle(g, ringIds);
-      if (cycle.length !== ringIds.length) return null;    // fused / bridged: not this form
-    }
-    // everything hanging off the ring has to be reachable without leaving it
-    if (g.atoms.length !== ringIds.length) {
-      const seen = new Set(ringIds), stack = ringIds.slice();
-      while (stack.length) {
-        const id = stack.pop();
-        neighbors(g, id).forEach(n => { if (n.atom && !seen.has(n.atom.id)) { seen.add(n.atom.id); stack.push(n.atom.id); } });
-      }
-      if (seen.size !== g.atoms.length) return null;       // a second, separate species
-    }
-
-    // a heteroatom takes position 1, the way a heterocycle is numbered
-    let order = cycle;
-    const SENIOR = ['O', 'S', 'Se', 'N', 'P', 'Si', 'B'];
-    const heteroAt = cycle.map((id, i) => ({ i, el: g.atoms.find(a => a.id === id).element }))
-                          .filter(h => h.el !== 'C')
-                          .sort((u, v) => SENIOR.indexOf(u.el) - SENIOR.indexOf(v.el));
-    if (heteroAt.length) {
-      const k = heteroAt[0].i;
-      const fwd = cycle.slice(k).concat(cycle.slice(0, k));
-      const bwd = [fwd[0]].concat(fwd.slice(1).reverse());
-      const locs = c => c.map((id, i) => (g.atoms.find(a => a.id === id).element !== 'C' ? i : 0))
-                         .filter(Boolean);
-      const lf = locs(fwd), lb = locs(bwd);
-      let pick = fwd;
-      for (let i = 0; i < Math.max(lf.length, lb.length); i++) {
-        const a = lf[i] === undefined ? 99 : lf[i], b = lb[i] === undefined ? 99 : lb[i];
-        if (a !== b) { if (b < a) pick = bwd; break; }
-      }
-      return renderRing(g, pick);
-    }
-    try {
-      const num = iupacNumbering(g);
-      if (num && num.length === cycle.length) {
-        const start = cycle.indexOf(num[0]);
-        if (start >= 0) {
-          const fwd = cycle.slice(start).concat(cycle.slice(0, start));
-          const bwd = [fwd[0]].concat(fwd.slice(1).reverse());
-          order = (fwd[1] === num[1]) ? fwd : (bwd[1] === num[1] ? bwd : fwd);
-        }
-      }
-    } catch (e) { /* fall back to the raw cycle */ }
-
-    return renderRing(g, order);
-  }
 
   /* One substituent, written outward. Shared by the ring writer and reused by
      the same rules as the chain form: parentheses mean "hangs off the atom I
@@ -6310,384 +5274,22 @@ function makeChem() {
       neighbors(g, id).filter(n => n.atom && bondIsInRing(g, id, n.atom.id)).length >= 2);
   }
 
-  function agilesRingWalk(g, startId, fromId, num, counter, written) {
-    const ringIds = trueRingAtoms(g);
-    const sys = ringSystemsOf(g, ringIds).find(s => s.includes(startId));
-    if (!sys) return null;
-    { // a fused system's perimeter also closes — the ring-bond count tells them apart
-      const inS = new Set(sys);
-      const rb = g.bonds.filter(b => inS.has(b.a) && inS.has(b.b) && bondIsInRing(g, b.a, b.b)).length;
-      if (rb !== sys.length) return null;
-    }
-    const cycle = orderCycle(g, sys);
-    if (!cycle || cycle.length !== sys.length) return null;   // fused: not this form
-    let k = cycle.indexOf(startId);
-    if (k < 0) return null;
-    const order = cycle.slice(k).concat(cycle.slice(0, k));
-    order.forEach(id => {
-      written.add(id);
-      if (g.atoms.find(a => a.id === id).element === 'C' && !num.has(id)) num.set(id, counter.n++);
-    });
-    const mark = o => (o === 2 ? '=' : o === 3 ? '_' : '-');
-    const bondOf = (x, y) => g.bonds.find(b => (b.a === x && b.b === y) || (b.b === x && b.a === y));
-    let out = '';
-    for (let i = 0; i < order.length; i++) {
-      const id = order[i];
-      const a = g.atoms.find(x => x.id === id);
-      const h = implicitH(g, a);
-      const loc = a.element === 'C' ? '[' + num.get(id) + stereoLetterFor(g, id) + ']' : '';
-      out += loc + chargeMark(a.charge) + a.element.toLowerCase() + (h === 1 ? 'h' : h > 1 ? 'h' + h : '');
-      // anything hanging off this ring atom, other than the bond back to the parent
-      neighbors(g, id).forEach(n => {
-        if (!n.atom || written.has(n.atom.id) || n.atom.id === fromId) return;
-        out += '(' + (n.bond.order === 1 ? '' : mark(n.bond.order)) +
-               agilesBranch(g, n.atom.id, id, num, counter, written) + ')';
-      });
-      if (i < order.length - 1) out += mark(bondOf(id, order[i + 1]).order);
-    }
-    // the bond that closes the ring, written as a trailing mark when it is not single
-    const close = bondOf(order[order.length - 1], order[0]);
-    if (close && close.order > 1) out += mark(close.order);
-    return out;
-  }
 
-  function agilesBranch(g, startId, fromId, num, counter, written) {
-    if (trueRingAtoms(g).includes(startId)) {
-      const w = agilesRingWalk(g, startId, fromId, num, counter, written);
-      if (w) return w;
-      const wf = agilesFusedWalk(g, startId, fromId, num, counter, written);
-      if (wf) return wf;
-    }
-    written.add(startId);
-    const a = g.atoms.find(x => x.id === startId);
-    let loc = '';
-    if (a.element === 'C') {
-      if (!num.has(startId)) num.set(startId, counter.n++);
-      loc = '[' + num.get(startId) + stereoLetterFor(g, startId) + ']';
-    }
-    let out = loc + agilesLabel(g, a);
-    const kids = neighbors(g, startId).filter(n => n.atom && n.atom.id !== fromId && !written.has(n.atom.id));
-    kids.forEach(n => {
-      const txt = agilesBranch(g, n.atom.id, startId, num, counter, written);
-      out += kids.length === 1
-        ? AG_BOND(n.bond.order) + txt
-        : '(' + (n.bond.order === 1 ? '' : AG_BOND(n.bond.order)) + txt + ')';
-    });
-    return out;
-  }
 
-  function renderRing(g, order) {
-    const mark = o => (o === 2 ? '=' : o === 3 ? '_' : '-');
-    const inRing = new Set(order);
-    // ring positions are 1..n; substituent carbons keep counting from n+1
-    const num = new Map();
-    order.forEach((id, i) => num.set(id, i + 1));
-    const counter = { n: order.length + 1 };
-    const written = new Set(order);
-    // remember it — the atom hover card quotes the same token back
-    g.__agilesNum = num; g.__agilesLower = new Set(order);
-    const tok = (id, i) => {
-      const a = g.atoms.find(x => x.id === id);
-      const h = implicitH(g, a);
-      // only carbons carry a locant — same rule as the open-chain form.
-      // the numbering still counts ring positions, so a heteroatom at the
-      // front simply leaves its number unwritten and the carbons keep theirs.
-      const loc = a.element === 'C' ? '[' + (i + 1) + stereoLetterFor(g, id) + ']' : '';
-      let out = loc + chargeMark(a.charge) + a.element.toLowerCase() + (h === 1 ? 'h' : h > 1 ? 'h' + h : '');
-      neighbors(g, id).filter(n => n.atom && !inRing.has(n.atom.id) && !written.has(n.atom.id))
-        .forEach(n => {
-          out += '(' + (n.bond.order === 1 ? '' : mark(n.bond.order)) +
-                 agilesBranch(g, n.atom.id, id, num, counter, written) + ')';
-        });
-      return out;
-    };
-    let out = '';
-    for (let i = 0; i < order.length; i++) {
-      out += tok(order[i], i);
-      if (i < order.length - 1) {
-        const b = bondBetween(g, order[i], order[i + 1]);
-        out += mark(b ? b.order : 1);
-      }
-    }
-    const closing = bondBetween(g, order[order.length - 1], order[0]);
-    if (closing && closing.order > 1) out += mark(closing.order);   // trailing mark closes the ring
-    return out;
-  }
 
-  /* ---- AGILES for open-chain molecules ----
-     Rings are handled by toAgilesRing, stereocentres by toAgilesBrackets.
-     Everything else used to fall through to plain SMILES, which meant most
-     ordinary molecules had no AGILES at all. This writes them properly:
-
-        acetic acid   [1]CH3-[2]C(=O)-OH
-        ethanol       [1]CH3-[2]CH2-OH
-        chloroethane  Cl-[1]CH2-[2]CH3
-        isobutane     [1]CH3-[2]CH([4]CH3)-[3]CH3
-
-     Rules: carbons of the parent chain are numbered [1]..[n] the way IUPAC
-     numbers them (longest carbon chain, lowest locants to the substituents);
-     branch carbons keep counting on from there. Heteroatoms are written plain.
-     Bonds: - single, = double, _ triple. */
-  function agilesLabel(g, a) {
-    const h = implicitH(g, a);
-    return chargeMark(a.charge) + a.element + (h === 0 ? '' : 'H' + (h > 1 ? h : ''));
-  }
   const AG_BOND = o => (o === 2 ? '=' : o === 3 ? '_' : '-');
 
-  /* ---- Carboxyl carbons get the brace form ----
-     The braces mean "here are the groups around this atom, in clock order".
-     A carboxyl carbon is sp2, so it has three slots at 120 degrees — 12, 4 and
-     8 o'clock — and no 6 o'clock at all, because there is no fourth bond to
-     put anything in.
 
-        [1]CH3-{[2]C-[neg]O=O-[1]CH3}     acetate
-        [1]CH3-{[2]C-OH=O-[1]CH3}         acetic acid
-
-     12 o'clock is the single-bonded oxygen (OH or O-), 4 o'clock is the
-     carbonyl written as "=O", 8 o'clock is the carbon chain — repeated out
-     front so the string still reads left to right. */
-  function carboxylHub(g) {
-    const hubs = g.atoms.filter(a => {
-      if (a.element !== 'C') return false;
-      const nb = neighbors(g, a.id).filter(n => n.atom);
-      if (nb.length !== 3) return false;
-      const dblO = nb.filter(n => n.bond.order === 2 && n.atom.element === 'O');
-      const sglO = nb.filter(n => n.bond.order === 1 && n.atom.element === 'O' &&
-                                  neighbors(g, n.atom.id).filter(m => m.atom).length === 1);
-      const carbons = nb.filter(n => n.atom.element === 'C');
-      return dblO.length === 1 && sglO.length === 1 && carbons.length === 1;
-    });
-    return hubs.length === 1 ? hubs[0] : null;
-  }
-
-  function toAgilesCarboxyl(g) {
-    if (!g || !g.atoms.length) return null;
-    if (ringAtomsOf(g).length) return null;
-    if (g.atoms.some(a => isStereocenter(g, a))) return null;   // stereocentres own the braces
-    const C = carboxylHub(g);
-    if (!C) return null;
-    const nb = neighbors(g, C.id).filter(n => n.atom);
-    const sglO = nb.find(n => n.bond.order === 1 && n.atom.element === 'O');
-    const chainN = nb.find(n => n.atom.element === 'C');
-
-    // number the chain from its far end, then the hub carries the next locant
-    const chainIds = [];
-    { let prev = C.id, cur = chainN.atom.id, guard = 0;
-      for (;;) {
-        chainIds.push(cur);
-        const on = neighbors(g, cur).filter(n => n.atom && n.atom.id !== prev);
-        if (!on.length || guard++ > 40) break;
-        if (on.length > 1 || on[0].bond.order !== 1) return null;  // branched or unsaturated: not yet
-        if (on[0].atom.element !== 'C') return null;
-        prev = cur; cur = on[0].atom.id;
-      }
-    }
-    const num = new Map();
-    chainIds.slice().reverse().forEach((id, i) => num.set(id, i + 1));
-    num.set(C.id, chainIds.length + 1);
-    g.__agilesNum = num; g.__agilesLower = new Set();
-
-    const chainTxt = agilesGroupText(g, chainN.atom.id, C.id, num);
-    if (!chainTxt) return null;
-    const side = chainTxt.atoms > 1 ? '(' + chainTxt.text + ')' : chainTxt.text;
-    const o12 = agilesLabel(g, sglO.atom);
-    const centreTok = '[' + num.get(C.id) + ']' + chargeMark(C.charge) + 'C';
-    return side + '-{' + centreTok + '-' + o12 + '=O-' + side + '}';
-  }
 
   /* Reads that form back. Three slots, so three tokens after the hub: the
      12 o'clock group, "=O", and the 8 o'clock group that also appears in
      front of the brace. */
-  /* ---- Four groups round one atom: the general brace form ----
-     Same idea as the stereocentre brace, but driven by where the groups are
-     actually drawn rather than by CIP priority. Slots are read 12, 4, 6, 8
-     and the 8 o'clock group is repeated in front so the string reads left to
-     right.
 
-        [1]CH3-{[pos2]S-[neg]O-[2]CH3-[neg]O-[1]CH3}    dimethyl sulfone
 
-     Only carbons take a locant, so a sulfur or phosphorus hub is written bare.
-     Carbons are numbered in the order the string writes them, starting with
-     the group out front. */
-  const CLOCK_ANGLES = [-Math.PI / 2, Math.PI / 6, Math.PI / 2, 5 * Math.PI / 6];  // 12, 4, 6, 8
 
-  function clockAssign(g, hubId, nbrs) {
-    // try every pairing of groups to slots, keep the one that fits the drawing
-    const hub = g.atoms.find(a => a.id === hubId);
-    const ang = nbrs.map(n => Math.atan2(n.atom.y - hub.y, n.atom.x - hub.x));
-    const diff = (a, b) => { let d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return Math.abs(d); };
-    let best = null;
-    const perm = (left, taken) => {
-      if (!left.length) {
-        const cost = taken.reduce((t, p, slot) => t + diff(ang[p], CLOCK_ANGLES[slot]), 0);
-        if (!best || cost < best.cost) best = { cost, order: taken.slice() };
-        return;
-      }
-      left.forEach((v, i) => perm(left.filter((_, j) => j !== i), taken.concat(v)));
-    };
-    perm(nbrs.map((_, i) => i), []);
-    return best.order.map(i => nbrs[i]);
-  }
 
-  function toAgilesHub(g) {
-    if (!g || !g.atoms.length) return null;
-    if (ringAtomsOf(g).length) return null;
-    if (g.atoms.some(a => isStereocenter(g, a))) return null;      // stereocentres own the braces
-    const hubs = g.atoms.filter(a => neighbors(g, a.id).filter(n => n.atom).length === 4);
-    if (hubs.length !== 1) return null;
-    const hub = hubs[0];
-    const nbrs = neighbors(g, hub.id).filter(n => n.atom);
-    if (nbrs.some(n => n.bond.order !== 1)) return null;            // double bonds: not in this form yet
-    const slots = clockAssign(g, hub.id, nbrs);
 
-    // number the carbons in writing order: front group first, then 12, 4, 6
-    const num = new Map();
-    g.__agilesNum = num; g.__agilesLower = new Set();
-    let next = 1;
-    const numberGroup = (startId) => {
-      let prev = hub.id, cur = startId, guard = 0;
-      for (;;) {
-        const a = g.atoms.find(x => x.id === cur);
-        if (a.element === 'C' && !num.has(cur)) num.set(cur, next++);
-        const on = neighbors(g, cur).filter(n => n.atom && n.atom.id !== prev);
-        if (!on.length || guard++ > 40) break;
-        if (on.length > 1) return false;
-        prev = cur; cur = on[0].atom.id;
-      }
-      return true;
-    };
-    if (!numberGroup(slots[3].atom.id)) return null;                // 8 o'clock is written first
-    if (hub.element === 'C') num.set(hub.id, next++);               // then the hub itself
-    for (const k of [0, 1, 2]) if (!numberGroup(slots[k].atom.id)) return null;
 
-    const texts = slots.map(n => agilesGroupText(g, n.atom.id, hub.id, num));
-    if (texts.some(t => !t)) return null;
-    const wrap = t => (t.atoms > 1 ? '(' + t.text + ')' : t.text);
-    const [s12, s4, s6, s8] = texts.map(wrap);
-    const hubTok = (hub.element === 'C' ? '[' + (num.get(hub.id) || '') + ']' : '') +
-                   chargeMark(hub.charge) + hub.element;
-    return s8 + '-{' + hubTok + '-' + s12 + '-' + s4 + '-' + s6 + '-' + s8 + '}';
-  }
-
-  function braceTokens(str) {
-    const t = String(str).trim();
-    const open = t.indexOf('{'), close = t.lastIndexOf('}');
-    if (open < 0 || close < 0) return null;
-    const inside = t.slice(open + 1, close);
-    const parts = []; let buf = '', depth = 0;
-    for (const ch of inside) {
-      if (ch === '(') depth++;
-      if (ch === ')') depth--;
-      if (ch === '-' && depth === 0) { parts.push(buf); buf = ''; continue; }
-      buf += ch;
-    }
-    parts.push(buf);
-    return { before: t.slice(0, open).replace(/-$/, ''), parts };
-  }
-
-  function looksLikeAgilesHub(str) {
-    if (/['"]/.test(str)) return false;                            // wedge/dash: stereocentre form
-    const b = braceTokens(str);
-    return !!(b && b.parts.length === 5 && !/=O$/.test(b.parts[1]));
-  }
-
-  function parseAgilesHub(str) {
-    const b = braceTokens(String(str).trim().replace(/\s+/g, ''));
-    if (!b) throw new Error('AGILES needs one { ... } holding the central atom.');
-    const [hubTok, t12, t4, t6, t8] = b.parts;
-    if (b.before && b.before !== t8)
-      throw new Error('The group before the brace and the one at 8 o\'clock are the same substituent, so they must be written the same way.');
-    const hf = parseFragment(hubTok);
-    const g = { atoms: [], bonds: [], nextId: 1 };
-    const hub = { id: g.nextId++, element: hf.el, charge: hf.charge || 0, x: 0, y: 0 };
-    g.atoms.push(hub);
-    const L = 46;
-    [t12, t4, t6, t8].forEach((tok, slot) => {
-      const chain = tok.replace(/^\(|\)$/g, '').split('-').filter(Boolean);
-      if (!chain.length) throw new Error('One of the four slots in the brace is empty.');
-      const th = CLOCK_ANGLES[slot];
-      let prev = hub;
-      chain.forEach((piece, k) => {
-        const f = parseFragment(piece);
-        const a = { id: g.nextId++, element: f.el, charge: f.charge || 0,
-                    x: hub.x + L * (k + 1) * Math.cos(th), y: hub.y + L * (k + 1) * Math.sin(th) };
-        g.atoms.push(a);
-        g.bonds.push({ a: prev.id, b: a.id, order: 1 });
-        prev = a;
-      });
-    });
-    /* An H written out in a brace slot is only there to hold the slot (and, on a
-       stereocentre, to carry the wedge/dash). Hydrogens are implicit everywhere
-       else in the program, so drop it once the skeleton is built. */
-    g.atoms.filter(a => a.element === 'H').forEach(h => removeAtom(g, h.id));
-    return g;
-  }
-
-  function looksLikeAgilesCarboxyl(str) {
-    const t = String(str).trim();
-    if (t.indexOf('{') < 0 || /['"]/.test(t)) return false;
-    if (/\{[RS]\}/.test(t)) return false;        // {R}/{S} labels in a SMILES string
-    const inside = t.slice(t.indexOf('{') + 1, t.lastIndexOf('}'));
-    if (inside.indexOf('{') >= 0 || inside.indexOf('-') < 0) return false;
-    return /=O(?![A-Za-z0-9])/.test(inside);
-  }
-
-  function parseAgilesCarboxyl(str) {
-    const text = String(str).trim().replace(/\s+/g, '');
-    const open = text.indexOf('{'), close = text.lastIndexOf('}');
-    if (open < 0 || close < 0) throw new Error('AGILES needs one { ... } holding the central atom.');
-    const before = text.slice(0, open).replace(/-$/, '');
-    const inside = text.slice(open + 1, close);
-
-    // split on top-level "-" but keep "=O" attached to the group before it
-    const toks = [];
-    { let buf = '', depth = 0;
-      for (const ch of inside) {
-        if (ch === '(') depth++;
-        if (ch === ')') depth--;
-        if (ch === '-' && depth === 0) { toks.push(buf); buf = ''; continue; }
-        buf += ch;
-      }
-      toks.push(buf);
-    }
-    if (toks.length !== 3) throw new Error('A carboxyl brace holds three things after the C: the 12 o\'clock group, "=O", and the 8 o\'clock group.');
-    const centreTok = toks[0], slot12 = toks[1], slot8 = toks[2];
-
-    const cm = centreTok.match(/^\[(\d+)\](\[(?:pos|neg)\d*\])?C$/i);
-    if (!cm) throw new Error('The first thing inside the braces should be the central carbon, like [2]C.');
-    const cCharge = cm[2] ? takeChargeMark(cm[2]).charge : 0;
-
-    const dbl = slot12.match(/^(.*)=O$/);
-    if (!dbl) throw new Error('The 4 o\'clock slot should be the carbonyl, written "=O".');
-    const o12 = parseFragment(dbl[1]);
-    if (o12.el !== 'O') throw new Error('The 12 o\'clock group on a carboxyl carbon should be an oxygen.');
-
-    // the 8 o'clock group is written twice; the copy in front must agree
-    if (before && before !== slot8)
-      throw new Error('The group before the brace and the one at 8 o\'clock are the same substituent, so they must be written the same way.');
-
-    const g = { atoms: [], bonds: [], nextId: 1 };
-    const C = { id: g.nextId++, element: 'C', charge: cCharge, x: 0, y: 0 };
-    g.atoms.push(C);
-    const Osingle = { id: g.nextId++, element: 'O', charge: o12.charge || 0, x: 0, y: 0 };
-    const Odouble = { id: g.nextId++, element: 'O', charge: 0, x: 0, y: 0 };
-    g.atoms.push(Osingle, Odouble);
-    g.bonds.push({ a: C.id, b: Osingle.id, order: 1 }, { a: C.id, b: Odouble.id, order: 2 });
-
-    // walk the 8 o'clock chain outward
-    const chain = slot8.replace(/^\(|\)$/g, '').split('-').filter(Boolean);
-    let prev = C;
-    chain.forEach(tok => {
-      const f = parseFragment(tok);
-      const a = { id: g.nextId++, element: f.el, charge: f.charge || 0, x: 0, y: 0 };
-      g.atoms.push(a);
-      g.bonds.push({ a: prev.id, b: a.id, order: 1 });
-      prev = a;
-    });
-    if (chain.length === 0) throw new Error('The 8 o\'clock group is missing.');
-    layoutGraph(g);
-    return g;
-  }
 
   /* IUPAC seniority of the characteristic group carried at one chain position.
      Lower number = more senior = gets the lower locant. Only the classes the
@@ -6713,216 +5315,9 @@ function makeChem() {
     return 99;                                            // prefix only
   }
 
-  function toAgilesChain(g) {
-    if (!g || !g.atoms.length) return null;
-    if (ringAtomsOf(g).length) return null;                // rings have their own notation
-    g.__agilesNum = new Map(); g.__agilesLower = new Set();
-    const parts = [];
-    for (const comp of componentsOf(g)) {
-      const sub = { atoms: g.atoms.filter(a => comp.includes(a.id)), bonds: g.bonds.filter(b => comp.includes(b.a)) };
-      const t = writeComponent(g, sub.atoms.map(a => a.id));
-      if (t === null) return null;
-      parts.push(t);
-    }
-    return parts.join(' . ');
-  }
 
-  function writeComponent(g, ids) {
-    const inComp = new Set(ids);
-    const nb = id => neighbors(g, id).filter(n => n.atom && inComp.has(n.atom.id));
-    const atomOf = id => g.atoms.find(a => a.id === id);
-    const carbons = ids.filter(id => atomOf(id).element === 'C');
-    if (!carbons.length) {
-      /* No carbon anywhere — [OH-], NH4+, sulfate. There is no parent chain to
-         number, so just walk out from the most connected atom. Branching still
-         has to be written or sulfate collapses into a straight line. */
-      const root = ids.slice().sort((u, v) => nb(v).length - nb(u).length)[0];
-      const seenX = new Set();
-      const walkX = (id) => {
-        seenX.add(id);
-        let out = agilesLabel(g, atomOf(id));
-        const kids = nb(id).filter(n => !seenX.has(n.atom.id));
-        kids.forEach(n => {
-          const txt = walkX(n.atom.id);
-          out += kids.length === 1
-            ? AG_BOND(n.bond.order) + txt
-            : '(' + (n.bond.order === 1 ? '' : AG_BOND(n.bond.order)) + txt + ')';
-        });
-        return out;
-      };
-      return walkX(root);
-    }
-    // longest carbon-only path = the parent chain
-    const ends = carbons.filter(id => nb(id).filter(n => n.atom.element === 'C').length <= 1);
-    let best = null;
-    const seeds = ends.length ? ends : carbons;
-    for (const s of seeds) {
-      const path = longestCarbonPath(g, s, inComp);
-      if (!best || path.length > best.length) best = path;
-    }
-    let chain = best;
-    // number so the substituents get the lowest locants
-    const subLocants = c => {
-      const set = new Set(c);
-      return c.map((id, i) => (nb(id).some(n => !set.has(n.atom.id)) ? i + 1 : 0)).filter(Boolean);
-    };
-    const fwd = subLocants(chain), rev = subLocants(chain.slice().reverse());
-    let flip = null;
-    for (let i = 0; i < Math.max(fwd.length, rev.length); i++) {
-      const a = fwd[i] === undefined ? 99 : fwd[i], b = rev[i] === undefined ? 99 : rev[i];
-      if (a !== b) { flip = b < a; break; }
-    }
-    /* Locants alone can tie — 1-bromo-4-chlorobutane has a substituent at each
-       end whichever way you number it. Without a tie-break the direction fell
-       out of the order the atoms happened to be parsed in, so the same molecule
-       typed two ways produced two different strings.
 
-       Break it the way IUPAC does: the most senior characteristic group takes
-       the lower locant, and only if that ties as well does alphabetical order
-       of the plain substituents decide. */
-    if (flip === null) {
-      const ranksAlong = c => c.map(id => groupSeniority(g, id, new Set(c)));
-      const rf = ranksAlong(chain), rr = ranksAlong(chain.slice().reverse());
-      const best = Math.min.apply(null, rf.concat([99]));
-      if (best < 99) {
-        const at = arr => arr.map((r, i) => (r === best ? i : -1)).filter(i => i >= 0);
-        const pf = at(rf), pr = at(rr);
-        for (let i = 0; i < Math.max(pf.length, pr.length); i++) {
-          const a = pf[i] === undefined ? 99 : pf[i], b = pr[i] === undefined ? 99 : pr[i];
-          if (a !== b) { flip = b < a; break; }
-        }
-      }
-    }
-    if (flip === null) {
-      const namesAlong = c => {
-        const set = new Set(c);
-        return c.map(id => nb(id).filter(n => !set.has(n.atom.id))
-                              .map(n => atomOf(n.atom.id).element).sort())
-                .reduce((acc, els) => acc.concat(els), []);
-      };
-      const af = namesAlong(chain), ar = namesAlong(chain.slice().reverse());
-      for (let i = 0; i < Math.max(af.length, ar.length); i++) {
-        const a = af[i] === undefined ? '~' : af[i], b = ar[i] === undefined ? '~' : ar[i];
-        if (a !== b) { flip = b < a; break; }
-      }
-    }
-    if (flip) chain = chain.slice().reverse();
-    const num = new Map(chain.map((id, i) => [id, i + 1]));
-    if (g.__agilesNum) num.forEach((v, k) => g.__agilesNum.set(k, v));
-    let next = chain.length + 1;
-    const written = new Set(chain);
 
-    // a branch hanging off the chain, written depth-first
-    const branch = (id, from) => {
-      written.add(id);
-      const a = atomOf(id);
-      let s = (a.element === 'C'
-        ? '[' + (num.get(id) || (num.set(id, next), next++)) + stereoLetterFor(g, id) + ']'
-        : '') + agilesLabel(g, a);
-      const kids = nb(id).filter(n => !written.has(n.atom.id));
-      kids.forEach((n, i) => {
-        const inner = AG_BOND(n.bond.order === 1 ? 1 : n.bond.order);
-        const txt = branch(n.atom.id, id);
-        s += (i === kids.length - 1 && kids.length === 1)
-          ? inner + txt                                   // only child — keep it inline
-          : '(' + (n.bond.order === 1 ? '' : inner) + txt + ')';
-      });
-      return s;
-    };
-
-    /* A substituent written in front of C1 has to read outward-to-inward:
-       "[3]CH3-O-[1]C(=O)..." not "O-[3]CH3-[1]C(=O)...". That only makes sense
-       for an unbranched substituent, so anything forked stays in parentheses. */
-    const linearBranchReversed = (startId, fromId) => {
-      const path = [], seenB = new Set([fromId]);
-      let cur = startId, prev = fromId;
-      for (;;) {
-        seenB.add(cur);
-        const kids = nb(cur).filter(n => !seenB.has(n.atom.id) && !written.has(n.atom.id));
-        path.push({ id: cur, bondIn: g.bonds.find(b => (b.a === prev && b.b === cur) || (b.b === prev && b.a === cur)) });
-        if (!kids.length) break;
-        if (kids.length > 1) return null;                  // forked — not linear
-        prev = cur; cur = kids[0].atom.id;
-      }
-      path.forEach(p => written.add(p.id));
-      const rev = path.slice().reverse();
-      return rev.map((p, k) => {
-        const a = atomOf(p.id);
-        const lbl = (a.element === 'C' ? '[' + (num.get(p.id) || (num.set(p.id, next), next++)) + ']' : '') + agilesLabel(g, a);
-        // the separator to the next atom is the bond that came into THIS one
-        return lbl + (k < rev.length - 1 ? AG_BOND(p.bondIn ? p.bondIn.order : 1) : '');
-      }).join('');
-    };
-
-    let out = '';
-    chain.forEach((id, i) => {
-      const a = atomOf(id);
-      let subs = nb(id).filter(n => !written.has(n.atom.id) && !num.has(n.atom.id));
-      /* Substituents on the two ends of the chain read better written inline
-         than in parentheses: "OH-[1]C(=O)-[2]CH3" beats "[1]C(=O)(OH)-[2]CH3".
-         On C1 we pull one out front, preferring a plain single bond. */
-      let head = '', tail = '';
-      if (i === 0 && subs.length) {
-        const pick = subs.slice().sort((u, v) => (u.bond.order - v.bond.order))[0];
-        const rev = linearBranchReversed(pick.atom.id, id);
-        if (rev !== null) {
-          subs = subs.filter(n => n !== pick);
-          head = rev + AG_BOND(pick.bond.order);
-        }
-      }
-      const letter = stereoLetterFor(g, id, chain[i + 1]);
-      let piece = '[' + num.get(id) + letter + ']' + agilesLabel(g, a);
-      if (i === chain.length - 1 && (i !== 0 || !head) && subs.length) {
-        // same idea at the far end: one substituent trails inline, rest in parens
-        const pick = subs.slice().sort((u, v) => (u.bond.order - v.bond.order))[0];
-        subs = subs.filter(n => n !== pick);
-        tail = AG_BOND(pick.bond.order) + branch(pick.atom.id, id);
-      }
-      subs.forEach(n => {
-        piece += '(' + (n.bond.order === 1 ? '' : AG_BOND(n.bond.order)) + branch(n.atom.id, id) + ')';
-      });
-      if (i > 0) {
-        const link = g.bonds.find(b => (b.a === chain[i - 1] && b.b === id) || (b.b === chain[i - 1] && b.a === id));
-        out += AG_BOND(link ? link.order : 1);
-      }
-      out += head + piece + tail;
-    });
-    return out;
-  }
-
-  function longestCarbonPath(g, startId, inComp) {
-    const atomOf = id => g.atoms.find(a => a.id === id);
-    let bestPath = [startId];
-    const walk = (id, path, seen) => {
-      if (path.length > bestPath.length) bestPath = path.slice();
-      neighbors(g, id).forEach(n => {
-        if (!n.atom || !inComp.has(n.atom.id)) return;
-        if (n.atom.element !== 'C' || seen.has(n.atom.id)) return;
-        seen.add(n.atom.id); path.push(n.atom.id);
-        walk(n.atom.id, path, seen);
-        path.pop(); seen.delete(n.atom.id);
-      });
-    };
-    if (atomOf(startId).element !== 'C') return [];
-    walk(startId, [startId], new Set([startId]));
-    return bestPath;
-  }
-
-  /* The exact token this atom shows up as in the AGILES string — "[1]CH2",
-     "[3]ch2" inside a ring, "OH" for something that takes no locant. Reads the
-     numbering the writer just used, so it always agrees with the box below the
-     canvas. */
-  function agilesTokenFor(g, atom) {
-    if (!g || !atom) return null;
-    const num = g.__agilesNum, lower = g.__agilesLower;
-    const inRing = !!(lower && lower.has(atom.id));
-    // only carbons carry a locant, same as in the string itself
-    const n = atom.element === 'C' ? (num && num.get(atom.id)) : null;
-    const h = implicitH(g, atom);
-    const el = inRing ? atom.element.toLowerCase() : atom.element;
-    const hTag = h === 0 ? '' : (inRing ? 'h' : 'H') + (h > 1 ? h : '');
-    return (n ? '[' + n + ']' : '') + chargeMark(atom.charge) + el + hTag;
-  }
 
   /* =========================================================
      Chris's fusion-tag ruling (Option A, 2026-08-30):
@@ -6999,172 +5394,8 @@ function makeChem() {
     return { rings, shares };
   }
 
-  /* Write one whole fused system, starting its root ring at startId. Shares
-     the num/counter/written state with every other walk, so it slots in as a
-     branch as easily as it stands alone. Returns null (BEFORE touching any
-     state) when the system is not tag-writable. */
-  function agilesFusedWalk(g, startId, fromId, num, counter, written) {
-    const ringIds = trueRingAtoms(g);
-    const sys = ringSystemsOf(g, ringIds).find(s => s.includes(startId));
-    if (!sys) return null;
-    const plan = fusionPlan(g, sys);
-    if (!plan) return null;
-    const atomOf = id => g.atoms.find(a => a.id === id);
-    /* Chris's Option B (2026-08-30): ONE continuous numbering round the
-       whole fused system's perimeter, the way chemists number naphthalene.
-       The interior fusion bonds are exactly the shared edges; strip them and
-       a clean ortho-fused stack leaves a single closed walk through every
-       atom — the perimeter. */
-    const interior = plan.shares.map(s => s.edge);
-    const isInterior = (x, y) => interior.some(e =>
-      (e[0] === x && e[1] === y) || (e[0] === y && e[1] === x));
-    const inS = new Set(sys);
-    const per = g.bonds.filter(b => inS.has(b.a) && inS.has(b.b) &&
-      bondIsInRing(g, b.a, b.b) && !isInterior(b.a, b.b));
-    const nb = id => per.filter(b => b.a === id || b.b === id)
-                        .map(b => (b.a === id ? b.b : b.a));
-    if (sys.some(id => nb(id).length !== 2)) return null;
-    const junction = new Set();
-    interior.forEach(e => { junction.add(e[0]); junction.add(e[1]); });
-    /* a junction carries a letter locant, so it has to be a carbon, and the
-       walk has to OPEN on a plain position for the letters to ride on */
-    let junctionBad = false;
-    junction.forEach(id => { if (atomOf(id).element !== 'C') junctionBad = true; });
-    if (junctionBad) return null;
-    if (junction.has(startId)) return null;
-    const cycle = [startId];
-    { let prev = null, cur = startId;
-      while (cycle.length < sys.length) {
-        const nxt = nb(cur).find(x => x !== prev);
-        if (nxt === undefined || cycle.includes(nxt)) break;
-        cycle.push(nxt); prev = cur; cur = nxt;
-      } }
-    if (cycle.length !== sys.length) return null;
 
-    /* number it: plain positions count every non-junction atom (a heteroatom
-       takes its number silently, as everywhere else); a junction carbon rides
-       on the last plain number with a letter — 4a, then 4b when two junctions
-       walk in a row (phenanthrene) */
-    const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
-    const base = counter.n - 1;                 // a branch keeps counting on
-    let lastPlain = 0, li = 0;
-    for (const id of cycle) {
-      if (junction.has(id)) {
-        if (!lastPlain || li >= LETTERS.length) return null;
-        num.set(id, String(base + lastPlain) + LETTERS[li++]);
-        continue;
-      }
-      lastPlain++; li = 0;
-      if (atomOf(id).element === 'C') num.set(id, base + lastPlain);
-    }
-    counter.n = base + lastPlain + 1;
-    sys.forEach(id => written.add(id));
 
-    const mark = o => (o === 2 ? '=' : o === 3 ? '_' : '-');
-    const emitAtom = id => {
-      const a = atomOf(id);
-      const h = implicitH(g, a);
-      const loc = a.element === 'C' ? '[' + num.get(id) + stereoLetterFor(g, id) + ']' : '';
-      return loc + chargeMark(a.charge) + a.element.toLowerCase() + (h === 1 ? 'h' : h > 1 ? 'h' + h : '');
-    };
-    const subsOf = id => {
-      let s = '';
-      neighbors(g, id).forEach(n => {
-        if (!n.atom || n.atom.id === fromId || written.has(n.atom.id)) return;
-        s += '(' + (n.bond.order === 1 ? '' : mark(n.bond.order)) +
-             agilesBranch(g, n.atom.id, id, num, counter, written) + ')';
-      });
-      return s;
-    };
-    /* each interior bond is declared once, right after the later of its two
-       junctions: (f4a-8a), with a mark before the close when it is not
-       single — (f4a-8a=) */
-    const pos = new Map(cycle.map((id, i) => [id, i]));
-    const tagAfter = new Map();
-    interior.forEach(e => {
-      const later = pos.get(e[0]) > pos.get(e[1]) ? e[0] : e[1];
-      if (!tagAfter.has(later)) tagAfter.set(later, []);
-      tagAfter.get(later).push(e);
-    });
-    const bondOf = (x, y) => g.bonds.find(b => (b.a === x && b.b === y) || (b.b === x && b.a === y));
-    let out = '';
-    for (let i = 0; i < cycle.length; i++) {
-      const id = cycle[i];
-      out += emitAtom(id) + subsOf(id);
-      (tagAfter.get(id) || []).forEach(e => {
-        const first = pos.get(e[0]) <= pos.get(e[1]) ? e[0] : e[1];
-        const later = first === e[0] ? e[1] : e[0];
-        const b = bondOf(e[0], e[1]);
-        out += '(f' + num.get(first) + '-' + num.get(later) + (b.order > 1 ? mark(b.order) : '') + ')';
-      });
-      if (i < cycle.length - 1) out += mark(bondOf(id, cycle[i + 1]).order);
-    }
-    const closing = bondOf(cycle[cycle.length - 1], cycle[0]);
-    if (closing && closing.order > 1) out += mark(closing.order);
-    return out;
-  }
-
-  /* The whole-molecule entry point: at least one ring system is fused, the
-     senior system is the parent, everything else hangs off it. */
-  function toAgilesPolyFused(g) {
-    if (!g || !g.atoms.length) return null;
-    const ringIds = trueRingAtoms(g);
-    if (!ringIds.length) return null;
-    const systems = ringSystemsOf(g, ringIds);
-    /* a simple n-ring holds exactly n ring bonds; a fused system holds more —
-       orderCycle alone cannot tell, because a fused perimeter also closes */
-    const isFusedSys = s => {
-      const inS = new Set(s);
-      const rb = g.bonds.filter(b => inS.has(b.a) && inS.has(b.b) && bondIsInRing(g, b.a, b.b)).length;
-      return rb !== s.length;
-    };
-    if (!systems.some(isFusedSys)) return null;
-    { const seen = new Set(ringIds), st = ringIds.slice();
-      while (st.length) {
-        const id = st.pop();
-        neighbors(g, id).forEach(n => { if (n.atom && !seen.has(n.atom.id)) { seen.add(n.atom.id); st.push(n.atom.id); } });
-      }
-      if (seen.size !== g.atoms.length) return null; }
-    const parent = seniorRingSystem(g, systems);
-    const SENIOR = ['O', 'S', 'Se', 'N', 'P', 'Si', 'B'];
-    const ringDeg = id => neighbors(g, id).filter(n => n.atom && bondIsInRing(g, id, n.atom.id)).length;
-    const hets = parent.filter(id => g.atoms.find(a => a.id === id).element !== 'C' && ringDeg(id) === 2)
-      .sort((u, v) => SENIOR.indexOf(g.atoms.find(a => a.id === u).element) -
-                      SENIOR.indexOf(g.atoms.find(a => a.id === v).element));
-    /* the perimeter walk must open on a plain (non-junction) position so the
-       junction letters have a number to ride on */
-    let start;
-    if (hets.length) start = hets[0];
-    else start = parent.find(id => ringDeg(id) === 2) || parent[0];
-    const num = new Map(), counter = { n: 1 }, written = new Set();
-    const txt = isFusedSys(parent)
-      ? agilesFusedWalk(g, start, null, num, counter, written)
-      : agilesRingWalk(g, start, null, num, counter, written);
-    if (!txt) return null;
-    if (g.atoms.some(a => !written.has(a.id))) return null;
-    g.__agilesNum = num;
-    const tr = new Set(trueRingAtoms(g));
-    g.__agilesLower = new Set(g.atoms.filter(a => tr.has(a.id)).map(a => a.id));
-    return txt;
-  }
-
-  function toAgiles(g) {
-    const bridged = toAgilesBridged(g);
-    if (bridged !== null) return bridged;
-    const poly = toAgilesPolyFused(g);
-    if (poly !== null) return poly;
-    const ring = toAgilesRing(g);
-    if (ring !== null) return ring;
-    const bracket = toAgilesBrackets(g);
-    if (bracket !== null) return bracket;
-    const acid = toAgilesCarboxyl(g);
-    if (acid !== null) return acid;
-    const hub = toAgilesHub(g);
-    if (hub !== null) return hub;
-    const chain = toAgilesChain(g);
-    if (chain !== null) return chain;
-    return toSmiles(g, 'agiles');
-  }
 
   function toSmiles(g, mode) {
     if (!g || !g.atoms.length) return '';
@@ -7221,7 +5452,7 @@ function makeChem() {
        so that the pair of marks reproduces the drawn cis/trans relation
        when read back (F/C=C/F trans, F/C=C\F cis). */
     const ezRef = new Map(), ezState = new Map();
-    if (mode !== 'agiles') {
+    {
       const ringIds = new Set(ringAtomsOf(g));
       g.bonds.forEach(db => {
         if (db.order !== 2) return;
@@ -7282,16 +5513,12 @@ function makeChem() {
       kids.forEach(nb => emitOrder.push({ kind: 'atom', id: nb.id }));
 
       let stereoTok = '';
-      if (hasStereo && mode !== 'agiles' && emitOrder.length === 4) {
+      if (hasStereo && emitOrder.length === 4) {
         const flip = permParity(canon, emitOrder);
         if (flip !== null) stereoTok = ((parity + flip) % 2 === 0) ? '@' : '@@';
       }
 
       let out = token(a, stereoTok);
-      if (mode === 'agiles' && hasStereo) {
-        const rs = assignRS(g, id);
-        if (rs && rs.label) out += '{' + rs.label + '}';      // AGILES: absolute R/S, order-independent
-      }
       (ringOn.get('atom' + id) || []).forEach(r => { out += r; });
       kids.forEach((nb, idx) => {
         const branch = (nb.order === 1 ? dirMark(id, nb.id) : bsym(nb.order)) + walk(nb.id, id);
@@ -7440,7 +5667,7 @@ function makeChem() {
       dbs.sort((u, v) => (v.atom._locant || 0) - (u.atom._locant || 0));
       const partner = dbs[0].atom;
       const b = bondBetween(g, a.id, partner.id);
-      if (b) delete b.ezUnspec;                    // an AGILES / name descriptor specifies it
+      if (b) delete b.ezUnspec;                    // a name descriptor specifies it
       const cur = assignEZ(g, b);
       if (cur && cur.label !== want) flipAlkeneEnd(g, a.id, partner.id);
     });
@@ -7500,7 +5727,7 @@ function makeChem() {
     const sig = stereoSignature(g);
     if (!/:R|:S/.test(sig)) return { active: false, kind: 'undrawn',
       note: 'This molecule HAS ' + centres.length + ' stereocentre' + (centres.length > 1 ? 's' : '') +
-        ', but the drawing is flat — add wedge/dash bonds (or R/S letters in the AGILES code) to pick a configuration. ' +
+        ', but the drawing is flat — add wedge/dash bonds to pick a configuration. ' +
         'As drawn it represents a mixture, which shows no net rotation.' };
     const mir = clone(g);
     mir.atoms.forEach(a => { a.x = -a.x; });
@@ -7512,8 +5739,8 @@ function makeChem() {
 
 
   /* =========================================================
-     Search: turn a common name, an IUPAC name, a SMILES or an
-     AGILES string into a structure.
+     Search: turn a common name, an IUPAC name or a SMILES
+     string into a structure.
      ========================================================= */
   /* =========================================================
      Molecule library — 2,645 structures whose names all come from one
@@ -14757,8 +12984,7 @@ beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H
       });
       applyParsedStereo(g);
     }
-    // same normalisation the SMILES path gets, so the picture matches the AGILES text
-    return canonicaliseStereoLayout(g);
+    return g;
   }
 
   function attachSubstituent(g, host, kind) {
@@ -14793,26 +13019,11 @@ beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H
     throw new Error('Unsupported substituent.');
   }
 
-  /* Try, in order: common name, IUPAC name, then SMILES/AGILES text. */
+  /* Try, in order: common name, IUPAC name, then SMILES text. */
   function searchMolecule(query) {
     const raw = (query || '').trim();
-    if (!raw) throw new Error('Type an AGILES code, a name, an IUPAC name, a CAS number, or a SMILES string.');
+    if (!raw) throw new Error('Type a name, an IUPAC name, a CAS number, or a SMILES string.');
     const key = raw.toLowerCase().replace(/\s+/g, ' ');
-
-    /* AGILES first. It is the format this program actually reads molecules in,
-       and its detectors are strict (locant brackets, braces, lowercase ring
-       atoms), so nothing else can be mistaken for it. Checking it ahead of the
-       name tables also means a code always wins over a coincidental name. */
-    if (looksLikeAgilesRing(raw) || looksLikeAgilesHub(raw) || looksLikeAgilesCarboxyl(raw) ||
-        looksLikeAgilesBrackets(raw) || looksLikeAgilesChain(raw)) {
-      try { return { graph: parseSmiles(raw), via: 'AGILES code', matched: raw }; }
-      catch (e) {
-        /* it only LOOKED like a code — an exact name-table hit (n-butyllithium, sec-butyllithium …) wins over a code that cannot be read */
-        const nm = MOL_BY_NAME.get(key); if (nm) return { graph: parseSmiles(nm.smiles), via: 'molecule library', matched: nm.name };
-        if (COMMON_NAMES[key]) return { graph: parseSmiles(COMMON_NAMES[key]), via: 'common name', matched: raw };
-        throw new Error('That looks like an AGILES code, but it could not be read: ' + e.message);
-      }
-    }
 
     /* a CAS Registry Number — 108-88-3 — looked up in the embedded table */
     if (looksLikeCAS(raw)) {
@@ -14871,7 +13082,7 @@ beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H
         const src = MOL_BY_NAME.get(near) ? MOL_BY_NAME.get(near).smiles : COMMON_NAMES[near];
         return { graph: parseSmiles(src), via: 'closest name', matched: near, warn: '"' + raw + '" is not a name I know — showing the closest one, ' + near + '.' };
       }
-      throw new Error('Not recognised as an AGILES code, a name, an IUPAC name, or a SMILES string. ' +
+      throw new Error('Not recognised as a name, an IUPAC name, or a SMILES string. ' +
         'As a structure it failed with: ' + smilesErr.message);
     }
   }
@@ -16592,17 +14803,13 @@ beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H
     return { ok: true, count: members.length, linear };
   }
 
-  return { VALENCE, HALOGENS, ORGANIC, toAgilesChain, neighbors, implicitH, assignEZ, carbonDegree, clone, addAtomNear, removeAtom, isAromaticCarbon, validateValences,
+  return { VALENCE, HALOGENS, ORGANIC, neighbors, implicitH, assignEZ, carbonDegree, clone, addAtomNear, removeAtom, isAromaticCarbon, validateValences,
            bondBetween, formula, findGroups, groupSummary, findFunctionalGroups, groupContaining, FG_COLORS, RULES, render, renderFit,
-           _iu2: IU2.name, displayNameFor, parseSmiles, toSmiles, toAgiles, layoutGraph, canonicalKey, sameMolecule,
+           _iu2: IU2.name, displayNameFor, parseSmiles, toSmiles, layoutGraph, canonicalKey, sameMolecule,
            searchMolecule, parseIupacName, COMMON_NAMES, commonNameFor, nameFailed, nameSegments, IUPAC_FULL,
-           parseAgilesBrackets, looksLikeAgilesBrackets, toAgilesBrackets,
            toMolfile, parseMolfile, looksLikeMolfile,
-           parseAgilesRing, looksLikeAgilesRing, toAgilesRing, toAgilesFused, toAgilesBridged, bridgedRing, ACID_REAGENTS, resolveAcidReagent, buildAcidDehydration, customNucleophileSpec, casFor, libEntryFor, casChecksumOk, looksLikeCAS, trueRingAtoms, ringSystemsOf, orderCycle, seniorRingSystem, agilesRingWalk, agilesBranch, toAgilesPolyFused, agilesFusedWalk, fusionPlan, ringsOfSystem,
+           bridgedRing, ACID_REAGENTS, resolveAcidReagent, buildAcidDehydration, customNucleophileSpec, casFor, libEntryFor, casChecksumOk, looksLikeCAS, trueRingAtoms, ringSystemsOf, orderCycle, seniorRingSystem, fusionPlan, ringsOfSystem,
            BOND_ENERGY, CH_ENERGY, bondInventory, kcal,
-           parseAgilesChain, looksLikeAgilesChain, agilesTokenFor,
-           parseAgilesCarboxyl, looksLikeAgilesCarboxyl, toAgilesCarboxyl,
-           parseAgilesHub, looksLikeAgilesHub, toAgilesHub,
            stereoParity, geometricParity, canonicalStereoOrder, permParity, applyParsedStereo, realizeStereo,
            ATOMIC, effectiveValence, lonePairCount, hybridization, carbonClass, cipRanked, isStereocenter, assignRS,
            iupacName, componentsOf, MOL_LIBRARY, MOL_BY_NAME, MOL_BY_KEY, libraryNameFor, libKeyHash, kekulize,
@@ -16612,7 +14819,7 @@ beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H
            assignEZ, stereoSignature, sameMoleculeStereo, stereoLetterFor, flipAlkeneEnd, realizeEZ, opticalActivity,
            rxnFingerprint, fpHex, fpFromHex, fpTanimoto,
            betaHydrogens, acidStrengthAt, reactionThermo, quotientVerdict, totalBondEnergy, bondLedger, balanceCheck, atomTally, bondEnergyOf, MECH_LABEL,
-           ringAtomsOf, ringSystemsOf, orderCycle, toAgilesRing, seniorRingSystem, groupSeniority };
+           ringAtomsOf, ringSystemsOf, orderCycle, seniorRingSystem, groupSeniority };
 }
 const Chem = makeChem();
 window.Chem = Chem;
