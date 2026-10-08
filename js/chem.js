@@ -7771,7 +7771,7 @@ function makeChem() {
 2-methylstyrene|C=CC1=CC=CC=C1C|1tddokoc58mx6|C9H10|alkenes,rings,aromatics||611-15-4
 2-methylthiazole|CC1=NC=CS1|1j6yjc61bk139g|C4H5NS|alkenes,rings||3581-87-1
 2-methylthiophene|CC1=CC=CS1|137lyhj1ioyqb9|C5H6S|alkenes,rings||554-14-3
-2-methyltoluene|CC1=CC=CC=C1C|dw0pjdhjx5ez|C8H10|alkenes,rings,aromatics|1,2-dimethylbenzene|95-47-6
+2-methyltoluene|CC1=CC=CC=C1C|dw0pjdhjx5ez|C8H10|alkenes,rings,aromatics|1,2-dimethylbenzene;o-xylene;ortho-xylene|95-47-6
 2-methylundecane|CCCCCCCCCC(C)C|1y7oazk1rojrb6|C12H26|alkanes||7045-71-8
 2-nitro-3-aminoaniline|NC1=CC=CC(N)=C1[N+](=O)[O-]|1sc33gf10f6p99|C6H7N3O2|amines,alkenes,rings,aromatics,ions||
 2-nitro-3-aminobenzaldehyde|NC1=C([N+](=O)[O-])C(C=O)=CC=C1|g8gf7n1ol0pnl|C7H6N2O3|aldehydes,amines,alkenes,rings,aromatics,ions||
@@ -9084,7 +9084,7 @@ function makeChem() {
 3-methylstyrene|C=CC1=CC=CC(C)=C1|tdcx521csnt0k|C9H10|alkenes,rings,aromatics||100-80-1
 3-methylthiazole|CN1C=CSC1|1770bb42wqu1u|C4H7NS|amines,rings||
 3-methylthiophene|CC1=CSC=C1|1bchom7hols59|C5H6S|alkenes,rings||616-44-4
-3-methyltoluene|CC1=CC=CC(C)=C1|16xoprg4lht5a|C8H10|alkenes,rings,aromatics|1,3-dimethylbenzene|108-38-3
+3-methyltoluene|CC1=CC=CC(C)=C1|16xoprg4lht5a|C8H10|alkenes,rings,aromatics|1,3-dimethylbenzene;m-xylene;meta-xylene|108-38-3
 3-nitro-2-aminobenzaldehyde|NC1=C(C=O)C=CC=C1[N+](=O)[O-]|1x4y4a81r80snm|C7H6N2O3|aldehydes,amines,alkenes,rings,aromatics,ions||
 3-nitro-2-aminobenzoic acid|NC1=C(C(=O)O)C=CC=C1[N+](=O)[O-]|11swzh0cpx3x2|C7H6N2O4|acids,amines,alkenes,rings,aromatics,ions||606-18-8
 3-nitro-2-aminobenzonitrile|N#CC1=C(N)C([N+](=O)[O-])=CC=C1|q7vlxb1wm2ual|C7H5N3O2|nitriles,amines,alkenes,rings,aromatics,ions||
@@ -9292,7 +9292,7 @@ function makeChem() {
 4-aminobenzamide|NC(=O)C1=CC=C(N)C=C1|1lsnyc7a81s1h|C7H8N2O|amides,amines,alkenes,rings,aromatics||2835-68-9
 4-aminobenzenethiol|NC1=CC=C(S)C=C1|1cphwah7yscyj|C6H7NS|amines,thiols,alkenes,rings,aromatics||1193-02-8
 4-aminobenzoic acid|NC1=CC=C(C(=O)O)C=C1|x0me241t9b79q|C7H7NO2|acids,amines,alkenes,rings,aromatics||150-13-0
-4-aminobutanoic acid|NCCCC(=O)O|9mvtz2qmyni4|C4H9NO2|acids,amines||56-12-2
+4-aminobutanoic acid|NCCCC(=O)O|9mvtz2qmyni4|C4H9NO2|acids,amines|gamma-aminobutyric acid;GABA|56-12-2
 4-aminodecan-1-ol|CCCCCCC(N)CCCO|8qj6fsifexq2|C10H23NO|alcohols,amines,chiral||
 4-aminodecan-2-ol|CCCCCCC(N)CC(C)O|89ejdi1birdv8|C10H23NO|alcohols,amines,chiral||
 4-aminodecan-3-ol|CCCCCCC(N)C(O)CC|1cnpvn0gor2ge|C10H23NO|alcohols,amines,chiral||
@@ -9929,7 +9929,7 @@ function makeChem() {
 4-methylpyrimidine|CC1=NC=NC=C1|1k0pdx9kl715r|C5H6N2|alkenes,rings||3438-46-8
 4-methylstyrene|C=CC1=CC=C(C)C=C1|1letrz61fmr8lc|C9H10|alkenes,rings,aromatics||622-97-9
 4-methylthiazole|CC1=CSC=N1|29s5a518rpl7j|C4H5NS|alkenes,rings||693-95-8
-4-methyltoluene|CC1=CC=C(C)C=C1|m3j7jd1nofd3f|C8H10|alkenes,rings,aromatics|1,4-dimethylbenzene|106-42-3
+4-methyltoluene|CC1=CC=C(C)C=C1|m3j7jd1nofd3f|C8H10|alkenes,rings,aromatics|1,4-dimethylbenzene;p-xylene;para-xylene|106-42-3
 4-methylundecane|CCCCCCCC(C)CCC|3m23wrnzeujt|C12H26|alkanes,chiral||2980-69-0
 4-nitro-2-aminobenzaldehyde|NC1=C(C=O)C=CC([N+](=O)[O-])=C1|1il697jov4g8t|C7H6N2O3|aldehydes,amines,alkenes,rings,aromatics,ions||
 4-nitro-2-aminobenzoic acid|NC1=C(C(=O)O)C=CC([N+](=O)[O-])=C1|17w3qol1p9puev|C7H6N2O4|acids,amines,alkenes,rings,aromatics,ions||619-17-0
@@ -10508,23 +10508,23 @@ function makeChem() {
 9-oxodecanoic acid|CC(=O)CCCCCCCC(=O)O|14ruxef110hl4l|C10H18O3|ketones,acids||
 9-oxononanoic acid|O=CCCCCCCCC(=O)O|1u234do1rlsq7i|C9H16O3|aldehydes,acids||
 L-alanine|C[C@H](N)C(=O)O|je4bfy1tuctsc|C3H7NO2|acids,amines,chiral||56-41-7
-L-arginine|N=C(N)NCCC[C@H](N)C(=O)O|11rsid0e33l1y|C6H14N4O2|acids,amines,chiral||74-79-3
-L-asparagine|NC(=O)C[C@H](N)C(=O)O|eitvyd1e3c0vb|C4H8N2O3|amides,acids,amines,chiral||70-47-3
+L-arginine|N=C(N)NCCC[C@H](N)C(=O)O|11rsid0e33l1y|C6H14N4O2|acids,amines,chiral|arginine;arg|74-79-3
+L-asparagine|NC(=O)C[C@H](N)C(=O)O|eitvyd1e3c0vb|C4H8N2O3|amides,acids,amines,chiral|asparagine;asn|70-47-3
 L-aspartic acid|N[C@@H](CC(=O)O)C(=O)O|1ejzrgefgee2k|C4H7NO4|acids,amines,chiral||56-84-8
 L-cysteine|N[C@@H](CS)C(=O)O|fc3st0r8qhsm|C3H7NO2S|acids,amines,thiols,chiral||52-90-4
 L-glutamic acid|N[C@@H](CCC(=O)O)C(=O)O|7n7frwm8vm72|C5H9NO4|acids,amines,chiral||56-86-0
-L-glutamine|NC(=O)CC[C@H](N)C(=O)O|1aem11s1df4t6a|C5H10N2O3|amides,acids,amines,chiral||56-85-9
+L-glutamine|NC(=O)CC[C@H](N)C(=O)O|1aem11s1df4t6a|C5H10N2O3|amides,acids,amines,chiral|glutamine;gln|56-85-9
 L-histidine|N[C@@H](CC1=CNC=N1)C(=O)O|ri5khl1an4ziz|C6H9N3O2|acids,amines,rings,aromatics,chiral||71-00-1
-L-isoleucine|CC[C@H](C)[C@H](N)C(=O)O|sw581i165ec4|C6H13NO2|acids,amines,chiral||73-32-5
+L-isoleucine|CC[C@H](C)[C@H](N)C(=O)O|sw581i165ec4|C6H13NO2|acids,amines,chiral|isoleucine;ile|73-32-5
 L-leucine|CC(C)C[C@H](N)C(=O)O|16q61eh191btyz|C6H13NO2|acids,amines,chiral||61-90-5
-L-lysine|NCCCC[C@H](N)C(=O)O|1fhcu3e11af0yg|C6H14N2O2|acids,amines,chiral||56-87-1
-L-methionine|CSCC[C@H](N)C(=O)O|148ztrbeql8n9|C5H11NO2S|acids,amines,chiral||63-68-3
+L-lysine|NCCCC[C@H](N)C(=O)O|1fhcu3e11af0yg|C6H14N2O2|acids,amines,chiral|lysine;lys|56-87-1
+L-methionine|CSCC[C@H](N)C(=O)O|148ztrbeql8n9|C5H11NO2S|acids,amines,chiral|methionine;met|63-68-3
 L-phenylalanine|N[C@@H](CC1=CC=CC=C1)C(=O)O|1kstwe7hr1u1p|C9H11NO2|acids,amines,alkenes,rings,aromatics,chiral||63-91-2
-L-proline|O=C(O)[C@@H]1CCCN1|qj9axd1s7a4c3|C5H9NO2|acids,amines,rings,chiral||147-85-3
+L-proline|O=C(O)[C@@H]1CCCN1|qj9axd1s7a4c3|C5H9NO2|acids,amines,rings,chiral|proline;pro|147-85-3
 L-serine|N[C@@H](CO)C(=O)O|116oy131ci84bp|C3H7NO3|acids,alcohols,amines,chiral||56-45-1
-L-threonine|C[C@@H](O)[C@H](N)C(=O)O|uv4mcx12z7i8j|C4H9NO3|acids,alcohols,amines,chiral||72-19-5
-L-tryptophan|N[C@@H](CC1=CNC2=CC=CC=C12)C(=O)O|eoxj1exug9og|C11H12N2O2|acids,amines,alkenes,rings,aromatics,chiral||73-22-3
-L-tyrosine|N[C@@H](CC1=CC=C(O)C=C1)C(=O)O|13dtlkgtkkbbm|C9H11NO3|acids,alcohols,amines,alkenes,rings,aromatics,chiral||60-18-4
+L-threonine|C[C@@H](O)[C@H](N)C(=O)O|uv4mcx12z7i8j|C4H9NO3|acids,alcohols,amines,chiral|threonine;thr|72-19-5
+L-tryptophan|N[C@@H](CC1=CNC2=CC=CC=C12)C(=O)O|eoxj1exug9og|C11H12N2O2|acids,amines,alkenes,rings,aromatics,chiral|tryptophan;trp|73-22-3
+L-tyrosine|N[C@@H](CC1=CC=C(O)C=C1)C(=O)O|13dtlkgtkkbbm|C9H11NO3|acids,alcohols,amines,alkenes,rings,aromatics,chiral|tyrosine;tyr|60-18-4
 L-valine|CC(C)[C@H](N)C(=O)O|77ovpl1f76357|C5H11NO2|acids,amines,chiral||72-18-4
 N,N-diethylbutanamide|CCCC(=O)N(CC)CC|dql9x3fusmqd|C8H17NO|amides||1114-76-7
 N,N-diethylethanamide|CCN(CC)C(C)=O|vugyhv7fsabl|C6H13NO|amides||685-91-6
@@ -11032,7 +11032,7 @@ decane-4,5-diol|CCCCCC(O)C(O)CCC|1t6wgo9uus4uj|C10H22O2|alcohols,chiral||
 decane-4,6-diol|CCCCC(O)CC(O)CCC|n8vup41xxxmga|C10H22O2|alcohols,chiral||
 decane-4,7-diol|CCCC(O)CCC(O)CCC|7eyey21upm2w|C10H22O2|alcohols,chiral||
 decane-5,6-diol|CCCCC(O)C(O)CCCC|1dgotmy1qp4kiw|C10H22O2|alcohols,chiral||
-decanedioic acid|O=C(O)CCCCCCCCC(=O)O|1iwvqge1pffedo|C10H18O4|acids||111-20-6
+decanedioic acid|O=C(O)CCCCCCCCC(=O)O|1iwvqge1pffedo|C10H18O4|acids|sebacic acid|111-20-6
 decanenitrile|CCCCCCCCCC#N|1lo99f4h0u8qa|C10H19N|nitriles||1975-78-6
 decanoic acid|CCCCCCCCCC(=O)O|6e0anss7wxga|C10H20O2|acids||334-48-5
 dichloroacetic acid|O=C(O)C(Cl)Cl|e37b001wv1ir6|C2H2Cl2O2|acids,halides||79-43-6
@@ -11042,8 +11042,8 @@ diethyl sulfide|CCSCC|14hnxkr1e5yc0p|C4H10S|other||352-93-2
 dihydroxyacetone|CC(=O)C(O)O|16os03draoexn|C3H6O3|ketones,alcohols||1186-47-6
 dimethyl disulfide|CSSC|3uc4a610z16ks|C2H6S2|other||624-92-0
 dimethyl sulfide|CSC|r1uocv6sdpp|C2H6S|other||75-18-3
-dimethyl sulfoxide|CS(C)=O|4dog5jbnqpgl|C2H6OS|other||67-68-5
-dimethylformamide|CN(C)C=O|gwlospezbo6j|C3H7NO|amides|N,N-dimethylmethanamide|68-12-2
+dimethyl sulfoxide|CS(C)=O|4dog5jbnqpgl|C2H6OS|other|DMSO|67-68-5
+dimethylformamide|CN(C)C=O|gwlospezbo6j|C3H7NO|amides|N,N-dimethylmethanamide;n,n-dimethylformamide;DMF|68-12-2
 dodec-1,10-diene|C=CCCCCCCCC=CC|s2nj5bndst71|C12H22|alkenes||
 dodec-1,11-diene|C=CCCCCCCCCC=C|1y2ont6jzxip4|C12H22|alkenes||5876-87-9
 dodec-1,3-diene|C=CC=CCCCCCCCC|1d1a9ik1xp1ey6|C12H22|alkenes||
@@ -11218,7 +11218,7 @@ glutaconic acid|O=C(O)C=CCC(=O)O|yf4blep4h98w|C5H6O4|acids,alkenes||628-48-8
 glutaric acid|O=C(O)CCCC(=O)O|fza24e1j3xi64|C5H8O4|acids|pentanedioic acid|110-94-1
 glyceraldehyde|O=CC(O)CO|th3gm511184vz|C3H6O3|aldehydes,alcohols,chiral||56-82-6
 glycerol|OCC(O)CO|o1qxy08zv3u|C3H8O3|alcohols||56-81-5
-glycerol trinitrate|O=[N+]([O-])OCC(CO[N+](=O)[O-])O[N+](=O)[O-]|1nfaysv14dmor1|C3H5N3O9|ions||55-63-0
+glycerol trinitrate|O=[N+]([O-])OCC(CO[N+](=O)[O-])O[N+](=O)[O-]|1nfaysv14dmor1|C3H5N3O9|ions|nitroglycerin;glyceryl trinitrate|55-63-0
 glycine anhydride|NCC(=O)OC(=O)CN|57sthkyolo2y|C4H8N2O3|esters,amines||4202-74-8
 glycolic acid|O=C(O)CO|8xz0410j3mwm|C2H4O3|acids,alcohols|2-hydroxyethanoic acid|79-14-1
 glyoxal|O=CC=O|94aycunhxcgc|C2H2O2|aldehydes||107-22-2
@@ -11408,7 +11408,7 @@ hexadecanal|CCCCCCCCCCCCCCCC=O|16y4foj1rfu7ep|C16H32O|aldehydes||629-80-1
 hexadecanamide|CCCCCCCCCCCCCCCC(N)=O|1ks1b1zcnw76d|C16H33NO|amides||629-54-9
 hexadecane|CCCCCCCCCCCCCCCC|2f5n4a1091lwo|C16H34|alkanes||544-76-3
 hexadecanenitrile|CCCCCCCCCCCCCCCC#N|13l875s4tua76|C16H31N|nitriles||629-79-8
-hexadecanoic acid|CCCCCCCCCCCCCCCC(=O)O|sltadfyxv8ip|C16H32O2|acids||57-10-3
+hexadecanoic acid|CCCCCCCCCCCCCCCC(=O)O|sltadfyxv8ip|C16H32O2|acids|palmitic acid|57-10-3
 hexan-1-amine|CCCCCCN|1li2emnd7xiel|C6H15N|amines||111-26-2
 hexan-1-ol|CCCCCCO|t9zrxith4fwk|C6H14O|alcohols|1-methylpentan-5-ol;5-methylpentan-1-ol|111-27-3
 hexan-2-amine|CCCCC(C)N|6bp7q81084si|C6H15N|amines,chiral||5329-79-3
@@ -11657,7 +11657,7 @@ nerol|CC(C)=CCC/C(C)=C\\CO|2fjoej1m5ni5l|C10H18O|alcohols,alkenes||106-25-4
 nicotinaldehyde|O=CC1=CC=CN=C1|1b2ypll15wa9h7|C6H5NO|aldehydes,alkenes,rings,aromatics|pyridin-3-carbaldehyde;pyridin-5-carbaldehyde|500-22-1
 nicotinamide|NC(=O)C1=CC=CN=C1|1lykqwhmzkgb7|C6H6N2O|amides,alkenes,rings,aromatics||98-92-0
 nicotine|CN1CCCC1C1=CC=CN=C1|1bhia2g1d6z6my|C10H14N2|amines,alkenes,rings,aromatics,chiral||22083-74-5
-nicotinic acid|O=C(O)C1=CC=CN=C1|8lp8wzjyk35t|C6H5NO2|acids,alkenes,rings,aromatics|pyridin-3-carboxylic acid;pyridin-5-carboxylic acid|59-67-6
+nicotinic acid|O=C(O)C1=CC=CN=C1|8lp8wzjyk35t|C6H5NO2|acids,alkenes,rings,aromatics|pyridin-3-carboxylic acid;pyridin-5-carboxylic acid;niacin|59-67-6
 nitrobenzene|O=[N+]([O-])C1=CC=CC=C1|12xljkuuuf0ak|C6H5NO2|alkenes,rings,aromatics,ions||98-95-3
 nitrobutane|CCCC[N+](=O)[O-]|1mg9h3s1yttph6|C4H9NO2|ions||627-05-4
 nitrocyclobutane|O=[N+]([O-])C1CCC1|1a5ozwe18sykrg|C4H7NO2|rings,ions||
@@ -12126,7 +12126,7 @@ propan-2-ol|CC(C)O|1spsvmp1mmzw1v|C3H8O|alcohols||67-63-0
 propanal|CCC=O|hx2equunfuzo|C3H6O|aldehydes||123-38-6
 propanamide|CCC(N)=O|1rt1z3r5vt5hx|C3H7NO|amides|2-methylethanamide|79-05-0
 propane|CCC|sdrkys1m5md6u|C3H8|alkanes||74-98-6
-propane-1,2-diol|CC(O)CO|18wexfs6acz0q|C3H8O2|alcohols,chiral||57-55-6
+propane-1,2-diol|CC(O)CO|18wexfs6acz0q|C3H8O2|alcohols,chiral|propylene glycol;1,2-propanediol|57-55-6
 propane-1,3-diol|OCCCO|1n5m91o1w2b0pa|C3H8O2|alcohols||504-63-2
 propane-1-thiol|CCCS|1yy20uut1osl0|C3H8S|thiols||107-03-9
 propane-2-thiol|CC(C)S|1ab2k811tgtjk3|C3H8S|thiols||75-33-2
@@ -12589,7 +12589,198 @@ alpha-L-rhamnopyranose|C[C@@H]1O[C@@H](O)[C@H](O)[C@H](O)[C@H]1O|1w22w4d8zfchr|C
 beta-L-rhamnopyranose|C[C@@H]1O[C@H](O)[C@H](O)[C@H](O)[C@H]1O|1w22w4d8zfchr|C6H12O5|alcohols,ethers,rings,chiral|β-L-rhamnopyranose;b-L-rhamnopyranose|
 L-rhamnofuranose|C[C@H](O)[C@@H]1OC(O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H12O5|alcohols,ethers,rings,chiral|rhamnofuranose|
 alpha-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H12O5|alcohols,ethers,rings,chiral|α-L-rhamnofuranose;a-L-rhamnofuranose|
-beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H12O5|alcohols,ethers,rings,chiral|β-L-rhamnofuranose;b-L-rhamnofuranose|`;
+beta-L-rhamnofuranose|C[C@H](O)[C@@H]1O[C@H](O)[C@H](O)[C@@H]1O|z6bi7zt8kuxp|C6H12O5|alcohols,ethers,rings,chiral|β-L-rhamnofuranose;b-L-rhamnofuranose|
+histidine|N[C@@H](CC1=CN=CN1)C(=O)O|103ityc10c2mpy|C6H9N3O2|acids,amines,aromatics,rings,chiral|l-histidine;his|
+glutathione|N[C@@H](CCC(=O)N[C@@H](CS)C(=O)NCC(=O)O)C(=O)O|1v8oent135zot7|C10H17N3O6S|acids,amines,amides,thiols,chiral|gsh|
+betaine|C[N+](C)(C)CC(=O)[O-]|3rff241x5v5fi|C5H11NO2|acids|trimethylglycine|
+aspartame|COC(=O)[C@H](CC1=CC=CC=C1)NC(=O)[C@@H](N)CC(=O)O|144kjieer0kg4|C14H18N2O5|acids,amines,ethers,esters,amides,aromatics,rings,chiral||
+lipoic acid|O=C(O)CCCC[C@@H]1CCSS1|19an34k4jtm5y|C8H14O2S2|acids,rings,chiral|alpha-lipoic acid;thioctic acid|
+adenosine|NC1=C2N=CN([C@@H]3O[C@H](CO)[C@@H](O)[C@H]3O)C2=NC=N1|17jm23wouj9bi|C10H13N5O4|alcohols,amines,ethers,aromatics,rings,chiral||
+guanosine|NC1=NC2=C(N=CN2[C@@H]2O[C@H](CO)[C@@H](O)[C@H]2O)C(=O)N1|dqwkhwn95z8m|C10H13N5O5|alcohols,amines,ethers,aromatics,rings,chiral||
+cytidine|NC1=NC(=O)N([C@@H]2O[C@H](CO)[C@@H](O)[C@H]2O)C=C1|1g0y3pj1ia1yhx|C9H13N3O5|alcohols,amines,ethers,aromatics,rings,chiral||
+uridine|O=C1C=CN([C@@H]2O[C@H](CO)[C@@H](O)[C@H]2O)C(=O)N1|3t77q81glgr6q|C9H12N2O6|alcohols,ethers,aromatics,rings,chiral||
+thymidine|CC1=CN([C@H]2C[C@H](O)[C@@H](CO)O2)C(=O)NC1=O|1k34wll1i087or|C10H14N2O5|alcohols,ethers,aromatics,rings,chiral||
+adenosine monophosphate|NC1=C2N=CN([C@@H]3O[C@H](COP(=O)(O)O)[C@@H](O)[C@H]3O)C2=NC=N1|1bb9pss116sqfy|C10H14N5O7P|alcohols,amines,ethers,aromatics,rings,chiral|AMP;adenosine 5'-monophosphate|
+adenosine diphosphate|NC1=C2N=CN([C@@H]3O[C@H](COP(=O)(O)OP(=O)(O)O)[C@@H](O)[C@H]3O)C2=NC=N1|1622j6b13lacj5|C10H15N5O10P2|alcohols,amines,ethers,aromatics,rings,chiral|ADP;adenosine 5'-diphosphate|
+zidovudine|CC1=CN([C@H]2C[C@H](N=[N+]=[N-])[C@@H](CO)O2)C(=O)NC1=O|1m46nzb125ru2t|C10H13N5O4|alcohols,ethers,aromatics,rings,chiral|AZT|
+acyclovir|NC1=NC2=C(N=CN2COCCO)C(=O)N1|ix6u6v1ka559x|C8H11N5O3|alcohols,amines,ethers,aromatics,rings|aciclovir|
+5-fluorouracil|O=C1NC=C(F)C(=O)N1|11p65cgz7tfv6|C4H3FN2O2|halides,aromatics,rings|fluorouracil;5-FU|
+capecitabine|CCCCCOC(=O)NC1=NC(=O)N([C@@H]2O[C@H](C)[C@@H](O)[C@H]2O)C=C1F|o06ruf1kr2xhx|C15H22FN3O6|alcohols,ethers,amides,halides,aromatics,rings,chiral||
+methotrexate|CN(CC1=NC2=C(N)N=C(N)N=C2N=C1)C1=CC=C(C(=O)N[C@@H](CCC(=O)O)C(=O)O)C=C1|1040xbsui4efu|C20H22N8O5|acids,amines,amides,aromatics,rings,chiral||
+diclofenac|O=C(O)CC1=CC=CC=C1NC1=C(Cl)C=CC=C1Cl|v0dwdz1154b4l|C14H11Cl2NO2|acids,amines,halides,aromatics,rings||
+ketoprofen|CC(C(=O)O)C1=CC=CC(C(=O)C2=CC=CC=C2)=C1|1pew1au19n0q9g|C16H14O3|acids,ketones,aromatics,rings,chiral||
+indomethacin|COC1=CC2=C(C=C1)N(C(=O)C1=CC=C(Cl)C=C1)C(C)=C2CC(=O)O|tpgm5ksn83d6|C19H16ClNO4|acids,ethers,halides,aromatics,rings||
+celecoxib|CC1=CC=C(C2=CC(C(F)(F)F)=NN2C2=CC=C(S(N)(=O)=O)C=C2)C=C1|15e6b9b1997xjx|C17H14F3N3O2S|halides,aromatics,rings||
+oxycodone|COC1=C2O[C@H]3C(=O)CC[C@@]4(O)[C@H]5CC(=C2[C@@]34CCN5C)C=C1|1g0os9gasdxme|C18H21NO4|alcohols,amines,ketones,ethers,aromatics,rings,chiral||
+heroin|CC(=O)OC1=C2O[C@H]3[C@@H](OC(C)=O)C=C[C@H]4[C@H]5CC(=C2[C@]43CCN5C)C=C1|1w9m66f1oj7eed|C21H23NO5|amines,ethers,esters,alkenes,aromatics,rings,chiral|diacetylmorphine;diamorphine|
+fentanyl|CCC(=O)N(C1=CC=CC=C1)C1CCN(CCC2=CC=CC=C2)CC1|10tva0w1tiem76|C22H28N2O|amines,amides,aromatics,rings||
+methadone|CCC(=O)C(CC(C)N(C)C)(C1=CC=CC=C1)C1=CC=CC=C1|1d5arctawfnz3|C21H27NO|amines,ketones,aromatics,rings,chiral||
+tramadol|COC1=CC([C@]2(O)CCCC[C@H]2CN(C)C)=CC=C1|1vho31nclyn0p|C16H25NO2|alcohols,amines,ethers,aromatics,rings,chiral||
+ketamine|CNC1(C2=CC=CC=C2Cl)CCCCC1=O|fe5ti91apsv2b|C13H16ClNO|amines,ketones,halides,aromatics,rings,chiral||
+cocaine|COC(=O)[C@@H]1[C@@H](OC(=O)C2=CC=CC=C2)C[C@H]2CC[C@@H]1N2C|wkhcwv2lsu5|C17H21NO4|amines,ethers,esters,aromatics,rings,chiral||
+procaine|CCN(CC)CCOC(=O)C1=CC=C(N)C=C1|wok0pk1wazyy|C13H20N2O2|amines,ethers,esters,aromatics,rings|novocaine|
+bupivacaine|CCCCN1CCCCC1C(=O)NC1=C(C)C=CC=C1C|12ig97maj83ds|C18H28N2O|amines,amides,aromatics,rings,chiral||
+diazepam|CN1C(=O)CN=C(C2=CC=CC=C2)C2=C1C=CC(Cl)=C2|7qp9q4e73cym|C16H13ClN2O|amides,halides,aromatics,rings|valium|
+lorazepam|O=C1NC2=C(C=C(Cl)C=C2)C(C2=CC=CC=C2Cl)=NC1O|155uhai14rdqeg|C15H10Cl2N2O2|alcohols,amides,halides,aromatics,rings,chiral||
+alprazolam|CC1=NN=C2CN=C(C3=CC=CC=C3)C3=C(C=CC(Cl)=C3)N12|1fwz13cso5xka|C17H13ClN4|halides,aromatics,rings|xanax|
+clonazepam|O=C1CN=C(C2=CC=CC=C2Cl)C2=C(C=CC([N+](=O)[O-])=C2)N1|ih8gc62mavxw|C15H10ClN3O3|amides,halides,aromatics,rings||
+fluoxetine|CNCCC(OC1=CC=C(C(F)(F)F)C=C1)C1=CC=CC=C1|1o62gw61s4m2s|C17H18F3NO|amines,ethers,halides,aromatics,rings,chiral|prozac|
+sertraline|CN[C@H]1CC[C@@H](C2=CC(Cl)=C(Cl)C=C2)C2=CC=CC=C21|el54e01uz02wq|C17H17Cl2N|amines,halides,aromatics,rings,chiral|zoloft|
+paroxetine|FC1=CC=C([C@@H]2CCNC[C@H]2COC2=CC3=C(C=C2)OCO3)C=C1|1wfge3z1tgphjh|C19H20FNO3|amines,ethers,halides,aromatics,rings,chiral||
+citalopram|CN(C)CCCC1(C2=CC=C(F)C=C2)OCC2=C1C=CC(C#N)=C2|elnt9zh3ffyt|C20H21FN2O|amines,ethers,halides,nitriles,aromatics,rings,chiral||
+escitalopram|CN(C)CCC[C@@]1(C2=CC=C(F)C=C2)OCC2=C1C=CC(C#N)=C2|elnt9zh3ffyt|C20H21FN2O|amines,ethers,halides,nitriles,aromatics,rings,chiral||
+venlafaxine|COC1=CC=C(C(CN(C)C)C2(O)CCCCC2)C=C1|1dckahl11qqgr|C17H27NO2|alcohols,amines,ethers,aromatics,rings,chiral||
+amitriptyline|CN(C)CCC=C1C2=CC=CC=C2CCC2=CC=CC=C21|douasg1kw7bky|C20H23N|amines,alkenes,aromatics,rings||
+imipramine|CN(C)CCCN1C2=CC=CC=C2CCC2=CC=CC=C21|izb69l4auexn|C19H24N2|amines,aromatics,rings||
+haloperidol|O=C(CCCN1CCC(O)(C2=CC=C(Cl)C=C2)CC1)C1=CC=C(F)C=C1|1udryz7yrj5l|C21H23ClFNO2|alcohols,amines,ketones,halides,aromatics,rings||
+chlorpromazine|CN(C)CCCN1C2=CC=CC=C2SC2=C1C=C(Cl)C=C2|1hwi4f71z13ngh|C17H19ClN2S|amines,halides,aromatics,rings||
+risperidone|CC1=C(CCN2CCC(C3=NOC4=C3C=CC(F)=C4)CC2)C(=O)N2CCCCC2=N1|13fl4xdwn39w3|C23H27FN4O2|amines,halides,aromatics,rings||
+olanzapine|CC1=CC2=C(NC3=CC=CC=C3N=C2N2CCN(C)CC2)S1|jkt1y22wqnvc|C17H20N4S|amines,aromatics,rings||
+quetiapine|OCCOCCN1CCN(C2=NC3=CC=CC=C3SC3=CC=CC=C32)CC1|17s2howauhlo2|C21H25N3O2S|alcohols,amines,ethers,aromatics,rings||
+aripiprazole|O=C1CCC2=C(C=C(OCCCCN3CCN(C4=CC=CC(Cl)=C4Cl)CC3)C=C2)N1|379rw812gurbu|C23H27Cl2N3O2|amines,ethers,amides,halides,aromatics,rings||
+carbamazepine|NC(=O)N1C2=CC=CC=C2C=CC2=CC=CC=C21|13db3l31749hc5|C15H12N2O|amides,alkenes,aromatics,rings||
+phenytoin|O=C1NC(=O)C(C2=CC=CC=C2)(C2=CC=CC=C2)N1|1mor6yn7usd25|C15H12N2O2|amides,aromatics,rings||
+phenobarbital|CCC1(C2=CC=CC=C2)C(=O)NC(=O)NC1=O|yeiaos6kl1y6|C12H12N2O3|amides,aromatics,rings||
+valproic acid|CCCC(CCC)C(=O)O|1xqikql1ufgy5b|C8H16O2|acids|valproate;2-propylpentanoic acid|
+gabapentin|NCC1(CC(=O)O)CCCCC1|bh0ash132pver|C9H17NO2|acids,amines,rings||
+pregabalin|CC(C)C[C@H](CN)CC(=O)O|qsbm2v11kapgl|C8H17NO2|acids,amines,chiral||
+levetiracetam|CC[C@H](C(N)=O)N1CCCC1=O|9yylxisgpkro|C8H14N2O2|amides,rings,chiral||
+lamotrigine|NC1=NC(N)=C(C2=CC=CC(Cl)=C2Cl)N=N1|195u7ckj5g0hi|C9H7Cl2N5|amines,halides,aromatics,rings||
+lithium carbonate|O=C([O-])[O-].[Li+].[Li+]|1haa6tf17xut29|CLi2O3|acids||
+melatonin|COC1=CC2=C(C=C1)NC=C2CCNC(C)=O|1aut0b8okjjdi|C13H16N2O2|ethers,amides,aromatics,rings||
+norepinephrine|NC[C@H](O)C1=CC(O)=C(O)C=C1|1g8n5iqks7oog|C8H11NO3|alcohols,amines,aromatics,rings,chiral|noradrenaline|
+psilocybin|CN(C)CCC1=CNC2=CC=CC(OP(=O)(O)O)=C12|nhrdnf1gtzjsp|C12H17N2O4P|amines,aromatics,rings||
+mescaline|COC1=CC(CCN)=CC(OC)=C1OC|1wzeib410vxg1e|C11H17NO3|amines,ethers,aromatics,rings||
+lsd|CCN(CC)C(=O)[C@H]1C=C2C3=C4C(=CNC4=CC=C3)C[C@@H]2N(C)C1|1lvupnx1hz4vrj|C20H25N3O|amines,amides,alkenes,aromatics,rings,chiral|lysergic acid diethylamide|
+mdma|CNC(C)CC1=CC2=C(C=C1)OCO2|3g07n4r43rea|C11H15NO2|amines,ethers,aromatics,rings,chiral|ecstasy;3,4-methylenedioxymethamphetamine|
+methamphetamine|CN[C@H](C)CC1=CC=CC=C1|g7ka7lfef70z|C10H15N|amines,aromatics,rings,chiral||
+ephedrine|CN[C@H](C)[C@H](O)C1=CC=CC=C1|1u5cj6n4gmgzh|C10H15NO|alcohols,amines,aromatics,rings,chiral||
+pseudoephedrine|CN[C@@H](C)[C@H](O)C1=CC=CC=C1|1u5cj6n4gmgzh|C10H15NO|alcohols,amines,aromatics,rings,chiral||
+atropine|CN1C2CCC1CC(OC(=O)C(CO)C1=CC=CC=C1)C2|1hcnliu14ktsb8|C17H23NO3|alcohols,amines,ethers,esters,aromatics,rings,chiral||
+scopolamine|CN1C2CC(OC(=O)C(CO)C3=CC=CC=C3)CC1C1OC12|ceoocr81dk4p|C17H21NO4|alcohols,amines,ethers,esters,aromatics,rings,chiral|hyoscine|
+delta-9-tetrahydrocannabinol|CCCCCC1=CC(O)=C2C(=C1)OC(C)(C)[C@@H]1CCC(C)=C[C@H]21|hm5oawcgj8dm|C21H30O2|ethers,alkenes,aromatics,rings,chiral|THC;dronabinol|
+cannabidiol|C=C(C)[C@@H]1CC=C(C)C[C@H]1C1=C(O)C=C(CCCCC)C=C1O|10dasvr1gqpz9x|C21H30O2|alkenes,aromatics,rings,chiral|CBD|
+amoxicillin|CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](N)C3=CC=C(O)C=C3)C(=O)N2[C@H]1C(=O)O|1fnc3hf10teabl|C16H19N3O5S|acids,amines,amides,aromatics,rings,chiral||
+ampicillin|CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](N)C3=CC=CC=C3)C(=O)N2[C@H]1C(=O)O|dfqand1cxx1aj|C16H19N3O4S|acids,amines,amides,aromatics,rings,chiral||
+penicillin g|CC1(C)S[C@@H]2[C@H](NC(=O)CC3=CC=CC=C3)C(=O)N2[C@H]1C(=O)O|xvrqvpumet9z|C16H18N2O4S|acids,amides,aromatics,rings,chiral|benzylpenicillin|
+penicillin v|CC1(C)S[C@@H]2[C@H](NC(=O)COC3=CC=CC=C3)C(=O)N2[C@H]1C(=O)O|18thiv811ewyp2|C16H18N2O5S|acids,ethers,amides,aromatics,rings,chiral|phenoxymethylpenicillin|
+cephalexin|CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](N)C3=CC=CC=C3)[C@H]2SC1|1trzc3g1v4lntq|C16H17N3O4S|acids,amines,amides,alkenes,aromatics,rings,chiral|cefalexin|
+ciprofloxacin|O=C(O)C1=CN(C2CC2)C2=C(C=C(F)C(N3CCNCC3)=C2)C1=O|peleubwmhdz5|C17H18FN3O3|acids,amines,halides,aromatics,rings||
+levofloxacin|C[C@H]1COC2=C(N3CCN(C)CC3)C(F)=CC3=C2N1C=C(C(=O)O)C3=O|15i67yh1fhxmaz|C18H20FN3O4|acids,amines,ethers,halides,aromatics,rings,chiral||
+tetracycline|CN(C)C1C(O)=C(C(N)=O)C(=O)C2(O)C(O)=C3C(=O)C4=C(O)C=CC=C4C(C)(O)C3CC12|1kdew5j1fj0y5h|C22H24N2O8|alcohols,amines,ketones,amides,alkenes,aromatics,rings,chiral||
+metronidazole|CC1=NC=C([N+](=O)[O-])N1CCO|x2u9tdhd52hf|C6H9N3O3|alcohols,aromatics,rings||
+sulfamethoxazole|CC1=CC(NS(=O)(=O)C2=CC=C(N)C=C2)=NO1|16a32ny12n23do|C10H11N3O3S|amines,aromatics,rings||
+trimethoprim|COC1=CC(CC2=C(N)N=C(N)N=C2)=CC(OC)=C1OC|kw4gr21hgrfzg|C14H18N4O3|amines,ethers,aromatics,rings||
+isoniazid|NNC(=O)C1=CC=NC=C1|g55nzq18d3buc|C6H7N3O|amides,aromatics,rings||
+fluconazole|OC(CN1C=NC=N1)(CN1C=NC=N1)C1=C(F)C=C(F)C=C1|1dsigp7zc1fjd|C13H12F2N6O|alcohols,halides,aromatics,rings||
+oseltamivir|CCOC(=O)C1=C[C@@H](OC(CC)CC)[C@H](NC(C)=O)[C@@H](N)C1|86qhj81biugti|C16H28N2O4|amines,ethers,esters,amides,alkenes,rings,chiral|tamiflu|
+chloroquine|CCN(CC)CCCC(C)NC1=C2C=CC(Cl)=CC2=NC=C1|7t14oo1ayeere|C18H26ClN3|amines,halides,aromatics,rings,chiral||
+hydroxychloroquine|CCN(CCO)CCCC(C)NC1=C2C=CC(Cl)=CC2=NC=C1|1ywj7101xta01i|C18H26ClN3O|alcohols,amines,halides,aromatics,rings,chiral||
+quinine|C=C[C@H]1CN2CC[C@H]1C[C@H]2[C@H](O)C1=C2C=C(OC)C=CC2=NC=C1|1msc71vzc7y6p|C20H24N2O2|alcohols,amines,ethers,alkenes,aromatics,rings,chiral||
+artemisinin|C[C@@H]1CC[C@H]2[C@@H](C)C(=O)O[C@@H]3O[C@@]4(C)CC[C@@H]1[C@]32OO4|1jhxd011e3s41f|C15H22O5|ethers,esters,rings,chiral||
+metformin|CN(C)C(=N)NC(=N)N|19o95kse0u5we|C4H11N5|amines||
+glipizide|CC1=NC=C(C(=O)NCCC2=CC=C(S(=O)(=O)NC(=O)NC3CCCCC3)C=C2)N=C1|rua0ze7x9xx4|C21H27N5O4S|amides,aromatics,rings||
+atorvastatin|CC(C)C1=C(C(=O)NC2=CC=CC=C2)C(C2=CC=CC=C2)=C(C2=CC=C(F)C=C2)N1CC[C@@H](O)C[C@@H](O)CC(=O)O|95703yfhmb70|C33H35FN2O5|alcohols,acids,amides,halides,aromatics,rings,chiral||
+simvastatin|CCC(C)(C)C(=O)O[C@H]1C[C@@H](C)C=C2C=C[C@H](C)[C@H](CC[C@@H]3C[C@@H](O)CC(=O)O3)[C@H]21|1an3t1w15skrw6|C25H38O5|alcohols,ethers,esters,alkenes,rings,chiral||
+rosuvastatin|CC(C)C1=NC(N(C)S(C)(=O)=O)=NC(C2=CC=C(F)C=C2)=C1/C=C/[C@@H](O)C[C@@H](O)CC(=O)O|kkabmpr3djer|C22H28FN3O6S|alcohols,acids,halides,alkenes,aromatics,rings,chiral||
+lisinopril|NCCCC[C@H](N[C@@H](CCC1=CC=CC=C1)C(=O)O)C(=O)N1CCC[C@H]1C(=O)O|az9s3osgq6ee|C21H31N3O5|acids,amines,amides,aromatics,rings,chiral||
+enalapril|CCOC(=O)[C@H](CCC1=CC=CC=C1)N[C@@H](C)C(=O)N1CCC[C@H]1C(=O)O|cuqy72fr4u70|C20H28N2O5|acids,amines,ethers,esters,amides,aromatics,rings,chiral||
+captopril|C[C@H](CS)C(=O)N1CCC[C@H]1C(=O)O|1h9jteb1jmee41|C9H15NO3S|acids,amides,thiols,rings,chiral||
+losartan|CCCCC1=NC(Cl)=C(CO)N1CC1=CC=C(C2=CC=CC=C2C2=NNN=N2)C=C1|111cp0p1grrqbv|C22H23ClN6O|alcohols,halides,aromatics,rings||
+valsartan|CCCCC(=O)N(CC1=CC=C(C2=CC=CC=C2C2=NNN=N2)C=C1)[C@H](C(=O)O)C(C)C|1kmza5ut8808g|C24H29N5O3|acids,amides,aromatics,rings,chiral||
+amlodipine|CCOC(=O)C1=C(COCCN)NC(C)=C(C(=O)OC)C1C1=CC=CC=C1Cl|1akajdu1o218gw|C20H25ClN2O5|amines,ethers,esters,halides,alkenes,aromatics,rings,chiral||
+nifedipine|COC(=O)C1=C(C)NC(C)=C(C(=O)OC)C1C1=CC=CC=C1[N+](=O)[O-]|15avirn1aapzxd|C17H18N2O6|amines,ethers,esters,alkenes,aromatics,rings||
+verapamil|COC1=C(OC)C=C(CCN(C)CCCC(C#N)(C2=CC(OC)=C(OC)C=C2)C(C)C)C=C1|ve37it1pcqyif|C27H38N2O4|amines,ethers,nitriles,aromatics,rings,chiral||
+diltiazem|COC1=CC=C([C@@H]2SC3=CC=CC=C3N(CCN(C)C)C(=O)[C@@H]2OC(C)=O)C=C1|uqywldbrjcgz|C22H26N2O4S|amines,ethers,esters,amides,aromatics,rings,chiral||
+metoprolol|COCCC1=CC=C(OCC(O)CNC(C)C)C=C1|y0b98i1th1y00|C15H25NO3|alcohols,amines,ethers,aromatics,rings,chiral||
+atenolol|CC(C)NCC(O)COC1=CC=C(CC(N)=O)C=C1|1swe87ln2fenn|C14H22N2O3|alcohols,amines,ethers,amides,aromatics,rings,chiral||
+propranolol|CC(C)NCC(O)COC1=CC=CC2=CC=CC=C21|8a73t8i6h05q|C16H21NO2|alcohols,amines,ethers,aromatics,rings,chiral||
+carvedilol|COC1=CC=CC=C1OCCNCC(O)COC1=C2C(=CC=C1)NC1=CC=CC=C12|1mkik83fe5j41|C24H26N2O4|alcohols,amines,ethers,aromatics,rings,chiral||
+furosemide|NS(=O)(=O)C1=CC(C(=O)O)=C(NCC2=CC=CO2)C=C1Cl|15m3278z1bz9i|C12H11ClN2O5S|acids,amines,halides,aromatics,rings||
+hydrochlorothiazide|NS(=O)(=O)C1=CC2=C(C=C1Cl)NCNS2(=O)=O|1les8dp1fd1n2n|C7H8ClN3O4S2|amines,halides,aromatics,rings||
+spironolactone|CC(=O)S[C@@H]1CC2=CC(=O)CC[C@]2(C)[C@H]2CC[C@@]3(C)[C@@H](CC[C@@]34CCC(=O)O4)[C@@H]12|fb8ampiosgxf|C24H32O4S|ketones,ethers,esters,alkenes,rings,chiral||
+warfarin|CC(=O)CC(C1=CC=CC=C1)C1=C(O)C2=CC=CC=C2OC1=O|qzytosaeeujy|C19H16O4|ketones,aromatics,rings,chiral||
+dicoumarol|O=C1OC2=CC=CC=C2C(O)=C1CC1=C(O)C2=CC=CC=C2OC1=O|tmw8e2jnpgmw|C19H12O6|aromatics,rings||
+clopidogrel|COC(=O)[C@H](C1=CC=CC=C1Cl)N1CCC2=C(C=CS2)C1|1axz9s1bbpzjm|C16H16ClNO2S|amines,ethers,esters,halides,aromatics,rings,chiral||
+sildenafil|CCCC1=NN(C)C2=C1N=C(C1=C(OCC)C=CC(S(=O)(=O)N3CCN(C)CC3)=C1)NC2=O|89gzjrwiusr9|C22H30N6O4S|amines,ethers,aromatics,rings|viagra|
+tadalafil|CN1CC(=O)N2[C@@H](C3=CC4=C(C=C3)OCO4)C3=C(C[C@@H]2C1=O)C1=CC=CC=C1N3|bit6agow908q|C22H19N3O4|ethers,amides,aromatics,rings,chiral||
+omeprazole|COC1=CC2=C(C=C1)NC(S(=O)CC1=C(C)C(OC)=C(C)C=N1)=N2|6u32th1zpe93|C17H19N3O3S|ethers,aromatics,rings,chiral||
+esomeprazole|COC1=CC2=C(C=C1)NC([S@](=O)CC1=C(C)C(OC)=C(C)C=N1)=N2|6u32th1zpe93|C17H19N3O3S|ethers,aromatics,rings,chiral||
+ranitidine|CNC(=C[N+](=O)[O-])NCCSCC1=CC=C(CN(C)C)O1|1nuibn51r1tonn|C13H22N4O3S|amines,alkenes,aromatics,rings||
+famotidine|NC(N)=NC1=NC(CSCCC(N)=NS(N)(=O)=O)=CS1|1ae6q4t1sr35in|C8H15N7O2S3|amines,aromatics,rings||
+loratadine|CCOC(=O)N1CCC(=C2C3=NC=CC=C3CCC3=C2C=CC(Cl)=C3)CC1|1yt8l1r1hkv52l|C22H23ClN2O2|ethers,amides,halides,alkenes,aromatics,rings||
+cetirizine|O=C(O)COCCN1CCN(C(C2=CC=CC=C2)C2=CC=C(Cl)C=C2)CC1|9c7uzc13micd6|C21H25ClN2O3|acids,amines,ethers,halides,aromatics,rings,chiral||
+fexofenadine|CC(C)(C(=O)O)C1=CC=C(C(O)CCCN2CCC(C(O)(C3=CC=CC=C3)C3=CC=CC=C3)CC2)C=C1|18y7cid1ejv2pj|C32H39NO4|alcohols,acids,amines,aromatics,rings,chiral||
+diphenhydramine|CN(C)CCOC(C1=CC=CC=C1)C1=CC=CC=C1|ydubg3v6jvkh|C17H21NO|amines,ethers,aromatics,rings|benadryl|
+montelukast|CC(C)(O)C1=CC=CC=C1CC[C@H](SCC1(CC(=O)O)CC1)C1=CC=CC(/C=C/C2=CC=C3C=CC(Cl)=CC3=N2)=C1|zjwdd6w897go|C35H36ClNO3S|alcohols,acids,halides,alkenes,aromatics,rings,chiral||
+salbutamol|CC(C)(C)NCC(O)C1=CC(CO)=C(O)C=C1|11nwtjd10rrotn|C13H21NO3|alcohols,amines,aromatics,rings,chiral|albuterol|
+theophylline|CN1C(=O)C2=C(N=CN2)N(C)C1=O|gve08u1w6dm70|C7H8N4O2|aromatics,rings||
+testosterone|C[C@]12CC[C@H]3[C@@H](CCC4=CC(=O)CC[C@@]43C)[C@@H]1CC[C@@H]2O|qtry7l6ubqs3|C19H28O2|alcohols,ketones,alkenes,rings,chiral||
+estradiol|C[C@]12CC[C@@H]3C4=C(C=C(O)C=C4)CC[C@H]3[C@@H]1CC[C@@H]2O|1kgmhr1b9n1a7|C18H24O2|alcohols,aromatics,rings,chiral|oestradiol|
+estrone|C[C@]12CC[C@@H]3C4=C(C=C(O)C=C4)CC[C@H]3[C@@H]1CCC2=O|1toixbfmhf6q1|C18H22O2|ketones,aromatics,rings,chiral||
+estriol|C[C@]12CC[C@@H]3C4=C(C=C(O)C=C4)CC[C@H]3[C@@H]1C[C@H](O)[C@@H]2O|1vvq74vk9ro59|C18H24O3|alcohols,aromatics,rings,chiral||
+progesterone|CC(=O)[C@H]1CC[C@H]2[C@@H]3CCC4=CC(=O)CC[C@]4(C)[C@H]3CC[C@]12C|1jsmtw395p7zl|C21H30O2|ketones,alkenes,rings,chiral||
+hydrocortisone|C[C@]12CCC(=O)C=C1CC[C@@H]1[C@@H]2[C@@H](O)C[C@@]2(C)[C@H]1CC[C@]2(O)C(=O)CO|x37ozbhwz32t|C21H30O5|alcohols,ketones,alkenes,rings,chiral|cortisol|
+cortisone|C[C@]12CCC(=O)C=C1CC[C@@H]1[C@@H]2C(=O)C[C@@]2(C)[C@H]1CC[C@]2(O)C(=O)CO|1uywzz5nhwds3|C21H28O5|alcohols,ketones,alkenes,rings,chiral||
+prednisolone|C[C@]12C=CC(=O)C=C1CC[C@@H]1[C@@H]2[C@@H](O)C[C@@]2(C)[C@H]1CC[C@]2(O)C(=O)CO|1od3c111u6ld1j|C21H28O5|alcohols,ketones,alkenes,rings,chiral||
+prednisone|C[C@]12C=CC(=O)C=C1CC[C@@H]1[C@@H]2C(=O)C[C@@]2(C)[C@H]1CC[C@]2(O)C(=O)CO|1flunsdz3lqz3|C21H26O5|alcohols,ketones,alkenes,rings,chiral||
+dexamethasone|C[C@@H]1C[C@H]2[C@@H]3CCC4=CC(=O)C=C[C@]4(C)[C@@]3(F)[C@@H](O)C[C@]2(C)[C@@]1(O)C(=O)CO|8fu7m21qzjn48|C22H29FO5|alcohols,ketones,halides,alkenes,rings,chiral||
+levothyroxine|N[C@@H](CC1=CC(I)=C(OC2=CC(I)=C(O)C(I)=C2)C(I)=C1)C(=O)O|2bjngi18bbejk|C15H11I4NO4|acids,amines,ethers,halides,aromatics,rings,chiral|thyroxine;T4|
+cyclophosphamide|O=P1(N(CCCl)CCCl)NCCCO1|9u4eom1wggc38|C7H15Cl2N2O2P|halides,rings,chiral||
+tamoxifen|CC/C(C1=CC=CC=C1)=C(\C1=CC=CC=C1)C1=CC=C(OCCN(C)C)C=C1|1l3nczj1cgbp99|C26H29NO|amines,ethers,alkenes,aromatics,rings||
+imatinib|CC1=C(NC2=NC=CC(C3=CC=CN=C3)=N2)C=C(NC(=O)C2=CC=C(CN3CCN(C)CC3)C=C2)C=C1|o5k7uexd8kac|C29H31N7O|amines,amides,aromatics,rings|gleevec|
+gefitinib|COC1=CC2=NC=NC(NC3=CC(Cl)=C(F)C=C3)=C2C=C1OCCCN1CCOCC1|1k3qbq79mz7ct|C22H24ClFN4O3|amines,ethers,halides,aromatics,rings||
+erlotinib|C#CC1=CC(NC2=C3C=C(OCCOC)C(OCCOC)=CC3=NC=N2)=CC=C1|d602egwpuaui|C22H23N3O4|amines,ethers,alkynes,aromatics,rings||
+doxorubicin|COC1=C2C(=O)C3=C(C(=O)C2=CC=C1)C(O)=C1C[C@@](O)(C(=O)CO)C[C@H](O[C@H]2C[C@H](N)[C@H](O)[C@H](C)O2)C1=C3O|1gsa6f71l7602p|C27H29NO11|alcohols,amines,ketones,ethers,aromatics,rings,chiral|adriamycin|
+camptothecin|CC[C@@]1(O)C(=O)OCC2=C1C=C1C3=NC4=CC=CC=C4C=C3CN1C2=O|tbjwm5cfyam7|C20H16N2O4|alcohols,ethers,esters,aromatics,rings,chiral||
+podophyllotoxin|COC1=CC([C@H]2C3=C(C=C4OCOC4=C3)[C@H](O)[C@@H]3COC(=O)[C@H]23)=CC(OC)=C1OC|fg8c1w14rco06|C22H22O8|alcohols,ethers,esters,aromatics,rings,chiral||
+riboflavin|CC1=CC2=C(C=C1C)N(C[C@H](O)[C@H](O)[C@H](O)CO)C1=NC(=O)NC(=O)C1=N2|b9fyex1xvopjv|C17H20N4O6|alcohols,aromatics,rings,chiral|vitamin b2|
+retinol|CC1=C(/C=C/C(C)=C/C=C/C(C)=C/CO)C(C)(C)CCC1|1gqij9a1iuqsm4|C20H30O|alcohols,alkenes,rings|vitamin a|
+cholecalciferol|C=C1CC[C@H](O)C/C1=C/C=C1\CCC[C@@]2(C)[C@@H]1CC[C@@H]2[C@H](C)CCCC(C)C|1ug1nol1os66tj|C27H44O|alcohols,alkenes,rings,chiral|vitamin d3|
+alpha-tocopherol|CC1=C(C)C2=C(CC[C@@](C)(CCC[C@H](C)CCC[C@H](C)CCCC(C)C)O2)C(C)=C1O|nohkd2tqny2c|C29H50O2|ethers,aromatics,rings,chiral|tocopherol;vitamin e|
+menadione|CC1=CC(=O)C2=CC=CC=C2C1=O|wp1fyvyup27p|C11H8O2|ketones,alkenes,aromatics,rings|vitamin k3|
+coenzyme q10|COC1=C(OC)C(=O)C(C/C=C(\C)CC/C=C(\C)CC/C=C(\C)CC/C=C(\C)CC/C=C(\C)CC/C=C(\C)CC/C=C(\C)CC/C=C(\C)CC/C=C(\C)CCC=C(C)C)=C(C)C1=O|hi1ho61ac98vo|C59H90O4|ketones,ethers,alkenes,rings|ubiquinone;ubidecarenone|
+beta-carotene|CC1=C(/C=C/C(C)=C/C=C/C(C)=C/C=C/C=C(C)/C=C/C=C(C)/C=C/C2=C(C)CCCC2(C)C)C(C)(C)CCC1|1wa9y2wcl6n1m|C40H56|alkenes,rings||
+lycopene|CC(C)=CCC/C(C)=C/C=C/C(C)=C/C=C/C(C)=C/C=C/C=C(C)/C=C/C=C(C)/C=C/C=C(\C)CCC=C(C)C|p3sfon1d2cdc5|C40H56|alkenes||
+stearic acid|CCCCCCCCCCCCCCCCCC(=O)O|16b0bqe11ksfs4|C18H36O2|acids|octadecanoic acid|
+oleic acid|CCCCCCCC/C=C\CCCCCCCC(=O)O|2hdx4eu9wafg|C18H34O2|acids,alkenes||
+linoleic acid|CCCCC/C=C\C/C=C\CCCCCCCC(=O)O|94y2k213080uo|C18H32O2|acids,alkenes||
+arachidonic acid|CCCCC/C=C\C/C=C\C/C=C\C/C=C\CCCC(=O)O|1ejd3naxe8oj8|C20H32O2|acids,alkenes||
+capsaicin|COC1=C(O)C=CC(CNC(=O)CCCC/C=C/C(C)C)=C1|11ae89z17lqvwl|C18H27NO3|ethers,amides,alkenes,aromatics,rings||
+curcumin|COC1=C(O)C=CC(/C=C/C(=O)CC(=O)/C=C/C2=CC(OC)=C(O)C=C2)=C1|ve88y23guj60|C21H20O6|ketones,ethers,alkenes,aromatics,rings||
+resveratrol|OC1=CC=C(/C=C/C2=CC(O)=CC(O)=C2)C=C1|1fb6md215wyeqc|C14H12O3|alkenes,aromatics,rings||
+quercetin|O=C1C(O)=C(C2=CC(O)=C(O)C=C2)OC2=CC(O)=CC(O)=C12|wdxy891kvjrzf|C15H10O7|aromatics,rings||
+catechin|OC1=CC(O)=C2C[C@H](O)[C@@H](C3=CC(O)=C(O)C=C3)OC2=C1|1u0nnj117dmgxr|C15H14O6|alcohols,ethers,aromatics,rings,chiral||
+epigallocatechin gallate|O=C(O[C@H]1CC2=C(O)C=C(O)C=C2O[C@@H]1C1=CC(O)=C(O)C(O)=C1)C1=CC(O)=C(O)C(O)=C1|y6kfmk1gv3py6|C22H18O11|ethers,esters,aromatics,rings,chiral|EGCG|
+piperine|O=C(/C=C/C=C/C1=CC2=C(C=C1)OCO2)N1CCCCC1|oq15nf1xco3eh|C17H19NO3|ethers,amides,alkenes,aromatics,rings||
+sulforaphane|CS(=O)CCCCN=C=S|qbubv14z9dv3|C6H11NOS2|chiral||
+salicin|OCC1=CC=CC=C1O[C@@H]1O[C@H](CO)[C@@H](O)[C@H](O)[C@H]1O|xz5oqe18h7i7o|C13H18O7|alcohols,ethers,aromatics,rings,chiral||
+isatin|O=C1NC2=CC=CC=C2C1=O|gwt2hx1opw8uf|C8H5NO2|ketones,amides,aromatics,rings||
+glyphosate|O=C(O)CNCP(=O)(O)O|194nmy3baboy1|C3H8NO5P|acids,amines||
+atrazine|CCNC1=NC(NC(C)C)=NC(Cl)=N1|vkt1ih8sfaq3|C8H14ClN5|amines,halides,aromatics,rings||
+malathion|CCOC(=O)CC(SP(=S)(OC)OC)C(=O)OCC|1zroe1zip4nv|C10H19O6PS2|ethers,esters,chiral||
+parathion|CCOP(=S)(OCC)OC1=CC=C([N+](=O)[O-])C=C1|ec56m2ox1yxk|C10H14NO5PS|aromatics,rings||
+permethrin|CC1(C)C(C=C(Cl)Cl)C1C(=O)OCC1=CC(OC2=CC=CC=C2)=CC=C1|1f7sqfm1m52je8|C21H20Cl2O3|ethers,esters,halides,alkenes,aromatics,rings,chiral||
+ddt|ClC1=CC=C(C(C2=CC=C(Cl)C=C2)C(Cl)(Cl)Cl)C=C1|tkcyf9nab3tz|C14H9Cl5|halides,aromatics,rings|dichlorodiphenyltrichloroethane|
+tnt|CC1=C([N+](=O)[O-])C=C([N+](=O)[O-])C=C1[N+](=O)[O-]|suorjw9jx7j2|C7H5N3O6|aromatics,rings|trinitrotoluene;2,4,6-trinitrotoluene|
+rdx|O=[N+]([O-])N1CN([N+](=O)[O-])CN([N+](=O)[O-])C1|1d11qz2by56ss|C3H6N6O6|rings|cyclonite;hexogen|
+petn|O=[N+]([O-])OCC(CO[N+](=O)[O-])(CO[N+](=O)[O-])CO[N+](=O)[O-]|163wg8r1vuoa8p|C5H8N4O12||pentaerythritol tetranitrate|
+1,4-dioxane|C1COCCO1|3o9ah1az6uj|C4H8O2|ethers,rings|dioxane|
+pyrene|C1=CC2=CC=C3C=CC=C4C=CC(=C1)C2=C43|2x0rzac63xtw|C16H10|aromatics,rings||
+benzothiazole|C1=CC=C2SC=NC2=C1|ddurgtksrskv|C7H5NS|aromatics,rings||
+1,2,4-triazole|C1=NC=NN1|inqyrpborbhj|C2H3N3|aromatics,rings|triazole|
+tetrazole|C1=NN=NN1|1u8o19t1nodyxf|CH2N4|aromatics,rings||
+melamine|NC1=NC(N)=NC(N)=N1|fyoiok14rg7hy|C3H6N6|amines,aromatics,rings||
+hydrazine|NN|1m8b3pm1dqolbc|H4N2|||
+hydrogen peroxide|OO|yy3c5m1rtf4bs|H2O2|||
+phosphoric acid|O=P(O)(O)O|e6ppzi7sdr1o|H3O4P|||
+sodium chloride|[Cl-].[Na+]|xrvw91ua98pz|ClNa|halides|salt;table salt|
+sodium bicarbonate|O=C([O-])O.[Na+]|dujo0cnvi7ny|CHNaO3|acids|sodium hydrogen carbonate;baking soda|
+butylated hydroxytoluene|CC1=CC(C(C)(C)C)=C(O)C(C(C)(C)C)=C1|ukrzbv1ztgc9|C15H24O|aromatics,rings|BHT|
+dabco|C1CN2CCN1CC2|wlrrqgu23ymi|C6H12N2|amines,rings,chiral|1,4-diazabicyclo[2.2.2]octane|
+dbu|C1CCC2=NCCCN2CC1|g7qcel1be897z|C9H16N2|amines,rings|1,8-diazabicyclo[5.4.0]undec-7-ene|
+dmap|CN(C)C1=CC=NC=C1|1xxcfk9qs5417|C7H10N2|amines,aromatics,rings|4-dimethylaminopyridine|
+edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|ethylenediaminetetraacetic acid|`;
   const MOL_LIBRARY = MOL_LIBRARY_RAW.split('\n').map(line => {
     const [n, s, k, f, t, a, cas] = line.split('|');
     return { name: n, smiles: s, key: k, formula: f,
