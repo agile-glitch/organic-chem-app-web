@@ -662,9 +662,10 @@
         if (typed) typed.delete(); if (drawn) drawn.delete();
       }
       if (!base) { const ref = R.get_mol(mb); if (!ref) return; want = ref.get_smiles(); ref.delete(); }
-      /* RDKit's own layouts, plain then CoordGen (as the Molecule tab tries them): the first that keeps the molecule */
+      /* RDKit's own layouts, CoordGen first then the plain one: for a big ring the plain layout is a near-perfect circle,
+         CoordGen's the elongated shape the Molecule tab shows. The first that keeps the molecule is used. */
       let mb2 = null;
-      for (const coordgen of [false, true]) {
+      for (const coordgen of [true, false]) {
         const M = base ? R.get_mol(base) : R.get_mol(mb);
         if (!M) continue;
         M.set_new_coords(coordgen); M.normalize_depiction(0, -1);
