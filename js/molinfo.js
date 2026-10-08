@@ -64,7 +64,8 @@
          configuration); a view listing open stereo from another source (the 3D engine) should drop them too.
      record.bonds[k].rotation = {free, text} (textbook), .rotatable = {yes, reason, code} (RDKit strict descriptor),
          .conjugated (textbook: carbon radicals count) and .rdkitConjugated, .resonance (no single average enthalpy).
-     atomRows(record, i, geo|null), bondRows(record, k, geo|null) → [{key, label, value, kind, note?, main?}]
+     atomRows(record, i, geo|null, angleGeo?, in2d?), bondRows(record, k, geo|null, angleGeo?, in2d?) → [{key, label, value, kind, note?, main?}]
+       (bondRows also gives the bond's angles from angleGeo when only the 2D drawing is shown, so geo stays null there)
          main: true marks the ~10 rows for a compact hover card.
      moleculeSections(record, geo|null, extra?) → [{title, rows}]
          extra = {names: names(), conformer: {energy, relEnergy, source}, component: {index, count, formula}, combined}
@@ -2417,7 +2418,7 @@
       : list.slice(0, -1).join('-, ') + '- and ' + list[list.length - 1] + '-membered') + ')';
   };
 
-  function atomRows(record, i, geo) {
+  function atomRows(record, i, geo, angleGeo, in2d) {
     const a = record.atoms[i], rows = [];
     if (!a) return rows;
     const e = EL(a.z);
@@ -2515,15 +2516,18 @@
       }
     }
     if (a.neighbours.length >= 2) {
-      if (!geo) { /* no 3D model shown */ }
-      else if (!geo.optimised) rows.push(row('angles', 'Bond angles (this conformer)', TEXT.notOptimised, '3d', TEXT.notOptimisedBanner, true));
+      const ag = geo || angleGeo;                      // angleGeo: a 3D model's values offered while only the 2D drawing is shown
+      const g3note = (in2d ? 'measured on the 3D conformer (lowest energy found), not on the 2D drawing: ' : '') + TEXT.geometry3d;
+      if (!ag) { /* no 3D model shown */ }
+      else if (!ag.optimised) rows.push(row('angles', 'Bond angles (this conformer)', TEXT.notOptimised, '3d', TEXT.notOptimisedBanner, true));
       else {
+        const geo = ag;
         const fmt = x => `${atomName(record, x.i)}–${atomName(record, i)}–${atomName(record, x.j)} ${x.deg.toFixed(1)}°`;
         const L = geo.angles[i], bad = L.filter(x => x.unreliable), good = L.filter(x => !x.unreliable);
         // angles that involve an atom of a flagged bond say so (all of them: once, at the end; some: listed apart)
         const v = !bad.length ? L.map(fmt).join(', ') : !good.length ? L.map(fmt).join(', ') + ' ' + TEXT.unreliableHere
           : good.map(fmt).join(', ') + '; ' + TEXT.unreliableHere.slice(1, -1) + ': ' + bad.map(fmt).join(', ');
-        rows.push(row('angles', 'Bond angles (this conformer)', v, '3d', bad.length ? TEXT.geometry3d + '; ' + TEXT.unreliableNote : TEXT.geometry3d, true));
+        rows.push(row('angles', 'Bond angles (this conformer)', v, '3d', bad.length ? g3note + '; ' + TEXT.unreliableNote : g3note, true));
       }
     }
     return rows;
@@ -2557,7 +2561,7 @@
     return marks;
   }
 
-  function bondRows(record, k, geo) {
+  function bondRows(record, k, geo, angleGeo, in2d) {
     const b = record.bonds[k], rows = [];
     if (!b) return rows;
     const A = record.atoms[b.a], B = record.atoms[b.b], nm = `${atomName(record, b.a)}–${atomName(record, b.b)}`;
@@ -2599,6 +2603,22 @@
           rows.push(row('dihedral', 'Dihedral (this conformer)', `${num(d.deg, 1)}° ${d.atoms.map(i => atomName(record, i)).join('–')}: ${d.name}` + (d.common ? `; ${d.common}` : '') +
             (d.unreliable ? ' ' + TEXT.unreliableHere : ''), '3d', 'IUPAC sign convention; names after Klyne & Prelog; ' + TEXT.dihedral + (d.unreliable ? '; ' + TEXT.unreliableNote : ''), true));
         }
+      }
+    }
+    /* the angles this bond makes with the bonds next to it: at each end, the angle to every other bond of that atom.
+       angleGeo: a 3D model's values offered while the 2D drawing is shown (geo is null there); in2d says the note so */
+    const ag = geo || angleGeo;
+    if (ag && A.neighbours.length + B.neighbours.length > 2) {
+      const note = (in2d ? 'measured on the 3D conformer (lowest energy found), not on the 2D drawing: ' : '') + TEXT.geometry3d;
+      if (!ag.optimised) rows.push(row('angles', 'Bond angles (this conformer)', TEXT.notOptimised, '3d', TEXT.notOptimisedBanner, true));
+      else {
+        const at = (c, other) => (ag.angles[c] || []).filter(t => t.i === other || t.j === other)
+          .map(t => ({ t, text: `${atomName(record, t.i)}–${atomName(record, c)}–${atomName(record, t.j)} ${t.deg.toFixed(1)}°` }));
+        const L = at(b.a, b.b).concat(at(b.b, b.a)), bad = L.filter(x => x.t.unreliable), good = L.filter(x => !x.t.unreliable);
+        const join = l => l.map(x => x.text).join(', ');
+        const v = !bad.length ? join(L) : !good.length ? join(L) + ' ' + TEXT.unreliableHere
+          : join(good) + '; ' + TEXT.unreliableHere.slice(1, -1) + ': ' + join(bad);
+        if (L.length) rows.push(row('angles', 'Bond angles (this conformer)', v, '3d', bad.length ? note + '; ' + TEXT.unreliableNote : note, true));
       }
     }
     if (b.rotation) rows.push(row('rotation', 'Rotation about this bond', b.rotation.text, 'exact', TEXT.rotation, true));

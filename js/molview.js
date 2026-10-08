@@ -61,6 +61,7 @@
   };
   const LABEL_TEXT = { none: '', element: 'element', index: 'atom number', cip: 'R/S', hybridization: 'hybridization',
     formal: 'formal charge', partial: 'Gasteiger–Marsili partial charge (model)', oxidation: 'oxidation state', lonepairs: 'lone pairs',
+    angles: 'bond angles — the angle between two bonds at an atom, measured on the 3D model (lowest-energy conformer found, MMFF94); in the 2D drawing each number sits in the wedge between the two bonds, in 3D it is drawn on the model',
     electrons: 'electrons — each lone pair as two dots (the bonds are the bonding pairs)',
     pka: 'pKa of each acidic site and pKaH of each basic site, in THIS molecule',
     steric: 'steric crowding at the reacting atom of each fragment, in THIS molecule (open / moderately hindered / hindered / very hindered)',
@@ -947,6 +948,7 @@
     if (S.view === '3d') setStatus(B.statusText, !final);
     displayConformer(cs, first);
     renderAll();
+    if (S.labels === 'angles') renderLabels();       // the angles are measured on this conformer
   }
 
   function currentConf(cs) {
@@ -1101,7 +1103,17 @@
     const cs = S.cs, r = cs && cs.record;
     if (!r || !hit) return [];
     const geo = S.view === '3d' ? cs.geo : null;
-    let rows = hit.type === 'atom' ? MI.atomRows(r, hit.index, geo) : MI.bondRows(r, hit.index, geo);
+    const in2d = S.view !== '3d';
+    if (in2d) modelFor2D(cs);                       // the angles come from the 3D model: have it built, once
+    let rows = hit.type === 'atom' ? MI.atomRows(r, hit.index, geo, in2d ? cs.geo : null, in2d) : MI.bondRows(r, hit.index, geo, in2d ? cs.geo : null, in2d);
+    if (in2d && !cs.geo) {
+      const bd = r.bonds[hit.index], B3 = cs.b3d;
+      const wants = hit.type === 'atom' ? r.atoms[hit.index].neighbours.length >= 2 : r.atoms[bd.a].neighbours.length + r.atoms[bd.b].neighbours.length > 2;
+      if (wants) {
+        const why = B3 && B3.error ? 'no 3D model: ' + B3.error : B3 && !B3.done ? 'measuring on the 3D model, which is being built…' : 'needs the 3D model (switch to 3D)';
+        rows.splice(Math.min(rows.length, hit.type === 'atom' ? 6 : 3), 0, { key: 'angles', label: 'Bond angles (this conformer)', value: why, kind: 'convention', note: 'bond angles are measured on the 3D model, not on the 2D drawing', main: true });
+      }
+    }
     if (!full) rows = rows.filter(x => x.main);
     const c = S.view === '3d' ? currentConf(cs) : null;
     rows = rows.map(x => geometrySource(x, c));
@@ -1146,7 +1158,7 @@
   function onHover(hit, x, y, from) {
     if (from !== S.view) return;
     if (!hit || !S.cs || !S.cs.record) { hideCard(); return; }
-    const key = hit.type + hit.index + '|' + S.view + '|' + (S.view === '3d' ? (S.cs.b3d && S.cs.b3d.cur) : '');
+    const key = hit.type + hit.index + '|' + S.view + '|' + (S.view === '3d' ? (S.cs.b3d && S.cs.b3d.cur) : S.cs.geo ? 'g' : '');
     if (key !== cardKey) {
       cardKey = key;
       const rows = rowsFor(hit, false);
@@ -1243,10 +1255,38 @@
     }
     return out;
   }
+  /* the 3D model the bond angles are measured on, when only the 2D drawing is shown: build it (once) and take its values */
+  function modelFor2D(cs) {
+    if (!cs || !cs.record) return;
+    const B = ensureB3D(cs);
+    if (!cs.geo && currentConf(cs)) cs.geo = geometryOf(cs, currentConf(cs));
+    if (!cs.geo && B.done && !B.job && !B.error && !B.confs.length) startBuild(cs, null);
+  }
+  const angleText = (c, i, ctr, j) => { const m = measureText({ atoms: [i, ctr, j] }, c); return m.unreliable ? '' : (/^[\d.]+°/.exec(m.label) || [''])[0]; };
+  /* every pair of bonds at each atom: [{a: centre, i, j}] among the atoms shown (hydrogens only when they are) */
+  function anglePairs(show) {
+    const r = S.cs.record, out = [];
+    for (const at of r.atoms) {
+      if (!show(at.index)) continue;
+      const nb = at.neighbours.map(n => n.atom).filter(show);
+      for (let x = 0; x < nb.length; x++) for (let y = x + 1; y < nb.length; y++) out.push({ a: at.index, i: nb[x], j: nb[y] });
+    }
+    return out;
+  }
   function applyLabels2D() {
     if (!v2 || !v2info || !S.cs || !S.cs.record) return;
     const r = S.cs.record;
     v2.setElectrons(S.labels === 'electrons' ? lonePairCounts(r).slice(0, v2info.N) : null);
+    if (S.labels === 'angles') {
+      v2.setAnnotations(null);
+      modelFor2D(S.cs);
+      const c = currentConf(S.cs);
+      if (!c || !geometryOK(S.cs, c)) { v2.setAngleNotes(null); return; }
+      const items = [];
+      for (const p of anglePairs(i => i < v2info.N)) { const text = angleText(c, p.i, p.a, p.j); if (text) items.push({ a: p.a, i: p.i, j: p.j, text }); }
+      v2.setAngleNotes(items);
+      return;
+    }
     if (S.labels === 'none' || S.labels === 'electrons') { v2.setAnnotations(null); return; }
     const all = S.labels === 'pka' ? pkaLabels(S.cs) : S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft' ? effectLabels(S.cs, S.labels) : MI.labelsFor(r, S.labels);
     v2.setAnnotations(all.slice(0, v2info.N));
@@ -1255,10 +1295,10 @@
     if (!v3 || v3cs !== S.cs || !S.cs) return;
     const r = S.cs.record;
     v3.setElectrons(S.labels === 'electrons' ? lonePairCounts(r) : null);
-    v3.setLabels(S.labels === 'none' || S.labels === 'electrons' ? null : S.labels === 'pka' ? pkaLabels(S.cs)
+    v3.setLabels(S.labels === 'none' || S.labels === 'electrons' || S.labels === 'angles' ? null : S.labels === 'pka' ? pkaLabels(S.cs)
       : S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft' ? effectLabels(S.cs, S.labels) : MI.labelsFor(r, S.labels));
   }
-  function renderLabels() { applyLabels2D(); applyLabels3D(); renderFoot(); }
+  function renderLabels() { applyLabels2D(); applyLabels3D(); applyMeasures(); renderFoot(); }
 
   /* ================================================================ surface and legend */
   function potentialCharges(r) {
@@ -1352,7 +1392,20 @@
   function applyMeasures() {
     if (!v3 || v3cs !== S.cs) return;
     const c = currentConf(S.cs);
-    v3.setMeasurements(c ? S.measures.map(m => ({ atoms: m.atoms, text: measureText(m, c).label })) : null);
+    const mine = S.measures.map(m => ({ atoms: m.atoms, text: measureText(m, c).label }));
+    // Labels ▸ bond angles: every angle between two bonds at an atom, drawn as a measurement (hydrogens only when shown)
+    const angles = [];
+    if (c && S.labels === 'angles' && geometryOK(S.cs, c)) {
+      const H = S.cs.record.atoms, show = i => S.showH3d || !H[i].isH;
+      const have = new Set(S.measures.filter(m => m.atoms.length === 3).map(m => [m.atoms[0], m.atoms[1], m.atoms[2]].join()).concat(
+        S.measures.filter(m => m.atoms.length === 3).map(m => [m.atoms[2], m.atoms[1], m.atoms[0]].join())));
+      for (const p of anglePairs(show)) {
+        if (have.has([p.i, p.a, p.j].join())) continue;
+        const text = angleText(c, p.i, p.a, p.j);
+        if (text) angles.push({ atoms: [p.i, p.a, p.j], text });
+      }
+    }
+    v3.setMeasurements(c ? mine.concat(angles) : null);
   }
   function addPick(i) {
     if (S.picks[S.picks.length - 1] === i) return;
@@ -2138,7 +2191,8 @@
     try {
       // atom labels that print a model's values (partial charges) carry the model's name in the image
       const cap2 = S.labels === 'partial' ? { caption: 'Atom labels: ' + MI.TEXT.gasteiger }
-        : S.labels === 'electrons' ? { caption: 'Dots: lone pairs, ' + MI.TEXT.asDrawn } : {};
+        : S.labels === 'electrons' ? { caption: 'Dots: lone pairs, ' + MI.TEXT.asDrawn }
+        : S.labels === 'angles' ? { caption: 'Bond angles: measured on the 3D conformer (lowest energy found, MMFF94), not on this drawing' } : {};
       if (transparent) cap2.transparent = true;
       if (fmt === 'png2d') { const b = await v2.exportPNG(2, cap2); download(base + suffix + '.png', bw ? await greyPNG(b) : b); }
       else if (fmt === 'svg') { const t = v2.exportSVG(cap2); download(base + suffix + '.svg', new Blob([bw ? greySVG(t) : t], { type: 'image/svg+xml' })); }
@@ -2154,6 +2208,7 @@
         // atom labels that print a model's values carry the model's name too
         if (S.labels === 'partial') cap.push('Atom labels: ' + MI.TEXT.gasteiger);
         if (S.labels === 'electrons') cap.push('Dots: lone pairs, ' + MI.TEXT.asDrawn);
+        if (S.labels === 'angles') cap.push('Bond angles: measured on the model shown (MMFF94 conformer)');
         if (cap.length) o.caption = cap;
         // in black and white the red/blue potential map becomes shades of grey: the legend words still say which end
         // is which, and the bar's ends are labelled, so the picture stays readable

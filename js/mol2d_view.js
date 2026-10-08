@@ -21,6 +21,10 @@
                                           → {placed, overlapping, hOmitted}: a note with no free spot is left out,
                                           never drawn over anything, and so are notes on H when there are more than
                                           40 heavy atoms; the view says so in its bottom-left corner
+   d.setAngleNotes([{a, i, j, text}] | null)   bond angles: `text` (e.g. "109.5°") inside the wedge between atom a's bonds to
+                                          i and j, in the annotations' style and layer (so it replaces setAnnotations). Only two
+                                          bonds that are neighbours in the drawing have a wedge; others are counted, not drawn
+                                          → {placed, overlapping, nonAdjacent}
    d.highlight('hover'|'select'|'group', {atoms, bonds, color?} | null)   translucent halos under the drawing, one
                                           set per kind; the view sets 'hover' itself unless opts.autoHover === false
    d.setStyle({textbook})  textbook true: all black, heavier lines, regular-weight labels (as printed in textbooks);
@@ -627,10 +631,9 @@
     return { marks, info };
   }
 
-  function placeNotes(scene, texts) {
+  /* what a note must keep clear of: every bond line, every label piece and dot, and the sub/superscript places */
+  function noteObstacles(scene, zoneW = 1.2 * FONT) {
     const { atoms } = scene;
-    const notes = [], info = { placed: 0, overlapping: 0, hOmitted: 0 };
-    if (!texts) return { notes, info };
     const segs = bondSegs(scene);
     const blocks = [], zones = [];
     for (const a of atoms) {
@@ -642,10 +645,18 @@
         for (const p of a.pieces) {
           if (p.size !== FONT) continue;                                 // a line of the label: its symbol or H
           const y0 = p.box.y0 - 0.35 * FONT, y1 = p.box.y1 + 0.35 * FONT;
-          zones.push(boxOf(a.extent.x0 - 1.2 * FONT, y0, a.extent.x0, y1), boxOf(a.extent.x1, y0, a.extent.x1 + 1.2 * FONT, y1));
+          zones.push(boxOf(a.extent.x0 - zoneW, y0, a.extent.x0, y1), boxOf(a.extent.x1, y0, a.extent.x1 + zoneW, y1));
         }
       }
     }
+    return { segs, blocks, zones };
+  }
+
+  function placeNotes(scene, texts) {
+    const { atoms } = scene;
+    const notes = [], info = { placed: 0, overlapping: 0, hOmitted: 0 };
+    if (!texts) return { notes, info };
+    const { segs, blocks, zones } = noteObstacles(scene);
     let heavy = 0;
     for (const a of atoms) if (!isPlainH(a, atoms)) heavy++;
     const skipH = heavy > 40;
@@ -691,6 +702,63 @@
       if (best.hard) { info.overlapping++; return; }                 // nowhere free: left out, not drawn over things
       notes.push({ i, text, x: best.cx - w / 2, base: best.cy + 0.36 * NOTE, box: best.box });
     });
+    info.placed = notes.length;
+    return { notes, info };
+  }
+
+  /* ---- bond angles: each number sits INSIDE the wedge between the two bonds it measures, on the wedge's bisector.
+     items = [{a, i, j, text}]: the angle at atom a between its bonds to i and to j. Only two bonds that are next to
+     each other in the drawing have a wedge of their own (nothing else between them on one side): for an atom with
+     two bonds that is the smaller side. Pairs that are not neighbours in the drawing are counted, not drawn; so is
+     a wedge with no free space (clear of bonds, labels and other numbers). ---- */
+  function placeAngleNotes(scene, items) {
+    const { atoms } = scene;
+    const notes = [], info = { placed: 0, overlapping: 0, hOmitted: 0, nonAdjacent: 0 };
+    if (!items || !items.length) return { notes, info };
+    const { segs, blocks, zones } = noteObstacles(scene, 0.55 * FONT);      // a number inside a wedge is not mistaken for a charge: a narrow keep-out beside labels
+    const h = 0.74 * NOTE, TAU = 2 * Math.PI;
+    const norm = x => ((x % TAU) + TAU) % TAU;
+    for (const it of items) {
+      const a = atoms[it.a];
+      if (!a || it.text == null || it.text === '') continue;
+      const nbs = a.nb.map(({ j }) => ({ j, ang: norm(Math.atan2(atoms[j].Y - a.Y, atoms[j].X - a.X)) }));
+      const u = nbs.find(n => n.j === it.i), v = nbs.find(n => n.j === it.j);
+      if (!u || !v || u === v) { info.nonAdjacent++; continue; }
+      /* the two ways round from u to v; a way is a wedge when no other bond lies inside it */
+      const others = nbs.filter(n => n !== u && n !== v);
+      const wedge = (from, to) => {
+        const span = norm(to.ang - from.ang);
+        return others.some(o => norm(o.ang - from.ang) < span) ? null : { start: from.ang, span };
+      };
+      const w1 = wedge(u, v), w2 = wedge(v, u);
+      const w = w1 && w2 ? (w1.span <= w2.span ? w1 : w2) : (w1 || w2);
+      if (!w) { info.nonAdjacent++; continue; }
+      const text = String(it.text), tw = textWidth(text, NOTE), dir = w.start + w.span / 2;
+      const dx = Math.cos(dir), dy = Math.sin(dir);
+      let r0 = 0.2 * BL;
+      if (a.extent) {
+        const ex = Math.max(Math.abs(a.extent.x0 - a.X), Math.abs(a.extent.x1 - a.X)), ey = Math.max(Math.abs(a.extent.y0 - a.Y), Math.abs(a.extent.y1 - a.Y));
+        const tx = Math.abs(dx) > 1e-6 ? ((dx > 0 ? a.extent.x1 : a.extent.x0) - a.X) / dx : Infinity;
+        const ty = Math.abs(dy) > 1e-6 ? ((dy > 0 ? a.extent.y1 : a.extent.y0) - a.Y) / dy : Infinity;
+        r0 = Math.min(Math.abs(tx), Math.abs(ty), Math.hypot(ex, ey)) + LABEL_GAP + 0.05 * FONT;
+      }
+      let placed = null;
+      for (let ring = 0; ring < 6 && !placed; ring++) {
+        const r = r0 + ring * 0.14 * BL + Math.abs(dx) * tw / 2 + Math.abs(dy) * h / 2;
+        const cx = a.X + dx * r, cy = a.Y + dy * r;
+        const box = boxOf(cx - tw / 2, cy - h / 2, cx + tw / 2, cy + h / 2);
+        let hard = 0;
+        for (const z of zones) if (boxesMeet(box, z)) { hard++; break; }
+        const own = Math.hypot(cx - a.X, cy - a.Y);
+        for (const o of atoms) if (o !== a && Math.hypot(cx - o.X, cy - o.Y) < own / 0.85) { hard++; break; }
+        for (const sg of segs) if (segMeetsBox(sg[0], sg[1], sg[2], sg[3], grow(box, LW))) { hard++; break; }
+        for (const bl of blocks) if (boxesMeet(box, bl)) { hard++; break; }
+        for (const n of notes) if (boxesMeet(grow(box, NOTE_GAP), n.box)) { hard++; break; }
+        if (!hard) placed = { cx, cy, box };
+      }
+      if (!placed) { info.overlapping++; continue; }
+      notes.push({ i: it.a, text, x: placed.cx - tw / 2, base: placed.cy + 0.36 * NOTE, box: placed.box });
+    }
     info.placed = notes.length;
     return { notes, info };
   }
@@ -802,7 +870,7 @@
     svg.append(bg, view, leftOut);
     container.appendChild(svg);
 
-    let scene = null, notesText = null, electronCounts = null;
+    let scene = null, notesText = null, angleItems = null, electronCounts = null;
     const specs = { group: null, select: null, hover: null };
     const layers = {};
     let s = 1, tx = 0, ty = 0, autoFit = true, needFit = true, lastW = 0, lastH = 0;
@@ -1004,7 +1072,7 @@
 
     function setMolecule(mol) {
       specs.group = specs.select = specs.hover = null;
-      notesText = null; electronCounts = null; hoverHit = null;
+      notesText = null; angleItems = null; electronCounts = null; hoverHit = null;
       lastMol = mol;
       scene = mol && Array.isArray(mol.atoms) && mol.atoms.length ? depict(mol, style) : null;
       rebuildLayers();
@@ -1020,7 +1088,7 @@
       scene = depict(lastMol, style);
       applyElectrons();
       rebuildLayers();
-      if (notesText) setAnnotations(notesText);
+      if (notesText) setAnnotations(notesText); else if (angleItems) setAngleNotes(angleItems);
     }
     /* setElectrons(counts | null): counts[i] = how many LONE PAIRS to draw around atom i (the bonds are the bonding
        pairs). Returns {pairs, omitted}: how many were drawn, and how many had no free side. */
@@ -1038,13 +1106,31 @@
       fresh.setAttribute('pointer-events', 'none');
       view.replaceChild(fresh, layers.electrons);
       layers.electrons = fresh;
-      if (notesText) setAnnotations(notesText); else { showNotesLeftOut(); if (autoFit) fit(); }
+      if (notesText) setAnnotations(notesText); else if (angleItems) setAngleNotes(angleItems); else { showNotesLeftOut(); if (autoFit) fit(); }
       return Object.assign({}, info);
     }
     function setAnnotations(texts) {
       notesText = Array.isArray(texts) ? texts.slice() : null;
+      angleItems = null;
       if (!scene) return { placed: 0, overlapping: 0, hOmitted: 0 };
       const r = placeNotes(scene, notesText);
+      scene.notes = r.notes; scene.notesInfo = r.info;
+      const fresh = drawNotes(scene.notes);
+      fresh.setAttribute('pointer-events', 'none');
+      view.replaceChild(fresh, layers.notes);
+      layers.notes = fresh;
+      showNotesLeftOut();
+      if (autoFit) fit();
+      return Object.assign({}, r.info);
+    }
+    /* setAngleNotes([{a, i, j, text}] | null): bond angles, one number in the wedge between two bonds of atom a (see
+       placeAngleNotes). They share the annotations' layer, so setAnnotations and this replace each other.
+       Returns {placed, overlapping, nonAdjacent}. */
+    function setAngleNotes(items) {
+      angleItems = Array.isArray(items) && items.length ? items.slice() : null;
+      if (angleItems) notesText = null;
+      if (!scene) return { placed: 0, overlapping: 0, nonAdjacent: 0 };
+      const r = placeAngleNotes(scene, angleItems);
       scene.notes = r.notes; scene.notesInfo = r.info;
       const fresh = drawNotes(scene.notes);
       fresh.setAttribute('pointer-events', 'none');
@@ -1060,6 +1146,7 @@
       const inf = scene && scene.notesInfo, parts = [];
       if (inf && inf.overlapping) parts.push(`${inf.overlapping} label${inf.overlapping === 1 ? '' : 's'} left out where there is no free space`);
       if (inf && inf.hOmitted) parts.push('H labels left out (more than 40 heavy atoms)');
+      if (inf && inf.nonAdjacent) parts.push(`${inf.nonAdjacent} angle${inf.nonAdjacent === 1 ? '' : 's'} between bonds that are not neighbours in the drawing not shown`);
       const e = scene && scene.electronsInfo;
       if (e && e.omitted) parts.push(`${e.omitted} lone pair${e.omitted === 1 ? '' : 's'} left out where there is no free space`);
       leftOut.textContent = parts.length ? parts.join(' · ') + ' — hover an atom for its values' : '';
@@ -1079,6 +1166,7 @@
       const parts = [];
       if (inf && inf.overlapping) parts.push(`${inf.overlapping} label${inf.overlapping === 1 ? '' : 's'} left out where there is no free space`);
       if (inf && inf.hOmitted) parts.push('H labels left out (more than 40 heavy atoms)');
+      if (inf && inf.nonAdjacent) parts.push(`${inf.nonAdjacent} angle${inf.nonAdjacent === 1 ? '' : 's'} between bonds that are not neighbours in the drawing not shown`);
       if (scene && scene.electronsInfo && scene.electronsInfo.omitted) parts.push(`${scene.electronsInfo.omitted} lone pair${scene.electronsInfo.omitted === 1 ? '' : 's'} left out where there is no free space`);
       return parts.length ? 'Not every atom is labelled: ' + parts.join('; ') + '.' : '';
     }
@@ -1175,7 +1263,7 @@
     }
 
     apply();
-    return { setMolecule, setStyle, setAnnotations, setElectrons, highlight, fit, resize, exportSVG, exportPNG, dispose, clientPosition, element: svg };
+    return { setMolecule, setStyle, setAnnotations, setAngleNotes, setElectrons, highlight, fit, resize, exportSVG, exportPNG, dispose, clientPosition, element: svg };
   }
 
   window.Mol2DView = { create };
