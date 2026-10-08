@@ -203,12 +203,30 @@
 
   const esc = t => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 
+  /* keep a pop-up list on the screen: its height is limited to the room the window has on the side it opens to, and when
+     the room above the reagent box (the list opens upward there) is smaller than the room below it, it opens downward
+     instead. Refitted whenever rows are added, because the list is filled in after it opens. */
+  function fitMenu(menu, box) {
+    const fit = () => {
+      if (!menu.isConnected) return;
+      const r = box.getBoundingClientRect(), roomUp = r.top - 12, roomDown = window.innerHeight - r.bottom - 12;
+      const wantsUp = box.id === 'rxn-above';
+      const want = Math.min(menu.scrollHeight + 10, window.innerHeight * 0.6);
+      const up = wantsUp ? !(roomUp < want && roomDown > roomUp) : (roomDown < want && roomUp > roomDown);
+      menu.style.top = up ? 'auto' : '100%'; menu.style.bottom = up ? '100%' : 'auto';
+      menu.style.marginTop = up ? '0' : '6px'; menu.style.marginBottom = up ? '6px' : '0';
+      menu.style.maxHeight = Math.max(120, Math.min(window.innerHeight * 0.6, up ? roomUp : roomDown)) + 'px';
+    };
+    fit();
+    new MutationObserver(fit).observe(menu, { childList: true });
+  }
   /* a pop-up list under a box: build(add, close) fills it, add(cssClass, html, onClick) adds one row */
   function popMenu(box, build) {
     const menu = document.createElement('div');
     menu.className = 'rxn-menu';
     menu.innerHTML = '<div class="rxn-menu-note">Looking through the reaction rules…</div>';
     box.appendChild(menu);
+    fitMenu(menu, box);
     const close = () => { menu.remove(); document.removeEventListener('mousedown', outside, true); box._menu = null; };
     const outside = e => { if (!menu.contains(e.target) && !box.contains(e.target)) close(); };
     document.addEventListener('mousedown', outside, true);
@@ -433,6 +451,7 @@
       menu.className = 'rxn-menu';
       menu.innerHTML = '<div class="rxn-menu-note">Finding the conditions…</div>';
       box.appendChild(menu);
+      fitMenu(menu, box);
       document.addEventListener('mousedown', outside, true);
       const opts = optionsFor ? await optionsFor() : { matched: [], free: [], other: [] };
       if (!menu) return;

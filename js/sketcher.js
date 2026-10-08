@@ -82,6 +82,9 @@
   function undo() { if (!undoStack.length) return; redoStack.push(JSON.stringify(g)); g = JSON.parse(undoStack.pop()); selected.clear(); render(); }
   function redo() { if (!redoStack.length) return; undoStack.push(JSON.stringify(g)); g = JSON.parse(redoStack.pop()); selected.clear(); render(); }
 
+  /* an atom placed with the any-atom (periodic table) tool is drawn as just its symbol: hideH keeps the implied H out
+     of the label (the chemistry still counts them). The C N O … buttons keep their implied H. */
+  function addElAtom(element, x, y) { const a = addAtom(element, x, y); if (tool.any) a.hideH = true; return a; }
   function addAtom(element, x, y) { const a = { id: g.nextId++, element, charge: 0, x, y }; g.atoms.push(a); return a; }
   /* a new end atom for a bond from `from`: an atom already at that spot is reused, never a second one stacked on it
      (dragging a bond along a ring bond and letting go just short of the neighbour snaps exactly onto the neighbour) */
@@ -370,6 +373,7 @@
      character, 3 px padding (drawAtom) */
   function onHydrogenOf(a, x) {
     if (!labelled(a) || a.element === 'H') return false;
+    if (a.hideH) return false;
     let h = 0; try { h = C.implicitH(g, a); } catch (e) { h = 0; }
     if (!h) return false;
     const text = a.element + 'H' + (h > 1 ? h : '') + (a.charge ? chargeText(a) : '') + (a.radical ? '•' : '');
@@ -381,7 +385,7 @@
     if (selected.has(a.id)) gEl.appendChild(el('circle', { class: 'sel', cx: a.x, cy: a.y, r: 13 }));
     if (hover.atom === a && !labelled(a)) gEl.appendChild(el('circle', { class: 'atom-hover', cx: a.x, cy: a.y, r: 7 }));
     if (!labelled(a)) return gEl;
-    const h = a.element === 'H' ? 0 : C.implicitH(g, a);
+    const h = a.element === 'H' || a.hideH ? 0 : C.implicitH(g, a);
     const text = a.element + (h ? 'H' : '') + (h > 1 ? h : '') + (a.charge ? chargeText(a) : '') + (a.radical ? '•' : '');
     const w = 10 * text.length + 6;
     gEl.appendChild(el('rect', { class: 'label-bg', x: a.x - w / 2, y: a.y - 11, width: w, height: 22, rx: 3 }));
@@ -507,7 +511,7 @@
     { id: 'ring:5', title: 'Cyclopentane', html: poly(5) }, { id: 'ring:6', title: 'Cyclohexane', html: poly(6) },
     { id: 'ring:7', title: 'Cycloheptane', html: poly(7) }, { id: 'ring:8', title: 'Cyclooctane', html: poly(8) },
     { id: 'tpl', title: 'Templates: common ring systems and molecules to paste', html: ico('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>') },
-    { id: 'erase', title: 'Eraser: an atom removes it with its H (the whole OH on the O); the H of a label (the H in OH) removes that H as H⁺, leaving O⁻; a bond steps down one order per click (≡ → = → – → gone)', html: ico('<path d="M4 15l8-8 7 7-4 4H9z"/><path d="M9 18l-2-2"/>') },
+    { id: 'erase', title: 'Eraser: an atom removes it with its H (the whole OH on the O); the H of a label (the H in OH) removes that H as H⁺, leaving O⁻; a bond steps down one order per click (≡ → = → – → gone)', html: ico('<g transform="rotate(-45 12 11)"><rect x="4" y="7.5" width="16" height="7" rx="1.5"/><path d="M12 7.5v7"/></g><path d="M12 20.5h9"/>') },
   ];
   grid.innerHTML = TOOLS.map(t => `<button class="tool" data-id="${t.id}" title="${t.title}">${t.html}</button>`).join('');
 
@@ -538,14 +542,87 @@
     ['Steroid nucleus', 'C1CCC2C(C1)CCC1C2CCC2CCCC12'], ['Toluene', 'Cc1ccccc1'], ['Phenol', 'Oc1ccccc1'], ['Aniline', 'Nc1ccccc1'],
     ['Benzoic acid', 'OC(=O)c1ccccc1'], ['Acetic acid', 'CC(=O)O'], ['Acetone', 'CC(C)=O'], ['Ethyl acetate', 'CCOC(C)=O'],
     ['Urea', 'NC(N)=O'], ['Glycine', 'NCC(=O)O'], ['Alanine', 'CC(N)C(=O)O'],
+    // rings and ring systems
+    ['Cyclopropane', 'C1CC1'], ['Cyclobutane', 'C1CCC1'], ['Cyclopentane', 'C1CCCC1'], ['Cyclohexane', 'C1CCCCC1'], ['Cycloheptane', 'C1CCCCCC1'],
+    ['Cyclooctane', 'C1CCCCCCC1'], ['Cyclopentene', 'C1=CCCC1'], ['1,3-Cyclohexadiene', 'C1=CC=CCC1'], ['Cyclooctatetraene', 'C1=CC=CC=CC=C1'],
+    ['Benzene', 'c1ccccc1'], ['Oxirane (epoxide)', 'C1CO1'], ['Aziridine', 'C1CN1'], ['Oxetane', 'C1COC1'], ['Azetidine', 'C1CNC1'],
+    ['Tetrahydropyran', 'C1CCOCC1'], ['Thiolane', 'C1CCSC1'], ['Piperazine', 'C1CNCCN1'], ['1,3-Dioxolane', 'C1COCO1'], ['Thiomorpholine', 'C1CSCCN1'],
+    ['Oxazole', 'c1cocn1'], ['Isoxazole', 'c1cnoc1'], ['Thiazole', 'c1cscn1'], ['Pyrazole', 'c1cn[nH]c1'], ['1,2,4-Triazole', 'c1nc[nH]n1'],
+    ['Tetrazole', 'c1nnn[nH]1'], ['Pyrazine', 'c1cnccn1'], ['Pyridazine', 'c1ccnnc1'], ['1,3,5-Triazine', 'c1ncncn1'], ['Benzofuran', 'c1ccc2occc2c1'],
+    ['Benzothiophene', 'c1ccc2sccc2c1'], ['Benzimidazole', 'c1ccc2[nH]cnc2c1'], ['Benzoxazole', 'c1ccc2ocnc2c1'], ['Benzothiazole', 'c1ccc2scnc2c1'],
+    ['Isoquinoline', 'c1ccc2cnccc2c1'], ['Quinoxaline', 'c1ccc2nccnc2c1'], ['Quinazoline', 'c1ccc2ncncc2c1'], ['Indazole', 'c1ccc2[nH]ncc2c1'],
+    ['Carbazole', 'c1ccc2c(c1)[nH]c1ccccc12'], ['Acridine', 'c1ccc2nc3ccccc3cc2c1'], ['Fluorene', 'c1ccc2c(c1)Cc1ccccc12'], ['Pyrene', 'c1cc2ccc3cccc4ccc(c1)c2c34'],
+    ['Indane', 'c1ccc2c(c1)CCC2'], ['Tetralin', 'c1ccc2c(c1)CCCC2'], ['Indene', 'C1=Cc2ccccc2C1'], ['Azulene', 'c1ccc2cccc2cc1'], ['Chromane', 'c1ccc2c(c1)CCCO2'],
+    ['Coumarin', 'O=c1ccc2ccccc2o1'], ['Chromone', 'O=c1ccoc2ccccc12'], ['Flavone', 'O=c1cc(-c2ccccc2)oc2ccccc12'], ['Xanthene', 'c1ccc2c(c1)Cc1ccccc1O2'],
+    ['Dibenzofuran', 'c1ccc2c(c1)oc1ccccc12'], ['Diphenyl ether', 'c1ccc(cc1)Oc1ccccc1'], ['Diphenylmethane', 'c1ccc(cc1)Cc1ccccc1'],
+    ['Triphenylmethane', 'C(c1ccccc1)(c1ccccc1)c1ccccc1'], ['Bicyclo[2.2.2]octane', 'C1CC2CCC1CC2'], ['Bicyclo[1.1.1]pentane', 'C1C2CC1C2'],
+    ['Cubane', 'C12C3C4C1C5C2C3C45'], ['Spiro[4.4]nonane', 'C1CCC2(C1)CCCC2'],
+    // cyclic carbonyls
+    ['Cyclopentanone', 'O=C1CCCC1'], ['Cyclohexanone', 'O=C1CCCCC1'], ['Cyclohexanol', 'OC1CCCCC1'], ['Methylcyclohexane', 'CC1CCCCC1'],
+    ['γ-Butyrolactone', 'O=C1CCCO1'], ['δ-Valerolactone', 'O=C1CCCCO1'], ['ε-Caprolactam', 'O=C1CCCCCN1'], ['ε-Caprolactone', 'O=C1CCCCCO1'],
+    ['β-Lactam', 'O=C1CCN1'], ['Succinimide', 'O=C1CCC(=O)N1'], ['Maleic anhydride', 'O=C1C=CC(=O)O1'], ['Succinic anhydride', 'O=C1CCC(=O)O1'],
+    ['Phthalic anhydride', 'O=C1OC(=O)c2ccccc12'], ['Phthalimide', 'O=C1NC(=O)c2ccccc12'], ['Benzoquinone', 'O=C1C=CC(=O)C=C1'],
+    ['Naphthoquinone', 'O=C1C=CC(=O)c2ccccc12'], ['Anthraquinone', 'O=C1c2ccccc2C(=O)c2ccccc12'], ['Hydantoin', 'O=C1CNC(=O)N1'],
+    ['Barbituric acid', 'O=C1CC(=O)NC(=O)N1'], ['N-Methylpyrrolidone (NMP)', 'CN1CCCC1=O'], ['Pyrrolidone', 'O=C1CCCN1'],
+    // nucleobases and amino acids
+    ['Uracil', 'O=c1cc[nH]c(=O)[nH]1'], ['Thymine', 'Cc1c[nH]c(=O)[nH]c1=O'], ['Cytosine', 'Nc1cc[nH]c(=O)n1'], ['Adenine', 'Nc1ncnc2[nH]cnc12'],
+    ['Guanine', 'Nc1nc2[nH]cnc2c(=O)[nH]1'], ['Caffeine', 'Cn1cnc2c1c(=O)n(C)c(=O)n2C'], ['Proline', 'OC(=O)C1CCCN1'],
+    ['Valine', 'CC(C)C(N)C(=O)O'], ['Leucine', 'CC(C)CC(N)C(=O)O'], ['Isoleucine', 'CCC(C)C(N)C(=O)O'], ['Serine', 'NC(CO)C(=O)O'],
+    ['Threonine', 'CC(O)C(N)C(=O)O'], ['Cysteine', 'NC(CS)C(=O)O'], ['Methionine', 'CSCCC(N)C(=O)O'], ['Phenylalanine', 'NC(Cc1ccccc1)C(=O)O'],
+    ['Tyrosine', 'NC(Cc1ccc(O)cc1)C(=O)O'], ['Tryptophan', 'NC(Cc1c[nH]c2ccccc12)C(=O)O'], ['Histidine', 'NC(Cc1cnc[nH]1)C(=O)O'],
+    ['Aspartic acid', 'NC(CC(=O)O)C(=O)O'], ['Glutamic acid', 'NC(CCC(=O)O)C(=O)O'], ['Asparagine', 'NC(CC(N)=O)C(=O)O'],
+    ['Glutamine', 'NC(CCC(N)=O)C(=O)O'], ['Lysine', 'NCCCCC(N)C(=O)O'], ['Arginine', 'NC(N)=NCCCC(N)C(=O)O'],
+    // benzene derivatives
+    ['Ethylbenzene', 'CCc1ccccc1'], ['Styrene', 'C=Cc1ccccc1'], ['Cumene', 'CC(C)c1ccccc1'], ['o-Xylene', 'Cc1ccccc1C'], ['m-Xylene', 'Cc1cccc(C)c1'],
+    ['p-Xylene', 'Cc1ccc(C)cc1'], ['Mesitylene', 'Cc1cc(C)cc(C)c1'], ['Chlorobenzene', 'Clc1ccccc1'], ['Bromobenzene', 'Brc1ccccc1'],
+    ['Fluorobenzene', 'Fc1ccccc1'], ['Iodobenzene', 'Ic1ccccc1'], ['Nitrobenzene', 'O=[N+]([O-])c1ccccc1'], ['Benzaldehyde', 'O=Cc1ccccc1'],
+    ['Acetophenone', 'CC(=O)c1ccccc1'], ['Benzophenone', 'O=C(c1ccccc1)c1ccccc1'], ['Benzonitrile', 'N#Cc1ccccc1'], ['Benzamide', 'NC(=O)c1ccccc1'],
+    ['Benzyl alcohol', 'OCc1ccccc1'], ['Anisole', 'COc1ccccc1'], ['Benzenesulfonic acid', 'OS(=O)(=O)c1ccccc1'], ['Catechol', 'Oc1ccccc1O'],
+    ['Resorcinol', 'Oc1cccc(O)c1'], ['Hydroquinone', 'Oc1ccc(O)cc1'], ['p-Cresol', 'Cc1ccc(O)cc1'], ['Salicylic acid', 'OC(=O)c1ccccc1O'],
+    ['Aspirin', 'CC(=O)Oc1ccccc1C(=O)O'], ['Paracetamol', 'CC(=O)Nc1ccc(O)cc1'], ['Acetanilide', 'CC(=O)Nc1ccccc1'], ['p-Nitrophenol', 'Oc1ccc(cc1)[N+](=O)[O-]'],
+    ['p-Nitroaniline', 'Nc1ccc(cc1)[N+](=O)[O-]'], ['Phthalic acid', 'OC(=O)c1ccccc1C(=O)O'], ['Terephthalic acid', 'OC(=O)c1ccc(cc1)C(=O)O'],
+    ['Benzoyl chloride', 'ClC(=O)c1ccccc1'], ['Methyl benzoate', 'COC(=O)c1ccccc1'], ['Nicotinic acid', 'OC(=O)c1cccnc1'], ['DMAP', 'CN(C)c1ccncc1'],
+    ['2-Picoline', 'Cc1ccccn1'], ['Benzyl bromide', 'BrCc1ccccc1'], ['Phenylhydrazine', 'NNc1ccccc1'], ['Azobenzene', 'c1ccc(cc1)N=Nc1ccccc1'],
+    ['Phenyl isocyanate', 'O=C=Nc1ccccc1'], ['Phenylboronic acid', 'OB(O)c1ccccc1'], ['Triphenylphosphine', 'c1ccc(cc1)P(c1ccccc1)c1ccccc1'],
+    // small acyclic molecules
+    ['Methane', 'C'], ['Ethane', 'CC'], ['Propane', 'CCC'], ['Butane', 'CCCC'], ['Pentane', 'CCCCC'], ['Hexane', 'CCCCCC'], ['Isobutane', 'CC(C)C'],
+    ['Neopentane', 'CC(C)(C)C'], ['Ethene', 'C=C'], ['Propene', 'CC=C'], ['2-Butene', 'CC=CC'], ['Isobutene', 'CC(C)=C'], ['1,3-Butadiene', 'C=CC=C'],
+    ['Isoprene', 'CC(=C)C=C'], ['Allene', 'C=C=C'], ['Ethyne (acetylene)', 'C#C'], ['Propyne', 'CC#C'], ['2-Butyne', 'CC#CC'],
+    ['Chloromethane', 'CCl'], ['Dichloromethane', 'ClCCl'], ['Chloroform', 'ClC(Cl)Cl'], ['Carbon tetrachloride', 'ClC(Cl)(Cl)Cl'], ['Bromoethane', 'CCBr'],
+    ['Iodomethane', 'CI'], ['2-Bromopropane', 'CC(C)Br'], ['tert-Butyl chloride', 'CC(C)(C)Cl'], ['Allyl bromide', 'C=CCBr'], ['Vinyl chloride', 'C=CCl'],
+    ['Methanol', 'CO'], ['Ethanol', 'CCO'], ['1-Propanol', 'CCCO'], ['2-Propanol', 'CC(C)O'], ['1-Butanol', 'CCCCO'], ['tert-Butanol', 'CC(C)(C)O'],
+    ['Ethylene glycol', 'OCCO'], ['Glycerol', 'OCC(O)CO'], ['Allyl alcohol', 'C=CCO'], ['Diethyl ether', 'CCOCC'], ['Dimethyl ether', 'COC'],
+    ['MTBE', 'COC(C)(C)C'], ['Dimethoxyethane (DME)', 'COCCOC'], ['2-Methyltetrahydrofuran', 'CC1CCCO1'], ['Ethanethiol', 'CCS'], ['Dimethyl sulfide', 'CSC'],
+    ['DMSO', 'CS(C)=O'], ['Sulfolane', 'O=S1(=O)CCCC1'],
+    ['Formaldehyde', 'C=O'], ['Acetaldehyde', 'CC=O'], ['Propanal', 'CCC=O'], ['Acrolein', 'C=CC=O'], ['Butanone (MEK)', 'CCC(C)=O'],
+    ['3-Pentanone', 'CCC(=O)CC'], ['Methyl vinyl ketone', 'CC(=O)C=C'], ['Acetylacetone', 'CC(=O)CC(C)=O'], ['Ethyl acetoacetate', 'CCOC(=O)CC(C)=O'],
+    ['Diethyl malonate', 'CCOC(=O)CC(=O)OCC'], ['Formic acid', 'OC=O'], ['Propanoic acid', 'CCC(=O)O'], ['Butanoic acid', 'CCCC(=O)O'],
+    ['Acrylic acid', 'C=CC(=O)O'], ['Oxalic acid', 'OC(=O)C(=O)O'], ['Malonic acid', 'OC(=O)CC(=O)O'], ['Succinic acid', 'OC(=O)CCC(=O)O'],
+    ['Maleic acid', 'OC(=O)C=CC(=O)O'], ['Lactic acid', 'CC(O)C(=O)O'], ['Citric acid', 'OC(=O)CC(O)(CC(=O)O)C(=O)O'], ['Pyruvic acid', 'CC(=O)C(=O)O'],
+    ['Trifluoroacetic acid', 'OC(=O)C(F)(F)F'], ['Acetyl chloride', 'CC(=O)Cl'], ['Acetic anhydride', 'CC(=O)OC(C)=O'], ['Methyl acetate', 'COC(C)=O'],
+    ['Methyl methacrylate', 'COC(=O)C(C)=C'], ['Acetamide', 'CC(N)=O'], ['DMF', 'CN(C)C=O'], ['DMA', 'CC(=O)N(C)C'], ['Acetonitrile', 'CC#N'],
+    ['Acrylonitrile', 'C=CC#N'], ['Dimethyl carbonate', 'COC(=O)OC'], ['Phosgene', 'ClC(Cl)=O'],
+    ['Methylamine', 'CN'], ['Dimethylamine', 'CNC'], ['Trimethylamine', 'CN(C)C'], ['Ethylamine', 'CCN'], ['Diethylamine', 'CCNCC'],
+    ['Triethylamine', 'CCN(CC)CC'], ['Diisopropylamine', 'CC(C)NC(C)C'], ['Ethylenediamine', 'NCCN'], ['DABCO', 'C1CN2CCN1CC2'], ['Guanidine', 'NC(N)=N'],
+    ['Hydrazine', 'NN'], ['Hydroxylamine', 'NO'], ['Ammonia', 'N'], ['Nitromethane', 'C[N+](=O)[O-]'], ['Acetone oxime', 'CC(C)=NO'],
+    // natural products, drugs, reagents
+    ['Palmitic acid', 'CCCCCCCCCCCCCCCC(=O)O'], ['Stearic acid', 'CCCCCCCCCCCCCCCCCC(=O)O'], ['Oleic acid', 'CCCCCCCCC=CCCCCCCCC(=O)O'],
+    ['Glucose (open chain)', 'OCC(O)C(O)C(O)C(O)C=O'], ['Glucopyranose', 'OCC1OC(O)C(O)C(O)C1O'], ['Fructose (open chain)', 'OCC(O)C(O)C(O)C(=O)CO'],
+    ['Ibuprofen', 'CC(C)Cc1ccc(cc1)C(C)C(=O)O'], ['Naproxen', 'COc1ccc2cc(ccc2c1)C(C)C(=O)O'], ['Nicotine', 'CN1CCCC1c1cccnc1'],
+    ['Menthol', 'CC(C)C1CCC(C)CC1O'], ['Camphor', 'CC1(C)C2CCC1(C)C(=O)C2'], ['Limonene', 'CC1=CCC(CC1)C(C)=C'], ['Vanillin', 'COc1cc(C=O)ccc1O'],
+    ['Ephedrine', 'CNC(C)C(O)c1ccccc1'], ['Dopamine', 'NCCc1ccc(O)c(O)c1'], ['Serotonin', 'NCCc1c[nH]c2ccc(O)cc12'], ['Adrenaline', 'CNCC(O)c1ccc(O)c(O)c1'],
+    ['TMS-Cl', 'C[Si](C)(C)Cl'], ['TBS-Cl', 'CC(C)(C)[Si](C)(C)Cl'], ['Tosyl chloride', 'Cc1ccc(cc1)S(Cl)(=O)=O'], ['Mesyl chloride', 'CS(Cl)(=O)=O'],
+    ['Methanesulfonic acid', 'CS(O)(=O)=O'], ['Trimethyl phosphate', 'COP(=O)(OC)OC'], ['Boric acid', 'OB(O)O'], ['Hydrogen peroxide', 'OO'],
+    ['Peracetic acid', 'CC(=O)OO'], ['mCPBA', 'OOC(=O)c1cccc(Cl)c1'], ['NBS', 'BrN1C(=O)CCC1=O'], ['NCS', 'ClN1C(=O)CCC1=O'],
+    ['DCC', 'C1CCC(CC1)N=C=NC1CCCCC1'], ['AIBN', 'CC(C)(C#N)N=NC(C)(C)C#N'],
   ];
 
-  function pickTool(id) {
+  function pickTool(id, any) {      // any: picked through the periodic-table (any-atom) tool, not one of the C N O … buttons
     if (id === 'ptable') { openPeriodicTable(); return; }
     if (id === 'tpl') { openTemplates(); return; }
     closePopup();
     const [kind, ...rest] = id.split(':');
-    tool = { id, kind, arg: rest.join(':'), arg2: rest[1] };
+    tool = { id, kind, arg: rest.join(':'), arg2: rest[1], any: !!any };
     if (kind === 'ring') { tool.arg = rest[0]; }
     document.querySelectorAll('.tool').forEach(b => b.classList.toggle('active', b.dataset.id === id || (b.dataset.id === 'ptable' && kind === 'el' && b.dataset.el === tool.arg)));
     svg.style.cursor = kind === 'select' ? 'default' : kind === 'rotate' ? 'grab' : kind === 'erase' ? 'not-allowed' : 'crosshair';
@@ -557,7 +634,7 @@
        a second click (when it is already the tool) opens the table again */
     const remembered = b.dataset.id === 'ptable' && b.dataset.el;
     const alreadyOn = remembered && tool && tool.kind === 'el' && tool.arg === b.dataset.el;
-    pickTool(remembered && !alreadyOn ? 'el:' + b.dataset.el : b.dataset.id);
+    pickTool(remembered && !alreadyOn ? 'el:' + b.dataset.el : b.dataset.id, remembered && !alreadyOn);
   });
   pickTool('el:C');
 
@@ -591,7 +668,7 @@
       const b = e.target.closest('button[data-sym]'); if (!b || b.disabled) return;
       const pt = grid.querySelector('[data-id="ptable"]');
       pt.dataset.el = b.dataset.sym; pt.innerHTML = b.dataset.sym;
-      pickTool('el:' + b.dataset.sym);
+      pickTool('el:' + b.dataset.sym, true);
     });
   }
   function openTemplates() {
@@ -617,6 +694,7 @@
        moment RDKit takes: the previous drawing stays, with a note, and the new one appears once RDKit's layout is ready
        (or, if RDKit cannot do it, as Chem drew it) */
     const wait = !!window.RDKitLoad && componentsNow().length === 1 && needsRDKitLayout(g);
+    if (!wait) fitToCanvas();
     if (wait) info.innerHTML = '<span class="hint">Laying out the large ring…</span>';
     else render();
     rdkitMacrocycleLayout(source, wait);
@@ -648,9 +726,26 @@
     }
     return out;
   }
-  const needsRDKitLayout = gr => ringBondSizes(gr).some(r => r.size > 16 || (r.bond.order === 2 && r.size >= 8));
+  /* a drawing wider or taller than the canvas (a 31-carbon chain laid out in one straight line) is also laid out by RDKit,
+     which folds it into the canvas; without RDKit it is just drawn smaller (fitToCanvas) */
+  const oversize = gr => {
+    const box = svg.getBoundingClientRect(); if (!gr.atoms.length || !box.width) return false;
+    const xs = gr.atoms.map(a => a.x), ys = gr.atoms.map(a => a.y);
+    return Math.max(...xs) - Math.min(...xs) > box.width * 0.92 || Math.max(...ys) - Math.min(...ys) > box.height * 0.92;
+  };
+  function fitToCanvas() {
+    const box = svg.getBoundingClientRect(); if (!g.atoms.length || !box.width) return;
+    const xs = g.atoms.map(a => a.x), ys = g.atoms.map(a => a.y);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    let k = Math.min(1, box.width * 0.92 / Math.max(x1 - x0, 1), box.height * 0.92 / Math.max(y1 - y0, 1));
+    if (k >= 1) return;
+    k = Math.max(k, 0.5);
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, mx = box.width / 2, my = box.height / 2;
+    g.atoms.forEach(a => { a.x = mx + (a.x - cx) * k; a.y = my + (a.y - cy) * k; });
+  }
+  const needsRDKitLayout = gr => ringBondSizes(gr).some(r => r.size > 16 || (r.bond.order === 2 && r.size >= 8)) || oversize(gr);
   async function rdkitMacrocycleLayout(source, deferred) {
-    if (!window.RDKitLoad || !g.atoms.length || !needsRDKitLayout(g) || componentsNow().length !== 1) { if (deferred) render(); return; }
+    if (!window.RDKitLoad || !g.atoms.length || !needsRDKitLayout(g) || componentsNow().length !== 1) { if (deferred) { fitToCanvas(); render(); } return; }
     const mine = g, n = g.atoms.length, m = g.bonds.length;
     let done = false;
     try {
@@ -711,7 +806,7 @@
       render();
     } catch (e) { /* RDKit unavailable or refused: the drawing stays as Chem laid it out */
     } finally {
-      if (deferred && !done) render();                 // nothing better was found: draw it as Chem laid it out
+      if (deferred && !done) { fitToCanvas(); render(); }   // nothing better was found: draw it as Chem laid it out
     }
   }
   function importText(text) {
@@ -721,6 +816,8 @@
     if (C.looksLikeMolfile && C.looksLikeMolfile(text)) { try { parsed = C.parseMolfile(text); } catch (e) { error = e.message; } }
     /* searchMolecule knows common names (aspirin), the molecule library, CAS numbers, IUPAC names and SMILES */
     if (!parsed) { try { const r = C.searchMolecule(text); parsed = r && r.graph; } catch (e) { error = e.message; } }
+    // a generated systematic name (name_suggest.js) that the name parser cannot read still has its structure
+    if (!parsed && window.IupacGen) { const smi = window.IupacGen.smilesFor(text); if (smi) { try { parsed = C.parseSmiles(smi); } catch (e) { /* fall through */ } } }
     if (!parsed) { try { parsed = C.parseSmiles(text); } catch (e) { error = error || e.message; } }
     if (!parsed || !parsed.atoms.length) { try { parsed = C.parseIupacName(text); } catch (e) { error = error || e.message; } }
     if (!parsed || !parsed.atoms || !parsed.atoms.length) {
@@ -798,7 +895,7 @@
       if (e.cas && !seen.has('cas:' + e.cas)) { seen.add('cas:' + e.cas); cas.push({ label: e.cas, name: e.name, formula: e.formula || '', k: e.cas }); }
     });
     Object.keys(C.COMMON_NAMES || {}).forEach(n => add(n, '', ''));
-    SEARCH = { names, cas };
+    SEARCH = { names, cas, seen };
     return SEARCH;
   }
   /* opts.autofill === false: no inline completion and nothing pre-selected, so Enter submits exactly what was typed
@@ -850,17 +947,20 @@
       const I = searchIndex(), isCas = /^\d[\d-]*$/.test(q);
       if (!isCas && (q.length < 2 || !/[a-z]/.test(raw) || /[\[\]=#@\\\/]/.test(raw))) { close(); return; }
       const starts = [], contains = [];
-      for (const n of (isCas ? I.cas : I.names)) {
+      /* the library's names first, then the systematic IUPAC names generated by name_suggest.js (still filling in
+         while the page is idle) */
+      const gen = !isCas && window.IupacGen ? window.IupacGen.names.filter(n => !I.seen.has(n.label.toLowerCase())) : [];
+      for (const n of (isCas ? I.cas : I.names.concat(gen.map(n => n.row || (n.row = { label: n.label, formula: '', cas: '', k: n.label.toLowerCase(), smiles: n.smiles }))))) {
         if (n.k.startsWith(q)) starts.push(n); else if (!isCas && q.length >= 3 && n.k.includes(q)) contains.push(n);
-        if (starts.length >= 300) break;
+        if (starts.length >= 600) break;
       }
       starts.sort((a, b) => a.label.length - b.label.length || a.label.localeCompare(b.label));
-      const hits = starts.concat(contains).slice(0, 12);
+      const hits = starts.concat(contains).slice(0, 80);
       if (!hits.length) { close(); return; }
       // a name from the common-name list carries no formula or CAS: work them out for the rows shown (once each)
       for (const h of hits) if (!isCas && !h.formula && !h.done) {
         h.done = true;
-        try { const g2 = C.searchMolecule(h.label).graph; h.formula = C.formula(g2) || ''; h.cas = (C.casFor && C.casFor(g2)) || ''; } catch (err) {}
+        try { const g2 = h.smiles ? C.parseSmiles(h.smiles) : C.searchMolecule(h.label).graph; h.formula = C.formula(g2) || ''; h.cas = (C.casFor && C.casFor(g2)) || ''; } catch (err) {}
       }
       box.innerHTML = hits.map(h => isCas
         ? `<div data-name="${esc(h.label)}">${esc(h.label)} <em>${esc(h.name)}</em><span>${esc(h.formula)}</span></div>`
@@ -988,6 +1088,12 @@
     const a = atomAt(x, y), b = a ? null : bondAt(x, y);
     const k = tool.kind;
     drag = { x, y, moved: false, from: a, bond: b };
+    if (k === 'erase') {                                  // hold and sweep: erase everything the pointer passes over, one undo step
+      drag.erasing = true; drag.seen = new Set();
+      eraseStroke(a, b, x, y);
+      svg.setPointerCapture(e.pointerId);
+      return;
+    }
     if (k === 'select') {
       if (a) {
         if (!selected.has(a.id)) { if (!e.shiftKey) selected.clear(); selected.add(a.id); }
@@ -1012,8 +1118,26 @@
     svg.setPointerCapture(e.pointerId);
   });
 
+  function eraseStroke(a, b, x, y) {
+    const hit = a || b;
+    drag.last = { x, y };
+    if (!hit) return;
+    if (!drag.seen.has(hit)) { drag.seen.add(hit); guarded(() => click(x, y, a, b)); }   // sweeping over something: each atom / bond once per sweep
+    armRepeat();
+  }
+  /* holding still on something keeps erasing it: CH4 → CH3⁻ → CH2²⁻ … then the atom, a bond one order per step */
+  function armRepeat() {
+    clearTimeout(drag.timer);
+    drag.timer = setTimeout(function again() {
+      if (!drag || !drag.erasing) return;
+      const { x, y } = drag.last, a = atomAt(x, y), b = a ? null : bondAt(x, y);
+      if (a || b) { guarded(() => click(x, y, a, b)); drag.timer = setTimeout(again, 180); }
+    }, 350);
+  }
+
   svg.addEventListener('pointermove', e => {
     const { x, y } = pos(e);
+    if (drag && drag.erasing) { const a = atomAt(x, y); eraseStroke(a, a ? null : bondAt(x, y), x, y); return; }
     if (!drag) {
       const a = atomAt(x, y), b = a ? null : bondAt(x, y);
       if (a !== hover.atom || b !== hover.bond) { hover = { atom: a, bond: b }; render(); }
@@ -1054,6 +1178,7 @@
 
   svg.addEventListener('pointerup', e => {
     if (!drag) return;
+    if (drag.erasing) { clearTimeout(drag.timer); drag = null; render(); return; }
     const { x, y } = pos(e);
     const d = drag; drag = null;
     const k = tool.kind;
@@ -1090,10 +1215,10 @@
         const r = elDrag(d, x, y);
         if (r.snapTo) addBond(d.from.id, r.snapTo.id, 1);
         else {
-          let prev = d.from || addAtom(tool.arg, r.pts[0].x, r.pts[0].y);
+          let prev = d.from || addElAtom(tool.arg, r.pts[0].x, r.pts[0].y);
           for (let i = 1; i < r.pts.length; i++) {
             const hit = atomAt(r.pts[i].x, r.pts[i].y);
-            const n = hit && hit !== prev ? hit : addAtom(tool.arg, r.pts[i].x, r.pts[i].y);
+            const n = hit && hit !== prev ? hit : addElAtom(tool.arg, r.pts[i].x, r.pts[i].y);
             addBond(prev.id, n.id, 1); prev = n;
           }
         }
@@ -1109,6 +1234,7 @@
     }
     click(x, y, d.from, d.bond);
   }
+  svg.addEventListener('pointercancel', () => { if (drag && drag.erasing) clearTimeout(drag.timer); drag = null; });
   svg.addEventListener('pointerleave', () => { if (!drag && (hover.atom || hover.bond)) { hover = { atom: null, bond: null }; render(); } });
 
   function click(x, y, a, b) {
@@ -1116,7 +1242,7 @@
     switch (k) {
       case 'el':
         snapshot();
-        if (a) a.element = tool.arg; else addAtom(tool.arg, snapGrid(x), snapGrid(y));
+        if (a) { a.element = tool.arg; if (tool.any) a.hideH = true; else delete a.hideH; } else addElAtom(tool.arg, snapGrid(x), snapGrid(y));
         break;
       case 'bond': {
         const order = +tool.arg;
@@ -1158,10 +1284,11 @@
         if (!a) addAtom('C', snapGrid(x), snapGrid(y));
         break;
       case 'erase':
-        if (a && onHydrogenOf(a, x)) { snapshot(); a.charge = (a.charge || 0) - 1; }      // OH → O⁻: the H leaves as H⁺
-        else if (a) { snapshot(); removeAtom(a.id); }                                    // the atom with its H (the whole OH)
+        if (drag && drag.erasing) { if (!drag.snapped) { snapshot(); drag.snapped = true; } }   // a whole stroke is one undo step
+        else if (a || b) snapshot();
+        if (a && onHydrogenOf(a, x)) a.charge = (a.charge || 0) - 1;                     // OH → O⁻: the H leaves as H⁺
+        else if (a) removeAtom(a.id);                                                    // the atom with its H (the whole OH)
         else if (b) {                                                                   // one bond order per click
-          snapshot();
           if (b.order > 1) { b.order -= 1; delete b.ezUnspec; } else removeBond(b);
         }
         break;
