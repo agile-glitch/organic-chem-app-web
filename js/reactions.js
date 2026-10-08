@@ -450,6 +450,11 @@
           const on = items.every(x => have.includes(x.toLowerCase()));
           add('rxn-menu-item' + (on ? ' on' : ''), `${esc(sg.text)}<span class="rxn-menu-sub">${esc(sg.why)}</span>`, () => {
             const p = parts();
+            if (on) {                                  // already chosen: clicking it again takes its conditions out
+              const drop = new Set(items.map(x => x.toLowerCase()));
+              closeMenu(); setParts(p.filter(y => !drop.has(y.toLowerCase())));
+              return;
+            }
             items.forEach(x => { if (!p.some(y => y.toLowerCase() === x.toLowerCase())) p.push(x); });
             closeMenu(); setParts(p);
           });
@@ -461,7 +466,7 @@
       opts.free.forEach(r => add('rxn-menu-note', `${esc(r)} needs no special conditions`));
       if (opts.other.length) {
         add('rxn-menu-head', 'Other conditions the rules know');
-        opts.other.forEach(c => add('rxn-menu-item' + (have.includes(c) ? ' on' : ''), esc(c), () => toggle(c)));
+        opts.other.forEach(c => add('rxn-menu-item' + (have.includes(c.toLowerCase()) ? ' on' : ''), esc(c), () => toggle(c)));
       }
       if ((opts.solvents || []).length) {
         add('rxn-menu-head', 'Solvents (reflux runs at the boiling point)');
