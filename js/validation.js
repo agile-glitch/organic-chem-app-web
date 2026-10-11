@@ -341,3 +341,72 @@
   chooseSet('db');
   window.Validation = { run, stop, grade, summarise, chooseSet };
 })();
+
+/* The learned-template predictor's own figures. tools/eval_top1.py + tools/rel_fuse.py measure it on patents that were kept out of everything
+   learned (a split by patent, not by reaction: a patent records many near-identical reactions), and tools/rel_export.py stores the result
+   in data/learned/m/meta.js, so the number shown here is the number measured for the model that is installed. */
+(() => {
+  'use strict';
+  const box = document.getElementById('validLearned');
+  if (!box) return;
+  const pct = x => (x == null ? '—' : (100 * x).toFixed(1) + ' %');
+  const kpi = (lbl, big, sub) => `<div class="kpi"><div class="lbl">${lbl}</div><div class="big">${big}</div><div class="hint">${sub || ''}</div></div>`;
+  const load = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = () => { s.remove(); res(); }; s.onerror = () => { s.remove(); rej(new Error(src)); }; document.head.appendChild(s); });
+  (async () => {
+    try { if (!window.RELEVANCE_META) await load('data/learned/m/meta.js'); }
+    catch (e) { box.innerHTML = '<p class="hint">The relevance model is not installed (data/learned/m/), so the Reactions page uses the older reagent-keyed templates, whose first answer was right 45 % of the time on patents they had not seen.</p>'; return; }
+    const M = (window.RELEVANCE_META || {}).measured;
+    if (!M || !M.n) { box.innerHTML = '<p class="hint">No measured figures are stored with this model.</p>'; return; }
+    const hi = (M.by_confidence || {})['>= 0.9'], rd = (M.by_confidence || {})['>= 0.8'];
+    let h = '<div class="kpis">' +
+      kpi('First answer right, every recorded reaction', pct(M.top1_exact), `stereo included${M.ci95 ? ` (95 % interval ${pct(M.ci95.top1_exact[0])} to ${pct(M.ci95.top1_exact[1])}, resampling patents)` : ''}; without stereo ${pct(M.top1_flat)}; ${M.n.toLocaleString()} reactions of patents never learned from`) +
+      (hi ? kpi('Right when it is ≥ 90 % sure', pct(hi.right), `${pct(hi.share_of_all)} of all reactions get such an answer`) : '') +
+      (rd ? kpi('Right when it is ≥ 80 % sure', pct(rd.right), `${pct(rd.share_of_all)} of all reactions`) : '') +
+      (M.shown ? kpi('Answers the page shows', pct(M.shown.shown_right), `right; it shows an answer for ${pct(M.shown.shown_share_of_all)} of reactions (stated chance at least ${Math.round(100 * M.floor)} %, ${Math.round(100 * M.floor_no_reagent)} % with no reagent, ${Math.round(100 * (M.floor_plain_reagent == null ? M.floor : M.floor_plain_reagent))} % with a reagent that has no reactive role)`) : '') +
+      kpi('With a reagent given', pct((M.with_reagent || {}).top1_exact), `no reagent: ${pct((M.no_reagent || {}).top1_exact)}`) +
+      (M.baseline ? kpi('Before: reagent-keyed templates', pct(M.baseline.top1), M.baseline.note || '') : '') + '</div>';
+    h += `<p class="hint" style="max-width:900px">Measured ${esc2(M.when || '')} on ${M.n.toLocaleString()} recorded reactions from ${M.patents ? M.patents.toLocaleString() + ' ' : ''}patents that were kept out of everything the model learned ` +
+      `(templates, weights, ranking and confidence). The recorded product is among the candidates for ${pct(M.generated)} of them, which is the ceiling: no ranking can fix a product that is not there. ` +
+      `The rest use a template the learned data does not contain, or are records with errors or an unrecorded reagent, so 100 % is not reachable on this data. ` +
+      (M.gradable ? `Leaving out records whose product is a solvent or a fragment of a much larger reactant (the data errors above) the first answer is right ${pct(M.gradable.top1_exact)} of the time. ` : '') +
+      `The model proposes a product for ${pct(M.answered)} of reactions; the Reactions page shows one only when its estimated chance of being right is at least ${Math.round(100 * (M.floor == null ? 0.5 : M.floor))} % ` +
+      `(${Math.round(100 * (M.floor_no_reagent == null ? 0.7 : M.floor_no_reagent))} % when no reagent is given, ${Math.round(100 * (M.floor_plain_reagent == null ? 0.85 : M.floor_plain_reagent))} % when the reagent has no reactive role in the Reagents sheet: spectator ions, parts the sheet does not list)` +
+      (M.min_heavy ? `, and never when the starting materials have fewer than ${M.min_heavy} heavy atoms in all.` : '.') + `</p>`;
+    const slice = (title, obj) => !obj ? '' : '<table><thead><tr><th>' + title + '</th><th class="num">reactions</th><th class="num">first answer right</th><th class="num">stated</th><th class="num">page shows</th><th class="num">right when shown</th></tr></thead><tbody>' +
+      Object.entries(obj).filter(([, v]) => v).map(([k, v]) => `<tr><td>${esc2(k)}</td><td class="num">${v.n.toLocaleString()}</td><td class="num">${pct(v.top1_exact)}</td><td class="num">${pct(v.stated)}</td><td class="num">${pct(v.shown_share)}</td><td class="num">${pct(v.shown_right)}</td></tr>`).join('') + '</tbody></table>';
+    h += `<p class="hint" style="max-width:900px">Where the figure applies. The learned data are patent reactions: starting materials of 20 or more heavy atoms are the norm and textbook-size molecules (a few atoms) are almost absent, ` +
+      `so the stated chance is only as good as the table below says for molecules of that size, and it is not measured at all under ${M.min_heavy || 8} heavy atoms. ` +
+      `For the textbook reactions it covers, the workbook rules answer first.</p>` + slice('Heavy atoms in the starting materials', M.by_size) + slice('Reagent', M.by_reagent);
+    if ((M.reliability || []).length) {
+      h += '<table><thead><tr><th>Stated chance of being right</th><th class="num">answers</th><th class="num">measured right</th></tr></thead><tbody>' +
+        M.reliability.map(b => `<tr><td>${b.stated}</td><td class="num">${b.n}</td><td class="num">${pct(b.measured)}</td></tr>`).join('') + '</tbody></table>';
+    }
+    // the interference layer (tools/int_train.py, tools/int_context.py; figures from tools/eval_top1.json "interference")
+    const I = M.interference;
+    if (I) {
+      const num = x => (x == null ? '—' : x.toLocaleString());
+      h += '<h4 style="margin:1.4em 0 .3em">Interferences: which site, which group</h4>' +
+        `<p class="hint" style="max-width:900px">${num(I.patterns)} site patterns and ${num(I.advisories)} reagent-and-group advisories (sheet Interferences of reaction_rules.xlsx). ` +
+        `Where a learned template could have reacted at several sites, the recorded product shows which one won; ${num((I.contests || {}).train)} such contests from the training patents set the weight of each pattern (per kind of reaction), ` +
+        `and on ${num((I.site_choice || {}).n)} contests from patents it never saw the learned weights pick the recorded site ${pct((I.site_choice || {}).learned)} of the time (a random pick: ${pct((I.site_choice || {}).random)}). ` +
+        `A second table learned from the recorded reactions how much the other groups present change whether a group is consumed (${num((I.chemoselectivity || {}).pairs)} group-in-reaction cases of patents it never saw: ` +
+        `log-loss ${(((I.chemoselectivity || {}).with_context) || 0).toFixed(3)} against ${(((I.chemoselectivity || {}).rate_only) || 0).toFixed(3)} for the reagent's rate alone). ` +
+        `${I.note || ''}</p>`;
+      if (I.top1) {
+        const t = I.top1, row = (k, label) => !t[k] ? '' : `<tr><td>${label}</td><td class="num">${pct(t[k].top1_exact)}</td><td class="num">${pct(t[k].top1_flat)}</td>` +
+          `<td class="num">${num((I.errors || {})[k] && I.errors[k]['wrong isomer (site)'])}</td><td class="num">${num((I.errors || {})[k] && I.errors[k]['wrong reaction (formula differs)'])}</td></tr>`;
+        h += '<table><thead><tr><th>Ranking on the held-out patents</th><th class="num">first answer right</th><th class="num">without stereo</th><th class="num">wrong site (an isomer)</th><th class="num">wrong reaction</th></tr></thead><tbody>' +
+          row('base', 'relevance model alone') + row('site', '+ interference weights for the site') + row('context', '+ the other groups present') + row('both', '+ both (installed)') + '</tbody></table>';
+        const p = (I.paired || {}).top1_exact;
+        if (p) {                                                  // the same reactions ranked twice: the difference, with an interval that resamples whole patents
+          const pt = x => (x < 0 ? '−' : '+') + Math.abs(100 * x).toFixed(2);
+          h += `<p class="hint" style="max-width:900px">The same ${num(I.paired.n)} reactions ranked with and without the interference features: ${pt(p.diff)} points of first answers right ` +
+            `(95 % interval ${pt(p.ci95[0])} to ${pt(p.ci95[1])} points, resampling whole patents; ${num(p.gained)} reactions gained, ${num(p.lost)} lost). ` +
+            `${pct(1 - M.generated)} of reactions have no candidate with the recorded product at all, and no ranking can fix those.</p>`;
+        }
+      }
+    }
+    box.innerHTML = h;
+  })();
+  function esc2(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+})();

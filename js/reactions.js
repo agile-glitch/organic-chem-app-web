@@ -1767,7 +1767,7 @@
   /* runRuleAll for a learned template: the molecules are the starting materials plus the reagent parts poolExtras
      allows (OH-, Br2, HNO3, H2O, MeO-, MeI ...: a recorded reaction counts them as reactants); every outcome must use
      at least one starting material (tools/learn_reactions.py run_template checks the learned reactions the same way) */
-  function runLearned(R, smarts, subs, extras) {
+  function runLearned(R, smarts, subs, extras, mark) {
     let rx = null;
     try { rx = R.get_rxn(smarts); } catch (e) { rx = null; }
     if (!rx) return [];
@@ -1787,10 +1787,10 @@
             const pl = res.get(k), out = [];
             for (let b = 0; b < pl.size(); b++) { const pm = pl.at(b); try { out.push(pm.get_smiles()); } catch (e) {} pm.delete(); }
             pl.delete();
-            const cs = out.map(canon);
+            const cs = (mark ? out.map(x => window.Interference.stripMarks(x)) : out).map(canon);        // a marked run: the products carry an isotope on the atoms the template changed (js/interference.js)
             if (!cs.length || cs.some(x => !x)) continue;
             const key = cs.slice().sort().join('.');
-            if (!seen.has(key)) { seen.add(key); outs.push({ products: cs, used: order.map(i => pool[i]).filter(x => subs.includes(x)) }); }
+            if (!seen.has(key)) { seen.add(key); outs.push({ products: cs, used: order.map(i => pool[i]).filter(x => subs.includes(x)), marked: mark ? out : null }); }
           }
           res.delete();
         } catch (e) { /* this order does not fit */ }
@@ -1874,6 +1874,137 @@
     return rows.length ? rows : null;
   }
   const learnedSource = r => [r[7], r[8], r[9] !== '' && r[9] != null ? `${r[9]}% yield` : ''].filter(Boolean).join(', ') + (r[6] > 1 ? ` (recorded ${r[6]}×)` : '');
+  async function learnedTemplate(meta, t) {
+    const c = Math.floor(t / meta.tmpl_chunk), part = await learnedPart('t/' + String(c).padStart(3, '0')), j = t - c * meta.tmpl_chunk;
+    return part && part.smarts[j] ? { id: part.id[j], smarts: part.smarts[j], recorded: part.recorded[j], leaving: (part.leaving || [])[j] || '' } : null;
+  }
+  /* ---- The relevance model (js/relevance.js, built by tools/rel_train.py): which recorded template does this reaction use? ----
+     It reads the starting materials, the reagent and the fragments they carry, gives every common learned template a probability,
+     the page runs the most probable ones (runLearned) and ranks the products they give, with a chance of being right measured on
+     patents the model never saw. It answers with or without a reagent. Below the floors of REL_POLICY nothing is predicted. */
+  /* What the page shows is what was measured: the floors and the size limit are those stored with the model (data/learned/m/meta.js, written by
+     tools/rel_fuse.py); these are only the fallbacks. An answer needs a stated chance of being right of at least the floor of its kind: 50 % with a
+     reagent that has a reactive role (Reagents sheet), 70 % with no reagent, 85 % with a reagent that has none (spectator ions, parts the sheet lacks).
+     Starting materials with fewer than 8 heavy atoms in all (textbook-size molecules) get no prediction: the learned data has almost none that small. */
+  const REL_POLICY = { floor: 0.50, floor_no_reagent: 0.70, floor_plain_reagent: 0.85, min_heavy: 8 };
+  function relevancePolicy() {
+    const m = (window.Relevance && window.Relevance.meta && window.Relevance.meta.measured) || {};
+    return { floor: m.floor != null ? m.floor : REL_POLICY.floor, floor_no_reagent: m.floor_no_reagent != null ? m.floor_no_reagent : REL_POLICY.floor_no_reagent,
+             floor_plain_reagent: m.floor_plain_reagent != null ? m.floor_plain_reagent : REL_POLICY.floor_plain_reagent, min_heavy: m.min_heavy != null ? m.min_heavy : REL_POLICY.min_heavy };
+  }
+  const REL_TOPN = 100;                                                    // templates run per prediction (the number tools/eval_top1.py --topn measured)
+  function relevanceHelpers(R, reagent, condText) {                        // what js/relevance.js needs from this page
+    const RG = (window.REACTION_RULES || {}).reagents || {}, rk = reagent ? learnedReagentKey(R, reagent) : '';
+    let solvents = []; try { solvents = readConditions(condText || '').solvents || []; } catch (e) { solvents = []; }       // the solvent names of the conditions box
+    return { fragmentCounts, fragmentsOf, keyOf, roles: RG, exactKey: rk || '', roleSig: reagent ? roleSignature(reagent) : '', solvents };
+  }
+  async function relevanceRun(R, subs, reagent, onProgress, condText) {
+    const meta = await learnedMeta();
+    if (!meta || !window.Relevance) return null;
+    try { await window.Relevance.load(); } catch (e) { return null; }       // no data/learned/m: the older cascade answers
+    const extras = poolExtras(reagent), H = relevanceHelpers(R, reagent, condText);
+    let rc = null;                                                           // recorded reactions per template with this exact reagent (data/learned/g/, as the older cascade)
+    if (reagent && H.exactKey) { const G = await learnedPart('g/' + H.exactKey.slice(0, 2)), list = G && G[H.exactKey]; if (list) rc = new Map(list.map(x => [x[0], x[1]])); }
+    let n = 0;
+    const ctx = { R, subs, reagent, H, rc,
+      tmpl: async t => { if (++n % 10 === 0) { if (onProgress) onProgress(n); await breathe(); } return learnedTemplate(meta, t); },
+      run: smarts => runLearned(R, smarts, subs, extras) };
+    const II = window.Interference;
+    if (II) {                                                                  // the interference layer (data/learned/i, the Interferences sheet): templates run with their changed atoms marked
+      try { await II.load(); if (II.ready) { await II.loadMaps(); ctx.runMarked = smarts => runLearned(R, smarts, subs, extras, true); } } catch (e) { /* not installed: ranking without it */ }
+    }
+    try { return await window.Relevance.predict(ctx, { topn: REL_TOPN }); } catch (e) { console.warn('relevance model failed; the older cascade answers', e); return null; }
+  }
+  /* ---- Interferences (js/interference.js, the Interferences sheet): why this site, and what else in the molecules the reagent meets ---- */
+  const pct1 = x => Math.round(100 * x);
+  const sgn = w => (w >= 0 ? '+' : '−') + Math.abs(w).toFixed(1);
+  function interferenceLines(R, out, subs, reagent, condText) {
+    const II = window.Interference, lines = [];
+    if (!II || !II.ready || !out || !out.candidates.length) return lines;
+    const cs = out.candidates, top = cs[0];
+    const fmt = e => `${e.name} (${sgn(e.weight)})`;
+    try {
+      // where the template could have reacted at several places (candidates of one relaxed template): what tips the choice, from the patterns that differ
+      const sameProd = (a, b) => a.rep.products.join('.') === b.rep.products.join('.');
+      const rivals = cs.filter(c => c !== top && c.flags && top.flags && c.rep.grp === top.rep.grp && !sameProd(c, top)).slice(0, 2);
+      for (const alt of rivals) {
+        const a = new Set(top.flags), b = new Set(alt.flags);
+        const only = II.explain(top.flags.filter(k => !b.has(k)), top.family).filter(e => Math.abs(e.weight) >= 0.2).slice(0, 3);
+        const lack = II.explain(alt.flags.filter(k => !a.has(k)), alt.family || top.family).filter(e => Math.abs(e.weight) >= 0.2).slice(0, 3);
+        if (!only.length && !lack.length) continue;
+        const bits = [];
+        if (only.length) bits.push(`the leading product has ${only.map(fmt).join(', ')}`);
+        if (lack.length) bits.push(`the other has ${lack.map(fmt).join(', ')}`);
+        lines.push({ k: 'Site choice', text: `another place the same template could react gives ${alt.rep.products.join('.')} (${pct1(alt.share)}% of the ranked weight): ${bits.join('; ')}` +
+          ` — weights learned from recorded reactions of the kind "${top.family.replace(/_/g, ' ')}"` });
+      }
+      // a hindered reacting atom (steric patterns the recorded reactions penalise). Only carbon and ring-nitrogen sites: a flag says that SOME marked N, O or S fits the pattern, and the product cannot tell
+      // the nucleophile from the heteroatom a ring-opening or a hydrolysis released (the alcohol of an epoxide, the tert-butanol of a tert-butyl ester)
+      if (top.flags && top.flags.length) {
+        const hind = II.explain(top.flags, top.family).filter(e => e.kind === 'hindrance' && e.weight <= -0.4 && !['nitrogen', 'oxygen', 'sulfur'].includes(e.anchor)).slice(0, 2);
+        if (hind.length) lines.push({ k: 'Hindrance', text: hind.map(e => `${e.name} (${sgn(e.weight)}): ${e.effect}`).join(' · ') });
+      }
+      // a reagent and a group that is present in the molecules but is not what the leading product changed
+      const RR = window.REACTION_RULES || {}, RG = RR.reagents || {};
+      const roles = new Set(), frags = new Set(), parts = new Set(String(reagent || '').split('.').filter(Boolean));
+      const typed = new Set();                                                 // the advisories compare reagent parts as the Reagents sheet types them: CCCC[Li] and [Li][CH2]CCC are the same part
+      for (const p of parts) {
+        const r = RG[p] || RG[window.Relevance.canonical(R, p) || p];
+        if (r) { roles.add(r.role); String(r.also || '').split(';').map(x => x.trim()).filter(Boolean).forEach(x => roles.add(x)); if (r.typed) typed.add(r.typed); }
+        fragmentsOf(R, p).forEach(f => frags.add(f));
+      }
+      typed.forEach(t => parts.add(t));
+      const counts = fragmentCounts(R, subs), present = new Set(Object.keys(counts).filter(id => counts[id] > 0));
+      const pc = fragmentCounts(R, top.rep.products), consumed = new Set([...present].filter(id => (pc[id] || 0) < counts[id]));
+      let solventTypes = new Set(); try { solventTypes = new Set((readConditions(condText || '').solvents || []).map(n => (RR.solvents[n] || {}).type).filter(Boolean)); } catch (e) { /* no conditions */ }
+      const order = ['quencher', 'incompatible group', 'protecting group', 'catalyst poison', 'competing site', 'selectivity', 'stereochemistry', 'leaving group', 'reagent strength', 'geometry', 'medium'];
+      const adv = II.advisories({ roles, frags, parts, solventTypes, present, consumed })
+        .sort((x, y) => order.indexOf(x.kind) - order.indexOf(y.kind)).slice(0, 4);
+      for (const a of adv) lines.push({ k: 'Reagent and groups present', text: `${a.name}: ${(a.groups.length ? a.groups : a.target).slice(0, 4).map(fragName).join(', ')} — ${a.effect}` });
+    } catch (e) { console.warn('interference lines failed', e); }
+    return lines;
+  }
+  async function relevanceReaction(R, subs, reagent, condText, finish) {
+    const myRun = currentRun;
+    try { await window.Relevance.load(); } catch (e) { return null; }       // no data/learned/m: the older cascade answers
+    const policy = relevancePolicy(), pct = x => Math.round(100 * x);
+    const heavy = subs.flatMap(x => x.split('.')).filter(Boolean).reduce((t, x) => t + window.Relevance.heavyOf(R, x), 0);
+    if (heavy < policy.min_heavy) {
+      const M = window.Relevance.meta.measured || {}, small = (M.by_size || {})['< 8'];
+      return { miss: `the starting materials have only ${heavy} heavy atom${heavy === 1 ? '' : 's'} in all; the learned predictor was built from patent reactions, almost none of which are this small ` +
+        `(${small && M.n ? `${small.n} of ${M.n.toLocaleString()} held-out reactions had fewer than ${policy.min_heavy}` : `fewer than ${policy.min_heavy} heavy atoms`}), so no figure can say how far to trust it here and it predicts nothing` };
+    }
+    const out = await relevanceRun(R, subs, reagent, n => { if (myRun === currentRun) ruleNote.textContent = `Running the most probable learned templates: ${n} of ${REL_TOPN}…`; }, condText);
+    if (out === null) return null;
+    const cs = out.candidates;
+    if (!cs.length) return { miss: `the relevance model found no learned template that fits these molecules (it tried its ${out.tried} most probable ones; its own estimate that none of the ${window.Relevance.meta.classes.toLocaleString()} common templates applies is ${pct(out.pOther)}%)` };
+    const top = cs[0], best = top.rep.best;
+    const plain = reagent && roleSignature(reagent) == null;                  // a reagent with no reactive role in the Reagents sheet: spectator ions, or parts the sheet does not list
+    const floor = !reagent ? policy.floor_no_reagent : plain ? policy.floor_plain_reagent : policy.floor;
+    if (out.confidence != null && out.confidence < floor)
+      return { miss: `the relevance model's best guess was ${top.rep.products.join('.')} (template ${best.id}), but its estimated chance of being right is ${pct(out.confidence)}%, below the ${pct(floor)}% the page needs` +
+        `${!reagent ? ' when no reagent is given' : plain ? ' when the reagent has no reactive role in the Reagents sheet' : ''}, so nothing is predicted` };
+    const m = window.Relevance.meta.measured || {};
+    const figure = m.top1_exact != null ? `; on ${(m.n || 0).toLocaleString()} reactions from patents it had not seen its first answer was right ${pct(m.top1_exact)}% of the time` : '';
+    const alt = cs.slice(1, 4).map(c => `${c.rep.products.join('.')} (${pct(c.share)}%)`);
+    const text = `predicted by the relevance model (learned templates, tools/rel_train.py): ${cs.length} different product(s) from its ${out.tried} most probable templates; ` +
+      (out.confidence != null ? `estimated ${pct(out.confidence)}% chance this product is right (answers rated like this were that often right on held-out patents${figure})` : 'no calibration is installed') +
+      `. Leading template ${best.id}${best.relaxed ? ' with its unchanged neighbouring atoms left out (no learned template fits as written)' : ''} (probability ${pct(best.p)}%), this product holds ${pct(top.share)}% of the ranked weight` + (alt.length ? `; next: ${alt.join('; ')}` : '') +
+      (reagent ? '' : '. No reagent was given: this is what recorded reactions of such molecules most often gave, and their reagent is often unrecorded');
+    return finish(top.rep.products, top.rep.used, best.id, text,
+      `Predicted by the relevance model (${best.id}, ${out.confidence != null ? pct(out.confidence) + '% estimated chance of being right' : 'uncalibrated'}) · no mechanism`, best.leaving, true,
+      { interference: interferenceLines(R, out, subs, reagent, condText) });
+  }
+  window.ReactionsRelevance = {
+    rdkit: () => loadRD(),
+    predict: async (subs, reagent, condText) => { const R = await loadRD(); return R ? relevanceRun(R, subs, reagent || '', null, condText || '') : null; },
+    /* the model's input bits and its most probable templates for one reaction (tools/README_relevance.md, "Checking the browser port", compares them with the Python's) */
+    inspect: async (subs, reagent, n = 5, condText) => {
+      const R = await loadRD(); await window.Relevance.load();
+      const bits = window.Relevance.features(R, subs.flatMap(s => s.split('.')).filter(Boolean), reagent || '', relevanceHelpers(R, reagent || '', condText || ''));
+      const prob = window.Relevance.forward(bits);
+      return { bits: Array.from(bits).sort((a, b) => a - b), top: window.Relevance.topClasses(prob, n).map(x => [x.t, x.p]), pOther: prob[prob.length - 1] };
+    } };
   async function learnedReaction(R, subs, reagent, reagentKey, condText, read, reagentFrags) {
     const meta = await learnedMeta();
     if (!meta) return null;
@@ -1890,7 +2021,7 @@
       return { consumes: Object.keys(a).filter(id => (b[id] || 0) < a[id]).sort().map(id => [id]),
                forms: Object.keys(b).filter(id => b[id] > (a[id] || 0)).sort().map(id => [id]) };
     };
-    const finish = (products, used, id, learnedText, note, leaving, leavingIsUsual) => {
+    const finish = (products, used, id, learnedText, note, leaving, leavingIsUsual, extra) => {
       const prodRead = products.map(smiles => ({ smiles, frags: fragmentsOf(R, smiles) }));
       const fd = fragDiff(used, products);
       const bp = learnedByproducts(leaving, reagent);
@@ -1898,7 +2029,7 @@
       return { products: products.concat(bp.list.filter(x => !products.includes(x))), kind: 'learned', note,
         mechNote: 'Learned reactions have no mechanism: a recorded reaction gives only the starting materials and the product, never the arrows. If this reaction belongs in reaction_rules.xlsx, its mechanism can be added there.',
         reading: { subs: read, reagent: reagent ? { smiles: reagent, frags: reagentFrags } : null, learned: learnedText,
-                   rule: { id, consumes: fd.consumes, forms: fd.forms }, prods: prodRead, formsOk: true },
+                   rule: { id, consumes: fd.consumes, forms: fd.forms }, prods: prodRead, formsOk: true, interference: (extra && extra.interference) || [] },
         code: reactionCode(R, subs, reagent, products, condText) };
     };
     // looked up: recorded reactions with exactly these molecules (the most recorded one first)
@@ -1912,7 +2043,10 @@
           (also.length ? `; the same molecules are also recorded giving: ${also.join('; ')}` : ''),
         `${r[0]} · learned reaction (learned_reactions.xlsx), looked up: recorded in ${learnedSource(r)} · template ${T ? T.id : '?'} · conditions recorded: ${r[1].split('~')[2] || 'none'} · no mechanism`, r[5], false);
     }
-    // predicted: never with no reagent at all. A recorded reaction without one is usually a record that left the
+    // predicted: the relevance model first (it answers with or without a reagent, and says how far to trust the answer)
+    const rel = await relevanceReaction(R, subs, reagent, condText, finish);
+    if (rel) return rel;
+    // (its data are not installed) the older cascade below: never with no reagent at all. A recorded reaction without one is usually a record that left the
     // reagent out (a hydrogenation written without its H2/Pd), so it would teach the wrong thing; those are only looked up.
     if (!reagent) return { miss: 'with no reagent the page only looks up recorded reactions (recorded reactions without a reagent are often ones whose reagent was not written down), and these molecules are not one of them' };
     /* Which templates to try, in turn (each step only when no template of the step before fits these molecules;
@@ -2326,6 +2460,7 @@
     if ((rd.stereo || []).length) html += rd.stereo.map(t => `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">Stereochemistry:</span> ${esc(t)}</div>`).join('');
     if ((rd.selection || []).length) html += rd.selection.map(t => `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">Chemoselectivity:</span> ${esc(t)}</div>`).join('');
     if (rd.pathway) html += `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">Pathway:</span> ${esc(rd.pathway)}</div>`;
+    if ((rd.interference || []).length) html += rd.interference.map(t => `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">Interference · ${esc(t.k)}:</span> ${esc(t.text)}</div>`).join('');
     if (rd.learned) html += `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">Learned:</span> ${esc(rd.learned)}</div>`;
     if (rd.acidBase) html += `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">${esc(rd.rule.acidBase.role === 'base' ? 'Base' : 'Acid')} strength (pKa):</span> ${esc(rd.acidBase)}</div>`;
     if ((rd.fragChecks || []).length) html += rd.fragChecks.map(c => `<div class="rxn-step-line rxn-step-pka down"><span class="rxn-step-k">Fragment conditions:</span> ${esc(c)}</div>`).join('');
@@ -2558,7 +2693,7 @@
     }
     try {
       const T = await (await fetch('tools/reaction_tests.json', { cache: 'no-store' })).json();
-      for (const f of T.features || []) cases.push({ group: f.feature, name: f.name, code: f.code, expect: f.expect, products: f.products || [], absent: f.absent || [], mech: false });
+      for (const f of T.features || []) cases.push({ group: f.feature, name: f.name, code: f.code, expect: f.expect, products: f.products || [], absent: f.absent || [], shows: f.shows || [], hides: f.hides || [], mech: false });
     } catch (e) { /* no feature file: only the workbook reactions are tested */ }
     try {                                                // a sample of the learned reactions (tools/learned_to_js.py writes it)
       const T = await (await fetch('tools/learned_tests.json', { cache: 'no-store' })).json();
@@ -2586,6 +2721,9 @@
     if (missing.length) why.push(`missing product ${missing.join(', ')}; page gave ${got.join('.') || 'nothing'}`);
     if (extra.length) why.push(`should not contain ${extra.join(', ')}`);
     if (t.mech) { const st = (ruleNote.querySelector('.rxn-mech-status') || {}).textContent || ''; if (!st.startsWith('✓')) why.push('mechanism not shown as verified'); }
+    const said = ruleNote.innerText || '';                                         // what the page says in the reading (e.g. the interference lines)
+    for (const w of t.shows || []) if (!said.includes(w)) why.push(`the page should say "${w}"`);
+    for (const w of t.hides || []) if (said.includes(w)) why.push(`the page should not say "${w}"`);
     return { t, ok: !why.length, why };
   }
   function renderTests(results, total, running) {

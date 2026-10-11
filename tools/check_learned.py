@@ -28,6 +28,14 @@ def _init(smarts, solv_frags):
     _S['smarts'] = smarts
 
 
+def built_fragments():
+    """the fragments the learned data was built with: the sheet minus the ones added afterwards (tools/add_fragments.py, only the
+    relevance model's reactivity prior uses those), so check 3 compares like with like"""
+    import json, learn_reactions as L
+    later = set(json.load(open(os.path.join(HERE, 'data', 'fragments_new_ids.json'), encoding='utf-8')).values())
+    return [f for f in L.fragments() if f[0] not in later]
+
+
 def check(row):
     import learn_reactions as L
     lid, code, subs, reagent, conds, prod, t, consumed, formed, skey, rkey = row
@@ -68,7 +76,7 @@ def main():
     pick = rows if args.all else rows[::max(1, len(rows) // args.sample)][:args.sample]
     print(f'{len(rows):,} learned reactions; checking {len(pick):,} ({time.time() - t0:.0f} s)', flush=True)
     fails, kinds, n = [], {}, 0
-    with Pool(max(1, (os.cpu_count() or 2) - 1), initializer=_init, initargs=([r[1] for r in trows], (L.solvents(), L.fragments()))) as pool:
+    with Pool(max(1, (os.cpu_count() or 2) - 1), initializer=_init, initargs=([r[1] for r in trows], (L.solvents(), built_fragments()))) as pool:
         for lid, bad in pool.imap_unordered(check, pick, chunksize=200):
             n += 1
             for b in bad: kinds[b] = kinds.get(b, 0) + 1

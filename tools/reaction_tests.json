@@ -1568,6 +1568,222 @@
    "expect": "Unknown",
    "products": [],
    "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "N-benzylation of acetanilide (BnBr, NaH)",
+   "code": "CC(=O)Nc1ccccc1.BrCc1ccccc1~[H-].[Na+]~DMF~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "CC(=O)N(Cc1ccccc1)c1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "Suzuki coupling (aryl bromide + boronic acid, Pd, carbonate)",
+   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1~[Pd].[K+].[K+].O=C([O-])[O-]~toluene, water~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "Cc1ccc(-c2ccccc2)cc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "Sonogashira coupling",
+   "code": "Ic1ccccc1.C#Cc1ccccc1~[Pd].[Cu]I.CCN(CC)CC~THF~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "C(#Cc1ccccc1)c1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "Boc removed by TFA",
+   "code": "CC(C)(C)OC(=O)NCCc1ccccc1~OC(=O)C(F)(F)F~dichloromethane~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "NCCc1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "Williamson ether (phenol + EtBr, carbonate)",
+   "code": "Oc1ccccc1.BrCC~[K+].[K+].O=C([O-])[O-]~DMF~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "CCOc1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "SNAr (4-fluoronitrobenzene + morpholine)",
+   "code": "O=[N+]([O-])c1ccc(F)cc1.C1COCCN1~[K+].[K+].O=C([O-])[O-]~DMSO~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "O=[N+]([O-])c1ccc(N2CCOCC2)cc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "amide coupling (acid + amine, HATU, DIPEA)",
+   "code": "O=C(O)c1ccccc1.NCc1ccccc1~CCN(C(C)C)C(C)C.F[P-](F)(F)(F)(F)F~DMF~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "O=C(NCc1ccccc1)c1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "no reagent given: acid chloride + amine gives the amide",
+   "code": "CC(=O)Cl.NCc1ccccc1~~~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "CC(=O)NCc1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "no reagent given: aryl bromide + boronic acid gives the biaryl",
+   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1~~~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "Cc1ccc(-c2ccccc2)cc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "relevance model (learned templates)",
+   "name": "textbook-size molecule with a spectator salt: nothing is predicted (acetone + NaCl, 4 heavy atoms)",
+   "code": "CC(C)=O~[Na+].[Cl-]~water~",
+   "expect": "Unknown",
+   "products": [],
+   "absent": [
+    "CC(C)O"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "2,4-dichloropyrimidine + morpholine reacts at C4 and the page says why",
+   "code": "Clc1ccnc(Cl)n1.C1COCCN1~[K+].[K+].O=C([O-])[O-]~DMSO~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "Clc1nccc(N2CCOCC2)n1"
+   ],
+   "absent": [
+    "Clc1ccnc(N2CCOCC2)n1"
+   ],
+   "shows": [
+    "Interference · Site choice",
+    "between two ring nitrogens"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "2,4-difluoronitrobenzene + morpholine reacts ortho to the nitro group",
+   "code": "O=[N+]([O-])c1ccc(F)cc1F.C1COCCN1~CCN(C(C)C)C(C)C~DMSO~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "O=[N+]([O-])c1ccc(F)cc1N1CCOCC1"
+   ],
+   "absent": [
+    "O=[N+]([O-])c1ccc(N2CCOCC2)cc1F"
+   ],
+   "shows": [
+    "nitro, ortho to the reacting aromatic carbon"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "Boc removed by TFA, benzyl ester kept: the acid-lability advisory is shown",
+   "code": "CC(C)(C)OC(=O)NCC(=O)OCc1ccccc1~OC(=O)C(F)(F)F~dichloromethane~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "NCC(=O)OCc1ccccc1"
+   ],
+   "absent": [],
+   "shows": [
+    "Interference · Reagent and groups present",
+    "acid-labile protecting group"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "H2 / Pd on a benzyl ether and an alkene: the other reducible group is named",
+   "code": "C=CCCOCc1ccccc1~[H][H].[Pd]~ethanol~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "CCCCOCc1ccccc1"
+   ],
+   "absent": [],
+   "shows": [
+    "other reducible groups"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "amide coupling with a free alcohol: N- before O-acylation, the competing site is named",
+   "code": "O=C(O)c1ccccc1.NCCO~CCN=C=NCCCN(C)C.On1nnc2ccccc21~DMF~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "O=C(NCCO)c1ccccc1"
+   ],
+   "absent": [
+    "O=C(OCCN)c1ccccc1"
+   ],
+   "shows": [
+    "several nucleophilic sites"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "Williamson ether: the phenol is alkylated before the primary alcohol",
+   "code": "Oc1ccc(CCO)cc1.BrCC~[K+].[K+].O=C([O-])[O-]~DMF~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "CCOc1ccc(CCO)cc1"
+   ],
+   "absent": [
+    "CCOCCc1ccc(O)cc1"
+   ],
+   "shows": [
+    "oxygen on an aromatic ring"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "epoxide opened by an amine at the less hindered carbon; no hindrance line for the released oxygen",
+   "code": "CC1CO1.NCc1ccccc1~~ethanol~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "CC(O)CNCc1ccccc1"
+   ],
+   "absent": [
+    "CC(CO)NCc1ccccc1"
+   ],
+   "hides": [
+    "Interference · Hindrance"
+   ]
+  },
+  {
+   "feature": "interferences (site choice, groups present)",
+   "name": "nothing to say about a plain Suzuki coupling",
+   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1~[Pd].[K+].[K+].O=C([O-])[O-]~toluene, water~",
+   "expect": "Predicted by the relevance model",
+   "products": [
+    "Cc1ccc(-c2ccccc2)cc1"
+   ],
+   "absent": [],
+   "hides": [
+    "Interference ·"
+   ]
   }
  ]
 }

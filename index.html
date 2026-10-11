@@ -210,6 +210,10 @@
           One strict question is asked, by canonical structure: <b>is the engine's major product the product that was actually isolated?</b>
           Records whose recorded product is a solvent or a fragment of a much larger reactant are counted as data errors, not misses.
           The run takes a few minutes in the browser and can be stopped and resumed; the result is kept.</p>
+        <h2>The learned-template predictor <small>what the Reactions page uses when no workbook rule applies; measured on patents it never saw</small></h2>
+        <div id="validLearned" class="card"><p class="hint">Reading the figures stored with the model…</p></div>
+        <h2>How predictions are made, and what they are built from <small>the fragments, interferences and templates: how often each functional group appears</small></h2>
+        <div id="validCensus" class="card"><p class="hint">Reading the census…</p></div>
         <h2>Data sources <small>public reaction sets; loading one adds it to precedent search everywhere and to the benchmark</small></h2>
         <div id="validSources" class="card"></div>
         <div class="toolbar">
@@ -253,9 +257,13 @@
   <script src="js/rxn_equation.js"></script>
   <script src="data/reaction_rules.js"></script>
   <script src="data/pka.js"></script>
+  <script src="js/relevance.js"></script>
+  <script src="js/interference.js"></script>
   <script src="js/reactions.js"></script>
   <script src="js/possibilities.js"></script>
   <script src="js/validation.js"></script>
+  <script src="data/fragment_census.js"></script>
+  <script src="js/census.js"></script>
   <!-- Molecule tab: element/bond tables, the per-atom and per-bond facts, the 2D and 3D views, the 3D engine, PubChem 3D.
        three.js and OpenChemLib (vendor/) are loaded by molview.js only when the 3D view is first used. -->
   <script src="js/mol_data.js"></script>
