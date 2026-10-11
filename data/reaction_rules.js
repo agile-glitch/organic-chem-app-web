@@ -9329,6 +9329,618 @@ window.REACTION_RULES = {
    "smarts": "[PX4](=[OX1])-[OX2]-[CX4]",
    "pKa": 27.0,
    "pKaH": -2.0
+  },
+  "F104": {
+   "name": "thiophene / benzothiophene ring C–H",
+   "smarts": "[cH;$(c1:c:c:c:s:1),$(c1:c:c:s:c:1)]",
+   "pKa": 33.0,
+   "pKaH": null
+  },
+  "F105": {
+   "name": "furan / benzofuran ring C–H",
+   "smarts": "[cH;$(c1:c:c:c:o:1),$(c1:c:c:o:c:1)]",
+   "pKa": 35.0,
+   "pKaH": null
+  },
+  "F106": {
+   "name": "pyrrole / indole ring C–H",
+   "smarts": "[cH;$(c1:c:c:c:[nX3]:1),$(c1:c:c:[nX3]:c:1)]",
+   "pKa": 39.0,
+   "pKaH": -3.8
+  },
+  "F107": {
+   "name": "azole C–H between two ring heteroatoms (imidazole C2–H, thiazole C2–H, oxazole C2–H)",
+   "smarts": "[cH;r5;$(c(:[n,o,s]):[n,o,s])]",
+   "pKa": 30.0,
+   "pKaH": null
+  },
+  "F108": {
+   "name": "azine ring C–H (pyridine, pyrimidine, quinoline: the ring that carries the N)",
+   "smarts": "[cH;r6;$(c1:n:*:*:*:*:1),$(c1:*:n:*:*:*:1),$(c1:*:*:n:*:*:1)]",
+   "pKa": 40.0,
+   "pKaH": null
+  },
+  "F109": {
+   "name": "pyrazole / indazole N–H (N–H next to another ring N)",
+   "smarts": "[nH;r5;$([nH]:n)]",
+   "pKa": 14.2,
+   "pKaH": 2.5
+  },
+  "F110": {
+   "name": "imidazole / benzimidazole / purine / azaindole N–H (N–H next to a C=N)",
+   "smarts": "[nH;r5;$([nH]:c:[nX2])]",
+   "pKa": 14.5,
+   "pKaH": 7.0
+  },
+  "F111": {
+   "name": "pyrrole / indole / carbazole N–H (no second ring N next to it)",
+   "smarts": "[nH;r5;!$([nH]:n);!$([nH]:c:[nX2])]",
+   "pKa": 17.5,
+   "pKaH": -3.8
+  },
+  "F112": {
+   "name": "imidazole-type ring N (sp2 N of imidazole, benzimidazole, purine: next to a C bonded to the substituted ring N)",
+   "smarts": "[nX2;r5;+0;$([nX2]:c:[nX3;r5])]",
+   "pKa": null,
+   "pKaH": 7.0
+  },
+  "F113": {
+   "name": "other azole ring N (sp2 N of pyrazole, thiazole, oxazole, triazole, tetrazole)",
+   "smarts": "[nX2;r5;+0;!$([nX2]:c:[nX3;r5])]",
+   "pKa": null,
+   "pKaH": 2.5
+  },
+  "F114": {
+   "name": "tetrazole (N–H acid, pKa ≈ 5: carboxylic-acid isostere)",
+   "smarts": "c1nnnn1",
+   "pKa": 4.9,
+   "pKaH": -3.0
+  },
+  "F115": {
+   "name": "heteroaryl NH2 (2-aminopyridine, aminopyrimidine, aminothiazole: NH2 on a carbon next to a ring N)",
+   "smarts": "[nX2]:c-[NX3;H2;+0]",
+   "pKa": 28.0,
+   "pKaH": 6.9
+  },
+  "F116": {
+   "name": "aryl ketone (acetophenone, benzophenone: Ar–C(=O)–C)",
+   "smarts": "c[CX3](=[OX1])[#6]",
+   "pKa": 18.3,
+   "pKaH": -6.0
+  },
+  "F117": {
+   "name": "aromatic aldehyde (ArCHO)",
+   "smarts": "c[CX3H1]=[OX1]",
+   "pKa": null,
+   "pKaH": -7.0
+  },
+  "F118": {
+   "name": "aromatic carboxylic acid (ArCO2H, ArCO2⁻)",
+   "smarts": "c[CX3](=[OX1])[OX2H1,OX1-]",
+   "pKa": 4.2,
+   "pKaH": -7.0
+  },
+  "F119": {
+   "name": "α-amino acid / N-protected α-amino acid (N–CH–CO2H)",
+   "smarts": "[NX3][CX4;H1,H2][CX3](=[OX1])[OX2H1,OX1-]",
+   "pKa": 3.6,
+   "pKaH": null
+  },
+  "F120": {
+   "name": "primary amide (C(=O)NH2)",
+   "smarts": "[#6][CX3](=[OX1])[NX3;H2]",
+   "pKa": 17.0,
+   "pKaH": -0.5
+  },
+  "F121": {
+   "name": "imide (phthalimide, succinimide, glutarimide: C(=O)–N–C(=O))",
+   "smarts": "[CX3](=[OX1])[NX3;+0][CX3]=[OX1]",
+   "pKa": 8.3,
+   "pKaH": -2.0
+  },
+  "F122": {
+   "name": "urea (N–C(=O)–N: ureas, carbamoyl-ureas)",
+   "smarts": "[NX3;+0][CX3](=[OX1])[NX3;+0]",
+   "pKa": 27.0,
+   "pKaH": null
+  },
+  "F123": {
+   "name": "hydroxamic acid / hydroxamate (C(=O)–N–OH, C(=O)–N–OR; Weinreb amide)",
+   "smarts": "[CX3](=[OX1])[NX3][OX2]",
+   "pKa": 9.4,
+   "pKaH": null
+  },
+  "F124": {
+   "name": "activated ester (N-hydroxysuccinimide, HOBt/HOAt, pentafluorophenyl, p-nitrophenyl ester)",
+   "smarts": "[CX3](=[OX1])[OX2]-[$([#7]),$(c1c(F)c(F)c(F)c(F)c1F),$(c1ccc([N+](=O)[O-])cc1)]",
+   "pKa": null,
+   "pKaH": -7.0
+  },
+  "F125": {
+   "name": "α-halo carbonyl (α-halo ketone, ester, amide)",
+   "smarts": "[CX4;!$(C(F)(F))]([Cl,Br,I])[CX3]=[OX1]",
+   "pKa": 16.0,
+   "pKaH": null
+  },
+  "F126": {
+   "name": "enol ether / vinyl ether (C=C–O–R; dihydropyran, dihydrofuran)",
+   "smarts": "[CX3]=[CX3]-[OX2]-[#6;!$([#6]=O)]",
+   "pKa": null,
+   "pKaH": -2.0
+  },
+  "F127": {
+   "name": "enamine / enaminone (C=C–N, not an enamide)",
+   "smarts": "[CX3]=[CX3]-[NX3;+0;!$(N-C=O);!$(N-S(=O)=O);!$(N-c)]",
+   "pKa": null,
+   "pKaH": 9.0
+  },
+  "F128": {
+   "name": "diazo compound (R2C=N2: diazomethane, TMS-diazomethane, diazoacetate)",
+   "smarts": "[#6]=[N+]=[N-]",
+   "pKa": null,
+   "pKaH": 10.0
+  },
+  "F129": {
+   "name": "1,2-amino alcohol (free N–C–C–OH: ethanolamine, amino-alcohols)",
+   "smarts": "[NX3;!$(N-C=O);!$(N-S(=O)=O)][CX4][CX4][OX2H1]",
+   "pKa": 15.5,
+   "pKaH": 9.5
+  },
+  "F130": {
+   "name": "benzyl group on O, N or S (benzyl ether, N-benzyl amine / amide, benzyl thioether)",
+   "smarts": "c-[CH2;X4]-[OX2,NX3,SX2;!$([OX2]-C=O)]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F131": {
+   "name": "benzyl ester / benzyl carbamate (Cbz) / benzyl carbonate: Ar–CH2–O–C(=O)",
+   "smarts": "c-[CH2;X4]-[OX2]-[CX3]=[OX1]",
+   "pKa": null,
+   "pKaH": -6.5
+  },
+  "F132": {
+   "name": "4-methoxybenzyl (PMB) group on O, N or S",
+   "smarts": "[CH3]-[OX2]-c1ccc(cc1)-[CH2;X4]-[OX2,NX3,SX2]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F133": {
+   "name": "allyl group on O, N or S (allyl ether, allyl ester, Alloc)",
+   "smarts": "[CH2;X4](-[OX2,NX3,SX2])-[CH]=[CH2]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F134": {
+   "name": "trityl group (Ph3C–N, Ph3C–O, Ph3C–S)",
+   "smarts": "[CX4](-c)(-c)(-c)-[N,O,S]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F135": {
+   "name": "fluorenylmethyl carbamate (Fmoc)",
+   "smarts": "[NX3]-C(=O)-O-[CH2]-[CH]1-c2ccccc2-c2ccccc12",
+   "pKa": 22.6,
+   "pKaH": null
+  },
+  "F136": {
+   "name": "trifluoroacetyl (trifluoroacetic acid TFA, trifluoroacetamide, trifluoroacetate ester)",
+   "smarts": "[CX3](=[OX1])(C(F)(F)F)[N,O]",
+   "pKa": 0.5,
+   "pKaH": -7.0
+  },
+  "F137": {
+   "name": "acetamide / N-acetyl (CH3–C(=O)–N)",
+   "smarts": "[CH3][CX3](=[OX1])[NX3]",
+   "pKa": 17.0,
+   "pKaH": -0.5
+  },
+  "F138": {
+   "name": "acetate ester (CH3–C(=O)–O–C: acetyl protecting group on an alcohol or phenol)",
+   "smarts": "[CH3][CX3](=[OX1])[OX2][#6]",
+   "pKa": 25.0,
+   "pKaH": -6.5
+  },
+  "F139": {
+   "name": "methyl / ethyl ester (saponified by LiOH, NaOH; the common ester protecting group)",
+   "smarts": "[#6][CX3](=[OX1])[OX2][CH3,$([CH2][CH3])]",
+   "pKa": 25.0,
+   "pKaH": -6.5
+  },
+  "F140": {
+   "name": "organolithium (R–Li: n-BuLi, s-BuLi, t-BuLi, MeLi, PhLi)",
+   "smarts": "[Li]-[#6]",
+   "pKa": 50.0,
+   "pKaH": null
+  },
+  "F141": {
+   "name": "Grignard reagent, chloride / iodide (R–MgCl, R–MgI: MeMgCl, iPrMgCl)",
+   "smarts": "[#6]-[Mg]-[Cl,I]",
+   "pKa": 45.0,
+   "pKaH": null
+  },
+  "F142": {
+   "name": "metal amide base (LDA, LiHMDS, NaHMDS, KHMDS, LiTMP)",
+   "smarts": "[N-;X2;$([N-]([Si])[Si]),$([N-]([CX4])[CX4])]",
+   "pKa": 36.0,
+   "pKaH": null
+  },
+  "F143": {
+   "name": "metal hydride (H⁻: NaH, KH, CaH2)",
+   "smarts": "[#1;-]",
+   "pKa": 35.0,
+   "pKaH": null
+  },
+  "F144": {
+   "name": "borohydride (NaBH4, NaBH3CN, NaBH(OAc)3, LiBH4)",
+   "smarts": "[$([BH4-]),$([BH3-]C#N),$([BH-](O)(O)O)]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F145": {
+   "name": "alkylaluminium hydride (DIBAL-H, Red-Al)",
+   "smarts": "[AlH]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F146": {
+   "name": "phosphine (PPh3, PBu3, PCy3 and phosphine ligands: P with three carbons)",
+   "smarts": "[PX3;+0]([#6])([#6])[#6]",
+   "pKa": null,
+   "pKaH": 2.7
+  },
+  "F147": {
+   "name": "phosphonium salt / ylide (Wittig reagents: R4P⁺, R3P=CR2)",
+   "smarts": "[$([PX4+]([#6])([#6])([#6])[#6]),$([CX3]=[PX4]([#6])([#6])[#6])]",
+   "pKa": 22.0,
+   "pKaH": null
+  },
+  "F148": {
+   "name": "carbodiimide (EDC, DCC, DIC: N=C=N)",
+   "smarts": "[NX2]=[CX2]=[NX2]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F149": {
+   "name": "uronium / phosphonium coupling reagent (HATU, HBTU, TBTU, BOP, PyBOP)",
+   "smarts": "[$([CX3](=[N+;X3])([NX3])[OX2][#7]),$([PX4+]([#7])([#7])([#7])[OX2][#7])]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F150": {
+   "name": "N-hydroxybenzotriazole (HOBt, HOAt: coupling additive)",
+   "smarts": "[OX2H1,OX1-][nX3]1:[nX2]:[nX2]:c:c:1",
+   "pKa": 4.6,
+   "pKaH": null
+  },
+  "F151": {
+   "name": "N-halo imide / amide (NBS, NCS, NIS, DBDMH, chloramine-T)",
+   "smarts": "[NX3]([CX3]=[OX1])[Cl,Br,I]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F152": {
+   "name": "dihalogen / interhalogen (Br2, Cl2, I2, ICl, IBr)",
+   "smarts": "[Cl,Br,I]-[Cl,Br,I]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F153": {
+   "name": "halide anion (Cl⁻, Br⁻, I⁻: NaI, KBr, LiCl, Bu4NBr)",
+   "smarts": "[Cl-,Br-,I-]",
+   "pKa": -10.0,
+   "pKaH": null
+  },
+  "F154": {
+   "name": "fluoride anion (F⁻: TBAF, CsF, KF)",
+   "smarts": "[F-]",
+   "pKa": 3.2,
+   "pKaH": null
+  },
+  "F155": {
+   "name": "azide anion (N3⁻: NaN3)",
+   "smarts": "[N-]=[N+]=[N-]",
+   "pKa": 4.7,
+   "pKaH": null
+  },
+  "F156": {
+   "name": "carbonate / bicarbonate (CO3²⁻, HCO3⁻: K2CO3, Cs2CO3, Na2CO3, NaHCO3)",
+   "smarts": "[$([CX3](=[OX1])([OX1-])[OX1-]),$([CX3](=[OX1])([OX1-])[OX2H1])]",
+   "pKa": 10.3,
+   "pKaH": null
+  },
+  "F157": {
+   "name": "carbon dioxide (CO2, dry ice)",
+   "smarts": "O=C=O",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F158": {
+   "name": "formaldehyde (CH2=O: formalin, paraformaldehyde)",
+   "smarts": "[CH2]=[OX1]",
+   "pKa": null,
+   "pKaH": -7.0
+  },
+  "F159": {
+   "name": "carbon disulfide / thiophosgene (CS2, CSCl2)",
+   "smarts": "[SX1]=[$([CX2]=[SX1]),$([CX3](Cl)Cl)]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F160": {
+   "name": "trialkyl borate (B(OMe)3, B(OiPr)3)",
+   "smarts": "[BX3]([OX2][CX4])([OX2][CX4])[OX2][CX4]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F161": {
+   "name": "deoxofluorinating agent (DAST, Deoxo-Fluor: R2N–SF3)",
+   "smarts": "[NX3]-[SX4](-F)(-F)-F",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F162": {
+   "name": "hypervalent iodine (Dess–Martin periodinane, IBX, PIDA, PIFA)",
+   "smarts": "[I;X3,X4,X5]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F163": {
+   "name": "metal-oxo oxidant (CrO3, PCC, PDC, KMnO4, OsO4, RuO4, SeO2)",
+   "smarts": "[Cr,Mn,Os,Ru,Se;$(*=O),$(*-[O-])]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F164": {
+   "name": "platinum-group metal catalyst (Pd, Pt, Rh, Ru, Ir, Ni: Pd/C, Pd(PPh3)4, Pd(OAc)2, Raney Ni)",
+   "smarts": "[Pd,Pt,Rh,Ru,Ir,Ni]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F165": {
+   "name": "copper species (CuI, CuBr, CuCl, Cu(OAc)2, Cu2O)",
+   "smarts": "[Cu]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F166": {
+   "name": "metal in the zero oxidation state (Zn, Fe, Sn, Mg, Na, K, Li, Al, Sm, In dust, powder or turnings)",
+   "smarts": "[Zn,Fe,Sn,Mg,Na,K,Li,Al,Sm,In,Mn,Ca;+0;D0]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F167": {
+   "name": "metal / boron halide Lewis acid (BF3, BBr3, AlCl3, TiCl4, ZnCl2, SnCl4, FeCl3, MgBr2)",
+   "smarts": "[B,Al,Ti,Zn,Sn,Fe,Mg,Zr,In,Cu,Sc,Yb,Ce,Ga,Mn,Co,Cd,Sb;$(*~[F,Cl,Br,I]);!$(*-[#6])]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F168": {
+   "name": "quaternary ammonium (R4N⁺: Bu4N⁺ phase-transfer catalysts and salts)",
+   "smarts": "[NX4+;H0]([#6])([#6])([#6])[#6]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F169": {
+   "name": "ammonium salt (protonated amine R3NH⁺, RNH3⁺, NH4⁺: amine hydrochlorides)",
+   "smarts": "[NX4+;!H0]",
+   "pKa": 9.25,
+   "pKaH": null
+  },
+  "F170": {
+   "name": "aryl chloride next to a ring N (2-chloropyridine, 2-chlorothiazole, 2-chloropyrimidine)",
+   "smarts": "[Cl;X1]-c:[nX2;+0]",
+   "pKa": null,
+   "pKaH": 0.7
+  },
+  "F171": {
+   "name": "aryl bromide next to a ring N (2-bromopyridine, 2-bromothiazole)",
+   "smarts": "[Br;X1]-c:[nX2;+0]",
+   "pKa": null,
+   "pKaH": 0.9
+  },
+  "F172": {
+   "name": "aryl chloride with an ortho/para electron-withdrawing group (SNAr-activated)",
+   "smarts": "[Cl;X1]-[c;$(c:c-[$([N+](=[OX1])[O-]),$([CX2]#[NX1]),$([CX4](F)(F)F),$([CX3]=[OX1]),$([SX4](=[OX1])=[OX1])]),$(c:c:c:c-[$([N+](=[OX1])[O-]),$([CX2]#[NX1]),$([CX4](F)(F)F),$([CX3]=[OX1]),$([SX4](=[OX1])=[OX1])])]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F173": {
+   "name": "aryl chloride with an ortho/para electron-donating group (deactivated)",
+   "smarts": "[Cl;X1]-[c;$(c:c-[$([OX2H1]),$([OX2][#6]),$([NX3;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])])]),$(c:c:c:c-[$([OX2H1]),$([OX2][#6]),$([NX3;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])])])]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F174": {
+   "name": "benzylic chloride (Ar–CH2–Cl)",
+   "smarts": "c-[CX4;H2]-[Cl;X1]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F175": {
+   "name": "2-halo-azole (Cl/Br/I on a 5-ring carbon next to a ring N: thiazole, imidazole, oxazole)",
+   "smarts": "[Cl,Br,I;X1]-[c;r5]:[nX2;r5;+0]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F176": {
+   "name": "primary alkylamine (R–NH2 on sp3 C; not an aniline)",
+   "smarts": "[NX3;H2;+0;!$(N~[!#6;!#1]);!$(N-[#6]=[!#6]);!$(N-[#6]#[!#6])]-[CX4]",
+   "pKa": 35.0,
+   "pKaH": 10.6
+  },
+  "F177": {
+   "name": "cyclic secondary amine (piperidine, pyrrolidine, morpholine, piperazine N–H)",
+   "smarts": "[NX3;H1;R;!$(NC=O);!$(N-c)]([CX4])[CX4]",
+   "pKa": 36.0,
+   "pKaH": 11.1
+  },
+  "F178": {
+   "name": "acyclic secondary amine (R2NH: Et2NH, N-methylbenzylamine)",
+   "smarts": "[NX3;H1;!R;!$(NC=O);!$(N-c)]([CX4])[CX4]",
+   "pKa": 36.0,
+   "pKaH": 10.9
+  },
+  "F179": {
+   "name": "trialkylamine, all three substituents acyclic (Et3N, DIPEA, Me2NR): a base",
+   "smarts": "[NX3;H0;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-C#N);!$(N-[#7,#8,#16])]([CX4;!R])([CX4;!R])[CX4;!R]",
+   "pKa": 40.0,
+   "pKaH": 10.75
+  },
+  "F180": {
+   "name": "N,N-dialkylaniline (Ar–NR2: dimethylaniline, N-arylpiperazine/piperidine)",
+   "smarts": "[NX3;H0;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-C#N);!$(N-[#7,#8,#16])](-c)([CX4])[CX4]",
+   "pKa": 40.0,
+   "pKaH": 5.1
+  },
+  "F181": {
+   "name": "secondary amine on a ring N-heteroarene (2-alkylamino-pyridine / pyrimidine / thiazole: Ar(het)–NH–R)",
+   "smarts": "[NX3;H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8,#16])](-c:[nX2;+0])-[#6]",
+   "pKa": 26.0,
+   "pKaH": 7.0
+  },
+  "F182": {
+   "name": "2-aminoazole NH2 (2-aminothiazole, 2-aminoimidazole, 2-aminooxazole: NH2 on a 5-ring carbon next to a ring N)",
+   "smarts": "[nX2;r5]:c-[NX3;H2;+0]",
+   "pKa": 26.0,
+   "pKaH": 5.4
+  },
+  "F183": {
+   "name": "aminopyridine / aminopyrimidine NH2 (NH2 on a 6-ring carbon next to a ring N)",
+   "smarts": "[nX2;r6]:c-[NX3;H2;+0]",
+   "pKa": 28.0,
+   "pKaH": 6.9
+  },
+  "F184": {
+   "name": "tertiary amide (R–C(=O)–NR2: DMF, DMA, Weinreb amide, N-acylpiperidine, N-alkyl lactam)",
+   "smarts": "[CX3;!$(C(-[OX2,SX2,NX3])-[OX2,SX2,NX3])](=[OX1])[NX3;H0;+0]",
+   "pKa": 30.0,
+   "pKaH": -0.3
+  },
+  "F185": {
+   "name": "secondary amide (R–C(=O)–NH–R)",
+   "smarts": "[#6][CX3](=[OX1])[NX3;H1;+0]-[#6]",
+   "pKa": 17.0,
+   "pKaH": -0.5
+  },
+  "F186": {
+   "name": "5-membered ring N–H amide / carbamate / urea (γ-lactam, oxazolidinone, hydantoin, thiazolidinedione N–H)",
+   "smarts": "[NX3;H1;+0;r5;!a]-[CX3;!a]=[OX1]",
+   "pKa": 17.0,
+   "pKaH": -0.5
+  },
+  "F187": {
+   "name": "imide N–H (succinimide, glutarimide, thiazolidinedione, maleimide N–H): an acid",
+   "smarts": "[CX3](=[OX1])[NX3;+0;H1][CX3]=[OX1]",
+   "pKa": 8.3,
+   "pKaH": -2.0
+  },
+  "F188": {
+   "name": "N-substituted imide (N-alkyl phthalimide, N-alkyl succinimide: masked amine)",
+   "smarts": "[CX3](=[OX1])[NX3;+0;H0]([#6,#7,#8])[CX3]=[OX1]",
+   "pKa": 25.0,
+   "pKaH": -2.0
+  },
+  "F189": {
+   "name": "acyclic enone (chalcone, methyl vinyl ketone: a strong Michael acceptor)",
+   "smarts": "[CX3;!R]=[CX3][CX3](=[OX1])[#6]",
+   "pKa": null,
+   "pKaH": -3.0
+  },
+  "F190": {
+   "name": "cyclic enone (cyclohexenone, cyclopentenone, chromone: ring C=C–C=O)",
+   "smarts": "[CX3;R]=[CX3;R][CX3;R](=[OX1])[#6]",
+   "pKa": null,
+   "pKaH": -3.0
+  },
+  "F191": {
+   "name": "aryl nitrile (Ar–C≡N: benzonitrile, cyanopyridine)",
+   "smarts": "c-[CX2]#[NX1]",
+   "pKa": null,
+   "pKaH": -10.0
+  },
+  "F192": {
+   "name": "α-C–H of a ketone (R–CO–CH: pKa ≈ 19–20; aldol, enolate alkylation, α-halogenation)",
+   "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-[CX3]=[OX1]);!$(C(-[CX3]=[OX1])-C#N);$(C-[CX3](=[OX1])-[#6])]",
+   "pKa": 19.0,
+   "pKaH": -7.0
+  },
+  "F193": {
+   "name": "α-C–H of an ester or lactone (pKa ≈ 25; needs LDA/NaH-strength base)",
+   "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-[CX3]=[OX1]);!$(C(-[CX3]=[OX1])-C#N);$(C-[CX3](=[OX1])-[OX2;H0;+0][#6])]",
+   "pKa": 25.0,
+   "pKaH": -6.5
+  },
+  "F194": {
+   "name": "α-C–H of a nitrile (pKa ≈ 25; cyanomethyl anion)",
+   "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-C#N);!$(C(-C#N)-C#N);$(C-[CX2]#[NX1])]",
+   "pKa": 25.0,
+   "pKaH": -10.0
+  },
+  "F195": {
+   "name": "α-C–H of an aldehyde (pKa ≈ 17; enolises most easily)",
+   "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);$(C-[CX3H1]=[OX1])]",
+   "pKa": 17.0,
+   "pKaH": -7.0
+  },
+  "F196": {
+   "name": "aldimine / aldoxime (H–C=N: one substituent on carbon)",
+   "smarts": "[CX3;H1]=[NX2]",
+   "pKa": 11.0,
+   "pKaH": 7.0
+  },
+  "F197": {
+   "name": "methanol (CH3–OH): reagent and solvent",
+   "smarts": "[CH3]-[OX2H1]",
+   "pKa": 15.5,
+   "pKaH": -2.2
+  },
+  "F198": {
+   "name": "ethanol (CH3CH2–OH): reagent and solvent",
+   "smarts": "[CH3]-[CH2]-[OX2H1]",
+   "pKa": 15.9,
+   "pKaH": -2.4
+  },
+  "F199": {
+   "name": "benzylic alcohol (Ar–CH2–OH)",
+   "smarts": "c-[CX4;H2]-[OX2H1]",
+   "pKa": 15.4,
+   "pKaH": -2.0
+  },
+  "F200": {
+   "name": "orthoester (R–C(OR)3: triethyl orthoformate, trimethyl orthoacetate)",
+   "smarts": "[CX4]([OX2][#6])([OX2][#6])[OX2][#6]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F201": {
+   "name": "amide acetal / aminal ether (DMF-DMA: Me2N–CH(OMe)2)",
+   "smarts": "[CX4]([OX2][#6])([OX2][#6])[NX3]",
+   "pKa": null,
+   "pKaH": null
+  },
+  "F202": {
+   "name": "lactam, 5- to 7-membered (pyrrolidinone, piperidinone, caprolactam, oxindole)",
+   "smarts": "[#6][CX3;r5,r6,r7](=[OX1])[NX3;r5,r6,r7;+0]",
+   "pKa": 17.0,
+   "pKaH": -0.2
+  },
+  "F203": {
+   "name": "acyclic enamine / enaminone (N–CH=C: Me2N–CH=CH–C(=O)R from DMF-DMA)",
+   "smarts": "[CX3]=[CX3;!R]-[NX3;+0;!$(N-C=O);!$(N-S(=O)=O);!$(N-c)]",
+   "pKa": null,
+   "pKaH": 9.0
+  },
+  "F204": {
+   "name": "acyclic imine / oxime / hydrazone (C=N not in a ring)",
+   "smarts": "[CX3]=[NX2;!R]",
+   "pKa": 11.0,
+   "pKaH": 7.0
+  },
+  "F205": {
+   "name": "2-sulfonyl / 2-sulfinyl azine (SO2R on a ring carbon next to a ring N: an SNAr leaving group)",
+   "smarts": "[#6]-[S;$([SX3]=[OX1]),$([SX4](=[OX1])=[OX1])]-c:[nX2;+0]",
+   "pKa": 29.0,
+   "pKaH": -2.0
   }
  },
  "fragmentConditions": [
@@ -10286,8400 +10898,9600 @@ window.REACTION_RULES = {
    "abbr": "Na+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Na+]"
   },
   "Cl": {
    "name": "hydrogen chloride",
    "abbr": "HCl",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cl"
   },
   "[K+]": {
    "name": "potassium ion",
    "abbr": "K+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[K+]"
   },
   "O=C([O-])[O-]": {
    "name": "carbonate",
    "abbr": "CO3(2-)",
    "role": "base",
    "also": "",
-   "pKaH": 10.3
+   "pKaH": 10.3,
+   "typed": "O=C([O-])[O-]"
   },
   "[OH-]": {
    "name": "hydroxide",
    "abbr": "OH-",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 15.7
+   "pKaH": 15.7,
+   "typed": "[OH-]"
   },
   "CCN(CC)CC": {
    "name": "triethylamine",
    "abbr": "Et3N (TEA)",
    "role": "base",
    "also": "",
-   "pKaH": 10.75
+   "pKaH": 10.75,
+   "typed": "CCN(CC)CC"
   },
   "CCN(C(C)C)C(C)C": {
    "name": "N,N-diisopropylethylamine",
    "abbr": "DIPEA (Hunig's base)",
    "role": "base",
    "also": "",
-   "pKaH": 11.0
+   "pKaH": 11.0,
+   "typed": "CCN(C(C)C)C(C)C"
   },
   "[H-]": {
    "name": "hydride",
    "abbr": "H-",
    "role": "base",
    "also": "reductant",
-   "pKaH": 35.0
+   "pKaH": 35.0,
+   "typed": "[H-]"
   },
   "[Pd]": {
    "name": "palladium",
    "abbr": "Pd (Pd/C)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Pd]"
   },
   "[Cl-]": {
    "name": "chloride",
    "abbr": "Cl-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl-]"
   },
   "[Li+]": {
    "name": "lithium ion",
    "abbr": "Li+",
    "role": "counter-ion / spectator ion",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Li+]"
   },
   "O=C([O-])O": {
    "name": "bicarbonate (hydrogen carbonate)",
    "abbr": "HCO3-",
    "role": "base",
    "also": "",
-   "pKaH": 6.35
+   "pKaH": 6.35,
+   "typed": "O=C([O-])O"
   },
   "O=C(O)C(F)(F)F": {
    "name": "trifluoroacetic acid",
    "abbr": "TFA",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)C(F)(F)F"
   },
   "[NH4+]": {
    "name": "ammonium ion",
    "abbr": "NH4+",
    "role": "counter-ion / spectator ion",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[NH4+]"
   },
   "c1ccncc1": {
    "name": "pyridine",
    "abbr": "py",
    "role": "base",
    "also": "solvent",
-   "pKaH": 5.2
+   "pKaH": 5.2,
+   "typed": "c1ccncc1"
   },
   "[Cs+]": {
    "name": "caesium ion",
    "abbr": "Cs+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cs+]"
   },
   "F[P-](F)(F)(F)(F)F": {
    "name": "hexafluorophosphate",
    "abbr": "PF6-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "F[P-](F)(F)(F)(F)F"
   },
   "CC(=O)[O-]": {
    "name": "acetate",
    "abbr": "OAc-",
    "role": "base",
    "also": "counter-ion / spectator ion",
-   "pKaH": 4.76
+   "pKaH": 4.76,
+   "typed": "CC(=O)[O-]"
   },
   "c1ccc([P](c2ccccc2)(c2ccccc2)[Pd]([P](c2ccccc2)(c2ccccc2)c2ccccc2)([P](c2ccccc2)(c2ccccc2)c2ccccc2)[P](c2ccccc2)(c2ccccc2)c2ccccc2)cc1": {
    "name": "tetrakis(triphenylphosphine)palladium(0)",
    "abbr": "Pd(PPh3)4",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc([P](c2ccccc2)(c2ccccc2)[Pd]([P](c2ccccc2)(c2ccccc2)c2ccccc2)([P](c2ccccc2)(c2ccccc2)c2ccccc2)[P](c2ccccc2)(c2ccccc2)c2ccccc2)cc1"
   },
   "CCN=C=NCCCN(C)C": {
    "name": "1-ethyl-3-(3-dimethylaminopropyl)carbodiimide",
    "abbr": "EDC (EDCI)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCN=C=NCCCN(C)C"
   },
   "c1ccc(P(c2ccccc2)c2ccccc2)cc1": {
    "name": "triphenylphosphine",
    "abbr": "PPh3",
    "role": "dehydrating / activating agent",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(c2ccccc2)c2ccccc2)cc1"
   },
   "[BH4-]": {
    "name": "borohydride",
    "abbr": "BH4- (NaBH4)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[BH4-]"
   },
   "On1nnc2ccccc21": {
    "name": "1-hydroxybenzotriazole",
    "abbr": "HOBt",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "On1nnc2ccccc21"
   },
   "[Li][CH2]CCC": {
    "name": "n-butyllithium",
    "abbr": "n-BuLi",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 50.0
+   "pKaH": 50.0,
+   "typed": "[Li][CH2]CCC"
   },
   "O=S(=O)(O)O": {
    "name": "sulfuric acid",
    "abbr": "H2SO4",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(O)O"
   },
   "[I-]": {
    "name": "iodide",
    "abbr": "I-",
    "role": "nucleophile",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[I-]"
   },
   "[Al+3]": {
    "name": "aluminium ion",
    "abbr": "Al3+",
    "role": "Lewis acid",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Al+3]"
   },
   "[Pd+2]": {
    "name": "palladium(II) ion",
    "abbr": "Pd2+",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Pd+2]"
   },
   "N": {
    "name": "ammonia",
    "abbr": "NH3",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 9.25
+   "pKaH": 9.25,
+   "typed": "N"
   },
   "CN(C)C(On1nnc2cccnc21)=[N+](C)C": {
    "name": "HATU (azabenzotriazolyl tetramethyluronium cation)",
    "abbr": "HATU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(On1nnc2cccnc21)=[N+](C)C"
   },
   "CN(C)c1ccncc1": {
    "name": "4-dimethylaminopyridine",
    "abbr": "DMAP",
    "role": "additive",
    "also": "base",
-   "pKaH": 9.6
+   "pKaH": 9.6,
+   "typed": "CN(C)c1ccncc1"
   },
   "O=S(Cl)Cl": {
    "name": "thionyl chloride",
    "abbr": "SOCl2",
    "role": "halogenating agent",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(Cl)Cl"
   },
   "[H][H]": {
    "name": "hydrogen",
    "abbr": "H2",
    "role": "reductant",
    "also": "gas",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[H][H]"
   },
   "CC(C)(C)[O-]": {
    "name": "tert-butoxide",
    "abbr": "t-BuO- (KOtBu)",
    "role": "base",
    "also": "",
-   "pKaH": 17.0
+   "pKaH": 17.0,
+   "typed": "CC(C)(C)[O-]"
   },
   "[Cl][Pd][Cl]": {
    "name": "palladium(II) chloride",
    "abbr": "PdCl2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Pd][Cl]"
   },
   "O=C(/C=C/c1ccccc1)/C=C/c1ccccc1": {
    "name": "dibenzylideneacetone",
    "abbr": "dba",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(/C=C/c1ccccc1)/C=C/c1ccccc1"
   },
   "CCCC[N+](CCCC)(CCCC)CCCC": {
    "name": "tetrabutylammonium",
    "abbr": "TBA+ (Bu4N+)",
    "role": "phase-transfer catalyst",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC[N+](CCCC)(CCCC)CCCC"
   },
   "CC(=O)O[BH-](OC(C)=O)OC(C)=O": {
    "name": "triacetoxyborohydride",
    "abbr": "NaBH(OAc)3 (STAB)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)O[BH-](OC(C)=O)OC(C)=O"
   },
   "[Fe+2]": {
    "name": "iron(II) ion",
    "abbr": "Fe2+",
    "role": "reductant",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Fe+2]"
   },
   "NN": {
    "name": "hydrazine",
    "abbr": "N2H4",
    "role": "reductant",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NN"
   },
   "[F-]": {
    "name": "fluoride",
    "abbr": "F-",
    "role": "deprotecting agent",
    "also": "base",
-   "pKaH": 3.2
+   "pKaH": 3.2,
+   "typed": "[F-]"
   },
   "c1ccc(P(c2ccccc2)[c-]2cccc2)cc1": {
    "name": "(diphenylphosphino)cyclopentadienide (half of dppf)",
    "abbr": "dppf",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(c2ccccc2)[c-]2cccc2)cc1"
   },
   "[Br-]": {
    "name": "bromide",
    "abbr": "Br-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Br-]"
   },
   "[Cu][I]": {
    "name": "copper(I) iodide",
    "abbr": "CuI",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cu][I]"
   },
   "O=P([O-])([O-])[O-]": {
    "name": "phosphate",
    "abbr": "PO4(3-)",
    "role": "base",
    "also": "",
-   "pKaH": 12.3
+   "pKaH": 12.3,
+   "typed": "O=P([O-])([O-])[O-]"
   },
   "O=P(Cl)(Cl)Cl": {
    "name": "phosphorus oxychloride",
    "abbr": "POCl3",
    "role": "dehydrating / activating agent",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P(Cl)(Cl)Cl"
   },
   "CI": {
    "name": "iodomethane",
    "abbr": "MeI",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CI"
   },
   "Cc1ccc(S(=O)(=O)O)cc1": {
    "name": "p-toluenesulfonic acid",
    "abbr": "TsOH (PTSA)",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)O)cc1"
   },
   "Br": {
    "name": "hydrogen bromide",
    "abbr": "HBr",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Br"
   },
   "NO": {
    "name": "hydroxylamine",
    "abbr": "NH2OH",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NO"
   },
   "[Cl][Pd]([Cl])([P](c1ccccc1)(c1ccccc1)c1ccccc1)[P](c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "bis(triphenylphosphine)palladium(II) dichloride",
    "abbr": "PdCl2(PPh3)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Pd]([Cl])([P](c1ccccc1)(c1ccccc1)c1ccccc1)[P](c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "F[B-](F)(F)F": {
    "name": "tetrafluoroborate",
    "abbr": "BF4-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "F[B-](F)(F)F"
   },
   "[Na]": {
    "name": "sodium (metal)",
    "abbr": "Na",
    "role": "reductant",
    "also": "base",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Na]"
   },
   "O=C(Cl)C(=O)Cl": {
    "name": "oxalyl chloride",
    "abbr": "(COCl)2",
    "role": "halogenating agent",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)C(=O)Cl"
   },
   "CN(C)C(On1nnc2ccccc21)=[N+](C)C": {
    "name": "HBTU (benzotriazolyl tetramethyluronium cation)",
    "abbr": "HBTU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(On1nnc2ccccc21)=[N+](C)C"
   },
   "C[O-]": {
    "name": "methoxide",
    "abbr": "MeO- (NaOMe)",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 15.5
+   "pKaH": 15.5,
+   "typed": "C[O-]"
   },
   "BrBr": {
    "name": "bromine",
    "abbr": "Br2",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrBr"
   },
   "[N-]=[N+]=[N-]": {
    "name": "azide",
    "abbr": "N3- (NaN3)",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=[N+]=[N-]"
   },
   "[BH3-]C#N": {
    "name": "cyanoborohydride",
    "abbr": "NaBH3CN",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[BH3-]C#N"
   },
   "CN1CCOCC1": {
    "name": "N-methylmorpholine",
    "abbr": "NMM",
    "role": "base",
    "also": "",
-   "pKaH": 7.4
+   "pKaH": 7.4,
+   "typed": "CN1CCOCC1"
   },
   "O=N[O-]": {
    "name": "nitrite",
    "abbr": "NO2- (NaNO2)",
    "role": "reactant (inorganic)",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=N[O-]"
   },
   "C[Si](C)(C)[N-][Si](C)(C)C": {
    "name": "bis(trimethylsilyl)amide",
    "abbr": "HMDS- (LiHMDS/NaHMDS/KHMDS)",
    "role": "base",
    "also": "",
-   "pKaH": 26.0
+   "pKaH": 26.0,
+   "typed": "C[Si](C)(C)[N-][Si](C)(C)C"
   },
   "OO": {
    "name": "hydrogen peroxide",
    "abbr": "H2O2",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OO"
   },
   "BrB(Br)Br": {
    "name": "boron tribromide",
    "abbr": "BBr3",
    "role": "deprotecting agent",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrB(Br)Br"
   },
   "[Fe]": {
    "name": "iron",
    "abbr": "Fe",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Fe]"
   },
   "O=S(=O)([O-])[O-]": {
    "name": "sulfate",
    "abbr": "SO4(2-)",
    "role": "counter-ion / spectator ion",
    "also": "drying agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])[O-]"
   },
   "C1CCC2=NCCCN2CC1": {
    "name": "1,8-diazabicyclo[5.4.0]undec-7-ene",
    "abbr": "DBU",
    "role": "base",
    "also": "",
-   "pKaH": 12.0
+   "pKaH": 12.0,
+   "typed": "C1CCC2=NCCCN2CC1"
   },
   "[Zn+2]": {
    "name": "zinc ion",
    "abbr": "Zn2+",
    "role": "Lewis acid",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Zn+2]"
   },
   "[Zn]": {
    "name": "zinc",
    "abbr": "Zn",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Zn]"
   },
   "[Ni]": {
    "name": "nickel (Raney nickel)",
    "abbr": "Ni (Raney Ni)",
    "role": "catalyst (metal)",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ni]"
   },
   "C1CCNCC1": {
    "name": "piperidine",
    "abbr": "",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 11.1
+   "pKaH": 11.1,
+   "typed": "C1CCNCC1"
   },
   "ClC(Cl)(Cl)Cl": {
    "name": "carbon tetrachloride",
    "abbr": "CCl4",
    "role": "halogenating agent",
    "also": "solvent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClC(Cl)(Cl)Cl"
   },
   "II": {
    "name": "iodine",
    "abbr": "I2",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "II"
   },
   "CC1(C)c2cccc(P(c3ccccc3)c3ccccc3)c2Oc2c(P(c3ccccc3)c3ccccc3)cccc21": {
    "name": "Xantphos",
    "abbr": "Xantphos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)c2cccc(P(c3ccccc3)c3ccccc3)c2Oc2c(P(c3ccccc3)c3ccccc3)cccc21"
   },
   "C(=NC1CCCCC1)=NC1CCCCC1": {
    "name": "N,N'-dicyclohexylcarbodiimide",
    "abbr": "DCC",
    "role": "coupling reagent (activates an acid)",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C(=NC1CCCCC1)=NC1CCCCC1"
   },
   "[C]": {
    "name": "carbon (activated charcoal)",
    "abbr": "C",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[C]"
   },
   "C=O": {
    "name": "formaldehyde",
    "abbr": "HCHO",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=O"
   },
   "O=[N+]([O-])O": {
    "name": "nitric acid",
    "abbr": "HNO3",
    "role": "electrophile / alkylating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]([O-])O"
   },
   "c1c[nH]cn1": {
    "name": "imidazole",
    "abbr": "Im",
    "role": "base",
    "also": "additive",
-   "pKaH": 7.0
+   "pKaH": 7.0,
+   "typed": "c1c[nH]cn1"
   },
   "CC(C)NC(C)C": {
    "name": "diisopropylamine",
    "abbr": "DIPA (iPr2NH)",
    "role": "base",
    "also": "",
-   "pKaH": 11.05
+   "pKaH": 11.05,
+   "typed": "CC(C)NC(C)C"
   },
   "CC(=O)OC(C)=O": {
    "name": "acetic anhydride",
    "abbr": "Ac2O",
    "role": "electrophile / alkylating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)OC(C)=O"
   },
   "c1ccc(P(c2ccccc2)c2ccc3ccccc3c2-c2c(P(c3ccccc3)c3ccccc3)ccc3ccccc23)cc1": {
    "name": "2,2'-bis(diphenylphosphino)-1,1'-binaphthyl",
    "abbr": "BINAP",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(c2ccccc2)c2ccc3ccccc3c2-c2c(P(c3ccccc3)c3ccccc3)ccc3ccccc23)cc1"
   },
   "N#N": {
    "name": "nitrogen",
    "abbr": "N2",
    "role": "gas",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#N"
   },
   "O=CO": {
    "name": "formic acid",
    "abbr": "HCOOH",
    "role": "acid",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=CO"
   },
   "O=C(n1ccnc1)n1ccnc1": {
    "name": "1,1'-carbonyldiimidazole",
    "abbr": "CDI",
    "role": "coupling reagent (activates an acid)",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(n1ccnc1)n1ccnc1"
   },
   "[Mg]": {
    "name": "magnesium",
    "abbr": "Mg",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Mg]"
   },
   "[O-2]": {
    "name": "oxide",
    "abbr": "O(2-)",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-2]"
   },
   "[C-]#N": {
    "name": "cyanide",
    "abbr": "CN- (NaCN/KCN)",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[C-]#N"
   },
   "CC[O-]": {
    "name": "ethoxide",
    "abbr": "EtO- (NaOEt)",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 16.0
+   "pKaH": 16.0,
+   "typed": "CC[O-]"
   },
   "CC(C)c1cc(C(C)C)c(-c2ccccc2P(C2CCCCC2)C2CCCCC2)c(C(C)C)c1": {
    "name": "XPhos",
    "abbr": "XPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cc(C(C)C)c(-c2ccccc2P(C2CCCCC2)C2CCCCC2)c(C(C)C)c1"
   },
   "B": {
    "name": "borane",
    "abbr": "BH3 (BH3.THF)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "B"
   },
   "[Cu+2]": {
    "name": "copper(II) ion",
    "abbr": "Cu2+",
    "role": "catalyst (metal)",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cu+2]"
   },
   "c1cc[nH+]cc1": {
    "name": "pyridinium",
    "abbr": "pyH+",
    "role": "acid",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cc[nH+]cc1"
   },
   "CC(C)[N-]C(C)C": {
    "name": "diisopropylamide",
    "abbr": "LDA",
    "role": "base",
    "also": "",
-   "pKaH": 36.0
+   "pKaH": 36.0,
+   "typed": "CC(C)[N-]C(C)C"
   },
   "O=S([O-])([O-])=S": {
    "name": "thiosulfate",
    "abbr": "S2O3(2-)",
    "role": "reductant",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])([O-])=S"
   },
   "CC(Cl)Cl": {
    "name": "1,1-dichloroethane",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(Cl)Cl"
   },
   "CC[SiH](CC)CC": {
    "name": "triethylsilane",
    "abbr": "Et3SiH",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[SiH](CC)CC"
   },
   "[Mg+2]": {
    "name": "magnesium ion",
    "abbr": "Mg2+",
    "role": "counter-ion / spectator ion",
    "also": "drying agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Mg+2]"
   },
   "CC(=O)OI1(OC(C)=O)(OC(C)=O)OC(=O)c2ccccc21": {
    "name": "Dess-Martin periodinane",
    "abbr": "DMP",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)OI1(OC(C)=O)(OC(C)=O)OC(=O)c2ccccc21"
   },
   "CN": {
    "name": "methylamine",
    "abbr": "MeNH2",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 10.6
+   "pKaH": 10.6,
+   "typed": "CN"
   },
   "O=C(O)CC(O)(CC(=O)O)C(=O)O": {
    "name": "citric acid",
    "abbr": "",
    "role": "acid",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)CC(O)(CC(=O)O)C(=O)O"
   },
   "[Cl][Sn][Cl]": {
    "name": "tin(II) chloride",
    "abbr": "SnCl2",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Sn][Cl]"
   },
   "CCOC(=O)N=NC(=O)OCC": {
    "name": "diethyl azodicarboxylate",
    "abbr": "DEAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)N=NC(=O)OCC"
   },
   "FB(F)F": {
    "name": "boron trifluoride",
    "abbr": "BF3 (BF3.OEt2)",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "FB(F)F"
   },
   "O=C[O-]": {
    "name": "formate",
    "abbr": "HCOO-",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C[O-]"
   },
   "CS(=O)(=O)Cl": {
    "name": "methanesulfonyl chloride",
    "abbr": "MsCl",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)Cl"
   },
   "CC(C)[CH2][Al+][CH2]C(C)C": {
    "name": "diisobutylaluminium (cation fragment of DIBAL-H)",
    "abbr": "DIBAL",
    "role": "reductant",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[CH2][Al+][CH2]C(C)C"
   },
   "O=S(=O)([O-])O": {
    "name": "hydrogen sulfate (bisulfate)",
    "abbr": "HSO4-",
    "role": "acid",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])O"
   },
   "CN(C)[P+](On1nnc2ccccc21)(N(C)C)N(C)C": {
    "name": "BOP (benzotriazolyloxy-tris(dimethylamino)phosphonium cation)",
    "abbr": "BOP",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)[P+](On1nnc2ccccc21)(N(C)C)N(C)C"
   },
   "[I][Cu][I]": {
    "name": "copper(II) iodide (as recorded; likely CuI)",
    "abbr": "CuI2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[I][Cu][I]"
   },
   "[Mn+4]": {
    "name": "manganese(IV) ion",
    "abbr": "Mn4+",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Mn+4]"
   },
   "[Li][OH]": {
    "name": "lithium hydroxide",
    "abbr": "LiOH",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 15.7
+   "pKaH": 15.7,
+   "typed": "[Li][OH]"
   },
   "O=[N+]([O-])[O-]": {
    "name": "nitrate",
    "abbr": "NO3-",
    "role": "counter-ion / spectator ion",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]([O-])[O-]"
   },
   "[K]": {
    "name": "potassium (metal)",
    "abbr": "K",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[K]"
   },
   "C[Si](C)(C)Cl": {
    "name": "chlorotrimethylsilane",
    "abbr": "TMSCl",
    "role": "protecting-group reagent",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)Cl"
   },
   "On1nnc2cccnc21": {
    "name": "1-hydroxy-7-azabenzotriazole",
    "abbr": "HOAt",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "On1nnc2cccnc21"
   },
   "O=S([O-])[O-]": {
    "name": "sulfite",
    "abbr": "SO3(2-)",
    "role": "reductant",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])[O-]"
   },
   "CC(C)OC(=O)N=NC(=O)OC(C)C": {
    "name": "diisopropyl azodicarboxylate",
    "abbr": "DIAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)OC(=O)N=NC(=O)OC(C)C"
   },
   "O=C=O": {
    "name": "carbon dioxide",
    "abbr": "CO2",
    "role": "gas",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C=O"
   },
   "CC(C)OC(=O)/N=N/C(=O)OC(C)C": {
    "name": "diisopropyl azodicarboxylate (E)",
    "abbr": "DIAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)OC(=O)/N=N/C(=O)OC(C)C"
   },
   "[O]=[Pt]=[O]": {
    "name": "platinum(IV) oxide (Adams' catalyst)",
    "abbr": "PtO2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Pt]=[O]"
   },
   "CC(C)COC(=O)Cl": {
    "name": "isobutyl chloroformate",
    "abbr": "IBCF",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)COC(=O)Cl"
   },
   "CS(=O)(=O)O": {
    "name": "methanesulfonic acid",
    "abbr": "MsOH",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)O"
   },
   "[Ca+2]": {
    "name": "calcium ion",
    "abbr": "Ca2+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ca+2]"
   },
   "CC(C)(C#N)N=NC(C)(C)C#N": {
    "name": "azobisisobutyronitrile",
    "abbr": "AIBN",
    "role": "radical initiator",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C#N)N=NC(C)(C)C#N"
   },
   "[CH3][Al]([CH3])[CH3]": {
    "name": "trimethylaluminium",
    "abbr": "AlMe3",
    "role": "organometallic reagent",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Al]([CH3])[CH3]"
   },
   "O=S([O-])OO": {
    "name": "hydroperoxysulfite (hydroxy sulfite, HOO-S(=O)O-)",
    "abbr": "HSO5- (Oxone)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])OO"
   },
   "O=C(OOC(=O)c1ccccc1)c1ccccc1": {
    "name": "benzoyl peroxide",
    "abbr": "BPO",
    "role": "radical initiator",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(OOC(=O)c1ccccc1)c1ccccc1"
   },
   "O=S([O-])O": {
    "name": "bisulfite (hydrogen sulfite)",
    "abbr": "HSO3-",
    "role": "reductant",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])O"
   },
   "CCCCP(CCCC)CCCC": {
    "name": "tributylphosphine",
    "abbr": "PBu3",
    "role": "dehydrating / activating agent",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCP(CCCC)CCCC"
   },
   "[O-][I+3]([O-])([O-])[O-]": {
    "name": "periodate",
    "abbr": "IO4- (NaIO4)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][I+3]([O-])([O-])[O-]"
   },
   "[Cu]": {
    "name": "copper",
    "abbr": "Cu",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cu]"
   },
   "CC(C)[CH2][AlH][CH2]C(C)C": {
    "name": "diisobutylaluminium hydride",
    "abbr": "DIBAL-H",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[CH2][AlH][CH2]C(C)C"
   },
   "CNC": {
    "name": "dimethylamine",
    "abbr": "Me2NH",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 10.7
+   "pKaH": 10.7,
+   "typed": "CNC"
   },
   "CCOC(=O)/N=N/C(=O)OCC": {
    "name": "diethyl azodicarboxylate (E)",
    "abbr": "DEAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)/N=N/C(=O)OCC"
   },
   "[Cl][Ti]([Cl])([Cl])[Cl]": {
    "name": "titanium(IV) chloride",
    "abbr": "TiCl4",
    "role": "Lewis acid",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ti]([Cl])([Cl])[Cl]"
   },
   "CSC": {
    "name": "dimethyl sulfide",
    "abbr": "DMS (Me2S)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CSC"
   },
   "CCOC(=O)Cl": {
    "name": "ethyl chloroformate",
    "abbr": "ECF",
    "role": "coupling reagent (activates an acid)",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)Cl"
   },
   "[Pt]": {
    "name": "platinum",
    "abbr": "Pt (Pt/C)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Pt]"
   },
   "c1ccc2c(c1)nnn2O[P+](N1CCCC1)(N1CCCC1)N1CCCC1": {
    "name": "PyBOP (benzotriazolyloxy-tripyrrolidinophosphonium cation)",
    "abbr": "PyBOP",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2c(c1)nnn2O[P+](N1CCCC1)(N1CCCC1)N1CCCC1"
   },
   "BrP(Br)Br": {
    "name": "phosphorus tribromide",
    "abbr": "PBr3",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrP(Br)Br"
   },
   "O=S(=O)(Cl)Cl": {
    "name": "sulfuryl chloride",
    "abbr": "SO2Cl2",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(Cl)Cl"
   },
   "[Ti+4]": {
    "name": "titanium(IV) ion",
    "abbr": "Ti4+",
    "role": "Lewis acid",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ti+4]"
   },
   "Cc1ccc(S(=O)(=O)[O-])cc1": {
    "name": "p-toluenesulfonate (tosylate)",
    "abbr": "TsO-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)[O-])cc1"
   },
   "COc1cccc(OC)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1": {
    "name": "SPhos",
    "abbr": "SPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1cccc(OC)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1"
   },
   "ClP(Cl)(Cl)(Cl)Cl": {
    "name": "phosphorus pentachloride",
    "abbr": "PCl5",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClP(Cl)(Cl)(Cl)Cl"
   },
   "C1COCCOCCOCCOCCOCCO1": {
    "name": "18-crown-6",
    "abbr": "18-C-6",
    "role": "phase-transfer catalyst",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1COCCOCCOCCOCCOCCO1"
   },
   "Cc1ccccc1P(c1ccccc1C)c1ccccc1C": {
    "name": "tri(o-tolyl)phosphine",
    "abbr": "P(o-tol)3",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccccc1P(c1ccccc1C)c1ccccc1C"
   },
   "[Li]": {
    "name": "lithium (metal)",
    "abbr": "Li",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Li]"
   },
   "[Li][C](C)(C)C": {
    "name": "tert-butyllithium",
    "abbr": "t-BuLi",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 53.0
+   "pKaH": 53.0,
+   "typed": "[Li][C](C)(C)C"
   },
   "C[CH](C)[Mg][Cl]": {
    "name": "isopropylmagnesium chloride",
    "abbr": "iPrMgCl",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[CH](C)[Mg][Cl]"
   },
   "COc1ccccc1": {
    "name": "anisole",
    "abbr": "PhOMe",
    "role": "additive",
    "also": "solvent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccccc1"
   },
   "O=C(OC(=O)C(F)(F)F)C(F)(F)F": {
    "name": "trifluoroacetic anhydride",
    "abbr": "TFAA",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(OC(=O)C(F)(F)F)C(F)(F)F"
   },
   "[O]=[Mn]=[O]": {
    "name": "manganese(IV) oxide",
    "abbr": "MnO2",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Mn]=[O]"
   },
   "[O]=[Os](=[O])(=[O])=[O]": {
    "name": "osmium tetroxide",
    "abbr": "OsO4",
    "role": "oxidizing catalyst",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Os](=[O])(=[O])=[O]"
   },
   "O=S(=O)(O)Cl": {
    "name": "chlorosulfonic acid",
    "abbr": "ClSO3H",
    "role": "electrophile / alkylating agent",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(O)Cl"
   },
   "CCCP1(=O)OP(=O)(CCC)OP(=O)(CCC)O1": {
    "name": "propylphosphonic anhydride",
    "abbr": "T3P",
    "role": "coupling reagent (activates an acid)",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCP1(=O)OP(=O)(CCC)OP(=O)(CCC)O1"
   },
   "C": {
    "name": "methane (likely a parsing artefact)",
    "abbr": "CH4",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C"
   },
   "O=P([O-])(O)O": {
    "name": "dihydrogen phosphate",
    "abbr": "H2PO4-",
    "role": "salt (work-up or additive)",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P([O-])(O)O"
   },
   "C1CCC(P(C2CCCCC2)C2CCCCC2)CC1": {
    "name": "tricyclohexylphosphine",
    "abbr": "PCy3",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1CCC(P(C2CCCCC2)C2CCCCC2)CC1"
   },
   "Cc1cccc(C)n1": {
    "name": "2,6-lutidine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 6.7
+   "pKaH": 6.7,
+   "typed": "Cc1cccc(C)n1"
   },
   "O=S([O-])S(=O)[O-]": {
    "name": "dithionite",
    "abbr": "S2O4(2-) (Na2S2O4)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])S(=O)[O-]"
   },
   "I": {
    "name": "hydrogen iodide",
    "abbr": "HI",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "I"
   },
   "C1CCNC1": {
    "name": "pyrrolidine",
    "abbr": "",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 11.3
+   "pKaH": 11.3,
+   "typed": "C1CCNC1"
   },
   "[O-][Cl+][O-]": {
    "name": "chlorite",
    "abbr": "ClO2- (NaClO2)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][Cl+][O-]"
   },
   "[O]=[Pt]": {
    "name": "platinum oxide (PtO, as recorded)",
    "abbr": "PtO2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Pt]"
   },
   "CC(C)[O-]": {
    "name": "isopropoxide",
    "abbr": "iPrO-",
    "role": "base",
    "also": "counter-ion / spectator ion",
-   "pKaH": 16.5
+   "pKaH": 16.5,
+   "typed": "CC(C)[O-]"
   },
   "O=C(N=NC(=O)N1CCCCC1)N1CCCCC1": {
    "name": "1,1'-(azodicarbonyl)dipiperidine",
    "abbr": "ADDP",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(N=NC(=O)N1CCCCC1)N1CCCCC1"
   },
   "CN(C)c1ccccn1": {
    "name": "2-(dimethylamino)pyridine",
    "abbr": "",
    "role": "base",
    "also": "additive",
-   "pKaH": 7.0
+   "pKaH": 7.0,
+   "typed": "CN(C)c1ccccn1"
   },
   "O=P(O)(O)O": {
    "name": "phosphoric acid",
    "abbr": "H3PO4",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P(O)(O)O"
   },
   "O=S(=O)([O-])C(F)(F)F": {
    "name": "triflate",
    "abbr": "TfO-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])C(F)(F)F"
   },
   "O=C(OO)c1cccc(Cl)c1": {
    "name": "meta-chloroperoxybenzoic acid",
    "abbr": "mCPBA",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(OO)c1cccc(Cl)c1"
   },
   "CCNCC": {
    "name": "diethylamine",
    "abbr": "Et2NH",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 11.0
+   "pKaH": 11.0,
+   "typed": "CCNCC"
   },
   "[O]=[Cr](=[O])([O-])[Cl]": {
    "name": "chlorochromate",
    "abbr": "PCC (with pyridinium)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cr](=[O])([O-])[Cl]"
   },
   "ClCl": {
    "name": "chlorine",
    "abbr": "Cl2",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClCl"
   },
   "[NH3+]O": {
    "name": "hydroxylammonium",
    "abbr": "NH3OH+ (NH2OH.HCl)",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[NH3+]O"
   },
   "CC(C)(C)P(C(C)(C)C)C(C)(C)C": {
    "name": "tri-tert-butylphosphine",
    "abbr": "P(t-Bu)3",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)P(C(C)(C)C)C(C)(C)C"
   },
   "CN(C)CCN(C)C": {
    "name": "N,N,N',N'-tetramethylethylenediamine",
    "abbr": "TMEDA",
    "role": "ligand",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)CCN(C)C"
   },
   "CC(=O)Cl": {
    "name": "acetyl chloride",
    "abbr": "AcCl",
    "role": "electrophile / alkylating agent",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)Cl"
   },
   "N#CC1=C(C#N)C(=O)C(Cl)=C(Cl)C1=O": {
    "name": "2,3-dichloro-5,6-dicyano-1,4-benzoquinone",
    "abbr": "DDQ",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CC1=C(C#N)C(=O)C(Cl)=C(Cl)C1=O"
   },
   "[Cl][Cu]": {
    "name": "copper(I) chloride",
    "abbr": "CuCl",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Cu]"
   },
   "O=C1CCC(=O)N1Br": {
    "name": "N-bromosuccinimide",
    "abbr": "NBS",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCC(=O)N1Br"
   },
   "[Ag+]": {
    "name": "silver(I) ion",
    "abbr": "Ag+",
    "role": "oxidant",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ag+]"
   },
   "c1ccc(Oc2ccccc2)cc1": {
    "name": "diphenyl ether",
    "abbr": "Ph2O",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(Oc2ccccc2)cc1"
   },
   "[O-]Cl": {
    "name": "hypochlorite",
    "abbr": "ClO- (NaOCl)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-]Cl"
   },
   "Oc1cccc2[nH]nnc12": {
    "name": "4-hydroxybenzotriazole (1H-benzotriazol-4-ol)",
    "abbr": "HOBt",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1cccc2[nH]nnc12"
   },
   "[Rh]": {
    "name": "rhodium",
    "abbr": "Rh (Rh/C, Rh/Al2O3)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Rh]"
   },
   "O=O": {
    "name": "oxygen",
    "abbr": "O2",
    "role": "oxidant",
    "also": "gas",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=O"
   },
   "C[P+](c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "methyltriphenylphosphonium",
    "abbr": "Ph3PCH3+",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[P+](c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "O=C(O)[C@@H]1CCCN1": {
    "name": "L-proline",
    "abbr": "Pro",
    "role": "ligand",
    "also": "other",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)[C@@H]1CCCN1"
   },
   "CC[N+](CC)(CC)Cc1ccccc1": {
    "name": "benzyltriethylammonium",
    "abbr": "TEBA",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[N+](CC)(CC)Cc1ccccc1"
   },
   "[Cl][Sn]([Cl])([Cl])[Cl]": {
    "name": "tin(IV) chloride",
    "abbr": "SnCl4",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Sn]([Cl])([Cl])[Cl]"
   },
   "CNCCNC": {
    "name": "N,N'-dimethylethylenediamine",
    "abbr": "DMEDA",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNCCNC"
   },
   "O=S(=O)(O)C(F)(F)F": {
    "name": "trifluoromethanesulfonic acid",
    "abbr": "TfOH",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(O)C(F)(F)F"
   },
   "Cc1ccc(S(=O)(=O)Cl)cc1": {
    "name": "p-toluenesulfonyl chloride",
    "abbr": "TsCl",
    "role": "dehydrating / activating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)Cl)cc1"
   },
   "COS(=O)(=O)OC": {
    "name": "dimethyl sulfate",
    "abbr": "Me2SO4 (DMS)",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COS(=O)(=O)OC"
   },
   "Clc1ccccc1Cl": {
    "name": "1,2-dichlorobenzene",
    "abbr": "o-DCB",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Clc1ccccc1Cl"
   },
   "C1CN2CCN1CC2": {
    "name": "1,4-diazabicyclo[2.2.2]octane",
    "abbr": "DABCO",
    "role": "base",
    "also": "additive",
-   "pKaH": 8.8
+   "pKaH": 8.8,
+   "typed": "C1CN2CCN1CC2"
   },
   "CC(C)N=C=NC(C)C": {
    "name": "N,N'-diisopropylcarbodiimide",
    "abbr": "DIC",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)N=C=NC(C)C"
   },
   "O=C(O)C(=O)O": {
    "name": "oxalic acid",
    "abbr": "",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)C(=O)O"
   },
   "CC=C(C)C": {
    "name": "2-methyl-2-butene",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC=C(C)C"
   },
   "CN(C)c1ccccc1": {
    "name": "N,N-dimethylaniline",
    "abbr": "PhNMe2",
    "role": "base",
    "also": "additive",
-   "pKaH": 5.1
+   "pKaH": 5.1,
+   "typed": "CN(C)c1ccccc1"
   },
   "F": {
    "name": "hydrogen fluoride",
    "abbr": "HF",
    "role": "deprotecting agent",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "F"
   },
   "S=P12SP3(=S)SP(=S)(S1)SP(=S)(S2)S3": {
    "name": "phosphorus pentasulfide",
    "abbr": "P4S10",
    "role": "dehydrating / activating agent",
    "also": "other",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "S=P12SP3(=S)SP(=S)(S1)SP(=S)(S2)S3"
   },
   "CC(C)(C)[P]([Pd][P](C(C)(C)C)(C(C)(C)C)C(C)(C)C)(C(C)(C)C)C(C)(C)C": {
    "name": "bis(tri-tert-butylphosphine)palladium(0)",
    "abbr": "Pd(Pt-Bu3)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[P]([Pd][P](C(C)(C)C)(C(C)(C)C)C(C)(C)C)(C(C)(C)C)C(C)(C)C"
   },
   "C[Si](C)(C)I": {
    "name": "iodotrimethylsilane",
    "abbr": "TMSI",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)I"
   },
   "O=C([O-])C(F)(F)F": {
    "name": "trifluoroacetate",
    "abbr": "TFA-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])C(F)(F)F"
   },
   "[Li][CH](C)CC": {
    "name": "sec-butyllithium",
    "abbr": "s-BuLi",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 51.0
+   "pKaH": 51.0,
+   "typed": "[Li][CH](C)CC"
   },
   "CN[C@@H]1CCCC[C@H]1NC": {
    "name": "(1R,2R)-N,N'-dimethylcyclohexane-1,2-diamine",
    "abbr": "DMCHDA",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN[C@@H]1CCCC[C@H]1NC"
   },
   "CN(C)c1ccccc1-c1ccccc1P(C1CCCCC1)C1CCCCC1": {
    "name": "DavePhos",
    "abbr": "DavePhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccccc1-c1ccccc1P(C1CCCCC1)C1CCCCC1"
   },
   "O=[O+][O-]": {
    "name": "ozone",
    "abbr": "O3",
    "role": "oxidant",
    "also": "gas",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[O+][O-]"
   },
   "C1COCCN1": {
    "name": "morpholine",
    "abbr": "",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 8.4
+   "pKaH": 8.4,
+   "typed": "C1COCCN1"
   },
   "Br[P+](N1CCCC1)(N1CCCC1)N1CCCC1": {
    "name": "PyBroP (bromotripyrrolidinophosphonium cation)",
    "abbr": "PyBroP",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Br[P+](N1CCCC1)(N1CCCC1)N1CCCC1"
   },
   "COCCOCCOC": {
    "name": "diglyme",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCOCCOC"
   },
   "O=S(=O)(OS(=O)(=O)C(F)(F)F)C(F)(F)F": {
    "name": "trifluoromethanesulfonic anhydride",
    "abbr": "Tf2O",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(OS(=O)(=O)C(F)(F)F)C(F)(F)F"
   },
   "CCI": {
    "name": "iodoethane",
    "abbr": "EtI",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCI"
   },
   "C[Si](C)(C)N[Si](C)(C)C": {
    "name": "hexamethyldisilazane",
    "abbr": "HMDS",
    "role": "protecting-group reagent",
    "also": "base",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)N[Si](C)(C)C"
   },
   "[Cl][Ni][Cl]": {
    "name": "nickel(II) chloride",
    "abbr": "NiCl2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ni][Cl]"
   },
   "C[N+]1([O-])CCOCC1": {
    "name": "N-methylmorpholine N-oxide",
    "abbr": "NMO",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[N+]1([O-])CCOCC1"
   },
   "CC1(C)OB(B2OC(C)(C)C(C)(C)O2)OC1(C)C": {
    "name": "bis(pinacolato)diboron",
    "abbr": "B2pin2",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)OB(B2OC(C)(C)C(C)(C)O2)OC1(C)C"
   },
   "CC(=O)CC(C)C": {
    "name": "methyl isobutyl ketone",
    "abbr": "MIBK",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)CC(C)C"
   },
   "O=P12OP3(=O)OP(=O)(O1)OP(=O)(O2)O3": {
    "name": "phosphorus pentoxide",
    "abbr": "P4O10 (P2O5)",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P12OP3(=O)OP(=O)(O1)OP(=O)(O2)O3"
   },
   "[O]=[Cr](=[O])=[O]": {
    "name": "chromium(VI) oxide",
    "abbr": "CrO3",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cr](=[O])=[O]"
   },
   "NCCN": {
    "name": "ethylenediamine",
    "abbr": "en",
    "role": "additive",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCCN"
   },
   "Oc1ccccc1": {
    "name": "phenol",
    "abbr": "PhOH",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1ccccc1"
   },
   "S": {
    "name": "hydrogen sulfide",
    "abbr": "H2S",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "S"
   },
   "CCOP(=O)(C#N)OCC": {
    "name": "diethyl cyanophosphonate",
    "abbr": "DEPC",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOP(=O)(C#N)OCC"
   },
   "c1ccc(-c2ccccc2P(C2CCCCC2)C2CCCCC2)cc1": {
    "name": "2-(dicyclohexylphosphino)biphenyl",
    "abbr": "CyJohnPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(-c2ccccc2P(C2CCCCC2)C2CCCCC2)cc1"
   },
   "CC(C)(C)ON=O": {
    "name": "tert-butyl nitrite",
    "abbr": "t-BuONO",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)ON=O"
   },
   "O=C([O-])C(O)C(O)C(=O)[O-]": {
    "name": "tartrate (Rochelle salt)",
    "abbr": "",
    "role": "salt (work-up or additive)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])C(O)C(O)C(=O)[O-]"
   },
   "[H+]": {
    "name": "proton",
    "abbr": "H+",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[H+]"
   },
   "[CH3][Mg][Br]": {
    "name": "methylmagnesium bromide",
    "abbr": "MeMgBr",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Mg][Br]"
   },
   "C[Si](C)(C)OS(=O)(=O)C(F)(F)F": {
    "name": "trimethylsilyl trifluoromethanesulfonate",
    "abbr": "TMSOTf",
    "role": "Lewis acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)OS(=O)(=O)C(F)(F)F"
   },
   "[Li][CH3]": {
    "name": "methyllithium",
    "abbr": "MeLi",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 48.0
+   "pKaH": 48.0,
+   "typed": "[Li][CH3]"
   },
   "[O-][Cl+3]([O-])([O-])O": {
    "name": "perchloric acid",
    "abbr": "HClO4",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][Cl+3]([O-])([O-])O"
   },
   "O=[Se]=O": {
    "name": "selenium dioxide",
    "abbr": "SeO2",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[Se]=O"
   },
   "Nc1ccccc1": {
    "name": "aniline",
    "abbr": "PhNH2",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 4.6
+   "pKaH": 4.6,
+   "typed": "Nc1ccccc1"
   },
   "CCN1CCOCC1": {
    "name": "N-ethylmorpholine",
    "abbr": "NEM",
    "role": "base",
    "also": "",
-   "pKaH": 7.7
+   "pKaH": 7.7,
+   "typed": "CCN1CCOCC1"
   },
   "CN1CCCN(C)C1=O": {
    "name": "N,N'-dimethylpropyleneurea",
    "abbr": "DMPU",
    "role": "solvent",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1CCCN(C)C1=O"
   },
   "CC(C)(C)P(c1ccccc1-c1ccccc1)C(C)(C)C": {
    "name": "JohnPhos",
    "abbr": "JohnPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)P(c1ccccc1-c1ccccc1)C(C)(C)C"
   },
   "O=C1CCC(=O)N1Cl": {
    "name": "N-chlorosuccinimide",
    "abbr": "NCS",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCC(=O)N1Cl"
   },
   "BrCCBr": {
    "name": "1,2-dibromoethane",
    "abbr": "DBE",
    "role": "electrophile / alkylating agent",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCCBr"
   },
   "CC(C)(C)OC(=O)N=NC(=O)OC(C)(C)C": {
    "name": "di-tert-butyl azodicarboxylate",
    "abbr": "DBAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)N=NC(=O)OC(C)(C)C"
   },
   "CC(Cl)OC(=O)Cl": {
    "name": "1-chloroethyl chloroformate",
    "abbr": "ACE-Cl",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(Cl)OC(=O)Cl"
   },
   "CCC[N+](CCC)(CCC)CCC": {
    "name": "tetrapropylammonium",
    "abbr": "TPA+ (Pr4N+)",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[N+](CCC)(CCC)CCC"
   },
   "[Cu][Br]": {
    "name": "copper(I) bromide",
    "abbr": "CuBr",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cu][Br]"
   },
   "ClB(Cl)Cl": {
    "name": "boron trichloride",
    "abbr": "BCl3",
    "role": "deprotecting agent",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClB(Cl)Cl"
   },
   "B1C2CCCC1CCC2": {
    "name": "9-borabicyclo[3.3.1]nonane",
    "abbr": "9-BBN",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "B1C2CCCC1CCC2"
   },
   "C[Si](C)(C)Br": {
    "name": "bromotrimethylsilane",
    "abbr": "TMSBr",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)Br"
   },
   "[Al]": {
    "name": "aluminium (metal)",
    "abbr": "Al",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Al]"
   },
   "N[C@@H]1CCCC[C@H]1N": {
    "name": "(1R,2R)-trans-1,2-diaminocyclohexane",
    "abbr": "DACH",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N[C@@H]1CCCC[C@H]1N"
   },
   "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C": {
    "name": "di-tert-butyl dicarbonate",
    "abbr": "Boc2O",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
   },
   "CC(C)CCON=O": {
    "name": "isoamyl nitrite",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)CCON=O"
   },
   "[O]=[Mn](=[O])(=[O])[O-]": {
    "name": "permanganate",
    "abbr": "MnO4- (KMnO4)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Mn](=[O])(=[O])[O-]"
   },
   "CCN": {
    "name": "ethylamine",
    "abbr": "EtNH2",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 10.7
+   "pKaH": 10.7,
+   "typed": "CCN"
   },
   "COC(OC)OC": {
    "name": "trimethyl orthoformate",
    "abbr": "TMOF",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(OC)OC"
   },
   "[Ag+2]": {
    "name": "silver ion (recorded as Ag2+, from Ag2CO3)",
    "abbr": "Ag+",
    "role": "Lewis acid",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ag+2]"
   },
   "[O]=[Ru](=[O])(=[O])[O-]": {
    "name": "perruthenate",
    "abbr": "RuO4- (TPAP)",
    "role": "oxidizing catalyst",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Ru](=[O])(=[O])[O-]"
   },
   "CC(C)(C)[O][Na]": {
    "name": "sodium tert-butoxide",
    "abbr": "NaOtBu",
    "role": "base",
    "also": "",
-   "pKaH": 17.0
+   "pKaH": 17.0,
+   "typed": "CC(C)(C)[O][Na]"
   },
   "[O]=[Cr](=[O])([O-])[O][Cr](=[O])(=[O])[O-]": {
    "name": "dichromate",
    "abbr": "Cr2O7(2-) (PDC)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cr](=[O])([O-])[O][Cr](=[O])(=[O])[O-]"
   },
   "O=C1OCCN1P(=O)(Cl)N1CCOC1=O": {
    "name": "bis(2-oxo-3-oxazolidinyl)phosphinic chloride",
    "abbr": "BOP-Cl",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1OCCN1P(=O)(Cl)N1CCOC1=O"
   },
   "Nc1c(F)c(N)c(F)c(F)c1F": {
    "name": "2,4,5,6-tetrafluorobenzene-1,3-diamine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1c(F)c(N)c(F)c(F)c1F"
   },
   "c1ccc2ncccc2c1": {
    "name": "quinoline",
    "abbr": "",
    "role": "additive",
    "also": "base",
-   "pKaH": 4.9
+   "pKaH": 4.9,
+   "typed": "c1ccc2ncccc2c1"
   },
   "C=CCBr": {
    "name": "allyl bromide",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CCBr"
   },
   "O=C1O[C@H]([C@@H](O)CO)C([O-])=C1O": {
    "name": "ascorbate",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1O[C@H]([C@@H](O)CO)C([O-])=C1O"
   },
   "O=C(C=Cc1ccccc1)C=Cc1ccccc1": {
    "name": "dibenzylideneacetone",
    "abbr": "dba",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(C=Cc1ccccc1)C=Cc1ccccc1"
   },
   "O=P([O-])([O-])O": {
    "name": "hydrogen phosphate",
    "abbr": "HPO4(2-)",
    "role": "salt (work-up or additive)",
    "also": "base",
-   "pKaH": 7.2
+   "pKaH": 7.2,
+   "typed": "O=P([O-])([O-])O"
   },
   "C1=CCCCC1": {
    "name": "cyclohexene",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=CCCCC1"
   },
   "C[CH2][Mg][Br]": {
    "name": "ethylmagnesium bromide",
    "abbr": "EtMgBr",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[CH2][Mg][Br]"
   },
   "CC(=O)OC(C)C": {
    "name": "isopropyl acetate",
    "abbr": "IPAc",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)OC(C)C"
   },
   "CC1(C)C2CCC1(CS(=O)(=O)O)C(=O)C2": {
    "name": "camphorsulfonic acid",
    "abbr": "CSA",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)C2CCC1(CS(=O)(=O)O)C(=O)C2"
   },
   "ClP(Cl)Cl": {
    "name": "phosphorus trichloride",
    "abbr": "PCl3",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClP(Cl)Cl"
   },
   "ClI": {
    "name": "iodine monochloride",
    "abbr": "ICl",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClI"
   },
   "[Ba+2]": {
    "name": "barium ion",
    "abbr": "Ba2+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ba+2]"
   },
   "C[N+](C)(C)Cc1ccccc1": {
    "name": "benzyltrimethylammonium",
    "abbr": "BTMA (Triton B cation)",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[N+](C)(C)Cc1ccccc1"
   },
   "c1ccc(P(CCCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1": {
    "name": "1,3-bis(diphenylphosphino)propane",
    "abbr": "dppp",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(CCCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1"
   },
   "S=C=S": {
    "name": "carbon disulfide",
    "abbr": "CS2",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "S=C=S"
   },
   "[O-][Cl+3]([O-])([O-])[O-]": {
    "name": "perchlorate",
    "abbr": "ClO4-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][Cl+3]([O-])([O-])[O-]"
   },
   "NC(N)=O": {
    "name": "urea",
    "abbr": "",
    "role": "additive",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC(N)=O"
   },
   "[Cl][Pd+]": {
    "name": "chloropalladium(II) cation (palladacycle precatalyst fragment)",
    "abbr": "XPhos Pd G2-type",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Pd+]"
   },
   "[C]=O": {
    "name": "carbon monoxide",
    "abbr": "CO",
    "role": "gas",
    "also": "reactant (inorganic)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[C]=O"
   },
   "[N-]=[N+]=NP(=O)(c1ccccc1)c1ccccc1": {
    "name": "diphenylphosphoryl azide",
    "abbr": "DPPA",
    "role": "coupling reagent (activates an acid)",
    "also": "other",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=[N+]=NP(=O)(c1ccccc1)c1ccccc1"
   },
   "CCC#N": {
    "name": "propionitrile",
    "abbr": "EtCN",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC#N"
   },
   "[NH2-]": {
    "name": "amide anion",
    "abbr": "NH2- (NaNH2)",
    "role": "base",
    "also": "",
-   "pKaH": 38.0
+   "pKaH": 38.0,
+   "typed": "[NH2-]"
   },
   "NC(CO)(CO)CO": {
    "name": "tris(hydroxymethyl)aminomethane",
    "abbr": "Tris",
    "role": "base",
    "also": "salt (work-up or additive)",
-   "pKaH": 8.1
+   "pKaH": 8.1,
+   "typed": "NC(CO)(CO)CO"
   },
   "O=[N+]([O-])c1ccccc1": {
    "name": "nitrobenzene",
    "abbr": "PhNO2",
    "role": "solvent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]([O-])c1ccccc1"
   },
   "[Cl][Cu][Cl]": {
    "name": "copper(II) chloride",
    "abbr": "CuCl2",
    "role": "catalyst (metal)",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Cu][Cl]"
   },
   "[Ce+4]": {
    "name": "cerium(IV) ion",
    "abbr": "Ce4+ (CAN)",
    "role": "oxidant",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ce+4]"
   },
   "O=P(Br)(Br)Br": {
    "name": "phosphorus oxybromide",
    "abbr": "POBr3",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P(Br)(Br)Br"
   },
   "[S]": {
    "name": "sulfur",
    "abbr": "S",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[S]"
   },
   "OCC(F)(F)F": {
    "name": "2,2,2-trifluoroethanol",
    "abbr": "TFE",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCC(F)(F)F"
   },
   "CCOC(OCC)OCC": {
    "name": "triethyl orthoformate",
    "abbr": "TEOF",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(OCC)OCC"
   },
   "Cc1cc(C)nc(C)c1": {
    "name": "2,4,6-collidine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 7.4
+   "pKaH": 7.4,
+   "typed": "Cc1cc(C)nc(C)c1"
   },
   "Cc1c(CCO)sc[n+]1Cc1ccccc1": {
    "name": "3-benzyl-5-(2-hydroxyethyl)-4-methylthiazolium",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1c(CCO)sc[n+]1Cc1ccccc1"
   },
   "c1cnc2c(c1)ccc1cccnc12": {
    "name": "1,10-phenanthroline",
    "abbr": "phen",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cnc2c(c1)ccc1cccnc12"
   },
   "C1COCCOCCOCCOCCO1": {
    "name": "15-crown-5",
    "abbr": "15-C-5",
    "role": "phase-transfer catalyst",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1COCCOCCOCCOCCO1"
   },
   "O=C([O-])[C@H](O)[C@@H](O)C(=O)[O-]": {
    "name": "L-(+)-tartrate ((2R,3R)-tartrate, Rochelle salt)",
    "abbr": "",
    "role": "salt (work-up or additive)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])[C@H](O)[C@@H](O)C(=O)[O-]"
   },
   "COc1nc(OC)nc([N+]2(C)CCOCC2)n1": {
    "name": "DMTMM (dimethoxytriazinyl-methylmorpholinium cation)",
    "abbr": "DMTMM",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1nc(OC)nc([N+]2(C)CCOCC2)n1"
   },
   "CN(C)c1ccc(P(C(C)(C)C)C(C)(C)C)cc1": {
    "name": "4-(di-tert-butylphosphino)-N,N-dimethylaniline",
    "abbr": "Amphos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccc(P(C(C)(C)C)C(C)(C)C)cc1"
   },
   "O=C(O)O": {
    "name": "carbonic acid (probably mis-recorded carbonate)",
    "abbr": "H2CO3",
    "role": "base",
    "also": "",
-   "pKaH": 10.3
+   "pKaH": 10.3,
+   "typed": "O=C(O)O"
   },
   "O=S([O-])S(=O)(=O)[O-]": {
    "name": "metabisulfite (disulfite) ion",
    "abbr": "S2O5(2-)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])S(=O)(=O)[O-]"
   },
   "C[Si](C)(C)C=[N+]=[N-]": {
    "name": "(trimethylsilyl)diazomethane",
    "abbr": "TMSCHN2",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)C=[N+]=[N-]"
   },
   "CCOCCO": {
    "name": "2-ethoxyethanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOCCO"
   },
   "[Cr+6]": {
    "name": "chromium(VI) ion",
    "abbr": "CrO3",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cr+6]"
   },
   "OBO": {
    "name": "boronic acid fragment (HB(OH)2)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OBO"
   },
   "NC1CC1": {
    "name": "cyclopropylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC1CC1"
   },
   "NS(N)(=O)=O": {
    "name": "sulfamide",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NS(N)(=O)=O"
   },
   "CCC[CH2][SnH]([CH2]CCC)[CH2]CCC": {
    "name": "tributyltin hydride",
    "abbr": "Bu3SnH",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][SnH]([CH2]CCC)[CH2]CCC"
   },
   "CC(C)N": {
    "name": "isopropylamine",
    "abbr": "iPrNH2",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)N"
   },
   "CCC[CH2][Sn](=[O])[CH2]CCC": {
    "name": "dibutyltin oxide",
    "abbr": "Bu2SnO",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Sn](=[O])[CH2]CCC"
   },
   "CC(C)(C)C(=O)Cl": {
    "name": "pivaloyl chloride",
    "abbr": "PivCl",
    "role": "coupling reagent (activates an acid)",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)C(=O)Cl"
   },
   "NS(=O)(=O)O": {
    "name": "sulfamic acid",
    "abbr": "",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NS(=O)(=O)O"
   },
   "F[N+]12CC[N+](CCl)(CC1)CC2": {
    "name": "Selectfluor (F-TEDA dication)",
    "abbr": "Selectfluor",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "F[N+]12CC[N+](CCl)(CC1)CC2"
   },
   "[N-]=C=O": {
    "name": "cyanate ion",
    "abbr": "OCN-",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=C=O"
   },
   "CC1(C)CCCC(C)(C)N1": {
    "name": "2,2,6,6-tetramethylpiperidine",
    "abbr": "TMP",
    "role": "base",
    "also": "",
-   "pKaH": 11.1
+   "pKaH": 11.1,
+   "typed": "CC1(C)CCCC(C)(C)N1"
   },
   "C1N2CN3CN1CN(C2)C3": {
    "name": "hexamethylenetetramine",
    "abbr": "HMTA",
    "role": "oxidant",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1N2CN3CN1CN(C2)C3"
   },
   "CC1(C)CCCC(C)(C)N1[O]": {
    "name": "TEMPO",
    "abbr": "TEMPO",
    "role": "oxidizing catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)CCCC(C)(C)N1[O]"
   },
   "O=C1CCC(=O)N1O": {
    "name": "N-hydroxysuccinimide",
    "abbr": "NHS",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCC(=O)N1O"
   },
   "O=C(Cl)Cl": {
    "name": "phosgene",
    "abbr": "COCl2",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)Cl"
   },
   "[S-2]": {
    "name": "sulfide ion",
    "abbr": "Na2S",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[S-2]"
   },
   "Ic1ccccc1": {
    "name": "iodobenzene",
    "abbr": "PhI",
    "role": "other",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Ic1ccccc1"
   },
   "CCCCN(CCCC)CCCC": {
    "name": "tributylamine",
    "abbr": "Bu3N",
    "role": "base",
    "also": "",
-   "pKaH": 10.9
+   "pKaH": 10.9,
+   "typed": "CCCCN(CCCC)CCCC"
   },
   "[Yb+3]": {
    "name": "ytterbium(III) ion",
    "abbr": "Yb(OTf)3",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Yb+3]"
   },
   "O=S=O": {
    "name": "sulfur dioxide",
    "abbr": "SO2",
    "role": "reductant",
    "also": "gas",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S=O"
   },
   "OCCOCCO": {
    "name": "diethylene glycol",
    "abbr": "DEG",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCOCCO"
   },
   "CC[N+](CC)(CC)CC": {
    "name": "tetraethylammonium ion",
    "abbr": "Et4N+",
    "role": "counter-ion / spectator ion",
    "also": "phase-transfer catalyst",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[N+](CC)(CC)CC"
   },
   "CC(C)Oc1cccc(OC(C)C)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1": {
    "name": "RuPhos",
    "abbr": "RuPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)Oc1cccc(OC(C)C)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1"
   },
   "CC=O": {
    "name": "acetaldehyde",
    "abbr": "MeCHO",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC=O"
   },
   "[Cl][Fe]([Cl])[Cl]": {
    "name": "iron(III) chloride",
    "abbr": "FeCl3",
    "role": "Lewis acid",
    "also": "catalyst (metal)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Fe]([Cl])[Cl]"
   },
   "CS(=O)(=O)[O-]": {
    "name": "methanesulfonate (mesylate) ion",
    "abbr": "MsO-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)[O-]"
   },
   "CN(C)CC(=O)O": {
    "name": "N,N-dimethylglycine",
    "abbr": "DMG",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)CC(=O)O"
   },
   "CCOC(=O)CBr": {
    "name": "ethyl bromoacetate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)CBr"
   },
   "CC(C)(C)[O][K]": {
    "name": "potassium tert-butoxide",
    "abbr": "KOtBu",
    "role": "base",
    "also": "",
-   "pKaH": 17.0
+   "pKaH": 17.0,
+   "typed": "CC(C)(C)[O][K]"
   },
   "[O]=[Ag]": {
    "name": "silver oxide, drawn as AgO (formally silver(II) oxide; probably Ag2O in the source)",
    "abbr": "Ag2O",
    "role": "additive",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Ag]"
   },
   "c1ccc(-c2ccccc2)cc1": {
    "name": "biphenyl",
    "abbr": "",
    "role": "other",
    "also": "solvent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(-c2ccccc2)cc1"
   },
   "O=S(=O)([O-])OOS(=O)(=O)[O-]": {
    "name": "peroxydisulfate (persulfate) ion",
    "abbr": "S2O8(2-)",
    "role": "oxidant",
    "also": "radical initiator",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])OOS(=O)(=O)[O-]"
   },
   "CC(C)(C)OO": {
    "name": "tert-butyl hydroperoxide",
    "abbr": "TBHP",
    "role": "oxidant",
    "also": "radical initiator",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OO"
   },
   "CCc1ccccc1": {
    "name": "ethylbenzene",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCc1ccccc1"
   },
   "[Pb+2]": {
    "name": "lead(II) ion",
    "abbr": "Pb(OAc)2",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Pb+2]"
   },
   "CCC(C)(C)O": {
    "name": "tert-amyl alcohol (2-methyl-2-butanol)",
    "abbr": "t-AmOH",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(C)(C)O"
   },
   "O=S(=O)=O": {
    "name": "sulfur trioxide",
    "abbr": "SO3-py",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)=O"
   },
   "CCCP(=O)=O": {
    "name": "propylphosphonic anhydride (monomer unit)",
    "abbr": "T3P",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCP(=O)=O"
   },
   "COc1ccc(OC)c(P(C2CCCCC2)C2CCCCC2)c1-c1c(C(C)C)cc(C(C)C)cc1C(C)C": {
    "name": "BrettPhos",
    "abbr": "BrettPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(OC)c(P(C2CCCCC2)C2CCCCC2)c1-c1c(C(C)C)cc(C(C)C)cc1C(C)C"
   },
   "[Ce+3]": {
    "name": "cerium(III) ion",
    "abbr": "CeCl3",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ce+3]"
   },
   "CC(C)(C)P([c-]1cccc1)C(C)(C)C": {
    "name": "(di-tert-butylphosphino)cyclopentadienide",
    "abbr": "dtbpf",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)P([c-]1cccc1)C(C)(C)C"
   },
   "CN1CCN(C)C1=O": {
    "name": "1,3-dimethyl-2-imidazolidinone",
    "abbr": "DMI",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1CCN(C)C1=O"
   },
   "O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl": {
    "name": "triphosgene",
    "abbr": "BTC",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl"
   },
   "Sc1ccccc1": {
    "name": "thiophenol",
    "abbr": "PhSH",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Sc1ccccc1"
   },
   "C[n+]1ccccc1Cl": {
    "name": "2-chloro-1-methylpyridinium ion",
    "abbr": "CMPI",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[n+]1ccccc1Cl"
   },
   "CN(C)C(N(C)C)=[N+]1N=[N+]([O-])c2ncccc21": {
    "name": "HATU (cation)",
    "abbr": "HATU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(N(C)C)=[N+]1N=[N+]([O-])c2ncccc21"
   },
   "NCCO": {
    "name": "ethanolamine",
    "abbr": "",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 9.5
+   "pKaH": 9.5,
+   "typed": "NCCO"
   },
   "CCC(C)[BH-](C(C)CC)C(C)CC": {
    "name": "tri-sec-butylborohydride ion",
    "abbr": "L-Selectride",
    "role": "reductant",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(C)[BH-](C(C)CC)C(C)CC"
   },
   "Oc1cccc2cccnc12": {
    "name": "8-hydroxyquinoline",
    "abbr": "8-HQ",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1cccc2cccnc12"
   },
   "NS(=O)(=O)Cl": {
    "name": "sulfamoyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NS(=O)(=O)Cl"
   },
   "CN(C)C(=N)N(C)C": {
    "name": "1,1,3,3-tetramethylguanidine",
    "abbr": "TMG",
    "role": "base",
    "also": "",
-   "pKaH": 13.6
+   "pKaH": 13.6,
+   "typed": "CN(C)C(=N)N(C)C"
   },
   "NCCc1[c-]cccc1": {
    "name": "2-(2-aminoethyl)phenyl anion",
    "abbr": "",
    "role": "ligand",
    "also": "catalyst (metal)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCCc1[c-]cccc1"
   },
   "CC(C)(C)[PH+](C(C)(C)C)C(C)(C)C": {
    "name": "tri-tert-butylphosphonium ion",
    "abbr": "[HP(tBu)3]BF4",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[PH+](C(C)(C)C)C(C)(C)C"
   },
   "CN1CCCC1": {
    "name": "N-methylpyrrolidine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 10.3
+   "pKaH": 10.3,
+   "typed": "CN1CCCC1"
   },
   "Oc1ccc(O)cc1": {
    "name": "hydroquinone",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1ccc(O)cc1"
   },
   "CCN(CC)c1ccccc1": {
    "name": "N,N-diethylaniline",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 6.6
+   "pKaH": 6.6,
+   "typed": "CCN(CC)c1ccccc1"
   },
   "Cn1ccnc1": {
    "name": "1-methylimidazole",
    "abbr": "NMI",
    "role": "base",
    "also": "additive",
-   "pKaH": 7.0
+   "pKaH": 7.0,
+   "typed": "Cn1ccnc1"
   },
   "COC(=O)Cl": {
    "name": "methyl chloroformate",
    "abbr": "ClCO2Me",
    "role": "coupling reagent (activates an acid)",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)Cl"
   },
   "ICI": {
    "name": "diiodomethane",
    "abbr": "CH2I2",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ICI"
   },
   "CCBr": {
    "name": "bromoethane",
    "abbr": "EtBr",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCBr"
   },
   "CCCCN": {
    "name": "n-butylamine",
    "abbr": "nBuNH2",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 10.6
+   "pKaH": 10.6,
+   "typed": "CCCCN"
   },
   "[O]=[Cu-]": {
    "name": "copper(I) oxide",
    "abbr": "Cu2O",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cu-]"
   },
   "CC[NH+](CC)CC": {
    "name": "triethylammonium ion",
    "abbr": "Et3NH+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[NH+](CC)CC"
   },
   "CCC(=O)O": {
    "name": "propanoic acid",
    "abbr": "EtCO2H",
    "role": "solvent",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(=O)O"
   },
   "CC[N+](CC)(CC)S(=O)(=O)N=C([O-])OC": {
    "name": "Burgess reagent",
    "abbr": "",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[N+](CC)(CC)S(=O)(=O)N=C([O-])OC"
   },
   "C[N+](C)(C)C": {
    "name": "tetramethylammonium ion",
    "abbr": "Me4N+",
    "role": "counter-ion / spectator ion",
    "also": "phase-transfer catalyst",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[N+](C)(C)C"
   },
   "CC(C)=C(Cl)N(C)C": {
    "name": "1-chloro-N,N,2-trimethyl-1-propenylamine",
    "abbr": "Ghosez reagent",
    "role": "halogenating agent",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)=C(Cl)N(C)C"
   },
   "NOS(=O)(=O)O": {
    "name": "hydroxylamine-O-sulfonic acid",
    "abbr": "HOSA",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NOS(=O)(=O)O"
   },
   "CCS": {
    "name": "ethanethiol",
    "abbr": "EtSH",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCS"
   },
   "CP(C)C": {
    "name": "trimethylphosphine",
    "abbr": "PMe3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CP(C)C"
   },
   "NCc1ccccc1": {
    "name": "benzylamine",
    "abbr": "BnNH2",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCc1ccccc1"
   },
   "N#[C][Cu]": {
    "name": "copper(I) cyanide",
    "abbr": "CuCN",
    "role": "nucleophile",
    "also": "catalyst (metal)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#[C][Cu]"
   },
   "CC(C)c1cc(C(C)C)c(-c2ccccc2P(C(C)(C)C)C(C)(C)C)c(C(C)C)c1": {
    "name": "tBuXPhos",
    "abbr": "tBuXPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cc(C(C)C)c(-c2ccccc2P(C(C)(C)C)C(C)(C)C)c(C(C)C)c1"
   },
   "c1coc(P(c2ccco2)c2ccco2)c1": {
    "name": "tri(2-furyl)phosphine",
    "abbr": "TFP",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1coc(P(c2ccco2)c2ccco2)c1"
   },
   "CCCCCCCC[N+](C)(CCCCCCCC)CCCCCCCC": {
    "name": "methyltrioctylammonium ion",
    "abbr": "Aliquat 336",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCC[N+](C)(CCCCCCCC)CCCCCCCC"
   },
   "C[Si](C)(C)[O-]": {
    "name": "trimethylsilanolate ion",
    "abbr": "TMSOK",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)[O-]"
   },
   "N=C=N": {
    "name": "carbodiimide (parent)",
    "abbr": "",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N=C=N"
   },
   "[Sn]": {
    "name": "tin",
    "abbr": "Sn",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Sn]"
   },
   "Cc1ccccc1S(=O)(=O)O": {
    "name": "2-toluenesulfonic acid",
    "abbr": "TsOH",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccccc1S(=O)(=O)O"
   },
   "CC(=O)C#N": {
    "name": "acetyl cyanide (pyruvonitrile)",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)C#N"
   },
   "O=[PH2]O": {
    "name": "hypophosphorous acid",
    "abbr": "H3PO2",
    "role": "reductant",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[PH2]O"
   },
   "c1ccc([P]([Pd][P](c2ccccc2)(c2ccccc2)c2ccccc2)(c2ccccc2)c2ccccc2)cc1": {
    "name": "bis(triphenylphosphine)palladium(0)",
    "abbr": "Pd(PPh3)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc([P]([Pd][P](c2ccccc2)(c2ccccc2)c2ccccc2)(c2ccccc2)c2ccccc2)cc1"
   },
   "[CH]1[CH][CH][C]([PH+](c2ccccc2)c2ccccc2)[CH]1": {
    "name": "(diphenylphosphonio)cyclopentadienyl fragment (P-protonated Ph2P-C5H4 ring, C17H15P+)",
    "abbr": "dppf",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH]1[CH][CH][C]([PH+](c2ccccc2)c2ccccc2)[CH]1"
   },
   "CCOC(=O)C(C#N)=NOC(N1CCOCC1)=[N+](C)C": {
    "name": "COMU (cation)",
    "abbr": "COMU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)C(C#N)=NOC(N1CCOCC1)=[N+](C)C"
   },
   "CNOC": {
    "name": "N,O-dimethylhydroxylamine",
    "abbr": "MeNHOMe",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNOC"
   },
   "[Cl][Ru]([Cl])[Cl]": {
    "name": "ruthenium(III) chloride",
    "abbr": "RuCl3",
    "role": "oxidizing catalyst",
    "also": "catalyst (metal)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ru]([Cl])[Cl]"
   },
   "CS(N)(=O)=O": {
    "name": "methanesulfonamide",
    "abbr": "MsNH2",
    "role": "nucleophile",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(N)(=O)=O"
   },
   "[Ti+3]": {
    "name": "titanium(III) ion",
    "abbr": "TiCl3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ti+3]"
   },
   "O=P(Cl)(c1ccccc1)c1ccccc1": {
    "name": "diphenylphosphinic chloride",
    "abbr": "Ph2P(O)Cl",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P(Cl)(c1ccccc1)c1ccccc1"
   },
   "CN(C)C": {
    "name": "trimethylamine",
    "abbr": "Me3N",
    "role": "base",
    "also": "",
-   "pKaH": 9.8
+   "pKaH": 9.8,
+   "typed": "CN(C)C"
   },
   "CN(C)C(=O)N=NC(=O)N(C)C": {
    "name": "N,N,N',N'-tetramethylazodicarboxamide",
    "abbr": "TMAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(=O)N=NC(=O)N(C)C"
   },
   "C[N+](C)(C)c1ccccc1": {
    "name": "phenyltrimethylammonium ion",
    "abbr": "PhNMe3+",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[N+](C)(C)c1ccccc1"
   },
   "CN(C)CCN": {
    "name": "N,N-dimethylethylenediamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)CCN"
   },
   "BrC(Br)(Br)Br": {
    "name": "carbon tetrabromide",
    "abbr": "CBr4",
    "role": "halogenating agent",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrC(Br)(Br)Br"
   },
   "c1cc[cH-]c1": {
    "name": "cyclopentadienide ion",
    "abbr": "Cp-",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cc[cH-]c1"
   },
   "CB1OB(C)OB(C)O1": {
    "name": "trimethylboroxine",
    "abbr": "TMB",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CB1OB(C)OB(C)O1"
   },
   "BrCc1ccccc1": {
    "name": "benzyl bromide",
    "abbr": "BnBr",
    "role": "electrophile / alkylating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCc1ccccc1"
   },
   "O=C(c1ncc[nH]1)c1ncc[nH]1": {
    "name": "2,2'-carbonyldiimidazole (di(1H-imidazol-2-yl)methanone)",
    "abbr": "CDI",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(c1ncc[nH]1)c1ncc[nH]1"
   },
   "O=C(O)c1ccccc1": {
    "name": "benzoic acid",
    "abbr": "BzOH",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1ccccc1"
   },
   "C[O][Na]": {
    "name": "sodium methoxide",
    "abbr": "NaOMe",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 15.5
+   "pKaH": 15.5,
+   "typed": "C[O][Na]"
   },
   "CCCI": {
    "name": "1-iodopropane",
    "abbr": "PrI",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCI"
   },
   "[SH-]": {
    "name": "hydrosulfide ion",
    "abbr": "NaSH",
    "role": "reductant",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[SH-]"
   },
   "[CH3][Mg+]": {
    "name": "methylmagnesium cation",
    "abbr": "MeMgX",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Mg+]"
   },
   "[C-]#[O+]": {
    "name": "carbon monoxide",
    "abbr": "CO",
    "role": "gas",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[C-]#[O+]"
   },
   "OB(O)O": {
    "name": "boric acid",
    "abbr": "B(OH)3",
    "role": "additive",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OB(O)O"
   },
   "N#Cc1ccccc1": {
    "name": "benzonitrile",
    "abbr": "PhCN",
    "role": "solvent",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#Cc1ccccc1"
   },
   "[Cu+]": {
    "name": "copper(I) ion",
    "abbr": "Cu(I)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cu+]"
   },
   "OB(O)c1ccccc1": {
    "name": "phenylboronic acid",
    "abbr": "PhB(OH)2",
    "role": "nucleophile",
    "also": "organometallic reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OB(O)c1ccccc1"
   },
   "C1CC[NH2+]CC1": {
    "name": "piperidinium ion",
    "abbr": "",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1CC[NH2+]CC1"
   },
   "CSc1ccccc1": {
    "name": "thioanisole",
    "abbr": "PhSMe",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CSc1ccccc1"
   },
   "Cc1cc(C(C)(C)C)c(O)c(C(C)(C)C)c1": {
    "name": "butylated hydroxytoluene (2,6-di-tert-butyl-4-methylphenol)",
    "abbr": "BHT",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C(C)(C)C)c(O)c(C(C)(C)C)c1"
   },
   "COCC[O][Al+][O]CCOC": {
    "name": "bis(2-methoxyethoxy)aluminum cation",
    "abbr": "Red-Al",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCC[O][Al+][O]CCOC"
   },
   "C[Si](C)(C)CC(N)=O": {
    "name": "(trimethylsilyl)acetamide",
    "abbr": "TMS-acetamide",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)CC(N)=O"
   },
   "C[Si](C)(C)C#N": {
    "name": "trimethylsilyl cyanide",
    "abbr": "TMSCN",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)C#N"
   },
   "COC(C)(C)OC": {
    "name": "2,2-dimethoxypropane",
    "abbr": "2,2-DMP",
    "role": "dehydrating / activating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(C)(C)OC"
   },
   "CN1CC[NH+](C)C1Cl": {
    "name": "2-chloro-1,3-dimethylimidazolidin-1-ium",
    "abbr": "DMC",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1CC[NH+](C)C1Cl"
   },
   "CC(C)[O][Ti]([O]C(C)C)([O]C(C)C)[O]C(C)C": {
    "name": "titanium(IV) isopropoxide",
    "abbr": "Ti(OiPr)4",
    "role": "Lewis acid",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[O][Ti]([O]C(C)C)([O]C(C)C)[O]C(C)C"
   },
   "O=S(=O)([O-])O[O-]": {
    "name": "peroxymonosulfate ion",
    "abbr": "Oxone",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])O[O-]"
   },
   "CCCC(C)C": {
    "name": "2-methylpentane",
    "abbr": "isohexane",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC(C)C"
   },
   "CC(C)CCO": {
    "name": "isoamyl alcohol (3-methyl-1-butanol)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)CCO"
   },
   "CCCCCO": {
    "name": "1-pentanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCO"
   },
   "CC(C)(C)C(=O)O": {
    "name": "pivalic acid",
    "abbr": "PivOH",
    "role": "acid",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)C(=O)O"
   },
   "CCOC=O": {
    "name": "ethyl formate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC=O"
   },
   "C[S-]": {
    "name": "methanethiolate ion",
    "abbr": "NaSMe",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[S-]"
   },
   "CCCCP(=CC#N)(CCCC)CCCC": {
    "name": "(cyanomethylene)tributylphosphorane",
    "abbr": "CMBP",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCP(=CC#N)(CCCC)CCCC"
   },
   "NC(N)=S": {
    "name": "thiourea",
    "abbr": "",
    "role": "nucleophile",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC(N)=S"
   },
   "CCOC(=O)C(C#N)=NOC(N(C)C)=[N+](C)C": {
    "name": "TOTU (cation)",
    "abbr": "TOTU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)C(C#N)=NOC(N(C)C)=[N+](C)C"
   },
   "C=[N+]=[N-]": {
    "name": "diazomethane",
    "abbr": "CH2N2",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=[N+]=[N-]"
   },
   "Cc1ccc(C)cc1": {
    "name": "p-xylene",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(C)cc1"
   },
   "COCC(C)O": {
    "name": "1-methoxy-2-propanol",
    "abbr": "PGME",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCC(C)O"
   },
   "[Mn+2]": {
    "name": "manganese(II) ion",
    "abbr": "MnO2",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Mn+2]"
   },
   "CCC(C)O": {
    "name": "2-butanol",
    "abbr": "sec-BuOH",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(C)O"
   },
   "[O]=[Cu]": {
    "name": "copper(II) oxide",
    "abbr": "CuO",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cu]"
   },
   "[Br][Cu][Br]": {
    "name": "copper(II) bromide",
    "abbr": "CuBr2",
    "role": "catalyst (metal)",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Br][Cu][Br]"
   },
   "C[CH2][Zn][CH2]C": {
    "name": "diethylzinc",
    "abbr": "Et2Zn",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[CH2][Zn][CH2]C"
   },
   "C1=CCCC=CCC1": {
    "name": "1,5-cyclooctadiene",
    "abbr": "COD",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=CCCC=CCC1"
   },
   "C1CCC(NC2CCCCC2)CC1": {
    "name": "dicyclohexylamine",
    "abbr": "Cy2NH",
    "role": "base",
    "also": "",
-   "pKaH": 10.4
+   "pKaH": 10.4,
+   "typed": "C1CCC(NC2CCCCC2)CC1"
   },
   "[O-][I+3]([O-])([O-])O": {
    "name": "periodic acid",
    "abbr": "H5IO6",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][I+3]([O-])([O-])O"
   },
   "O=C(Cl)c1ccccc1": {
    "name": "benzoyl chloride",
    "abbr": "BzCl",
    "role": "electrophile / alkylating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)c1ccccc1"
   },
   "COCC[O][AlH2-][O]CCOC": {
    "name": "bis(2-methoxyethoxy)aluminum hydride ion",
    "abbr": "Red-Al",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCC[O][AlH2-][O]CCOC"
   },
   "[CH3][Mg][Cl]": {
    "name": "methylmagnesium chloride",
    "abbr": "MeMgCl",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Mg][Cl]"
   },
   "CCOP(OCC)OCC": {
    "name": "triethyl phosphite",
    "abbr": "P(OEt)3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOP(OCC)OCC"
   },
   "[CH]1[CH][CH][C](P(c2ccccc2)c2ccccc2)[CH]1": {
    "name": "(diphenylphosphino)cyclopentadienyl fragment",
    "abbr": "dppf",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH]1[CH][CH][C](P(c2ccccc2)c2ccccc2)[CH]1"
   },
   "B#B": {
    "name": "diboron (B2)",
    "abbr": "B2H6",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "B#B"
   },
   "COc1ccc2nc(N)sc2c1": {
    "name": "6-methoxy-1,3-benzothiazol-2-amine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc2nc(N)sc2c1"
   },
   "c1ccsc1": {
    "name": "thiophene",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccsc1"
   },
   "CC[O+](CC)CC": {
    "name": "triethyloxonium ion",
    "abbr": "Meerwein's salt",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[O+](CC)CC"
   },
   "O=C(Cl)c1cccc(Cl)c1": {
    "name": "3-chlorobenzoyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)c1cccc(Cl)c1"
   },
   "C1CNC1": {
    "name": "azetidine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1CNC1"
   },
   "CCOP(=O)(OCC)On1nnc2ccccc2c1=O": {
    "name": "3-(diethoxyphosphoryloxy)-1,2,3-benzotriazin-4(3H)-one",
    "abbr": "DEPBT",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOP(=O)(OCC)On1nnc2ccccc2c1=O"
   },
   "[SiH3]c1ccccc1": {
    "name": "phenylsilane",
    "abbr": "PhSiH3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[SiH3]c1ccccc1"
   },
   "[Cl][Co][Cl]": {
    "name": "cobalt(II) chloride",
    "abbr": "CoCl2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Co][Cl]"
   },
   "O=Cc1ccccc1": {
    "name": "benzaldehyde",
    "abbr": "PhCHO",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=Cc1ccccc1"
   },
   "[Pb+4]": {
    "name": "lead(IV) ion",
    "abbr": "Pb(OAc)4",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Pb+4]"
   },
   "O=C1C(Cl)=C(Cl)C(=O)C(Cl)=C1Cl": {
    "name": "chloranil (tetrachloro-1,4-benzoquinone)",
    "abbr": "",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1C(Cl)=C(Cl)C(=O)C(Cl)=C1Cl"
   },
   "[Ru]": {
    "name": "ruthenium",
    "abbr": "Ru/C",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ru]"
   },
   "Nc1ccccc1N": {
    "name": "1,2-phenylenediamine",
    "abbr": "OPD",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1ccccc1N"
   },
   "CCCCP(C12CC3CC(CC(C3)C1)C2)C12CC3CC(CC(C3)C1)C2": {
    "name": "di(1-adamantyl)-n-butylphosphine",
    "abbr": "cataCXium A",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCP(C12CC3CC(CC(C3)C1)C2)C12CC3CC(CC(C3)C1)C2"
   },
   "CC(C)C[C@H]1CN(C(=O)/C=C/c2ccccc2)[C@@H](CC(C)C)C(=O)N1": {
    "name": "4-cinnamoyl-3,6-diisobutylpiperazin-2-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C[C@H]1CN(C(=O)/C=C/c2ccccc2)[C@@H](CC(C)C)C(=O)N1"
   },
   "[CH3][Al+][CH3]": {
    "name": "dimethylaluminum cation",
    "abbr": "AlMe3",
    "role": "organometallic reagent",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Al+][CH3]"
   },
   "OCC(O)CO": {
    "name": "glycerol",
    "abbr": "",
    "role": "solvent",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCC(O)CO"
   },
   "[Cl][Hg][Cl]": {
    "name": "mercury(II) chloride",
    "abbr": "HgCl2",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Hg][Cl]"
   },
   "C/C(=N\\[Si](C)(C)C)O[Si](C)(C)C": {
    "name": "N,O-bis(trimethylsilyl)acetamide",
    "abbr": "BSA",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C/C(=N\\[Si](C)(C)C)O[Si](C)(C)C"
   },
   "CNN": {
    "name": "methylhydrazine",
    "abbr": "MeNHNH2",
    "role": "deprotecting agent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNN"
   },
   "C1CNCCN1": {
    "name": "piperazine",
    "abbr": "",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 9.7
+   "pKaH": 9.7,
+   "typed": "C1CNCCN1"
   },
   "O=C(O)c1ccccn1": {
    "name": "picolinic acid",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1ccccn1"
   },
   "O=P(c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "triphenylphosphine oxide",
    "abbr": "TPPO",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P(c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "ClOCl": {
    "name": "dichlorine monoxide",
    "abbr": "Cl2O",
    "role": "oxidant",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClOCl"
   },
   "CC(Br)Br": {
    "name": "1,1-dibromoethane",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(Br)Br"
   },
   "c1ccc(P(C2CCCCC2)C2CCCCC2)c(-c2ccccc2P(C2CCCCC2)C2CCCCC2)c1": {
    "name": "2,2'-bis(dicyclohexylphosphino)-1,1'-biphenyl",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(C2CCCCC2)C2CCCCC2)c(-c2ccccc2P(C2CCCCC2)C2CCCCC2)c1"
   },
   "CC(C)(C)c1nc(N2CCC(F)(F)C2)c2nn[nH]c2n1": {
    "name": "5-tert-butyl-7-(3,3-difluoropyrrolidin-1-yl)-3H-[1,2,3]triazolo[4,5-d]pyrimidine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)c1nc(N2CCC(F)(F)C2)c2nn[nH]c2n1"
   },
   "FF": {
    "name": "fluorine",
    "abbr": "F2",
    "role": "gas",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "FF"
   },
   "CCCC#N": {
    "name": "butyronitrile",
    "abbr": "PrCN",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC#N"
   },
   "[AlH4-]": {
    "name": "tetrahydroaluminate (aluminum hydride) ion",
    "abbr": "LiAlH4",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[AlH4-]"
   },
   "Cc1cc(C)cc(C)c1": {
    "name": "mesitylene (1,3,5-trimethylbenzene)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)cc(C)c1"
   },
   "[Mo]": {
    "name": "molybdenum",
    "abbr": "Mo(CO)6",
    "role": "other",
    "also": "catalyst (metal)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Mo]"
   },
   "[Rh+2]": {
    "name": "rhodium(II) ion",
    "abbr": "Rh2(OAc)4",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Rh+2]"
   },
   "Brc1ccccc1": {
    "name": "bromobenzene",
    "abbr": "PhBr",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Brc1ccccc1"
   },
   "[O]=[Ag-]": {
    "name": "silver(I) oxide",
    "abbr": "Ag2O",
    "role": "additive",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Ag-]"
   },
   "[Co+2]": {
    "name": "cobalt(II) ion",
    "abbr": "CoCl2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Co+2]"
   },
   "[Ti]": {
    "name": "titanium",
    "abbr": "Ti",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ti]"
   },
   "NC=O": {
    "name": "formamide",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC=O"
   },
   "CCCN": {
    "name": "propylamine",
    "abbr": "PrNH2",
    "role": "solvent",
    "also": "base",
-   "pKaH": 10.6
+   "pKaH": 10.6,
+   "typed": "CCCN"
   },
   "[O]=[W](=[O])([O-])[O-]": {
    "name": "tungstate ion",
    "abbr": "Na2WO4",
    "role": "oxidizing catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[W](=[O])([O-])[O-]"
   },
   "C[S+](C)(C)=O": {
    "name": "trimethylsulfoxonium ion",
    "abbr": "Me3S(O)+",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[S+](C)(C)=O"
   },
   "O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O": {
    "name": "ethylenediaminetetraacetic acid",
    "abbr": "EDTA",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O"
   },
   "CC(C)c1cc(C(C)C)c(-c2ccccc2[PH](C(C)(C)C)(C(C)(C)C)[Pd]2([O]S(C)(=O)=O)[NH]c3ccccc3-c3cccc[c]32)c(C(C)C)c1": {
    "name": "tBuXPhos Pd G3",
    "abbr": "tBuXPhos Pd G3",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cc(C(C)C)c(-c2ccccc2[PH](C(C)(C)C)(C(C)(C)C)[Pd]2([O]S(C)(=O)=O)[NH]c3ccccc3-c3cccc[c]32)c(C(C)C)c1"
   },
   "[Ce]": {
    "name": "cerium",
    "abbr": "CAN",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ce]"
   },
   "CC[P+](c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "ethyltriphenylphosphonium ion",
    "abbr": "EtPPh3Br",
    "role": "phase-transfer catalyst",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[P+](c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "CCCCOCCCC": {
    "name": "dibutyl ether",
    "abbr": "Bu2O",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCOCCCC"
   },
   "CCOC(=O)N1c2ccccc2C=CC1OCC": {
    "name": "N-ethoxycarbonyl-2-ethoxy-1,2-dihydroquinoline",
    "abbr": "EEDQ",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)N1c2ccccc2C=CC1OCC"
   },
   "C[NH3+]": {
    "name": "methylammonium ion",
    "abbr": "MeNH3+",
    "role": "nucleophile",
    "also": "counter-ion / spectator ion",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[NH3+]"
   },
   "CS(=O)(=O)OS(C)(=O)=O": {
    "name": "methanesulfonic anhydride",
    "abbr": "Ms2O",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)OS(C)(=O)=O"
   },
   "CC(=O)[O][Pd][O]C(C)=O": {
    "name": "palladium(II) acetate",
    "abbr": "Pd(OAc)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)[O][Pd][O]C(C)=O"
   },
   "O=[N+]=O": {
    "name": "nitronium ion",
    "abbr": "NO2+",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]=O"
   },
   "COC(=O)CCc1ncc(-c2ccc(NC(=O)Nc3cccc(C(F)(F)F)c3)cc2)s1": {
    "name": "methyl 3-[5-(4-{[3-(trifluoromethyl)phenyl]carbamoylamino}phenyl)thiazol-2-yl]propanoate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)CCc1ncc(-c2ccc(NC(=O)Nc3cccc(C(F)(F)F)c3)cc2)s1"
   },
   "c1ccc(-c2ccccn2)nc1": {
    "name": "2,2'-bipyridine",
    "abbr": "bpy",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(-c2ccccn2)nc1"
   },
   "[CH2-]CCC": {
    "name": "n-butyl anion",
    "abbr": "n-BuLi",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 50.0
+   "pKaH": 50.0,
+   "typed": "[CH2-]CCC"
   },
   "N#CBr": {
    "name": "cyanogen bromide",
    "abbr": "BrCN",
    "role": "electrophile / alkylating agent",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CBr"
   },
   "c1nnn[nH]1": {
    "name": "1H-tetrazole",
    "abbr": "",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1nnn[nH]1"
   },
   "CC(C)OC(=O)Cl": {
    "name": "isopropyl chloroformate",
    "abbr": "",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)OC(=O)Cl"
   },
   "OCc1ccccc1": {
    "name": "benzyl alcohol",
    "abbr": "BnOH",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCc1ccccc1"
   },
   "O=C(O)/C=C/C(=O)O": {
    "name": "fumaric acid",
    "abbr": "",
    "role": "acid",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)/C=C/C(=O)O"
   },
   "Clc1nc(Cl)nc(Cl)n1": {
    "name": "cyanuric chloride",
    "abbr": "TCT",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Clc1nc(Cl)nc(Cl)n1"
   },
   "c1ccc(C(Nc2nc(-c3cc4ccccc4s3)nc3ccccc23)c2ccccc2)cc1": {
    "name": "N-benzhydryl-2-(1-benzothiophen-2-yl)quinazolin-4-amine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(C(Nc2nc(-c3cc4ccccc4s3)nc3ccccc23)c2ccccc2)cc1"
   },
   "COC1CCCC1": {
    "name": "cyclopentyl methyl ether",
    "abbr": "CPME",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC1CCCC1"
   },
   "CCN(CC)P1(=NC(C)(C)C)N(C)CCCN1C": {
    "name": "2-tert-butylimino-2-diethylamino-1,3-dimethylperhydro-1,3,2-diazaphosphorine",
    "abbr": "BEMP",
    "role": "base",
    "also": "",
-   "pKaH": 16.2
+   "pKaH": 16.2,
+   "typed": "CCN(CC)P1(=NC(C)(C)C)N(C)CCCN1C"
   },
   "C[Si](C)(C)C(C(N)=O)[Si](C)(C)C": {
    "name": "N,O-bis(trimethylsilyl)acetamide (drawn as C-silyl isomer)",
    "abbr": "BSA",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)C(C(N)=O)[Si](C)(C)C"
   },
   "Cc1cc(C)c(S(=O)(=O)[O-])c(C)c1": {
    "name": "2-mesitylenesulfonate ion",
    "abbr": "MesSO3-",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)c(S(=O)(=O)[O-])c(C)c1"
   },
   "c1ccc([PH](c2ccccc2)(c2ccccc2)[Pd-4]([PH](c2ccccc2)(c2ccccc2)c2ccccc2)([PH](c2ccccc2)(c2ccccc2)c2ccccc2)[PH](c2ccccc2)(c2ccccc2)c2ccccc2)cc1": {
    "name": "tetrakis(triphenyl-lambda5-phosphane)palladate(4-) (malformed Pd(PPh3)4; intended tetrakis(triphenylphosphine)palladium(0))",
    "abbr": "Pd(PPh3)4",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc([PH](c2ccccc2)(c2ccccc2)[Pd-4]([PH](c2ccccc2)(c2ccccc2)c2ccccc2)([PH](c2ccccc2)(c2ccccc2)c2ccccc2)[PH](c2ccccc2)(c2ccccc2)c2ccccc2)cc1"
   },
   "CN(C)c1cccc2cccc(N(C)C)c12": {
    "name": "1,8-bis(dimethylamino)naphthalene",
    "abbr": "Proton Sponge",
    "role": "base",
    "also": "",
-   "pKaH": 12.1
+   "pKaH": 12.1,
+   "typed": "CN(C)c1cccc2cccc(N(C)C)c12"
   },
   "O=C[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO": {
    "name": "D-glucose",
    "abbr": "",
    "role": "reductant",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO"
   },
   "CN1CCNCC1": {
    "name": "1-methylpiperazine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1CCNCC1"
   },
   "COB(OC)OC": {
    "name": "trimethyl borate",
    "abbr": "B(OMe)3",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COB(OC)OC"
   },
   "ClC(Cl)(Cl)C(Cl)(Cl)Cl": {
    "name": "hexachloroethane",
    "abbr": "C2Cl6",
    "role": "dehydrating / activating agent",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClC(Cl)(Cl)C(Cl)(Cl)Cl"
   },
   "[Fe+3]": {
    "name": "iron(III) ion",
    "abbr": "FeCl3",
    "role": "catalyst (metal)",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Fe+3]"
   },
   "C#C[Si](C)(C)C": {
    "name": "trimethylsilylacetylene",
    "abbr": "TMSA",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#C[Si](C)(C)C"
   },
   "[Co]": {
    "name": "cobalt",
    "abbr": "Co",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Co]"
   },
   "[O-]B1OO1": {
    "name": "perborate ion",
    "abbr": "NaBO3",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-]B1OO1"
   },
   "Cl[SiH](Cl)Cl": {
    "name": "trichlorosilane",
    "abbr": "HSiCl3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cl[SiH](Cl)Cl"
   },
   "C1=CCC=CC1": {
    "name": "1,4-cyclohexadiene",
    "abbr": "1,4-CHD",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=CCC=CC1"
   },
   "CC(C)I": {
    "name": "2-iodopropane",
    "abbr": "iPrI",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)I"
   },
   "CCOP(=O)(Cl)OCC": {
    "name": "diethyl chlorophosphate",
    "abbr": "DECP",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOP(=O)(Cl)OCC"
   },
   "NC1CCCCC1": {
    "name": "cyclohexylamine",
    "abbr": "CyNH2",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 10.6
+   "pKaH": 10.6,
+   "typed": "NC1CCCCC1"
   },
   "COC(OC)N(C)C": {
    "name": "N,N-dimethylformamide dimethyl acetal",
    "abbr": "DMF-DMA",
    "role": "electrophile / alkylating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(OC)N(C)C"
   },
   "N#CCBr": {
    "name": "bromoacetonitrile",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CCBr"
   },
   "FC(F)(F)c1ccccc1": {
    "name": "benzotrifluoride (trifluorotoluene)",
    "abbr": "PhCF3",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "FC(F)(F)c1ccccc1"
   },
   "COc1ccc(O)cc1": {
    "name": "4-methoxyphenol",
    "abbr": "MEHQ",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(O)cc1"
   },
   "COc1nc(Cl)nc(OC)n1": {
    "name": "2-chloro-4,6-dimethoxy-1,3,5-triazine",
    "abbr": "CDMT",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1nc(Cl)nc(OC)n1"
   },
   "CC(=O)/C=C(/C)[O-]": {
    "name": "acetylacetonate ion",
    "abbr": "acac",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)/C=C(/C)[O-]"
   },
   "CC(=O)OCc1c2ccccc2c(COC(C)=O)c2ccccc12": {
    "name": "9,10-bis(acetoxymethyl)anthracene",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)OCc1c2ccccc2c(COC(C)=O)c2ccccc12"
   },
   "C=Cc1ccccc1": {
    "name": "styrene",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=Cc1ccccc1"
   },
   "O=C(O)c1ccccc1I(=O)=O": {
    "name": "2-iodoxybenzoic acid",
    "abbr": "IBX",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1ccccc1I(=O)=O"
   },
   "[O-]c1ccccc1": {
    "name": "phenoxide ion",
    "abbr": "PhO-",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 10.0
+   "pKaH": 10.0,
+   "typed": "[O-]c1ccccc1"
   },
   "CB1OC(c2ccccc2)(c2ccccc2)[C@H]2CCCN12": {
    "name": "(R)-2-methyl-CBS-oxazaborolidine",
    "abbr": "(R)-Me-CBS",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CB1OC(c2ccccc2)(c2ccccc2)[C@H]2CCCN12"
   },
   "c1ccc([As](c2ccccc2)c2ccccc2)cc1": {
    "name": "triphenylarsine",
    "abbr": "AsPh3",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc([As](c2ccccc2)c2ccccc2)cc1"
   },
   "OCC1CCCO1": {
    "name": "tetrahydrofurfuryl alcohol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCC1CCCO1"
   },
   "CCOC(C)O": {
    "name": "1-ethoxyethanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(C)O"
   },
   "C=C": {
    "name": "ethylene",
    "abbr": "",
    "role": "gas",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C"
   },
   "Nc1ccccc1-c1[c-]cccc1": {
    "name": "2'-aminobiphenyl-2-yl anion",
    "abbr": "",
    "role": "ligand",
    "also": "catalyst (metal)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1ccccc1-c1[c-]cccc1"
   },
   "O=S(Br)Br": {
    "name": "thionyl bromide",
    "abbr": "SOBr2",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(Br)Br"
   },
   "CCC[CH2][Sn+2][CH2]CCC": {
    "name": "dibutyltin(IV) cation",
    "abbr": "Bu2Sn(OAc)2",
    "role": "catalyst (metal)",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Sn+2][CH2]CCC"
   },
   "c1ccc(OP(Oc2ccccc2)Oc2ccccc2)cc1": {
    "name": "triphenyl phosphite",
    "abbr": "P(OPh)3",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(OP(Oc2ccccc2)Oc2ccccc2)cc1"
   },
   "c1ccc2[nH]ccc2c1": {
    "name": "indole",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2[nH]ccc2c1"
   },
   "CC[BH-](CC)CC": {
    "name": "triethylborohydride ion",
    "abbr": "Super-Hydride",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[BH-](CC)CC"
   },
   "C[P+](C)(C)CC#N": {
    "name": "(cyanomethyl)trimethylphosphonium ion",
    "abbr": "CMMP",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[P+](C)(C)CC#N"
   },
   "[B]": {
    "name": "boron",
    "abbr": "BBr3",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[B]"
   },
   "O=[PH2][O-]": {
    "name": "hypophosphite ion",
    "abbr": "NaH2PO2",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[PH2][O-]"
   },
   "CC(=O)[O][Na]": {
    "name": "sodium acetate",
    "abbr": "NaOAc",
    "role": "base",
    "also": "",
-   "pKaH": 4.76
+   "pKaH": 4.76,
+   "typed": "CC(=O)[O][Na]"
   },
   "COC": {
    "name": "dimethyl ether",
    "abbr": "Me2O",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC"
   },
   "C[CH](C)[Mg][Br]": {
    "name": "isopropylmagnesium bromide",
    "abbr": "iPrMgBr",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[CH](C)[Mg][Br]"
   },
   "[CH3][Mg][I]": {
    "name": "methylmagnesium iodide",
    "abbr": "MeMgI",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Mg][I]"
   },
   "O=C1O[C@H]([C@@H](O)CO)C(O)=C1O": {
    "name": "L-ascorbic acid",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1O[C@H]([C@@H](O)CO)C(O)=C1O"
   },
   "C=CC(=O)Cl": {
    "name": "acryloyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC(=O)Cl"
   },
   "N=CN": {
    "name": "formamidine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N=CN"
   },
   "O=C(O)CCc1ncc(-c2ccc(NC(=O)Nc3cccc(C(F)(F)F)c3)cc2)s1": {
    "name": "3-[5-(4-{[3-(trifluoromethyl)phenyl]carbamoylamino}phenyl)thiazol-2-yl]propanoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)CCc1ncc(-c2ccc(NC(=O)Nc3cccc(C(F)(F)F)c3)cc2)s1"
   },
   "Cc1ccccc1[P](c1ccccc1C)(c1ccccc1C)[Pd]([Cl])([Cl])[P](c1ccccc1C)(c1ccccc1C)c1ccccc1C": {
    "name": "dichlorobis(tri-o-tolylphosphine)palladium(II)",
    "abbr": "PdCl2[P(o-tol)3]2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccccc1[P](c1ccccc1C)(c1ccccc1C)[Pd]([Cl])([Cl])[P](c1ccccc1C)(c1ccccc1C)c1ccccc1C"
   },
   "CCCCCCCCCCCCCCCC[N+](C)(C)C": {
    "name": "cetyltrimethylammonium ion",
    "abbr": "CTAB",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCCCCCCCCCC[N+](C)(C)C"
   },
   "[In+3]": {
    "name": "indium(III) ion",
    "abbr": "InCl3",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[In+3]"
   },
   "[Li][c]1ccccc1": {
    "name": "phenyllithium",
    "abbr": "PhLi",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 43.0
+   "pKaH": 43.0,
+   "typed": "[Li][c]1ccccc1"
   },
   "C[CH2][Al+][CH2]C": {
    "name": "diethylaluminum cation",
    "abbr": "Et2AlCl",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[CH2][Al+][CH2]C"
   },
   "O=C1CCCCC1": {
    "name": "cyclohexanone",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCCCC1"
   },
   "c1ccc(P(c2ccccc2)c2ccccc2Oc2ccccc2P(c2ccccc2)c2ccccc2)cc1": {
    "name": "bis[2-(diphenylphosphino)phenyl] ether",
    "abbr": "DPEphos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(c2ccccc2)c2ccccc2Oc2ccccc2P(c2ccccc2)c2ccccc2)cc1"
   },
   "Cc1ccc(S(=O)(=O)n2cc(-c3cnn(Cc4cccc(F)c4)c3)c3cc(-c4ccc(C5CCNCC5)cc4)cnc32)cc1": {
    "name": "3-[1-(3-fluorobenzyl)pyrazol-4-yl]-5-[4-(piperidin-4-yl)phenyl]-1-tosyl-pyrrolo[2,3-b]pyridine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)n2cc(-c3cnn(Cc4cccc(F)c4)c3)c3cc(-c4ccc(C5CCNCC5)cc4)cnc32)cc1"
   },
   "CC(C)(O)C#N": {
    "name": "acetone cyanohydrin",
    "abbr": "",
    "role": "nucleophile",
    "also": "catalyst",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(O)C#N"
   },
   "O=[Si]=O": {
    "name": "silica (silicon dioxide)",
    "abbr": "SiO2",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[Si]=O"
   },
   "Oc1c(F)c(F)c(F)c(F)c1F": {
    "name": "pentafluorophenol",
    "abbr": "PFP-OH",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1c(F)c(F)c(F)c(F)c1F"
   },
   "c1ccc2c(c1)Nc1ccccc1S2": {
    "name": "phenothiazine",
    "abbr": "PTZ",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2c(c1)Nc1ccccc1S2"
   },
   "CC(C)(C)C(=O)CC(=O)C(C)(C)C": {
    "name": "2,2,6,6-tetramethyl-3,5-heptanedione",
    "abbr": "TMHD",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)C(=O)CC(=O)C(C)(C)C"
   },
   "CN(C)C(=O)Cl": {
    "name": "dimethylcarbamoyl chloride",
    "abbr": "DMCC",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(=O)Cl"
   },
   "CC(C)CO": {
    "name": "isobutanol",
    "abbr": "iBuOH",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)CO"
   },
   "C#CCBr": {
    "name": "propargyl bromide",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#CCBr"
   },
   "CCOC(=O)CSc1cnc(N)s1": {
    "name": "ethyl 2-[(2-amino-1,3-thiazol-5-yl)sulfanyl]acetate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)CSc1cnc(N)s1"
   },
   "CCCCOC(C)=O": {
    "name": "butyl acetate",
    "abbr": "BuOAc",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCOC(C)=O"
   },
   "C1=COCCC1": {
    "name": "3,4-dihydro-2H-pyran",
    "abbr": "DHP",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=COCCC1"
   },
   "BrCC1CCCCO1": {
    "name": "2-(bromomethyl)tetrahydropyran",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCC1CCCCO1"
   },
   "BrCC1CC1": {
    "name": "(bromomethyl)cyclopropane",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCC1CC1"
   },
   "CCOC(=O)OC(=O)OCC": {
    "name": "diethyl pyrocarbonate (diethyl dicarbonate)",
    "abbr": "",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)OC(=O)OCC"
   },
   "CCN(CC)C(C)C": {
    "name": "N,N-diethylisopropylamine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 10.8
+   "pKaH": 10.8,
+   "typed": "CCN(CC)C(C)C"
   },
   "COC(C)O": {
    "name": "1-methoxyethanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(C)O"
   },
   "[Hg]": {
    "name": "mercury",
    "abbr": "Hg",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Hg]"
   },
   "CC(C)(C)OC(=O)/N=N/C(=O)OC(C)(C)C": {
    "name": "di-tert-butyl azodicarboxylate",
    "abbr": "DBAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)/N=N/C(=O)OC(C)(C)C"
   },
   "c1ccc(P(CCCCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1": {
    "name": "1,4-bis(diphenylphosphino)butane",
    "abbr": "dppb",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(CCCCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1"
   },
   "CN(C1CCCCC1)C1CCCCC1": {
    "name": "N-methyldicyclohexylamine",
    "abbr": "Cy2NMe",
    "role": "base",
    "also": "",
-   "pKaH": 10.5
+   "pKaH": 10.5,
+   "typed": "CN(C1CCCCC1)C1CCCCC1"
   },
   "CCN=P(N=P(N(C)C)(N(C)C)N(C)C)(N(C)C)N(C)C": {
    "name": "phosphazene base P2-Et",
    "abbr": "P2-Et",
    "role": "base",
    "also": "",
-   "pKaH": 32.9
+   "pKaH": 32.9,
+   "typed": "CCN=P(N=P(N(C)C)(N(C)C)N(C)C)(N(C)C)N(C)C"
   },
   "CC(=O)OO": {
    "name": "peracetic acid",
    "abbr": "AcOOH",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)OO"
   },
   "CC(C)(C)OCl": {
    "name": "tert-butyl hypochlorite",
    "abbr": "tBuOCl",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OCl"
   },
   "FC(F)(F)c1ccc(CBr)o1": {
    "name": "2-(bromomethyl)-5-(trifluoromethyl)furan",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "FC(F)(F)c1ccc(CBr)o1"
   },
   "[Cl][Ni]1([Cl])[P](c2ccccc2)(c2ccccc2)CCC[P]1(c1ccccc1)c1ccccc1": {
    "name": "dichloro[1,3-bis(diphenylphosphino)propane]nickel(II)",
    "abbr": "NiCl2(dppp)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ni]1([Cl])[P](c2ccccc2)(c2ccccc2)CCC[P]1(c1ccccc1)c1ccccc1"
   },
   "O=C1C(Br)=C(c2ccccc2)c2ccc(OCCN3CCOCC3)cc21": {
    "name": "2-bromo-6-[2-(morpholin-4-yl)ethoxy]-3-phenyl-1H-inden-1-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1C(Br)=C(c2ccccc2)c2ccc(OCCN3CCOCC3)cc21"
   },
   "O=C(O)/C=C\\C(=O)O": {
    "name": "maleic acid",
    "abbr": "",
    "role": "acid",
    "also": "salt (work-up or additive)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)/C=C\\C(=O)O"
   },
   "c1ccc(P(CCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1": {
    "name": "1,2-bis(diphenylphosphino)ethane",
    "abbr": "dppe",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(CCP(c2ccccc2)c2ccccc2)c2ccccc2)cc1"
   },
   "P": {
    "name": "phosphine",
    "abbr": "PH3",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "P"
   },
   "[Ir]": {
    "name": "iridium",
    "abbr": "Ir",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ir]"
   },
   "O=C([O-])c1cccs1": {
    "name": "thiophene-2-carboxylate ion",
    "abbr": "CuTC",
    "role": "counter-ion / spectator ion",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])c1cccs1"
   },
   "[B][B][B][B][B][B][B][B][B][B]": {
    "name": "decaboron (linear B10 chain, no H)",
    "abbr": "B10H14",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[B][B][B][B][B][B][B][B][B][B]"
   },
   "O=C(Cl)CCl": {
    "name": "chloroacetyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "acylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)CCl"
   },
   "CC(=O)OI(OC(C)=O)c1ccccc1": {
    "name": "(diacetoxyiodo)benzene",
    "abbr": "PIDA (BAIB)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)OI(OC(C)=O)c1ccccc1"
   },
   "O=c1c2ccccc2nnn1O": {
    "name": "3-hydroxy-1,2,3-benzotriazin-4(3H)-one",
    "abbr": "HOOBt (HODhbt)",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=c1c2ccccc2nnn1O"
   },
   "O=C(O)C(Cl)Cl": {
    "name": "dichloroacetic acid",
    "abbr": "DCA",
    "role": "acid",
    "also": "catalyst",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)C(Cl)Cl"
   },
   "Nc1ccccc1-c1cccc[c]1[Pd][Cl]": {
    "name": "chloro(2'-amino-1,1'-biphenyl-2-yl)palladium(II) (Buchwald G2 palladacycle)",
    "abbr": "XPhos Pd G2 (palladacycle part)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1ccccc1-c1cccc[c]1[Pd][Cl]"
   },
   "[In]": {
    "name": "indium (metal)",
    "abbr": "In",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[In]"
   },
   "CC1CO1": {
    "name": "propylene oxide",
    "abbr": "",
    "role": "additive",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1CO1"
   },
   "COCCOCCN(CCOCCOC)CCOCCOC": {
    "name": "tris[2-(2-methoxyethoxy)ethyl]amine",
    "abbr": "TDA-1",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCOCCN(CCOCCOC)CCOCCOC"
   },
   "CN(C)C(F)=[N+](C)C": {
    "name": "fluoro-N,N,N',N'-tetramethylformamidinium (TFFH cation)",
    "abbr": "TFFH",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(F)=[N+](C)C"
   },
   "O=C(/N=N/C(=O)OCc1ccccc1)OCc1ccccc1": {
    "name": "dibenzyl azodicarboxylate",
    "abbr": "DBAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(/N=N/C(=O)OCc1ccccc1)OCc1ccccc1"
   },
   "O=C(Cl)c1c(Cl)cc(Cl)cc1Cl": {
    "name": "2,4,6-trichlorobenzoyl chloride",
    "abbr": "TCBC (Yamaguchi reagent)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)c1c(Cl)cc(Cl)cc1Cl"
   },
   "O=S(=O)(c1ccccc1)n1cc(I)c2ccc(F)cc21": {
    "name": "6-fluoro-3-iodo-1-(phenylsulfonyl)-1H-indole",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(c1ccccc1)n1cc(I)c2ccc(F)cc21"
   },
   "C=C[CH2][Pd][Cl]": {
    "name": "allylpalladium(II) chloride (monomer, C3H5ClPd)",
    "abbr": "[Pd(allyl)Cl]2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C[CH2][Pd][Cl]"
   },
   "CC(C)[C@@H](C(=O)O)N1Cc2ccc(-c3ccc(NC(=O)c4ccccc4)cc3)cc2C1=O": {
    "name": "(S)-2-[6-(4-benzamidophenyl)-1-oxoisoindolin-2-yl]-3-methylbutanoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[C@@H](C(=O)O)N1Cc2ccc(-c3ccc(NC(=O)c4ccccc4)cc3)cc2C1=O"
   },
   "Cc1cccc(C)c1": {
    "name": "m-xylene",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cccc(C)c1"
   },
   "C[C](C)(C)[Mg][Cl]": {
    "name": "tert-butylmagnesium chloride",
    "abbr": "t-BuMgCl",
    "role": "base",
    "also": "organometallic reagent",
-   "pKaH": 53.0
+   "pKaH": 53.0,
+   "typed": "C[C](C)(C)[Mg][Cl]"
   },
   "CC(C)(C)C(=O)[O-]": {
    "name": "pivalate ion",
    "abbr": "OPiv",
    "role": "counter-ion / spectator ion",
    "also": "base (CMD in C-H activation)",
-   "pKaH": 5.0
+   "pKaH": 5.0,
+   "typed": "CC(C)(C)C(=O)[O-]"
   },
   "N#CCC#N": {
    "name": "malononitrile",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CCC#N"
   },
   "CC(C)(C)N": {
    "name": "tert-butylamine",
    "abbr": "t-BuNH2",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 10.7
+   "pKaH": 10.7,
+   "typed": "CC(C)(C)N"
   },
   "c1cn[nH]c1": {
    "name": "pyrazole",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cn[nH]c1"
   },
   "CC(=O)CC(C)=O": {
    "name": "acetylacetone (2,4-pentanedione)",
    "abbr": "acac",
    "role": "electrophile / alkylating agent",
    "also": "ligand",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)CC(C)=O"
   },
   "CCB(CC)CC": {
    "name": "triethylborane",
    "abbr": "Et3B",
    "role": "radical initiator",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCB(CC)CC"
   },
   "C#C": {
    "name": "acetylene",
    "abbr": "",
    "role": "gas",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#C"
   },
   "O=C([O-])/C=C/C(=O)[O-]": {
    "name": "fumarate ion",
    "abbr": "",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])/C=C/C(=O)[O-]"
   },
   "O=S(=O)(Cl)c1ccccc1": {
    "name": "benzenesulfonyl chloride",
    "abbr": "PhSO2Cl",
    "role": "electrophile / alkylating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(Cl)c1ccccc1"
   },
   "C=CC#N": {
    "name": "acrylonitrile",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC#N"
   },
   "OB(O)C1CC1": {
    "name": "cyclopropylboronic acid",
    "abbr": "",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OB(O)C1CC1"
   },
   "OCC1(O)OC[C@@H](O)[C@@H](O)[C@H]1O": {
    "name": "D-psicose (D-allulose), pyranose form as drawn; C3 epimer of D-fructose (probably a mis-drawn D-fructose)",
    "abbr": "",
    "role": "other",
    "also": "reductant (H-donor)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCC1(O)OC[C@@H](O)[C@@H](O)[C@H]1O"
   },
   "[Ni+2]": {
    "name": "nickel(II) ion",
    "abbr": "Ni2+",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ni+2]"
   },
   "C[O+](C)C": {
    "name": "trimethyloxonium ion",
    "abbr": "Me3O+ BF4- (Meerwein salt)",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[O+](C)C"
   },
   "OC(C(F)(F)F)C(F)(F)F": {
    "name": "1,1,1,3,3,3-hexafluoro-2-propanol",
    "abbr": "HFIP",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OC(C(F)(F)F)C(F)(F)F"
   },
   "BrCBr": {
    "name": "dibromomethane",
    "abbr": "CH2Br2",
    "role": "solvent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCBr"
   },
   "c1ccc(-c2c(-c3ccccc3)c(-c3ccccc3)[c-](-c3ccccc3)c2-c2ccccc2)cc1": {
    "name": "pentaphenylcyclopentadienide (Cp ring of Q-Phos)",
    "abbr": "Q-Phos (fragment)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(-c2c(-c3ccccc3)c(-c3ccccc3)[c-](-c3ccccc3)c2-c2ccccc2)cc1"
   },
   "c1cc(N2CCCC2)ccn1": {
    "name": "4-pyrrolidinopyridine",
    "abbr": "PPY",
    "role": "additive",
    "also": "nucleophilic acylation catalyst; base",
-   "pKaH": 9.6
+   "pKaH": 9.6,
+   "typed": "c1cc(N2CCCC2)ccn1"
   },
   "Nc1cc[nH]n1": {
    "name": "3-aminopyrazole",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1cc[nH]n1"
   },
   "CN1C(=O)CC(=O)N(C)C1=O": {
    "name": "1,3-dimethylbarbituric acid",
    "abbr": "NDMBA",
    "role": "nucleophile",
    "also": "allyl scavenger",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1C(=O)CC(=O)N(C)C1=O"
   },
   "COP(=O)(OC)C(=[N+]=[N-])C(C)=O": {
    "name": "dimethyl (1-diazo-2-oxopropyl)phosphonate",
    "abbr": "Ohira-Bestmann reagent",
    "role": "nucleophile",
    "also": "homologation reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COP(=O)(OC)C(=[N+]=[N-])C(C)=O"
   },
   "COC(C)=O": {
    "name": "methyl acetate",
    "abbr": "MeOAc",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(C)=O"
   },
   "N=C(N)N": {
    "name": "guanidine",
    "abbr": "",
    "role": "base",
    "also": "nucleophile",
-   "pKaH": 13.6
+   "pKaH": 13.6,
+   "typed": "N=C(N)N"
   },
   "CCCC[O-]": {
    "name": "n-butoxide ion",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 16.0
+   "pKaH": 16.0,
+   "typed": "CCCC[O-]"
   },
   "CN(C)C(Oc1c(F)c(F)c(F)c(F)c1F)=[N+](C)C": {
    "name": "O-pentafluorophenyl-N,N,N',N'-tetramethyluronium",
    "abbr": "PfTU (HPfTU)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(Oc1c(F)c(F)c(F)c(F)c1F)=[N+](C)C"
   },
   "CC[N+](CC)(CC)S(=O)(=O)NC(=O)OC": {
    "name": "N-protonated Burgess reagent cation as drawn (Burgess reagent itself is the inner salt CC[N+](CC)(CC)S(=O)(=O)[N-]C(=O)OC, C8H18N2O4S)",
    "abbr": "Burgess reagent",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[N+](CC)(CC)S(=O)(=O)NC(=O)OC"
   },
   "NCCC(=O)O": {
    "name": "beta-alanine",
    "abbr": "",
    "role": "base",
    "also": "amine catalyst (Knoevenagel)",
-   "pKaH": 10.2
+   "pKaH": 10.2,
+   "typed": "NCCC(=O)O"
   },
   "CON": {
    "name": "methoxyamine (O-methylhydroxylamine)",
    "abbr": "MeONH2",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CON"
   },
   "NC(=O)[O-]": {
    "name": "carbamate ion",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC(=O)[O-]"
   },
   "O=C(O)CS": {
    "name": "thioglycolic acid (mercaptoacetic acid)",
    "abbr": "",
    "role": "additive",
    "also": "cation scavenger",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)CS"
   },
   "N#[C][Fe-3]([C]#N)([C]#N)([C]#N)([C]#N)[C]#N": {
    "name": "hexacyanoferrate(III) (ferricyanide)",
    "abbr": "K3Fe(CN)6",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#[C][Fe-3]([C]#N)([C]#N)([C]#N)([C]#N)[C]#N"
   },
   "CCN(CC)S(F)(F)F": {
    "name": "diethylaminosulfur trifluoride",
    "abbr": "DAST",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCN(CC)S(F)(F)F"
   },
   "[Sc+3]": {
    "name": "scandium(III) ion",
    "abbr": "Sc(OTf)3",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Sc+3]"
   },
   "COC(=O)C[C@@H]1COc2cc(O[C@@H]3CCc4c(Br)ccc(F)c43)ccc21": {
    "name": "methyl 2-[6-(4-bromo-7-fluoroindan-1-yloxy)-2,3-dihydrobenzofuran-3-yl]acetate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)C[C@@H]1COc2cc(O[C@@H]3CCc4c(Br)ccc(F)c43)ccc21"
   },
   "[Zr+4]": {
    "name": "zirconium(IV) ion",
    "abbr": "ZrCl4",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Zr+4]"
   },
   "CCCCC(CC)C(=O)[O-]": {
    "name": "2-ethylhexanoate ion",
    "abbr": "",
    "role": "salt (work-up or additive)",
    "also": "base",
-   "pKaH": 4.8
+   "pKaH": 4.8,
+   "typed": "CCCCC(CC)C(=O)[O-]"
   },
   "O=[N+]([O-])[N+](=O)[O-]": {
    "name": "dinitrogen tetroxide",
    "abbr": "N2O4",
    "role": "reactant (inorganic)",
    "also": "nitrosating agent (diazotization)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]([O-])[N+](=O)[O-]"
   },
   "CN(C)c1ccc(P(C2CCCCC2)C2CCCCC2)cc1": {
    "name": "4-(dicyclohexylphosphino)-N,N-dimethylaniline",
    "abbr": "Cy2P(4-Me2NC6H4)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccc(P(C2CCCCC2)C2CCCCC2)cc1"
   },
   "[O]=[Hg]": {
    "name": "mercury(II) oxide",
    "abbr": "HgO",
    "role": "dehydrating / activating agent",
    "also": "desulfurizing agent (thiophile)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Hg]"
   },
   "CC(C)(C)[Si](C)(C)Cl": {
    "name": "tert-butyldimethylsilyl chloride",
    "abbr": "TBSCl",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[Si](C)(C)Cl"
   },
   "CC(C)[SiH](C(C)C)C(C)C": {
    "name": "triisopropylsilane",
    "abbr": "TIPS-H (TIS)",
    "role": "additive",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[SiH](C(C)C)C(C)C"
   },
   "CCCC(C)O": {
    "name": "2-pentanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC(C)O"
   },
   "Nc1cccnc1": {
    "name": "3-aminopyridine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1cccnc1"
   },
   "CN(C)CCO": {
    "name": "2-(dimethylamino)ethanol",
    "abbr": "DMAE",
    "role": "additive",
    "also": "base",
-   "pKaH": 9.2
+   "pKaH": 9.2,
+   "typed": "CN(C)CCO"
   },
   "CC1(C)C(=O)N(Br)C(=O)N1Br": {
    "name": "1,3-dibromo-5,5-dimethylhydantoin",
    "abbr": "DBDMH",
    "role": "oxidant",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)C(=O)N(Br)C(=O)N1Br"
   },
   "O=S(=O)([O-])c1cccc(P(c2cccc(S(=O)(=O)[O-])c2)c2cccc(S(=O)(=O)[O-])c2)c1": {
    "name": "triphenylphosphine-3,3',3''-trisulfonate",
    "abbr": "TPPTS",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])c1cccc(P(c2cccc(S(=O)(=O)[O-])c2)c2cccc(S(=O)(=O)[O-])c2)c1"
   },
   "[Hg+2]": {
    "name": "mercury(II) ion",
    "abbr": "Hg(OAc)2",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Hg+2]"
   },
   "[Cl][Pt-2]([Cl])([Cl])([Cl])([Cl])[Cl]": {
    "name": "hexachloroplatinate(IV)",
    "abbr": "H2PtCl6 (Speier's catalyst)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Pt-2]([Cl])([Cl])([Cl])([Cl])[Cl]"
   },
   "CNC1CCCCC1NC": {
    "name": "N,N'-dimethylcyclohexane-1,2-diamine",
    "abbr": "DMCHDA",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNC1CCCCC1NC"
   },
   "NCC1CC1": {
    "name": "cyclopropylmethylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCC1CC1"
   },
   "O=C(O)C(O)C(O)C(=O)O": {
    "name": "tartaric acid",
    "abbr": "",
    "role": "acid",
    "also": "chiral resolving agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)C(O)C(O)C(=O)O"
   },
   "CCCC[N+](CCCC)(CCCC)Cc1ccccc1": {
    "name": "benzyltributylammonium ion",
    "abbr": "BnBu3N+ Cl-",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC[N+](CCCC)(CCCC)Cc1ccccc1"
   },
   "COS(=O)(=O)c1ccc(C)cc1": {
    "name": "methyl p-toluenesulfonate",
    "abbr": "MeOTs",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COS(=O)(=O)c1ccc(C)cc1"
   },
   "CB1OC(c2ccccc2)(c2ccccc2)[C@@H]2CCCN12": {
    "name": "(S)-2-methyl-CBS-oxazaborolidine",
    "abbr": "(S)-Me-CBS",
    "role": "Lewis acid",
    "also": "chiral catalyst (CBS reduction)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CB1OC(c2ccccc2)(c2ccccc2)[C@@H]2CCCN12"
   },
   "O=[Si]([O-])[O-]": {
    "name": "metasilicate ion",
    "abbr": "",
    "role": "other",
    "also": "catalyst support",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[Si]([O-])[O-]"
   },
   "CCOC(=O)CC(=O)OCC": {
    "name": "diethyl malonate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)CC(=O)OCC"
   },
   "CC(C)(C)OC(=O)N1CCC(c2nc3c(oc4ccc(Br)cc43)c(=O)[nH]2)CC1": {
    "name": "tert-butyl 4-(8-bromo-4-oxo-3,4-dihydrobenzofuro[3,2-d]pyrimidin-2-yl)piperidine-1-carboxylate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)N1CCC(c2nc3c(oc4ccc(Br)cc43)c(=O)[nH]2)CC1"
   },
   "CCCBr": {
    "name": "1-bromopropane",
    "abbr": "n-PrBr",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCBr"
   },
   "Nc1ccccn1": {
    "name": "2-aminopyridine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1ccccn1"
   },
   "[O-]O": {
    "name": "hydroperoxide ion",
    "abbr": "HOO-",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-]O"
   },
   "ClCI": {
    "name": "chloroiodomethane",
    "abbr": "ICH2Cl",
    "role": "electrophile / alkylating agent",
    "also": "carbenoid precursor (Simmons-Smith)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClCI"
   },
   "CC(C)(C)OC(=O)N1CCNCC1": {
    "name": "1-Boc-piperazine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)N1CCNCC1"
   },
   "CCN=C=NCCCN(CC)CC": {
    "name": "1-[3-(diethylamino)propyl]-3-ethylcarbodiimide (EDC analog)",
    "abbr": "EDC (likely mis-drawn)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCN=C=NCCCN(CC)CC"
   },
   "CN(C)C(On1nnc2ccc(Cl)cc21)=[N+](C)C": {
    "name": "O-(6-chlorobenzotriazol-1-yl)-N,N,N',N'-tetramethyluronium",
    "abbr": "HCTU (TCTU)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(On1nnc2ccc(Cl)cc21)=[N+](C)C"
   },
   "O=C([O-])C(=O)[O-]": {
    "name": "oxalate ion",
    "abbr": "",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])C(=O)[O-]"
   },
   "O=C=Nc1ccccc1": {
    "name": "phenyl isocyanate",
    "abbr": "PhNCO",
    "role": "electrophile / alkylating agent",
    "also": "amine scavenger",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C=Nc1ccccc1"
   },
   "CC(C)c1cc(C(C)C)c(-c2cccc(P(C3CCCCC3)C3CCCCC3)c2)c(C(C)C)c1": {
    "name": "dicyclohexyl(2',4',6'-triisopropylbiphenyl-3-yl)phosphine",
    "abbr": "XPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cc(C(C)C)c(-c2cccc(P(C3CCCCC3)C3CCCCC3)c2)c(C(C)C)c1"
   },
   "CN[C@H]1CCCC[C@@H]1NC": {
    "name": "(1S,2S)-N,N'-dimethylcyclohexane-1,2-diamine",
    "abbr": "DMCHDA",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN[C@H]1CCCC[C@@H]1NC"
   },
   "O=C1NC(=O)c2ccccc21": {
    "name": "phthalimide",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1NC(=O)c2ccccc21"
   },
   "CCl": {
    "name": "chloromethane",
    "abbr": "MeCl",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCl"
   },
   "CC(C)(C)[Si](C)(C)OS(=O)(=O)C(F)(F)F": {
    "name": "tert-butyldimethylsilyl trifluoromethanesulfonate",
    "abbr": "TBSOTf",
    "role": "deprotecting agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[Si](C)(C)OS(=O)(=O)C(F)(F)F"
   },
   "CN(C)C(ON1C(=O)CCC1=O)=[N+](C)C": {
    "name": "O-(N-succinimidyl)-N,N,N',N'-tetramethyluronium",
    "abbr": "TSTU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(ON1C(=O)CCC1=O)=[N+](C)C"
   },
   "O=C1c2ccccc2C(=O)N1O": {
    "name": "N-hydroxyphthalimide",
    "abbr": "NHPI",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1c2ccccc2C(=O)N1O"
   },
   "c1ccc2[nH]ncc2c1": {
    "name": "1H-indazole",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2[nH]ncc2c1"
   },
   "CCCCCCCCCCCC": {
    "name": "n-dodecane",
    "abbr": "",
    "role": "solvent",
    "also": "internal standard",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCCCCCC"
   },
   "CC(C)c1ccccc1": {
    "name": "cumene (isopropylbenzene)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1ccccc1"
   },
   "COS(=O)(=O)[O-]": {
    "name": "methyl sulfate ion",
    "abbr": "MeOSO3-",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COS(=O)(=O)[O-]"
   },
   "CC(C)C[C@H]1CN(C(=O)[C@@H]2C[C@H]2c2ccccc2)[C@@H](CC(C)C)C(=O)N1": {
    "name": "3,6-diisobutyl-4-(2-phenylcyclopropanecarbonyl)piperazin-2-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C[C@H]1CN(C(=O)[C@@H]2C[C@H]2c2ccccc2)[C@@H](CC(C)C)C(=O)N1"
   },
   "COC(=O)OC": {
    "name": "dimethyl carbonate",
    "abbr": "DMC",
    "role": "solvent",
    "also": "methylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)OC"
   },
   "C[S+](C)C": {
    "name": "trimethylsulfonium ion",
    "abbr": "Me3S+ I-",
    "role": "nucleophile (sulfur ylide precursor)",
    "also": "ylide precursor (Corey-Chaykovsky)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[S+](C)C"
   },
   "NC1(c2ccc(-c3c(-c4ccccc4)oc4ccc(F)cc4c3=O)cc2)CCC1": {
    "name": "3-[4-(1-aminocyclobutyl)phenyl]-6-fluoro-2-phenylchromen-4-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC1(c2ccc(-c3c(-c4ccccc4)oc4ccc(F)cc4c3=O)cc2)CCC1"
   },
   "O=P(Cl)(Oc1ccccc1)Oc1ccccc1": {
    "name": "diphenyl chlorophosphate",
    "abbr": "DPCP ((PhO)2P(O)Cl)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=P(Cl)(Oc1ccccc1)Oc1ccccc1"
   },
   "CB(O)O": {
    "name": "methylboronic acid",
    "abbr": "MeB(OH)2",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CB(O)O"
   },
   "[PH4+]": {
    "name": "phosphonium ion",
    "abbr": "",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[PH4+]"
   },
   "N#[C][Cu][C]#N": {
    "name": "dicyanocopper, Cu(CN)2 as drawn (recorded form of copper(I) cyanide, CuCN)",
    "abbr": "CuCN",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#[C][Cu][C]#N"
   },
   "O=C1CCC(=O)N1I": {
    "name": "N-iodosuccinimide",
    "abbr": "NIS",
    "role": "halogenating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCC(=O)N1I"
   },
   "CC(C)OB(OC(C)C)OC(C)C": {
    "name": "triisopropyl borate",
    "abbr": "B(OiPr)3",
    "role": "dehydrating / activating agent",
    "also": "electrophile (borylation of ArLi)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)OB(OC(C)C)OC(C)C"
   },
   "CCCCCCCCCCCC(=O)[O-]": {
    "name": "laurate (dodecanoate) ion",
    "abbr": "DBTDL (part)",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCCCCCC(=O)[O-]"
   },
   "c1nc[nH]n1": {
    "name": "1,2,4-triazole",
    "abbr": "",
    "role": "additive",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1nc[nH]n1"
   },
   "NC1CCCC1": {
    "name": "cyclopentylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC1CCCC1"
   },
   "C[CH2][Mg+]": {
    "name": "ethylmagnesium cation (ethylmagnesium bromide)",
    "abbr": "EtMgBr",
    "role": "base",
    "also": "organometallic reagent",
-   "pKaH": 50.0
+   "pKaH": 50.0,
+   "typed": "C[CH2][Mg+]"
   },
   "[Au]": {
    "name": "gold (metal / nanoparticles)",
    "abbr": "Au",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Au]"
   },
   "CC(C)CC(C)O": {
    "name": "4-methyl-2-pentanol",
    "abbr": "MIBC",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)CC(C)O"
   },
   "CC(C)(C)P(c1ccc2ccccc2c1-c1cccc2ccccc12)C(C)(C)C": {
    "name": "2-di-tert-butylphosphino-1,1'-binaphthyl",
    "abbr": "TrixiePhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)P(c1ccc2ccccc2c1-c1cccc2ccccc12)C(C)(C)C"
   },
   "CCC=O": {
    "name": "propanal (propionaldehyde)",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC=O"
   },
   "CCC[CH2][Mg][Cl]": {
    "name": "n-butylmagnesium chloride",
    "abbr": "n-BuMgCl",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Mg][Cl]"
   },
   "O=NOS(=O)(=O)O": {
    "name": "nitrosylsulfuric acid",
    "abbr": "NOHSO4",
    "role": "reactant (inorganic)",
    "also": "nitrosating agent (diazotization)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=NOS(=O)(=O)O"
   },
   "COc1ccc(P2(=S)SP(=S)(c3ccc(OC)cc3)S2)cc1": {
    "name": "Lawesson's reagent",
    "abbr": "LR",
    "role": "other",
    "also": "thionating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(P2(=S)SP(=S)(c3ccc(OC)cc3)S2)cc1"
   },
   "CN(C)C(On1ccccc1=O)=[N+](C)C": {
    "name": "O-(2-oxo-1(2H)-pyridyl)-N,N,N',N'-tetramethyluronium",
    "abbr": "TPTU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(On1ccccc1=O)=[N+](C)C"
   },
   "c1ccc(-c2ccccc2CN2CCN(c3ccccc3)CC2)cc1": {
    "name": "1-(biphenyl-2-ylmethyl)-4-phenylpiperazine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(-c2ccccc2CN2CCN(c3ccccc3)CC2)cc1"
   },
   "ClCc1ccccc1": {
    "name": "benzyl chloride",
    "abbr": "BnCl",
    "role": "electrophile / alkylating agent",
    "also": "protecting-group reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClCc1ccccc1"
   },
   "N#CCN": {
    "name": "aminoacetonitrile",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CCN"
   },
   "NCC(=O)O": {
    "name": "glycine",
    "abbr": "Gly",
    "role": "nucleophile",
    "also": "ligand (Cu)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCC(=O)O"
   },
   "CN(C)C(N(C)C)=[N+]1N=[N+]([O-])c2ccccc21": {
    "name": "HBTU/TBTU cation (guanidinium N-oxide form)",
    "abbr": "HBTU / TBTU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(N(C)C)=[N+]1N=[N+]([O-])c2ccccc21"
   },
   "C=CCO": {
    "name": "allyl alcohol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CCO"
   },
   "CCOC(=O)C(=O)OCC": {
    "name": "diethyl oxalate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)C(=O)OCC"
   },
   "CCC[CH2][Sn]([Cl])([Cl])[CH2]CCC": {
    "name": "dibutyltin dichloride",
    "abbr": "Bu2SnCl2",
    "role": "Lewis acid",
    "also": "catalyst",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Sn]([Cl])([Cl])[CH2]CCC"
   },
   "c1cncnc1": {
    "name": "pyrimidine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cncnc1"
   },
   "Cc1ccccn1": {
    "name": "2-picoline (2-methylpyridine)",
    "abbr": "",
    "role": "base",
    "also": "carrier in 2-picoline-borane (reductant)",
-   "pKaH": 6.0
+   "pKaH": 6.0,
+   "typed": "Cc1ccccn1"
   },
   "c1c[n-]cn1": {
    "name": "imidazolide ion",
    "abbr": "Im-",
    "role": "base",
    "also": "leaving group from CDI",
-   "pKaH": 14.5
+   "pKaH": 14.5,
+   "typed": "c1c[n-]cn1"
   },
   "Cc1ccc(C(C)C)cc1": {
    "name": "p-cymene",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(C(C)C)cc1"
   },
   "CCOC(=O)CC": {
    "name": "ethyl propionate",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)CC"
   },
   "[CH3][Sn]([CH3])[CH3]": {
    "name": "trimethylstannyl (from hexamethylditin)",
    "abbr": "Me3Sn-SnMe3",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Sn]([CH3])[CH3]"
   },
   "[CH3][Zn][CH3]": {
    "name": "dimethylzinc",
    "abbr": "Me2Zn",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Zn][CH3]"
   },
   "C(=C\\c1nc2ccccc2n1-c1ccccn1)/c1ccccc1": {
    "name": "(E)-1-(pyridin-2-yl)-2-styryl-1H-benzimidazole",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C(=C\\c1nc2ccccc2n1-c1ccccn1)/c1ccccc1"
   },
   "[P]": {
    "name": "phosphorus (elemental)",
    "abbr": "P",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[P]"
   },
   "O[C@H](CS)[C@H](O)CS": {
    "name": "dithiothreitol",
    "abbr": "DTT",
    "role": "reductant",
    "also": "additive (antioxidant)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O[C@H](CS)[C@H](O)CS"
   },
   "O=C([O-])CC(O)(CC(=O)[O-])C(=O)[O-]": {
    "name": "citrate ion",
    "abbr": "",
    "role": "salt (work-up or additive)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])CC(O)(CC(=O)[O-])C(=O)[O-]"
   },
   "CC[S-]": {
    "name": "ethanethiolate ion",
    "abbr": "NaSEt",
    "role": "nucleophile",
    "also": "deprotecting agent (O-demethylation)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[S-]"
   },
   "Cl[Si](Cl)(Cl)Cl": {
    "name": "silicon tetrachloride",
    "abbr": "SiCl4",
    "role": "Lewis acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cl[Si](Cl)(Cl)Cl"
   },
   "CCN=C=N": {
    "name": "ethylcarbodiimide (truncated EDC)",
    "abbr": "EDC (fragment)",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCN=C=N"
   },
   "CC(C)[CH2][Al][CH2]C(C)C": {
    "name": "diisobutylaluminum (DIBAL-H fragment)",
    "abbr": "DIBAL-H",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[CH2][Al][CH2]C(C)C"
   },
   "C1CN=C2CCCN2C1": {
    "name": "1,5-diazabicyclo[4.3.0]non-5-ene",
    "abbr": "DBN",
    "role": "base",
    "also": "",
-   "pKaH": 13.4
+   "pKaH": 13.4,
+   "typed": "C1CN=C2CCCN2C1"
   },
   "COC=O": {
    "name": "methyl formate",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC=O"
   },
   "OC1CCCCC1": {
    "name": "cyclohexanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OC1CCCCC1"
   },
   "O=C(O)[C@H](O)[C@@H](O)C(=O)O": {
    "name": "L-(+)-tartaric acid ((2R,3R)-tartaric acid)",
    "abbr": "",
    "role": "acid",
    "also": "chiral resolving agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)[C@H](O)[C@@H](O)C(=O)O"
   },
   "CCCCCCCCCCCCS": {
    "name": "1-dodecanethiol",
    "abbr": "",
    "role": "nucleophile",
    "also": "deprotecting agent (O-demethylation)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCCCCCCS"
   },
   "Clc1cc[c-](P(c2ccccc2)c2ccccc2)c1Cl": {
    "name": "(diphenylphosphino)cyclopentadienide with stray Cl (mis-parsed PdCl2(dppf))",
    "abbr": "dppf (fragment)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Clc1cc[c-](P(c2ccccc2)c2ccccc2)c1Cl"
   },
   "C=Cc1ccc(C=C)cc1": {
    "name": "1,4-divinylbenzene",
    "abbr": "DVB",
    "role": "other",
    "also": "polymer-support crosslinker",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=Cc1ccc(C=C)cc1"
   },
   "[P+5]": {
    "name": "phosphorus(V) (fragment of mis-parsed POCl3)",
    "abbr": "POCl3 (fragment)",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[P+5]"
   },
   "[O]=[Cr](=[O])([OH])[OH]": {
    "name": "chromic acid (Cr(VI))",
    "abbr": "H2CrO4 / CrO3-pyridine",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cr](=[O])([OH])[OH]"
   },
   "[W]": {
    "name": "tungsten (tungsten lamp)",
    "abbr": "W",
    "role": "other",
    "also": "light source",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[W]"
   },
   "N#CC1(N=NC2(C#N)CCCCC2)CCCCC1": {
    "name": "1,1'-azobis(cyclohexanecarbonitrile)",
    "abbr": "ACHN (V-40, VAZO 88)",
    "role": "radical initiator",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CC1(N=NC2(C#N)CCCCC2)CCCCC1"
   },
   "ON=Cc1ccccc1O": {
    "name": "salicylaldoxime",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ON=Cc1ccccc1O"
   },
   "C1=C(C2=NNCCCCCCCC2)CCCCCCCCC1": {
    "name": "3-(cycloundecen-1-yl)-1,2-diazacycloundec-2-ene",
    "abbr": "DBU",
    "role": "base",
    "also": "",
-   "pKaH": 13.5
+   "pKaH": 13.5,
+   "typed": "C1=C(C2=NNCCCCCCCC2)CCCCCCCCC1"
   },
   "[O]=[Ru]=[O]": {
    "name": "ruthenium(IV) oxide",
    "abbr": "RuO2",
    "role": "oxidizing catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Ru]=[O]"
   },
   "CN1c2c([nH]c(N)nc2=O)NCC1CNc1ccc(C(=O)NC(CCC(=O)O)C(=O)O)cc1": {
    "name": "5-methyltetrahydrofolic acid",
    "abbr": "5-MTHF",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1c2c([nH]c(N)nc2=O)NCC1CNc1ccc(C(=O)NC(CCC(=O)O)C(=O)O)cc1"
   },
   "[CH2-]c1ccccc1P(c1ccccc1C)c1ccccc1C": {
    "name": "2-(di-o-tolylphosphino)benzyl (Herrmann-Beller palladacycle ligand)",
    "abbr": "Herrmann-Beller catalyst (fragment)",
    "role": "ligand",
    "also": "part of Pd palladacycle precatalyst",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH2-]c1ccccc1P(c1ccccc1C)c1ccccc1C"
   },
   "O=C([O-])c1ccccc1": {
    "name": "benzoate ion",
    "abbr": "",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])c1ccccc1"
   },
   "CCC(=O)Cl": {
    "name": "propionyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "acylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(=O)Cl"
   },
   "C[N+](C)=CCl": {
    "name": "(chloromethylene)dimethyliminium (Vilsmeier reagent)",
    "abbr": "Vilsmeier reagent",
    "role": "coupling reagent (activates an acid)",
    "also": "formylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[N+](C)=CCl"
   },
   "C1CO1": {
    "name": "ethylene oxide (oxirane)",
    "abbr": "EO",
    "role": "additive",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1CO1"
   },
   "Cc1cn([C@H]2C[C@H](O)[C@@H](CO)O2)c(=O)[nH]c1=O": {
    "name": "thymidine",
    "abbr": "dT",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cn([C@H]2C[C@H](O)[C@@H](CO)O2)c(=O)[nH]c1=O"
   },
   "C=CC=C": {
    "name": "1,3-butadiene",
    "abbr": "",
    "role": "gas",
    "also": "diene (Diels-Alder)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC=C"
   },
   "N#CCCl": {
    "name": "chloroacetonitrile",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CCCl"
   },
   "C=[CH][Sn]([CH2]CCC)([CH2]CCC)[CH2]CCC": {
    "name": "tributyl(vinyl)tin",
    "abbr": "Bu3SnCH=CH2",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=[CH][Sn]([CH2]CCC)([CH2]CCC)[CH2]CCC"
   },
   "CC1(C)C2CC[C@@]1(CS(=O)(=O)O)C(=O)C2": {
    "name": "(1S)-(+)-10-camphorsulfonic acid",
    "abbr": "CSA",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)C2CC[C@@]1(CS(=O)(=O)O)C(=O)C2"
   },
   "CC(C)C1=CC(C(C)C)=C(c2ccccc2)C(C(C)C)(P(C2CCCCC2)C2CCCCC2)C1": {
    "name": "dicyclohexyl[2-phenyl-1,3,5-triisopropylcyclohexa-2,4-dien-1-yl]phosphine",
    "abbr": "XPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C1=CC(C(C)C)=C(c2ccccc2)C(C(C)C)(P(C2CCCCC2)C2CCCCC2)C1"
   },
   "CCC(C)(C)[O-]": {
    "name": "tert-amylate (2-methyl-2-butoxide)",
    "abbr": "NaOt-Am",
    "role": "base",
    "also": "",
-   "pKaH": 17.0
+   "pKaH": 17.0,
+   "typed": "CCC(C)(C)[O-]"
   },
   "[O-][Br+2]([O-])[O-]": {
    "name": "bromate ion",
    "abbr": "NaBrO3",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][Br+2]([O-])[O-]"
   },
   "Cc1ccc(S(=O)(=O)NN)cc1": {
    "name": "p-toluenesulfonyl hydrazide",
    "abbr": "TsNHNH2",
    "role": "nucleophile",
    "also": "diimide precursor (reductant)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)NN)cc1"
   },
   "CCCC[P+](CCCC)(CCCC)CCCC": {
    "name": "tetrabutylphosphonium ion",
    "abbr": "TBPB (Bu4P+ Br-)",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC[P+](CCCC)(CCCC)CCCC"
   },
   "O=S(=O)(O)c1ccccc1": {
    "name": "benzenesulfonic acid",
    "abbr": "PhSO3H",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(O)c1ccccc1"
   },
   "OCCCO": {
    "name": "1,3-propanediol",
    "abbr": "",
    "role": "other",
    "also": "protecting-group reagent (1,3-dioxane acetals)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCCO"
   },
   "CC(C)(C)c1cccc(C(C)(C)C)n1": {
    "name": "2,6-di-tert-butylpyridine",
    "abbr": "2,6-DTBP (DTBPy)",
    "role": "base",
    "also": "",
-   "pKaH": 3.6
+   "pKaH": 3.6,
+   "typed": "CC(C)(C)c1cccc(C(C)(C)C)n1"
   },
   "[Cl][Ru][Cl]": {
    "name": "ruthenium(II) chloride (RuCl2)",
    "abbr": "RuCl2(PPh3)3",
    "role": "oxidizing catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ru][Cl]"
   },
   "CCCC[n+]1ccn(C)c1": {
    "name": "1-butyl-3-methylimidazolium ion",
    "abbr": "[BMIM]PF6",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC[n+]1ccn(C)c1"
   },
   "CC(C)(C)[O][Al]([O]C(C)(C)C)[O]C(C)(C)C": {
    "name": "aluminum tri-tert-butoxide",
    "abbr": "LiAlH(Ot-Bu)3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[O][Al]([O]C(C)(C)C)[O]C(C)(C)C"
   },
   "c1ccc2ccccc2c1": {
    "name": "naphthalene",
    "abbr": "",
    "role": "other",
    "also": "internal standard",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2ccccc2c1"
   },
   "CCOC(=O)C1=C(C)NC(C)=C(C(=O)OCC)C1": {
    "name": "Hantzsch ester (diethyl 2,6-dimethyl-1,4-dihydropyridine-3,5-dicarboxylate)",
    "abbr": "HEH",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)C1=C(C)NC(C)=C(C(=O)OCC)C1"
   },
   "CC[N+](=O)[O-]": {
    "name": "nitroethane",
    "abbr": "EtNO2",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[N+](=O)[O-]"
   },
   "N#[O+]": {
    "name": "nitrosonium ion",
    "abbr": "NOBF4",
    "role": "reactant (inorganic)",
    "also": "nitrosating agent; oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#[O+]"
   },
   "COS(=O)(=O)C(F)(F)F": {
    "name": "methyl trifluoromethanesulfonate",
    "abbr": "MeOTf",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COS(=O)(=O)C(F)(F)F"
   },
   "CCC[CH2][Sn]([Cl])([CH2]CCC)[CH2]CCC": {
    "name": "tributyltin chloride",
    "abbr": "Bu3SnCl",
    "role": "organometallic reagent",
    "also": "Lewis acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Sn]([Cl])([CH2]CCC)[CH2]CCC"
   },
   "[B]1Oc2ccccc2O1": {
    "name": "catecholboryl (catecholborane fragment)",
    "abbr": "HBcat",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[B]1Oc2ccccc2O1"
   },
   "CCCc1c(CNC)ccc2ccccc12": {
    "name": "N-methyl-1-(1-propylnaphthalen-2-yl)methanamine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCc1c(CNC)ccc2ccccc12"
   },
   "CC(=O)/C=C(/C)O": {
    "name": "acetylacetone (enol form)",
    "abbr": "acac",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)/C=C(/C)O"
   },
   "NCc1ccccn1": {
    "name": "2-picolylamine (2-(aminomethyl)pyridine)",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCc1ccccn1"
   },
   "NC1CCC1": {
    "name": "cyclobutylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC1CCC1"
   },
   "CC(C)(C)[NH3+]": {
    "name": "tert-butylammonium ion",
    "abbr": "t-BuNH3+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[NH3+]"
   },
   "O=c1n(Cl)c(=O)n(Cl)c(=O)n1Cl": {
    "name": "trichloroisocyanuric acid",
    "abbr": "TCCA",
    "role": "oxidant",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=c1n(Cl)c(=O)n(Cl)c(=O)n1Cl"
   },
   "[Li][N]([Si](C)(C)C)[Si](C)(C)C": {
    "name": "lithium bis(trimethylsilyl)amide",
    "abbr": "LiHMDS",
    "role": "base",
    "also": "",
-   "pKaH": 26.0
+   "pKaH": 26.0,
+   "typed": "[Li][N]([Si](C)(C)C)[Si](C)(C)C"
   },
   "OCCOCCOCCO": {
    "name": "triethylene glycol",
    "abbr": "TEG",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCOCCOCCO"
   },
   "C=C[CH2-]": {
    "name": "allyl anion (from allylpalladium chloride)",
    "abbr": "[Pd(allyl)Cl]2 (fragment)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C[CH2-]"
   },
   "COCCl": {
    "name": "chloromethyl methyl ether",
    "abbr": "MOMCl",
    "role": "protecting-group reagent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCl"
   },
   "CCN(C)C": {
    "name": "N,N-dimethylethylamine",
    "abbr": "DMEA",
    "role": "base",
    "also": "",
-   "pKaH": 10.2
+   "pKaH": 10.2,
+   "typed": "CCN(C)C"
   },
   "N[C@@H](Cc1ccc2ccccc2c1)C(=O)O": {
    "name": "3-(2-naphthyl)-L-alanine",
    "abbr": "2-Nal",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N[C@@H](Cc1ccc2ccccc2c1)C(=O)O"
   },
   "CS(=O)(=O)c1ccc(N(CC2CCCC2)C(=O)Nc2nc(CC(=O)O)cs2)cc1": {
    "name": "2-[2-[3-(cyclopentylmethyl)-3-(4-methylsulfonylphenyl)ureido]thiazol-4-yl]acetic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)c1ccc(N(CC2CCCC2)C(=O)Nc2nc(CC(=O)O)cs2)cc1"
   },
   "O=C(O)C(Cl)(Cl)Cl": {
    "name": "trichloroacetic acid",
    "abbr": "TCA",
    "role": "acid",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)C(Cl)(Cl)Cl"
   },
   "C1=NCCCN(C2CCCCCCCCCC2)CCCCC1": {
    "name": "5-cycloundecyl-1,5-diazacycloundec-1(11)-ene",
    "abbr": "DBU",
    "role": "base",
    "also": "",
-   "pKaH": 13.5
+   "pKaH": 13.5,
+   "typed": "C1=NCCCN(C2CCCCCCCCCC2)CCCCC1"
   },
   "CN1CCCCC1": {
    "name": "N-methylpiperidine",
    "abbr": "N-Me-piperidine (no standard abbreviation; do not use NMP)",
    "role": "base",
    "also": "",
-   "pKaH": 10.1
+   "pKaH": 10.1,
+   "typed": "CN1CCCCC1"
   },
   "[O-]B[O-]": {
    "name": "hydrido-dioxoborate (boronate fragment)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-]B[O-]"
   },
   "O=C(Cl)C1CC1": {
    "name": "cyclopropanecarbonyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "acylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)C1CC1"
   },
   "O=C(Cl)OC(Cl)(Cl)Cl": {
    "name": "diphosgene (trichloromethyl chloroformate)",
    "abbr": "",
    "role": "dehydrating / activating agent",
    "also": "phosgene equivalent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)OC(Cl)(Cl)Cl"
   },
   "[CH3][Re](=[O])(=[O])=[O]": {
    "name": "methyltrioxorhenium",
    "abbr": "MTO",
    "role": "oxidizing catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Re](=[O])(=[O])=[O]"
   },
   "N#Cc1ccccc1N1CCNCC1": {
    "name": "2-(piperazin-1-yl)benzonitrile",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#Cc1ccccc1N1CCNCC1"
   },
   "O=C1c2ccccc2C(=O)C1(O)O": {
    "name": "ninhydrin",
    "abbr": "",
    "role": "other",
    "also": "TLC stain for amines",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1c2ccccc2C(=O)C1(O)O"
   },
   "[CH]Cl": {
    "name": "chloromethylene (fragment)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH]Cl"
   },
   "O=C(Cl)Oc1ccccc1": {
    "name": "phenyl chloroformate",
    "abbr": "PhOCOCl",
    "role": "electrophile / alkylating agent",
    "also": "activating agent (carbamates/ureas)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)Oc1ccccc1"
   },
   "CC(C)Br": {
    "name": "2-bromopropane",
    "abbr": "i-PrBr",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)Br"
   },
   "CC(C)CBr": {
    "name": "1-bromo-2-methylpropane (isobutyl bromide)",
    "abbr": "i-BuBr",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)CBr"
   },
   "[B-]C#N": {
    "name": "cyanoborohydride ion (drawn without H)",
    "abbr": "NaBH3CN",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[B-]C#N"
   },
   "CC(C)(O)C(C)(C)O": {
    "name": "pinacol",
    "abbr": "",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(O)C(C)(C)O"
   },
   "O=C([O-])Cl": {
    "name": "chloroformate ion (fragment of 1-chloroethyl chloroformate)",
    "abbr": "ACE-Cl (fragment)",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])Cl"
   },
   "OCCN(CCO)CCO": {
    "name": "triethanolamine",
    "abbr": "TEOA",
    "role": "additive",
    "also": "base",
-   "pKaH": 7.8
+   "pKaH": 7.8,
+   "typed": "OCCN(CCO)CCO"
   },
   "Cc1cc(C(C)(C)C)nc(C(C)(C)C)c1": {
    "name": "2,6-di-tert-butyl-4-methylpyridine",
    "abbr": "DTBMP",
    "role": "base",
    "also": "",
-   "pKaH": 4.4
+   "pKaH": 4.4,
+   "typed": "Cc1cc(C(C)(C)C)nc(C(C)(C)C)c1"
   },
   "CC[B-](CC)CC": {
    "name": "triethylborohydride ion (drawn without H)",
    "abbr": "LiBHEt3 (Super-Hydride)",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[B-](CC)CC"
   },
   "C1CCC(CNCC2CCCCC2)CC1": {
    "name": "bis(cyclohexylmethyl)amine (probably mis-drawn N,N-dicyclohexylmethylamine)",
    "abbr": "Cy2NMe",
    "role": "base",
    "also": "",
-   "pKaH": 10.5
+   "pKaH": 10.5,
+   "typed": "C1CCC(CNCC2CCCCC2)CC1"
   },
   "CN(C)[C@@H]1CCCC[C@H]1N": {
    "name": "(1R,2R)-N1,N1-dimethylcyclohexane-1,2-diamine",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)[C@@H]1CCCC[C@H]1N"
   },
   "CC(C)C[C@H]1CN[C@@H](CC(C)C)C(=O)N1": {
    "name": "(3S,6S)-3,6-diisobutylpiperazin-2-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C[C@H]1CN[C@@H](CC(C)C)C(=O)N1"
   },
   "O=Ic1ccccc1": {
    "name": "iodosobenzene",
    "abbr": "PhIO",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=Ic1ccccc1"
   },
   "ClSCl": {
    "name": "sulfur dichloride",
    "abbr": "SCl2",
    "role": "electrophile / alkylating agent",
    "also": "sulfenylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClSCl"
   },
   "CSCC[C@H](N)C(=O)O": {
    "name": "L-methionine",
    "abbr": "Met",
    "role": "additive",
    "also": "methyl cation scavenger",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CSCC[C@H](N)C(=O)O"
   },
   "O=S([O-])OS(=O)[O-]": {
    "name": "metabisulfite (disulfite) ion, drawn as an O-bridged S-O-S isomer (real S2O5 2- has an S-S bond: O=S([O-])S(=O)(=O)[O-])",
    "abbr": "Na2S2O5",
    "role": "reductant",
    "also": "work-up antioxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])OS(=O)[O-]"
   },
   "OCCNCCO": {
    "name": "diethanolamine",
    "abbr": "DEA",
    "role": "additive",
    "also": "base",
-   "pKaH": 8.9
+   "pKaH": 8.9,
+   "typed": "OCCNCCO"
   },
   "c1cnc2c(c1)nnn2O[P+](N1CCCC1)(N1CCCC1)N1CCCC1": {
    "name": "(7-azabenzotriazol-1-yloxy)tripyrrolidinophosphonium",
    "abbr": "PyAOP",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cnc2c(c1)nnn2O[P+](N1CCCC1)(N1CCCC1)N1CCCC1"
   },
   "NCC1CCCCC1": {
    "name": "cyclohexylmethylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCC1CCCCC1"
   },
   "Cc1cccc(O)c1": {
    "name": "m-cresol",
    "abbr": "",
    "role": "additive",
    "also": "cation scavenger",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cccc(O)c1"
   },
   "Cc1c(C)c(C)c(P(C(C)(C)C)C(C)(C)C)c(-c2c(C(C)C)cc(C(C)C)cc2C(C)C)c1C": {
    "name": "di-tert-butyl(3,4,5,6-tetramethyl-2',4',6'-triisopropylbiphenyl-2-yl)phosphine",
    "abbr": "Me4tBuXPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1c(C)c(C)c(P(C(C)(C)C)C(C)(C)C)c(-c2c(C(C)C)cc(C(C)C)cc2C(C)C)c1C"
   },
   "O=C(Cl)Oc1ccc([N+](=O)[O-])cc1": {
    "name": "4-nitrophenyl chloroformate",
    "abbr": "PNP-Cl",
    "role": "dehydrating / activating agent",
    "also": "electrophile (acylating agent)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)Oc1ccc([N+](=O)[O-])cc1"
   },
   "[Cl][Fe][Cl]": {
    "name": "iron(II) chloride",
    "abbr": "FeCl2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Fe][Cl]"
   },
   "OCCC1CCCO1": {
    "name": "2-(tetrahydrofuran-2-yl)ethanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCC1CCCO1"
   },
   "[O-][I+2]([O-])[O-]": {
    "name": "iodate ion",
    "abbr": "IO3-",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][I+2]([O-])[O-]"
   },
   "CN1C(C)(C)CC(Sc2ccc(B3OC(C)(C)C(C)(C)O3)cc2)CC1(C)C": {
    "name": "1,2,2,6,6-pentamethyl-4-[4-(pinacolatoboryl)phenylthio]piperidine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1C(C)(C)CC(Sc2ccc(B3OC(C)(C)C(C)(C)O3)cc2)CC1(C)C"
   },
   "[Ag]": {
    "name": "silver (metal)",
    "abbr": "Ag",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Ag]"
   },
   "OP(O)O": {
    "name": "phosphorous acid",
    "abbr": "H3PO3",
    "role": "reductant",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OP(O)O"
   },
   "[SiH4]": {
    "name": "silane (SiH4)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[SiH4]"
   },
   "C#Cc1ccccc1": {
    "name": "phenylacetylene",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#Cc1ccccc1"
   },
   "O=[PH]([O-])[O-]": {
    "name": "phosphite (phosphonate HPO3 2-) ion",
    "abbr": "",
    "role": "other",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[PH]([O-])[O-]"
   },
   "CN(C)c1ccc(-c2nc3c(N4CCN(C(=O)Nc5ccccc5)CC4)c(Br)cnc3[nH]2)cc1": {
    "name": "4-[6-bromo-2-(4-dimethylaminophenyl)-3H-imidazo[4,5-b]pyridin-7-yl]-N-phenylpiperazine-1-carboxamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccc(-c2nc3c(N4CCN(C(=O)Nc5ccccc5)CC4)c(Br)cnc3[nH]2)cc1"
   },
   "[Rh+3]": {
    "name": "rhodium(III) ion",
    "abbr": "RhCl3 / RhCl(PPh3)3",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Rh+3]"
   },
   "O=c1[nH]nc(CCc2ccccc2)cc1O": {
    "name": "4-hydroxy-6-(2-phenylethyl)pyridazin-3(2H)-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=c1[nH]nc(CCc2ccccc2)cc1O"
   },
   "[O-]B([O-])[O-]": {
    "name": "borate ion",
    "abbr": "",
    "role": "salt (work-up or additive)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-]B([O-])[O-]"
   },
   "COc1ccc(B(O)O)cc1": {
    "name": "4-methoxyphenylboronic acid",
    "abbr": "",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(B(O)O)cc1"
   },
   "C#CCN": {
    "name": "propargylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#CCN"
   },
   "C=C(C)C": {
    "name": "isobutylene (2-methylpropene)",
    "abbr": "",
    "role": "additive",
    "also": "reactant for t-Bu esters/ethers",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C(C)C"
   },
   "O=C(Cl)C(Cl)(Cl)Cl": {
    "name": "trichloroacetyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "acylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)C(Cl)(Cl)Cl"
   },
   "COc1cc(Cl)c(OC)c(P(C2CCCCC2)C2CCCCC2)c1-c1c(C(C)C)cc(C(C)C)cc1C(C)C": {
    "name": "BrettPhos (with stray Cl from mis-parsed BrettPhos Pd G1)",
    "abbr": "BrettPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1cc(Cl)c(OC)c(P(C2CCCCC2)C2CCCCC2)c1-c1c(C(C)C)cc(C(C)C)cc1C(C)C"
   },
   "CC(N)=O": {
    "name": "acetamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(N)=O"
   },
   "C#CCO": {
    "name": "propargyl alcohol",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#CCO"
   },
   "Cc1ccc2ccc3ccc(C)nc3c2n1": {
    "name": "neocuproine (2,9-dimethyl-1,10-phenanthroline)",
    "abbr": "neocuproine",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc2ccc3ccc(C)nc3c2n1"
   },
   "O=P([O-])([O-])OP(=O)([O-])OP(=O)([O-])[O-]": {
    "name": "triphosphate (tripolyphosphate) ion",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 9.4
+   "pKaH": 9.4,
+   "typed": "O=P([O-])([O-])OP(=O)([O-])OP(=O)([O-])[O-]"
   },
   "C1=NCCCN2CCCCC12": {
    "name": "1,5-diazabicyclo[5.4.0]undec-5-ene",
    "abbr": "DBU",
    "role": "base",
    "also": "",
-   "pKaH": 13.5
+   "pKaH": 13.5,
+   "typed": "C1=NCCCN2CCCCC12"
   },
   "CC[O][Ti]([O]CC)([O]CC)[O]CC": {
    "name": "titanium(IV) ethoxide",
    "abbr": "Ti(OEt)4",
    "role": "Lewis acid",
    "also": "dehydrating / activating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[O][Ti]([O]CC)([O]CC)[O]CC"
   },
   "C1CCC2CCCCC2C1": {
    "name": "decalin (decahydronaphthalene)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1CCC2CCCCC2C1"
   },
   "[CH3-]": {
    "name": "methyl anion (fragment of Tebbe/Petasis reagent)",
    "abbr": "Cp2TiMe2 / Tebbe",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3-]"
   },
   "CCOC(=O)CC(C)=O": {
    "name": "ethyl acetoacetate",
    "abbr": "EAA",
    "role": "nucleophile",
    "also": "electrophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)CC(C)=O"
   },
   "COc1ccc(C=O)cc1": {
    "name": "4-methoxybenzaldehyde (p-anisaldehyde)",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(C=O)cc1"
   },
   "C#N": {
    "name": "hydrogen cyanide",
    "abbr": "HCN",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#N"
   },
   "CC1CCCCC1": {
    "name": "methylcyclohexane",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1CCCCC1"
   },
   "OCCBr": {
    "name": "2-bromoethanol",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCBr"
   },
   "[N-]=[N+]=N": {
    "name": "hydrazoic acid",
    "abbr": "HN3",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=[N+]=N"
   },
   "O=C(O)C1CCCN1": {
    "name": "proline",
    "abbr": "Pro",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)C1CCCN1"
   },
   "[Br][Mg][c]1ccccc1": {
    "name": "phenylmagnesium bromide",
    "abbr": "PhMgBr",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Br][Mg][c]1ccccc1"
   },
   "c1ccc2c(c1)OCCOCCOc1ccccc1OCCOCCO2": {
    "name": "dibenzo-18-crown-6",
    "abbr": "DB18C6",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2c(c1)OCCOCCOc1ccccc1OCCOCCO2"
   },
   "CC(C)(C)OOC(C)(C)C": {
    "name": "di-tert-butyl peroxide",
    "abbr": "DTBP",
    "role": "radical initiator",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OOC(C)(C)C"
   },
   "CCOC(=O)OCC": {
    "name": "diethyl carbonate",
    "abbr": "DEC",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)OCC"
   },
   "[O-][I+2]([O-])O": {
    "name": "iodic acid",
    "abbr": "HIO3",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][I+2]([O-])O"
   },
   "O=I(=O)Cl": {
    "name": "iodyl chloride (probably mis-drawn dichloroiodate, ICl2-)",
    "abbr": "BTMA·ICl2",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=I(=O)Cl"
   },
   "[Na][Na]": {
    "name": "sodium (metal)",
    "abbr": "Na",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Na][Na]"
   },
   "OB(O)c1ccc(F)cc1": {
    "name": "4-fluorophenylboronic acid",
    "abbr": "",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OB(O)c1ccc(F)cc1"
   },
   "COc1cc(C#N)c(Br)c(C#N)c1O": {
    "name": "2-bromo-4-hydroxy-5-methoxyisophthalonitrile",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1cc(C#N)c(Br)c(C#N)c1O"
   },
   "C[SiH](C)C": {
    "name": "trimethylsilane (probably iodotrimethylsilane fragment)",
    "abbr": "TMSI (fragment)",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[SiH](C)C"
   },
   "c1cc[nH]c1": {
    "name": "pyrrole",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1cc[nH]c1"
   },
   "[O-][n+]1ccccc1O": {
    "name": "2-hydroxypyridine N-oxide",
    "abbr": "HOPO",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][n+]1ccccc1O"
   },
   "O=C(c1ccccc1)c1ccccc1": {
    "name": "benzophenone",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(c1ccccc1)c1ccccc1"
   },
   "CCOP(=O)(OCC)OCC": {
    "name": "triethyl phosphate",
    "abbr": "TEP",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOP(=O)(OCC)OCC"
   },
   "O=C1CCCC1": {
    "name": "cyclopentanone",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCCC1"
   },
   "[Cr]": {
    "name": "chromium (copper chromite)",
    "abbr": "Cu2Cr2O5 (Adkins)",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cr]"
   },
   "CN(C)CCN(C)CCN(C)C": {
    "name": "N,N,N',N'',N''-pentamethyldiethylenetriamine",
    "abbr": "PMDTA",
    "role": "additive",
    "also": "ligand (Li)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)CCN(C)CCN(C)C"
   },
   "CCOC([O-])[O-]": {
    "name": "triethyl orthoformate (fragment)",
    "abbr": "HC(OEt)3",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC([O-])[O-]"
   },
   "CCC[CH2][Sn]([CH2]CCC)([CH2]CCC)[c]1cnc(C(CCCCCCc2ccccc2)O[Si](C)(C)C(C)(C)C)o1": {
    "name": "2-[1-(tert-butyldimethylsilyloxy)-7-phenylheptyl]-5-(tributylstannyl)oxazole",
    "abbr": "",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Sn]([CH2]CCC)([CH2]CCC)[c]1cnc(C(CCCCCCc2ccccc2)O[Si](C)(C)C(C)(C)C)o1"
   },
   "CCCC[B+]CCCC": {
    "name": "dibutylboron cation (dibutylboron triflate)",
    "abbr": "Bu2BOTf",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC[B+]CCCC"
   },
   "CC(C)(C)OC(=O)N1CCC(C(=O)Nc2c(C(N)=O)oc3ccc(Br)cc23)CC1": {
    "name": "tert-butyl 4-[(5-bromo-2-carbamoylbenzofuran-3-yl)carbamoyl]piperidine-1-carboxylate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)N1CCC(C(=O)Nc2c(C(N)=O)oc3ccc(Br)cc23)CC1"
   },
   "O=C(OI(OC(=O)C(F)(F)F)c1ccccc1)C(F)(F)F": {
    "name": "[bis(trifluoroacetoxy)iodo]benzene",
    "abbr": "PIFA",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(OI(OC(=O)C(F)(F)F)c1ccccc1)C(F)(F)F"
   },
   "Cc1cc2nc3c(=O)[nH]c(=O)nc-3n(C[C@H](O)[C@H](O)[C@H](O)CO)c2cc1C": {
    "name": "riboflavin",
    "abbr": "",
    "role": "other",
    "also": "photocatalyst / redox mediator",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc2nc3c(=O)[nH]c(=O)nc-3n(C[C@H](O)[C@H](O)[C@H](O)CO)c2cc1C"
   },
   "COc1ccc(S(=O)(=O)[O-])c(OC)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1": {
    "name": "2'-dicyclohexylphosphino-2,6-dimethoxybiphenyl-3-sulfonate",
    "abbr": "sSPhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(S(=O)(=O)[O-])c(OC)c1-c1ccccc1P(C1CCCCC1)C1CCCCC1"
   },
   "OC1CCNC1": {
    "name": "3-pyrrolidinol",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OC1CCNC1"
   },
   "[O-][Si]([O-])([O-])[O-]": {
    "name": "orthosilicate ion",
    "abbr": "",
    "role": "other",
    "also": "filter aid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-][Si]([O-])([O-])[O-]"
   },
   "CS": {
    "name": "methanethiol (methyl mercaptan)",
    "abbr": "MeSH",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS"
   },
   "O=[N+]([O-])c1cccc(S(=O)(=O)[O-])c1": {
    "name": "3-nitrobenzenesulfonate ion",
    "abbr": "",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]([O-])c1cccc(S(=O)(=O)[O-])c1"
   },
   "NC1CCCCC1N": {
    "name": "1,2-diaminocyclohexane",
    "abbr": "DACH",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC1CCCCC1N"
   },
   "NNc1ccccc1": {
    "name": "phenylhydrazine",
    "abbr": "PhNHNH2",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NNc1ccccc1"
   },
   "O=S(=O)(O)OOS(=O)(=O)O": {
    "name": "peroxydisulfuric acid (persulfate)",
    "abbr": "(NH4)2S2O8 (ammonium persulfate)",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(O)OOS(=O)(=O)O"
   },
   "CNCC(=O)O": {
    "name": "sarcosine (N-methylglycine)",
    "abbr": "Sar",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNCC(=O)O"
   },
   "CC(C)(C)OC(N)=O": {
    "name": "tert-butyl carbamate",
    "abbr": "BocNH2",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(N)=O"
   },
   "CCCS": {
    "name": "1-propanethiol",
    "abbr": "PrSH",
    "role": "nucleophile",
    "also": "deprotecting agent (ester cleavage)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCS"
   },
   "C[Si](C)(C)[Si](C)(C)C": {
    "name": "hexamethyldisilane",
    "abbr": "Me3SiSiMe3 (Me6Si2)",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)[Si](C)(C)C"
   },
   "CCCCI": {
    "name": "1-iodobutane",
    "abbr": "n-BuI",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCI"
   },
   "CN(C)CCCN": {
    "name": "3-(dimethylamino)propylamine",
    "abbr": "DMAPA",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)CCCN"
   },
   "N#CC(Cl)(Cl)Cl": {
    "name": "trichloroacetonitrile",
    "abbr": "Cl3CCN",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CC(Cl)(Cl)Cl"
   },
   "O=C(O)c1ccccc1-c1cccs1": {
    "name": "2-(thiophen-2-yl)benzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1ccccc1-c1cccs1"
   },
   "C[Si](C)(C)OP(=O)=O": {
    "name": "trimethylsilyl metaphosphate (Me3SiOPO2; monomer unit of PPSE)",
    "abbr": "PPSE",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)OP(=O)=O"
   },
   "CC(C)CC(C)(C)C": {
    "name": "2,2,4-trimethylpentane (isooctane)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)CC(C)(C)C"
   },
   "COCCOCCO": {
    "name": "2-(2-methoxyethoxy)ethanol (diethylene glycol monomethyl ether)",
    "abbr": "DEGME",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCOCCO"
   },
   "O=BO[O-]": {
    "name": "perborate",
    "abbr": "",
    "role": "base",
    "also": "oxidant",
-   "pKaH": 9.0
+   "pKaH": 9.0,
+   "typed": "O=BO[O-]"
   },
   "ClC(Cl)(Cl)Br": {
    "name": "bromotrichloromethane",
    "abbr": "BrCCl3",
    "role": "halogenating agent",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClC(Cl)(Cl)Br"
   },
   "CC(=O)[O][Cu][O]C(C)=O": {
    "name": "copper(II) acetate",
    "abbr": "Cu(OAc)2",
    "role": "catalyst (metal)",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)[O][Cu][O]C(C)=O"
   },
   "CN(C)C(OCC(C)(C)C)OCC(C)(C)C": {
    "name": "N,N-dimethylformamide dineopentyl acetal",
    "abbr": "DMF-DNPA",
    "role": "dehydrating / activating agent",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(OCC(C)(C)C)OCC(C)(C)C"
   },
   "CN1CC(=O)Nc2ncc(/C=C/C(=O)O)cc2C1": {
    "name": "(E)-3-(4-methyl-2-oxo-1,2,3,4,5-tetrahydropyrido[2,3-e][1,4]diazepin-7-yl)acrylic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN1CC(=O)Nc2ncc(/C=C/C(=O)O)cc2C1"
   },
   "CC[n+]1csc(CCO)c1C": {
    "name": "3-ethyl-5-(2-hydroxyethyl)-4-methylthiazolium",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[n+]1csc(CCO)c1C"
   },
   "c1c[nH]nn1": {
    "name": "1H-1,2,3-triazole",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1c[nH]nn1"
   },
   "O=C1NCCO1": {
    "name": "2-oxazolidinone",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1NCCO1"
   },
   "CC(=O)Br": {
    "name": "acetyl bromide",
    "abbr": "AcBr",
    "role": "deprotecting agent",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)Br"
   },
   "O=C(O)c1cccc(CN2C(=O)C3(COc4cc5c(cc43)CCO5)c3ccccc32)c1": {
    "name": "3-[(2'-oxo-5,6-dihydrospiro[benzo[1,2-b:5,4-b']difuran-3,3'-indol]-1'(2'H)-yl)methyl]benzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1cccc(CN2C(=O)C3(COc4cc5c(cc43)CCO5)c3ccccc32)c1"
   },
   "c1ccc([PH](c2ccccc2)(c2ccccc2)[Pd]([PH](c2ccccc2)(c2ccccc2)c2ccccc2)([PH](c2ccccc2)(c2ccccc2)c2ccccc2)[PH](c2ccccc2)(c2ccccc2)c2ccccc2)cc1": {
    "name": "tetrakis(triphenylphosphine)palladium(0)",
    "abbr": "Pd(PPh3)4",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc([PH](c2ccccc2)(c2ccccc2)[Pd]([PH](c2ccccc2)(c2ccccc2)c2ccccc2)([PH](c2ccccc2)(c2ccccc2)c2ccccc2)[PH](c2ccccc2)(c2ccccc2)c2ccccc2)cc1"
   },
   "CCCN(CCC)CCC": {
    "name": "tripropylamine",
    "abbr": "Pr3N",
    "role": "base",
    "also": "",
-   "pKaH": 10.7
+   "pKaH": 10.7,
+   "typed": "CCCN(CCC)CCC"
   },
   "O=[PH](O)O": {
    "name": "phosphorous acid",
    "abbr": "H3PO3",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[PH](O)O"
   },
   "Cc1cccc([N+](=O)[O-])c1C(=O)OC(=O)c1c(C)cccc1[N+](=O)[O-]": {
    "name": "2-methyl-6-nitrobenzoic anhydride",
    "abbr": "MNBA",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cccc([N+](=O)[O-])c1C(=O)OC(=O)c1c(C)cccc1[N+](=O)[O-]"
   },
   "COC[P+](c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "(methoxymethyl)triphenylphosphonium",
    "abbr": "",
    "role": "other",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC[P+](c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "CC(C)C[C@H]1CN(C(=O)c2ccc(Oc3ccccc3)cc2)[C@@H](CC(C)C)C(=O)N1": {
    "name": "(3S,6S)-3,6-diisobutyl-4-(4-phenoxybenzoyl)piperazin-2-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C[C@H]1CN(C(=O)c2ccc(Oc3ccccc3)cc2)[C@@H](CC(C)C)C(=O)N1"
   },
   "O=NO": {
    "name": "nitrous acid",
    "abbr": "HNO2",
    "role": "reactant (inorganic)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=NO"
   },
   "O=S(=O)(N(c1ccccc1)S(=O)(=O)C(F)(F)F)C(F)(F)F": {
    "name": "N-phenyl-bis(trifluoromethanesulfonimide)",
    "abbr": "PhNTf2",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)(N(c1ccccc1)S(=O)(=O)C(F)(F)F)C(F)(F)F"
   },
   "Cc1cc(C)c(N2CCN(c3c(C)cc(C)cc3C)[C]2=[Ru]([Cl])([Cl])(=[CH]c2ccccc2)[P](C2CCCCC2)(C2CCCCC2)C2CCCCC2)c(C)c1": {
    "name": "Grubbs catalyst 2nd generation",
    "abbr": "Grubbs II",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)c(N2CCN(c3c(C)cc(C)cc3C)[C]2=[Ru]([Cl])([Cl])(=[CH]c2ccccc2)[P](C2CCCCC2)(C2CCCCC2)C2CCCCC2)c(C)c1"
   },
   "ClCC1CO1": {
    "name": "epichlorohydrin",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClCC1CO1"
   },
   "CC(O)CO": {
    "name": "propylene glycol (1,2-propanediol)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(O)CO"
   },
   "O=C(Cl)OCc1ccccc1": {
    "name": "benzyl chloroformate",
    "abbr": "Cbz-Cl",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)OCc1ccccc1"
   },
   "CN=C=O": {
    "name": "methyl isocyanate",
    "abbr": "MeNCO",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN=C=O"
   },
   "Cc1cc(C)nc(N2C[C@@H]3CCNC[C@@H]32)n1": {
    "name": "8-(4,6-dimethylpyrimidin-2-yl)-3,8-diazabicyclo[4.2.0]octane",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)nc(N2C[C@@H]3CCNC[C@@H]32)n1"
   },
   "O=C(O)CC(=O)O": {
    "name": "malonic acid",
    "abbr": "",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)CC(=O)O"
   },
   "Brc1ccccn1": {
    "name": "2-bromopyridine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Brc1ccccn1"
   },
   "COCCOC(=O)N=NC(=O)OCCOC": {
    "name": "di-2-methoxyethyl azodicarboxylate",
    "abbr": "DMEAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCOC(=O)N=NC(=O)OCCOC"
   },
   "C=CC(=O)O": {
    "name": "acrylic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC(=O)O"
   },
   "COCOC": {
    "name": "dimethoxymethane (methylal)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCOC"
   },
   "CC(=O)[O][Hg][O]C(C)=O": {
    "name": "mercury(II) acetate",
    "abbr": "Hg(OAc)2",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)[O][Hg][O]C(C)=O"
   },
   "C[CH2][Mg][Cl]": {
    "name": "ethylmagnesium chloride",
    "abbr": "EtMgCl",
    "role": "organometallic reagent",
    "also": "base",
-   "pKaH": 50.0
+   "pKaH": 50.0,
+   "typed": "C[CH2][Mg][Cl]"
   },
   "NC(C1CCCCC1)C1CCCCC1": {
    "name": "1,1-dicyclohexylmethanamine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 10.6
+   "pKaH": 10.6,
+   "typed": "NC(C1CCCCC1)C1CCCCC1"
   },
   "O=C1CNCCN1": {
    "name": "piperazin-2-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CNCCN1"
   },
   "CC[C@H]1CN2CC[C@H]1C[C@@H]2[C@@H](Oc1nnc(O[C@@H](c2ccnc3ccc(OC)cc23)[C@H]2C[C@@H]3CCN2C[C@@H]3CC)c2ccccc12)c1ccnc2ccc(OC)cc12": {
    "name": "hydroquinidine 1,4-phthalazinediyl diether",
    "abbr": "(DHQD)2PHAL",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[C@H]1CN2CC[C@H]1C[C@@H]2[C@@H](Oc1nnc(O[C@@H](c2ccnc3ccc(OC)cc23)[C@H]2C[C@@H]3CCN2C[C@@H]3CC)c2ccccc12)c1ccnc2ccc(OC)cc12"
   },
   "ClC(Cl)C(Cl)Cl": {
    "name": "1,1,2,2-tetrachloroethane",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClC(Cl)C(Cl)Cl"
   },
   "CBr": {
    "name": "bromomethane",
    "abbr": "MeBr",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CBr"
   },
   "[N-]=C=S": {
    "name": "thiocyanate",
    "abbr": "SCN-",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=C=S"
   },
   "Cc1ccccc1CCO": {
    "name": "2-(2-methylphenyl)ethanol",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccccc1CCO"
   },
   "c1ccc2[nH]nnc2c1": {
    "name": "1H-benzotriazole",
    "abbr": "BtH",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2[nH]nnc2c1"
   },
   "O=C(/N=N/C(=O)N1CCCCC1)N1CCCCC1": {
    "name": "1,1'-(azodicarbonyl)dipiperidine",
    "abbr": "ADDP",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(/N=N/C(=O)N1CCCCC1)N1CCCCC1"
   },
   "COP(OC)OC": {
    "name": "trimethyl phosphite",
    "abbr": "P(OMe)3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COP(OC)OC"
   },
   "[Cl][Pd-2]([Cl])([PH](c1ccccc1)(c1ccccc1)c1ccccc1)[PH](c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "bis(triphenylphosphine)palladium(II) dichloride",
    "abbr": "PdCl2(PPh3)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Pd-2]([Cl])([PH](c1ccccc1)(c1ccccc1)c1ccccc1)[PH](c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "[BH3-]OC(C)=O": {
    "name": "triacetoxyborohydride (drawn as acetoxyborohydride)",
    "abbr": "NaBH(OAc)3 / STAB",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[BH3-]OC(C)=O"
   },
   "NCl": {
    "name": "chloramine",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCl"
   },
   "Cc1ccc(S(=O)(=O)NCl)cc1": {
    "name": "N-chloro-p-toluenesulfonamide",
    "abbr": "TsNHCl",
    "role": "oxidant",
    "also": "halogenating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)NCl)cc1"
   },
   "O=C(O)c1ccccc1S": {
    "name": "thiosalicylic acid (2-mercaptobenzoic acid)",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1ccccc1S"
   },
   "O=C(O)c1cc(-c2cc(F)cc(Cl)c2)n(-c2ccccn2)n1": {
    "name": "5-(3-chloro-5-fluorophenyl)-1-(pyridin-2-yl)-1H-pyrazole-3-carboxylic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1cc(-c2cc(F)cc(Cl)c2)n(-c2ccccn2)n1"
   },
   "CCNC": {
    "name": "N-methylethylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": 10.9
+   "pKaH": 10.9,
+   "typed": "CCNC"
   },
   "CCCCCBr": {
    "name": "1-bromopentane",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCBr"
   },
   "Nc1c(C(=O)O)cc(C(F)(F)F)c(C=O)c1Cl": {
    "name": "2-amino-3-chloro-4-formyl-5-(trifluoromethyl)benzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1c(C(=O)O)cc(C(F)(F)F)c(C=O)c1Cl"
   },
   "CCCCCCCC": {
    "name": "n-octane",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCC"
   },
   "COC(=O)[C@H](C(C)C)N1Cc2ccc(-c3ccc(NC(=O)c4ccccc4)cc3)cc2C1=O": {
    "name": "methyl (2S)-2-[6-(4-benzamidophenyl)-1-oxoisoindolin-2-yl]-3-methylbutanoate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)[C@H](C(C)C)N1Cc2ccc(-c3ccc(NC(=O)c4ccccc4)cc3)cc2C1=O"
   },
   "[B-]": {
    "name": "boride anion (likely mis-drawn borohydride)",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[B-]"
   },
   "CC(=O)c1ccccc1": {
    "name": "acetophenone",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)c1ccccc1"
   },
   "NCc1cccnc1": {
    "name": "3-(aminomethyl)pyridine (3-picolylamine)",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": 8.9
+   "pKaH": 8.9,
+   "typed": "NCc1cccnc1"
   },
   "CC(=O)[O][K]": {
    "name": "potassium acetate",
    "abbr": "KOAc",
    "role": "base",
    "also": "",
-   "pKaH": 4.76
+   "pKaH": 4.76,
+   "typed": "CC(=O)[O][K]"
   },
   "Cc1ccc(Cl)cc1N1C(=O)c2cc(Br)n(C(C)C)c2C1c1ccc(Cl)cc1": {
    "name": "2-bromo-5-(5-chloro-2-methylphenyl)-6-(4-chlorophenyl)-1-isopropyl-5,6-dihydropyrrolo[3,4-b]pyrrol-4(1H)-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(Cl)cc1N1C(=O)c2cc(Br)n(C(C)C)c2C1c1ccc(Cl)cc1"
   },
   "COC([O-])[O-]": {
    "name": "methoxymethanediolate (likely mis-drawn trimethyl orthoformate)",
    "abbr": "TMOF",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC([O-])[O-]"
   },
   "O=C1Nc2ccccc2C1=O": {
    "name": "isatin",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1Nc2ccccc2C1=O"
   },
   "N#CN": {
    "name": "cyanamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CN"
   },
   "O=Cc1ccccn1": {
    "name": "pyridine-2-carboxaldehyde",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=Cc1ccccn1"
   },
   "CCC(=O)OC(=O)CC": {
    "name": "propionic anhydride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(=O)OC(=O)CC"
   },
   "COc1cc(Cl)nnc1NS(=O)(=O)Cc1cc(C#N)ccc1Cl": {
    "name": "N-(6-chloro-4-methoxypyridazin-3-yl)-1-(2-chloro-5-cyanophenyl)methanesulfonamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1cc(Cl)nnc1NS(=O)(=O)Cc1cc(C#N)ccc1Cl"
   },
   "CCCP(=O)(O)O": {
    "name": "propylphosphonic acid (represents T3P, propylphosphonic anhydride)",
    "abbr": "T3P",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCP(=O)(O)O"
   },
   "O=C(NC1CCCCC1)NC1CCCCC1": {
    "name": "N,N'-dicyclohexylurea",
    "abbr": "DCU",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(NC1CCCCC1)NC1CCCCC1"
   },
   "Oc1cc(Cl)c(Cl)cc1Cl": {
    "name": "2,4,5-trichlorophenol",
    "abbr": "",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1cc(Cl)c(Cl)cc1Cl"
   },
   "Cc1cc(C)c(C)c(C)c1C": {
    "name": "pentamethylbenzene",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)c(C)c(C)c1C"
   },
   "CCOC(=O)C(C#N)=NO": {
    "name": "ethyl cyano(hydroxyimino)acetate",
    "abbr": "Oxyma",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)C(C#N)=NO"
   },
   "C[Si](C)(C)N=[N+]=[N-]": {
    "name": "azidotrimethylsilane",
    "abbr": "TMSN3",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)N=[N+]=[N-]"
   },
   "OCCOCCOCCOCCOCCO": {
    "name": "pentaethylene glycol",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCOCCOCCOCCOCCO"
   },
   "O=CC=O": {
    "name": "glyoxal",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=CC=O"
   },
   "CCCCCCO": {
    "name": "1-hexanol",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCO"
   },
   "[Mn]": {
    "name": "manganese (likely MnO2)",
    "abbr": "MnO2",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Mn]"
   },
   "Clc1ccc(Cl)cc1": {
    "name": "1,4-dichlorobenzene",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Clc1ccc(Cl)cc1"
   },
   "ClCC(Cl)(Cl)Cl": {
    "name": "1,1,1,2-tetrachloroethane",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClCC(Cl)(Cl)Cl"
   },
   "C[Si](C)(C)O[Si](C)(C)C": {
    "name": "hexamethyldisiloxane",
    "abbr": "HMDSO",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[Si](C)(C)O[Si](C)(C)C"
   },
   "C[CH2][Al]([CH2]C)[CH2]C": {
    "name": "triethylaluminium",
    "abbr": "AlEt3",
    "role": "organometallic reagent",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[CH2][Al]([CH2]C)[CH2]C"
   },
   "CC(C)(C)[O][AlH-]([O]C(C)(C)C)[O]C(C)(C)C": {
    "name": "tri-tert-butoxyaluminum hydride anion (tri-tert-butoxyaluminohydride)",
    "abbr": "LiAlH(OtBu)3",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)[O][AlH-]([O]C(C)(C)C)[O]C(C)(C)C"
   },
   "C[Si](C)(C)[NH-]": {
    "name": "trimethylsilylamide (likely LiHMDS fragment)",
    "abbr": "LiHMDS",
    "role": "base",
    "also": "",
-   "pKaH": 26.0
+   "pKaH": 26.0,
+   "typed": "C[Si](C)(C)[NH-]"
   },
   "[CH3][Sn]([CH3])([CH3])[CH3]": {
    "name": "tetramethyltin",
    "abbr": "SnMe4",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Sn]([CH3])([CH3])[CH3]"
   },
   "[C+4]": {
    "name": "carbon (Pd/C support)",
    "abbr": "C",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[C+4]"
   },
   "CC(C)(C)OC=O": {
    "name": "tert-butyl formate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC=O"
   },
   "Nc1ccccc1S": {
    "name": "2-aminothiophenol",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Nc1ccccc1S"
   },
   "COC(=O)CBr": {
    "name": "methyl bromoacetate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)CBr"
   },
   "CC(C)OCC#N": {
    "name": "2-isopropoxyacetonitrile",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)OCC#N"
   },
   "[Tl+]": {
    "name": "thallium(I) cation",
    "abbr": "Tl+",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Tl+]"
   },
   "N#Cc1ccc(Cl)c(CS(=O)(=O)Nc2nnc(Cl)cc2O)c1": {
    "name": "1-(2-chloro-5-cyanophenyl)-N-(6-chloro-4-hydroxypyridazin-3-yl)methanesulfonamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#Cc1ccc(Cl)c(CS(=O)(=O)Nc2nnc(Cl)cc2O)c1"
   },
   "CCC(=O)CC": {
    "name": "3-pentanone (diethyl ketone)",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC(=O)CC"
   },
   "CCN(CC)Cc1ccccc1": {
    "name": "N,N-diethylbenzylamine (polymer-supported)",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 9.5
+   "pKaH": 9.5,
+   "typed": "CCN(CC)Cc1ccccc1"
   },
   "O=C([O-])N=NC(=O)[O-]": {
    "name": "azodicarboxylate (likely DEAD/DIAD fragment)",
    "abbr": "DEAD/DIAD",
    "role": "dehydrating / activating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])N=NC(=O)[O-]"
   },
   "CC(C)C=O": {
    "name": "isobutyraldehyde",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C=O"
   },
   "COCCN(CCOC)S(F)(F)F": {
    "name": "bis(2-methoxyethyl)aminosulfur trifluoride",
    "abbr": "Deoxo-Fluor",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCN(CCOC)S(F)(F)F"
   },
   "CS(=O)(=O)NC(=O)c1cc(Cl)c(F)cc1F": {
    "name": "5-chloro-2,4-difluoro-N-(methylsulfonyl)benzamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)NC(=O)c1cc(Cl)c(F)cc1F"
   },
   "CC(C)c1cc(C(C)C)c(-c2ccccc2[PH](C2CCCCC2)(C2CCCCC2)[Pd]2([O]S(C)(=O)=O)[NH]c3ccccc3-c3cccc[c]32)c(C(C)C)c1": {
    "name": "XPhos Pd G3",
    "abbr": "XPhos-Pd-G3",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cc(C(C)C)c(-c2ccccc2[PH](C2CCCCC2)(C2CCCCC2)[Pd]2([O]S(C)(=O)=O)[NH]c3ccccc3-c3cccc[c]32)c(C(C)C)c1"
   },
   "C[NH2+]C": {
    "name": "dimethylammonium",
    "abbr": "",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[NH2+]C"
   },
   "[O-]Br": {
    "name": "hypobromite",
    "abbr": "BrO-",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O-]Br"
   },
   "CCOCCOCCOCC": {
    "name": "diethylene glycol diethyl ether",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOCCOCCOCC"
   },
   "CC(C)(C)OC(=O)N[C@@H](Cc1ccccc1C(F)(F)F)C(=O)O": {
    "name": "N-Boc-2-(trifluoromethyl)-L-phenylalanine",
    "abbr": "Boc-Phe(2-CF3)-OH",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)N[C@@H](Cc1ccccc1C(F)(F)F)C(=O)O"
   },
   "NOC1CCCCO1": {
    "name": "O-(tetrahydro-2H-pyran-2-yl)hydroxylamine",
    "abbr": "THPONH2",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NOC1CCCCO1"
   },
   "CN(C)P(N(C)C)N(C)C": {
    "name": "tris(dimethylamino)phosphine",
    "abbr": "HMPT",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)P(N(C)C)N(C)C"
   },
   "O=C(O)c1cccc(Cl)c1": {
    "name": "3-chlorobenzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1cccc(Cl)c1"
   },
   "CC1(C)COB(B2OCC(C)(C)CO2)OC1": {
    "name": "bis(neopentyl glycolato)diboron",
    "abbr": "B2nep2",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)COB(B2OCC(C)(C)CO2)OC1"
   },
   "O=C(Cc1ccc2ncccc2c1)NNc1ncc(-c2ccccc2)nn1": {
    "name": "N'-(6-phenyl-1,2,4-triazin-3-yl)-2-(quinolin-6-yl)acetohydrazide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cc1ccc2ncccc2c1)NNc1ncc(-c2ccccc2)nn1"
   },
   "c1ccc2c(c1)CCCC2": {
    "name": "tetralin (1,2,3,4-tetrahydronaphthalene)",
    "abbr": "",
    "role": "reductant",
    "also": "solvent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2c(c1)CCCC2"
   },
   "[O]=[Pd]": {
    "name": "palladium(II) oxide",
    "abbr": "PdO",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Pd]"
   },
   "COc1ccnc2c1ccc1c(OC)ccnc12": {
    "name": "4,7-dimethoxy-1,10-phenanthroline",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccnc2c1ccc1c(OC)ccnc12"
   },
   "NN1CCCC1": {
    "name": "1-aminopyrrolidine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NN1CCCC1"
   },
   "c1ccc(Pc2ccccc2)cc1": {
    "name": "diphenylphosphine",
    "abbr": "Ph2PH",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(Pc2ccccc2)cc1"
   },
   "OB(O)c1ccoc1": {
    "name": "furan-3-boronic acid",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OB(O)c1ccoc1"
   },
   "Cc1ccnc(N)c1C": {
    "name": "2-amino-3,4-dimethylpyridine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccnc(N)c1C"
   },
   "O=CC1CC1": {
    "name": "cyclopropanecarboxaldehyde",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=CC1CC1"
   },
   "Clc1ccc(Cl)c(Cl)c1": {
    "name": "1,2,4-trichlorobenzene",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Clc1ccc(Cl)c(Cl)c1"
   },
   "CC(C)CN1CCN2CCN(CC(C)C)P1N(CC(C)C)CC2": {
    "name": "2,8,9-triisobutyl-2,5,8,9-tetraaza-1-phosphabicyclo[3.3.3]undecane",
    "abbr": "Verkade base",
    "role": "ligand",
    "also": "base",
-   "pKaH": 33.0
+   "pKaH": 33.0,
+   "typed": "CC(C)CN1CCN2CCN(CC(C)C)P1N(CC(C)C)CC2"
   },
   "N=C=NC1CCCCC1": {
    "name": "N-cyclohexylcarbodiimide (polymer-supported)",
    "abbr": "PS-CDI",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N=C=NC1CCCCC1"
   },
   "OCC12CC3CC(CC(C3)C1)C2": {
    "name": "1-adamantanemethanol",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCC12CC3CC(CC(C3)C1)C2"
   },
   "OCCS": {
    "name": "2-mercaptoethanol",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OCCS"
   },
   "C1CN=C2NCCCN2C1": {
    "name": "1,5,7-triazabicyclo[4.4.0]dec-5-ene",
    "abbr": "TBD",
    "role": "base",
    "also": "",
-   "pKaH": 15.2
+   "pKaH": 15.2,
+   "typed": "C1CN=C2NCCCN2C1"
   },
   "COC(C)(OC)OC": {
    "name": "trimethyl orthoacetate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(C)(OC)OC"
   },
   "C[C@H](N)C(=O)O": {
    "name": "L-alanine",
    "abbr": "Ala",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[C@H](N)C(=O)O"
   },
   "CCCCOB(OCCCC)OCCCC": {
    "name": "tributyl borate",
    "abbr": "B(OBu)3",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCOB(OCCCC)OCCCC"
   },
   "O=C(Cl)c1ccccc1F": {
    "name": "2-fluorobenzoyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(Cl)c1ccccc1F"
   },
   "Cc1ccc(S(=O)(=O)OS(=O)(=O)c2ccc(C)cc2)cc1": {
    "name": "p-toluenesulfonic anhydride",
    "abbr": "Ts2O",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)OS(=O)(=O)c2ccc(C)cc2)cc1"
   },
   "O=C1C=CC(=O)O1": {
    "name": "maleic anhydride",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1C=CC(=O)O1"
   },
   "CC1(C)CC(=O)CC(=O)C1": {
    "name": "dimedone (5,5-dimethylcyclohexane-1,3-dione)",
    "abbr": "",
    "role": "additive",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)CC(=O)CC(=O)C1"
   },
   "O=C1C=CC(=O)C=C1": {
    "name": "1,4-benzoquinone",
    "abbr": "",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1C=CC(=O)C=C1"
   },
   "CCCCCCCCCCCCOS(=O)(=O)[O-]": {
    "name": "dodecyl sulfate",
    "abbr": "SDS",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCCCCCCOS(=O)(=O)[O-]"
   },
   "CNCCN(C)C": {
    "name": "N,N,N'-trimethylethylenediamine",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNCCN(C)C"
   },
   "[C-]#[C-]": {
    "name": "acetylide (dicarbide)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[C-]#[C-]"
   },
   "S=C(Cl)Cl": {
    "name": "thiophosgene",
    "abbr": "CSCl2",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "S=C(Cl)Cl"
   },
   "CC(C)NC1CCCCC1": {
    "name": "N-isopropylcyclohexylamine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 11.0
+   "pKaH": 11.0,
+   "typed": "CC(C)NC1CCCCC1"
   },
   "[CH3][Zn+]": {
    "name": "methylzinc cation (from MeZnCl)",
    "abbr": "MeZnCl",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Zn+]"
   },
   "C=[CH][Mg][Br]": {
    "name": "vinylmagnesium bromide",
    "abbr": "",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=[CH][Mg][Br]"
   },
   "O=C([O-])CC(=O)[O-]": {
    "name": "malonate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C([O-])CC(=O)[O-]"
   },
   "CC(C)(C)OC(=O)CN": {
    "name": "glycine tert-butyl ester",
    "abbr": "H-Gly-OtBu",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)CN"
   },
   "Cc1cc(C)c(Br)c(C)c1": {
    "name": "2-bromomesitylene (2-bromo-1,3,5-trimethylbenzene)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)c(Br)c(C)c1"
   },
   "CC(C)C(=O)Cl": {
    "name": "isobutyryl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C(=O)Cl"
   },
   "CCCCBr": {
    "name": "1-bromobutane",
    "abbr": "n-BuBr",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCBr"
   },
   "N[C@@H]1c2ccccc2C[C@@H]1O": {
    "name": "(1R,2S)-1-amino-2-indanol",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N[C@@H]1c2ccccc2C[C@@H]1O"
   },
   "CC(Cl)(Cl)Cl": {
    "name": "1,1,1-trichloroethane",
    "abbr": "",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(Cl)(Cl)Cl"
   },
   "CCCc1cc(CCC)c(-c2ccccc2P(C2CCCCC2)C2CCCCC2)c(CCC)c1": {
    "name": "2-dicyclohexylphosphino-2',4',6'-tripropylbiphenyl",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCc1cc(CCC)c(-c2ccccc2P(C2CCCCC2)C2CCCCC2)c(CCC)c1"
   },
   "Cc1ccccc1S(=O)(=O)Cl": {
    "name": "2-toluenesulfonyl chloride",
    "abbr": "",
    "role": "acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccccc1S(=O)(=O)Cl"
   },
   "CC(C)(C)P(c1ccc[cH-]1)C(C)(C)C": {
    "name": "di-tert-butylphosphinocyclopentadienide (dtbpf half)",
    "abbr": "dtbpf",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)P(c1ccc[cH-]1)C(C)(C)C"
   },
   "C=CC=O": {
    "name": "acrolein",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC=O"
   },
   "[N-]=O": {
    "name": "nitroxyl anion",
    "abbr": "NO-",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=O"
   },
   "CC(C)(C)N=P(N1CCCC1)(N1CCCC1)N1CCCC1": {
    "name": "tert-butylimino-tri(pyrrolidino)phosphorane",
    "abbr": "BTPP",
    "role": "base",
    "also": "",
-   "pKaH": 28.4
+   "pKaH": 28.4,
+   "typed": "CC(C)(C)N=P(N1CCCC1)(N1CCCC1)N1CCCC1"
   },
   "CC[Si](Cl)(CC)CC": {
    "name": "chlorotriethylsilane",
    "abbr": "TESCl",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC[Si](Cl)(CC)CC"
   },
   "[O]N(S(=O)(=O)[O-])S(=O)(=O)[O-]": {
    "name": "nitrosodisulfonate (Fremy's salt)",
    "abbr": "",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]N(S(=O)(=O)[O-])S(=O)(=O)[O-]"
   },
   "N[C@H]1CCC[C@@H]1Nc1nc2ccc(F)cc2s1": {
    "name": "(1S,2S)-N1-(6-fluorobenzothiazol-2-yl)cyclopentane-1,2-diamine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N[C@H]1CCC[C@@H]1Nc1nc2ccc(F)cc2s1"
   },
   "[Br][Ni][Br]": {
    "name": "nickel(II) bromide",
    "abbr": "NiBr2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Br][Ni][Br]"
   },
   "O=C(O)c1ccc([N+](=O)[O-])cc1": {
    "name": "4-nitrobenzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1ccc([N+](=O)[O-])cc1"
   },
   "O=S(=O)([O-])S(=O)(=O)[O-]": {
    "name": "dithionate ion",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S(=O)([O-])S(=O)(=O)[O-]"
   },
   "Cc1ccc2c(c1)-c1cccc(c1)-c1nc3cc(C)c([C@H](OC(C)(C)C)C(=O)O)c(n3c1Cl)N1CCC(C)(CC1)OCCCC[C@H](C)O2": {
    "name": "(2S)-2-(tert-butoxy)-2-[(22S)-8-chloro-4,17,22,28-tetramethyl-21,27-dioxa-1,7,34-triazahexacyclo[26.2.2.1^6,9.1^10,14.0^2,7.0^15,20]tetratriaconta-2,4,6(34),8,10(33),11,13,15(20),16,18-decaen-3-yl]acetic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc2c(c1)-c1cccc(c1)-c1nc3cc(C)c([C@H](OC(C)(C)C)C(=O)O)c(n3c1Cl)N1CCC(C)(CC1)OCCCC[C@H](C)O2"
   },
   "BrC1CC1": {
    "name": "bromocyclopropane",
    "abbr": "cPrBr",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrC1CC1"
   },
   "ClBr": {
    "name": "bromine monochloride",
    "abbr": "BrCl",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClBr"
   },
   "CN(C)Cc1cc(CN(C)C)c(O)c(CN(C)C)c1": {
    "name": "2,4,6-tris(dimethylaminomethyl)phenol",
    "abbr": "DMP-30",
    "role": "base",
    "also": "",
-   "pKaH": 9.5
+   "pKaH": 9.5,
+   "typed": "CN(C)Cc1cc(CN(C)C)c(O)c(CN(C)C)c1"
   },
   "On1nnc2ccc(Cl)cc21": {
    "name": "6-chloro-1-hydroxybenzotriazole",
    "abbr": "6-Cl-HOBt",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "On1nnc2ccc(Cl)cc21"
   },
   "CCOC(=O)C(C)(C)Sc1cnc(N)s1": {
    "name": "ethyl 2-[(2-aminothiazol-5-yl)thio]-2-methylpropanoate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(=O)C(C)(C)Sc1cnc(N)s1"
   },
   "O=C=NS(=O)(=O)Cl": {
    "name": "chlorosulfonyl isocyanate",
    "abbr": "CSI",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C=NS(=O)(=O)Cl"
   },
   "O=B[O-]": {
    "name": "metaborate ion",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 9.2
+   "pKaH": 9.2,
+   "typed": "O=B[O-]"
   },
   "O=C1CCC(=O)N1": {
    "name": "succinimide",
    "abbr": "",
    "role": "other",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCC(=O)N1"
   },
   "Cc1cccnc1": {
    "name": "3-methylpyridine",
    "abbr": "3-picoline",
    "role": "solvent",
    "also": "base",
-   "pKaH": 5.7
+   "pKaH": 5.7,
+   "typed": "Cc1cccnc1"
   },
   "COP(=O)(OC)OC": {
    "name": "trimethyl phosphate",
    "abbr": "TMP",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COP(=O)(OC)OC"
   },
   "CC(=O)N[Si](C)(C)C": {
    "name": "N-(trimethylsilyl)acetamide",
    "abbr": "MSA",
    "role": "protecting-group reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(=O)N[Si](C)(C)C"
   },
   "N#C[S-]": {
    "name": "thiocyanate ion",
    "abbr": "SCN-",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#C[S-]"
   },
   "N[C@H]1CCCC[C@@H]1N": {
    "name": "(1S,2S)-cyclohexane-1,2-diamine",
    "abbr": "DACH",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N[C@H]1CCCC[C@@H]1N"
   },
   "Cc1noc2cc3c(cc12)C1(CO3)C(=O)Nc2ccccc21": {
    "name": "3-methylspiro[furo[3,2-f][1,2]benzisoxazole-5,3'-indol]-2'(1H)-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1noc2cc3c(cc12)C1(CO3)C(=O)Nc2ccccc21"
   },
   "[Cl][Ni]([Cl])([P](c1ccccc1)(c1ccccc1)c1ccccc1)[P](c1ccccc1)(c1ccccc1)c1ccccc1": {
    "name": "dichlorobis(triphenylphosphine)nickel(II)",
    "abbr": "NiCl2(PPh3)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ni]([Cl])([P](c1ccccc1)(c1ccccc1)c1ccccc1)[P](c1ccccc1)(c1ccccc1)c1ccccc1"
   },
   "[O]=[Os]": {
    "name": "osmium oxide (stands for OsO4)",
    "abbr": "OsO4",
    "role": "oxidizing catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Os]"
   },
   "CC(C)c1cc(C(C)C)c(S(=O)(=O)Cl)c(C(C)C)c1": {
    "name": "2,4,6-triisopropylbenzenesulfonyl chloride",
    "abbr": "TPSCl",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cc(C(C)C)c(S(=O)(=O)Cl)c(C(C)C)c1"
   },
   "C=C[B-](F)(F)F": {
    "name": "vinyltrifluoroborate ion",
    "abbr": "",
    "role": "organometallic reagent",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C[B-](F)(F)F"
   },
   "O=C(O)c1cccc(N2Cc3cccc(Cl)c3C2=O)c1": {
    "name": "3-(7-chloro-1-oxoisoindolin-2-yl)benzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1cccc(N2Cc3cccc(Cl)c3C2=O)c1"
   },
   "CC(C)(C)c1ccnc(-c2cc(C(C)(C)C)ccn2)c1": {
    "name": "4,4'-di-tert-butyl-2,2'-bipyridine",
    "abbr": "dtbbpy",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)c1ccnc(-c2cc(C(C)(C)C)ccn2)c1"
   },
   "CC(C)C(=O)O": {
    "name": "isobutyric acid",
    "abbr": "",
    "role": "other",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)C(=O)O"
   },
   "C1=CCCC=C1": {
    "name": "1,3-cyclohexadiene",
    "abbr": "",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=CCCC=C1"
   },
   "CC(C)(C)OC(=O)N1CCC(=O)CC1": {
    "name": "tert-butyl 4-oxopiperidine-1-carboxylate",
    "abbr": "N-Boc-4-piperidone",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)N1CCC(=O)CC1"
   },
   "BrCCCCBr": {
    "name": "1,4-dibromobutane",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCCCCBr"
   },
   "CNc1cc[c]([Pd][Cl])c(C(C)(C)C)c1C(C)(C)C": {
    "name": "chloro[2,3-di-tert-butyl-4-(methylamino)phenyl]palladium(II)",
    "abbr": "",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNc1cc[c]([Pd][Cl])c(C(C)(C)C)c1C(C)(C)C"
   },
   "CNC1(NC)C=CN=CC1": {
    "name": "N4,N4'-dimethyl-3,4-dihydropyridine-4,4-diamine (4,4-bis(methylamino)-3,4-dihydropyridine)",
    "abbr": "DMAP",
    "role": "base",
    "also": "additive",
-   "pKaH": 9.6
+   "pKaH": 9.6,
+   "typed": "CNC1(NC)C=CN=CC1"
   },
   "ClC(N1CCCC1)=[N+]1CCCC1": {
    "name": "chlorodipyrrolidinocarbenium ion",
    "abbr": "PyClU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClC(N1CCCC1)=[N+]1CCCC1"
   },
   "CC(C)(C)OC(=O)CBr": {
    "name": "tert-butyl bromoacetate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)OC(=O)CBr"
   },
   "c1ccc(P(c2ccccc2)c2cc[cH-]c2)cc1": {
    "name": "(diphenylphosphino)cyclopentadienide",
    "abbr": "dppf (half)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(c2ccccc2)c2cc[cH-]c2)cc1"
   },
   "CCCS(=O)(=O)c1ccc(F)c(C#C[Si](C)(C)C)c1": {
    "name": "trimethyl{[2-fluoro-5-(propylsulfonyl)phenyl]ethynyl}silane",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCS(=O)(=O)c1ccc(F)c(C#C[Si](C)(C)C)c1"
   },
   "CN(C)c1ccc(N=Nc2ccc(S(=O)(=O)O)cc2)cc1": {
    "name": "methyl orange (acid form)",
    "abbr": "",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccc(N=Nc2ccc(S(=O)(=O)O)cc2)cc1"
   },
   "CCCCCl": {
    "name": "1-chlorobutane",
    "abbr": "n-BuCl",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCl"
   },
   "[N-]=[N+]=NP(=O)(Oc1ccccc1)Oc1ccccc1": {
    "name": "diphenylphosphoryl azide",
    "abbr": "DPPA",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[N-]=[N+]=NP(=O)(Oc1ccccc1)Oc1ccccc1"
   },
   "[Cr+3]": {
    "name": "chromium(III) ion (probably a mis-entry for CrO3, which is Cr(VI))",
    "abbr": "CrO3",
    "role": "oxidant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cr+3]"
   },
   "O=Cc1ccc(F)cc1": {
    "name": "4-fluorobenzaldehyde",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=Cc1ccc(F)cc1"
   },
   "CS(=O)(=O)Nc1ccc(-c2nc(NCC(c3ccccc3)c3ccccn3)c3ccccc3n2)cc1": {
    "name": "N-(4-{4-[(2-phenyl-2-(pyridin-2-yl)ethyl)amino]quinazolin-2-yl}phenyl)methanesulfonamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CS(=O)(=O)Nc1ccc(-c2nc(NCC(c3ccccc3)c3ccccn3)c3ccccc3n2)cc1"
   },
   "O[C@H](CS)[C@@H](O)CS": {
    "name": "dithioerythritol",
    "abbr": "DTE",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O[C@H](CS)[C@@H](O)CS"
   },
   "Cc1cnc2c(ccc3c(C)c(C)cnc32)c1C": {
    "name": "3,4,7,8-tetramethyl-1,10-phenanthroline",
    "abbr": "Me4phen",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cnc2c(ccc3c(C)c(C)cnc32)c1C"
   },
   "O=C1Nc2ccccc2C12COc1cc3c(cc12)CCO3": {
    "name": "5,6-dihydro-2H-spiro[benzofuro[6,5-b]furan-3,3'-indolin]-2'-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1Nc2ccccc2C12COc1cc3c(cc12)CCO3"
   },
   "CC(C)c1cccc(C(C)C)c1-n1ccn(-c2c(C(C)C)cccc2C(C)C)[c]1=[Pd-3]([Cl])([Cl])[c]1ncccc1Cl": {
    "name": "[IPr]PdCl2(3-chloropyridine)",
    "abbr": "PEPPSI-IPr",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)c1cccc(C(C)C)c1-n1ccn(-c2c(C(C)C)cccc2C(C)C)[c]1=[Pd-3]([Cl])([Cl])[c]1ncccc1Cl"
   },
   "Cc1cc(C)[n+](F)c(C)c1": {
    "name": "N-fluoro-2,4,6-trimethylpyridinium ion",
    "abbr": "",
    "role": "halogenating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)[n+](F)c(C)c1"
   },
   "[NH-]O": {
    "name": "hydroxylamide ion (H2NO-)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[NH-]O"
   },
   "CC(C)(C)c1nc(Cl)c2nnn(Cc3ccccc3Cl)c2n1": {
    "name": "5-tert-butyl-7-chloro-3-(2-chlorobenzyl)-3H-[1,2,3]triazolo[4,5-d]pyrimidine (substrate analog)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)c1nc(Cl)c2nnn(Cc3ccccc3Cl)c2n1"
   },
   "COc1cc(F)ccc1N1CCNCC1": {
    "name": "1-(4-fluoro-2-methoxyphenyl)piperazine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1cc(F)ccc1N1CCNCC1"
   },
   "c1ccc2c(c1)C[C@@H]1OC(C3(C4=N[C@@H]5c6ccccc6C[C@@H]5O4)CC3)=N[C@H]21": {
    "name": "cyclopropylidene bis(indanyl-oxazoline)",
    "abbr": "IndaBOX",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc2c(c1)C[C@@H]1OC(C3(C4=N[C@@H]5c6ccccc6C[C@@H]5O4)CC3)=N[C@H]21"
   },
   "C=CCI": {
    "name": "allyl iodide",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CCI"
   },
   "CNCCO": {
    "name": "2-(methylamino)ethanol",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNCCO"
   },
   "COC(=O)[C@H](C(C)C)N1Cc2ccc(-c3ccc(N)cc3)cc2C1=O": {
    "name": "methyl (2S)-2-[6-(4-aminophenyl)-1-oxoisoindolin-2-yl]-3-methylbutanoate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)[C@H](C(C)C)N1Cc2ccc(-c3ccc(N)cc3)cc2C1=O"
   },
   "O=C(O)c1cc(-c2cc(F)cc(Cl)c2)n(-c2ccc(F)c(Cl)c2)n1": {
    "name": "1-(3-chloro-4-fluorophenyl)-5-(3-chloro-5-fluorophenyl)-1H-pyrazole-3-carboxylic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1cc(-c2cc(F)cc(Cl)c2)n(-c2ccc(F)c(Cl)c2)n1"
   },
   "CCCC=CCCCCCC": {
    "name": "undec-4-ene",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCC=CCCCCCC"
   },
   "BrCCCBr": {
    "name": "1,3-dibromopropane",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCCCBr"
   },
   "SCCCS": {
    "name": "1,3-propanedithiol",
    "abbr": "",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "SCCCS"
   },
   "O=[N+]([O-])c1ccc(O)cc1": {
    "name": "4-nitrophenol",
    "abbr": "",
    "role": "additive",
    "also": "coupling reagent (activates an acid)",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=[N+]([O-])c1ccc(O)cc1"
   },
   "Nc1ccncc1": {
    "name": "4-aminopyridine",
    "abbr": "4-AP",
    "role": "base",
    "also": "additive",
-   "pKaH": 9.2
+   "pKaH": 9.2,
+   "typed": "Nc1ccncc1"
   },
   "ClCCCBr": {
    "name": "1-bromo-3-chloropropane",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClCCCBr"
   },
   "NC(=O)C1=CN([C@@H]2O[C@H](COP(=O)(O)OP(=O)(O)OC[C@H]3O[C@@H](n4cnc5c(N)ncnc54)[C@H](O)[C@@H]3O)[C@@H](O)[C@H]2O)C=CC1": {
    "name": "nicotinamide adenine dinucleotide, reduced",
    "abbr": "NADH",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC(=O)C1=CN([C@@H]2O[C@H](COP(=O)(O)OP(=O)(O)OC[C@H]3O[C@@H](n4cnc5c(N)ncnc54)[C@H](O)[C@@H]3O)[C@@H](O)[C@H]2O)C=CC1"
   },
   "BrCC1CO1": {
    "name": "epibromohydrin",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCC1CO1"
   },
   "[O]=[Cr]([O-])[O-]": {
    "name": "chromite ion (from copper chromite)",
    "abbr": "",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[O]=[Cr]([O-])[O-]"
   },
   "COC(=O)[C@H]1[C@H]2C[C@@H]3c4[nH]c5cc(OC)ccc5c4CCN3C[C@H]2C[C@@H](OC(=O)c2cc(OC)c(OC)c(OC)c2)[C@@H]1OC": {
    "name": "reserpine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)[C@H]1[C@H]2C[C@@H]3c4[nH]c5cc(OC)ccc5c4CCN3C[C@H]2C[C@@H](OC(=O)c2cc(OC)c(OC)c(OC)c2)[C@@H]1OC"
   },
   "C=COC(C)=O": {
    "name": "vinyl acetate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=COC(C)=O"
   },
   "NNc1ncc(-c2ccccc2)nn1": {
    "name": "3-hydrazinyl-6-phenyl-1,2,4-triazine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NNc1ncc(-c2ccccc2)nn1"
   },
   "O=C(O)Cc1ccc2ncccc2c1": {
    "name": "2-(quinolin-6-yl)acetic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)Cc1ccc2ncccc2c1"
   },
   "CCCCCON=O": {
    "name": "pentyl nitrite",
    "abbr": "amyl nitrite",
    "role": "electrophile / alkylating agent",
    "also": "oxidant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCON=O"
   },
   "BrCc1ccccn1": {
    "name": "2-(bromomethyl)pyridine",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "BrCc1ccccn1"
   },
   "Cc1cc(C)c(N2CCN(c3c(C)cc(C)cc3C)[C]2=[Ru]([Cl])([Cl])=[CH]c2ccccc2OC(C)C)c(C)c1": {
    "name": "Hoveyda-Grubbs 2nd-generation catalyst",
    "abbr": "HG-II",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(C)c(N2CCN(c3c(C)cc(C)cc3C)[C]2=[Ru]([Cl])([Cl])=[CH]c2ccccc2OC(C)C)c(C)c1"
   },
   "[Cd+2]": {
    "name": "cadmium(II) ion",
    "abbr": "CdCl2",
    "role": "reactant (inorganic)",
    "also": "organometallic reagent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cd+2]"
   },
   "C[SiH](Cl)Cl": {
    "name": "dichloro(methyl)silane",
    "abbr": "MeSiHCl2",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C[SiH](Cl)Cl"
   },
   "O=C(O)CCl": {
    "name": "chloroacetic acid",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "acid",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)CCl"
   },
   "C=CCN": {
    "name": "allylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CCN"
   },
   "C1=CCC=C1": {
    "name": "cyclopentadiene",
    "abbr": "",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=CCC=C1"
   },
   "CCCCCCCCS": {
    "name": "1-octanethiol",
    "abbr": "",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCCS"
   },
   "C[Si](C)(C)[O][K]": {
    "name": "potassium trimethylsilanolate",
    "abbr": "TMSOK",
    "role": "nucleophile",
    "also": "base",
-   "pKaH": 11.0
+   "pKaH": 11.0,
+   "typed": "C[Si](C)(C)[O][K]"
   },
   "CC(C)[C@@H](C(=O)O)N1Cc2ccc(-c3ccc(NC(=O)c4ccc(C(C)(C)C)cc4)cn3)cc2C1=O": {
    "name": "(2S)-2-{6-[5-(4-tert-butylbenzamido)pyridin-2-yl]-1-oxoisoindolin-2-yl}-3-methylbutanoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)[C@@H](C(=O)O)N1Cc2ccc(-c3ccc(NC(=O)c4ccc(C(C)(C)C)cc4)cn3)cc2C1=O"
   },
   "O=c1[nH]c(C2CCNCC2)nc2c1oc1ccc(Br)cc12": {
    "name": "8-bromo-2-(piperidin-4-yl)benzofuro[3,2-d]pyrimidin-4(3H)-one (product analog)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=c1[nH]c(C2CCNCC2)nc2c1oc1ccc(Br)cc12"
   },
   "CC(S)S": {
    "name": "ethane-1,1-dithiol",
    "abbr": "",
    "role": "nucleophile",
    "also": "deprotecting agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(S)S"
   },
   "FC(F)(F)c1ccc(CBr)cc1": {
    "name": "4-(trifluoromethyl)benzyl bromide",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "FC(F)(F)c1ccc(CBr)cc1"
   },
   "CCP(=O)(C#N)CC": {
    "name": "diethylphosphinoyl cyanide (mis-drawn DEPC)",
    "abbr": "DEPC",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCP(=O)(C#N)CC"
   },
   "O=PO": {
    "name": "phosphenous acid (HOP=O)",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=PO"
   },
   "CN(C)C(=NC(C)(C)C)N(C)C": {
    "name": "2-tert-butyl-1,1,3,3-tetramethylguanidine",
    "abbr": "BTMG",
    "role": "base",
    "also": "",
-   "pKaH": 14.0
+   "pKaH": 14.0,
+   "typed": "CN(C)C(=NC(C)(C)C)N(C)C"
   },
   "CCOC(C)(OCC)OCC": {
    "name": "triethyl orthoacetate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOC(C)(OCC)OCC"
   },
   "c1ccc(P(c2ccccc2)c2ccc[cH-]2)cc1": {
    "name": "(diphenylphosphino)cyclopentadienide",
    "abbr": "dppf (half)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc(P(c2ccccc2)c2ccc[cH-]2)cc1"
   },
   "[Bi+3]": {
    "name": "bismuth(III) ion",
    "abbr": "Bi(OTf)3",
    "role": "Lewis acid",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Bi+3]"
   },
   "CC1(C)OB(c2cn[nH]c2)OC1(C)C": {
    "name": "4-(pinacolatoboryl)-1H-pyrazole",
    "abbr": "pyrazole-4-Bpin",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)OB(c2cn[nH]c2)OC1(C)C"
   },
   "C=C(C)C(=O)O": {
    "name": "methacrylic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C(C)C(=O)O"
   },
   "[Li][N]1C(C)(C)CCCC1(C)C": {
    "name": "lithium 2,2,6,6-tetramethylpiperidide",
    "abbr": "LiTMP",
    "role": "base",
    "also": "",
-   "pKaH": 37.0
+   "pKaH": 37.0,
+   "typed": "[Li][N]1C(C)(C)CCCC1(C)C"
   },
   "CN(C)c1ccc([PH](C(C)(C)C)(C(C)(C)C)[Pd]2([O]S(C)(=O)=O)[NH]c3ccccc3-c3cccc[c]32)cc1": {
    "name": "Amphos Pd G3 precatalyst",
    "abbr": "",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccc([PH](C(C)(C)C)(C(C)(C)C)[Pd]2([O]S(C)(=O)=O)[NH]c3ccccc3-c3cccc[c]32)cc1"
   },
   "C=CCCl": {
    "name": "allyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CCCl"
   },
   "[P+3]": {
    "name": "phosphorus(III) ion (probably a mis-split of POCl3, which is P(V))",
    "abbr": "POCl3",
    "role": "dehydrating / activating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[P+3]"
   },
   "C/C=C/C=O": {
    "name": "(E)-crotonaldehyde",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C/C=C/C=O"
   },
   "CCOP(=O)(O)Cc1ccc(Nc2ncc(C(F)(F)F)c(Nc3ccc(-c4cnn(CCCO)c4)cc3C(=O)N(CC)CC)n2)c(OC)c1": {
    "name": "ethyl hydrogen (4-{[4-({2-(diethylcarbamoyl)-4-[1-(3-hydroxypropyl)-1H-pyrazol-4-yl]phenyl}amino)-5-(trifluoromethyl)pyrimidin-2-yl]amino}-3-methoxybenzyl)phosphonate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOP(=O)(O)Cc1ccc(Nc2ncc(C(F)(F)F)c(Nc3ccc(-c4cnn(CCCO)c4)cc3C(=O)N(CC)CC)n2)c(OC)c1"
   },
   "COC(=O)C(=CC(=O)[O-])Nc1ccc(Br)cc1OC": {
    "name": "3-[(4-bromo-2-methoxyphenyl)amino]-4-methoxy-4-oxobut-2-enoate",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COC(=O)C(=CC(=O)[O-])Nc1ccc(Br)cc1OC"
   },
   "CCC[CH2][Sn+]([CH2]CCC)[CH2]CCC": {
    "name": "tributyltin ion (from Bu3SnOMe)",
    "abbr": "Bu3SnOMe",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCC[CH2][Sn+]([CH2]CCC)[CH2]CCC"
   },
   "CC1(C)OBOC1(C)C": {
    "name": "pinacolborane",
    "abbr": "HBpin",
    "role": "organometallic reagent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC1(C)OBOC1(C)C"
   },
   "O=CCCl": {
    "name": "chloroacetaldehyde",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=CCCl"
   },
   "C#CC": {
    "name": "propyne",
    "abbr": "",
    "role": "nucleophile",
    "also": "gas",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C#CC"
   },
   "[CH3][Sn+]([CH3])[CH3]": {
    "name": "trimethyltin ion (from Me3SnOH)",
    "abbr": "Me3SnOH",
    "role": "deprotecting agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[CH3][Sn+]([CH3])[CH3]"
   },
   "COCCBr": {
    "name": "2-bromoethyl methyl ether",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COCCBr"
   },
   "CN(C)C(Cl)=[N+](C)C": {
    "name": "chloro-N,N,N',N'-tetramethylformamidinium ion",
    "abbr": "TCFH",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)C(Cl)=[N+](C)C"
   },
   "N[C@@H](CS)C(=O)O": {
    "name": "L-cysteine",
    "abbr": "Cys",
    "role": "additive",
    "also": "nucleophile",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N[C@@H](CS)C(=O)O"
   },
   "C1=c2ccccc2=C(c2cccc3ccccc23)C(P(c2ccccc2)c2ccccc2)(P(c2ccccc2)c2ccccc2)C1": {
    "name": "2,2-bis(diphenylphosphino)-1-(1-naphthyl)-2,3-dihydronaphthalene",
    "abbr": "BINAP",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1=c2ccccc2=C(c2cccc3ccccc23)C(P(c2ccccc2)c2ccccc2)(P(c2ccccc2)c2ccccc2)C1"
   },
   "O=C(O)Cc1cccc2cnccc12": {
    "name": "2-(isoquinolin-5-yl)acetic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)Cc1cccc2cnccc12"
   },
   "CC(N)Cc1ccccc1": {
    "name": "1-phenylpropan-2-amine",
    "abbr": "amphetamine",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(N)Cc1ccccc1"
   },
   "CCCCCCCC(=O)C([NH3+])(C(=O)CCCCCCC)C(=O)CCCCCCC": {
    "name": "methyltrioctylammonium (malformed SMILES)",
    "abbr": "Aliquat 336",
    "role": "phase-transfer catalyst",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCCCCCCC(=O)C([NH3+])(C(=O)CCCCCCC)C(=O)CCCCCCC"
   },
   "O=C1C=CC(=O)N1": {
    "name": "maleimide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1C=CC(=O)N1"
   },
   "C=CC(=O)[O-]": {
    "name": "acrylate ion",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC(=O)[O-]"
   },
   "NC(=O)c1ccc[n+]([C@@H]2O[C@H](COP(=O)(O)OP(=O)(O)OC[C@H]3O[C@@H](n4cnc5c(N)ncnc54)[C@H](OP(=O)(O)O)[C@@H]3O)[C@@H](O)[C@H]2O)c1": {
    "name": "nicotinamide adenine dinucleotide phosphate, oxidized",
    "abbr": "NADP+",
    "role": "additive",
    "also": "reductant",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC(=O)c1ccc[n+]([C@@H]2O[C@H](COP(=O)(O)OP(=O)(O)OC[C@H]3O[C@@H](n4cnc5c(N)ncnc54)[C@H](OP(=O)(O)O)[C@@H]3O)[C@@H](O)[C@H]2O)c1"
   },
   "Cc1cc(N2CCN(CCOc3ccccc3)C2=O)sc1C(=O)O": {
    "name": "3-methyl-5-[2-oxo-3-(2-phenoxyethyl)imidazolidin-1-yl]thiophene-2-carboxylic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1cc(N2CCN(CCOc3ccccc3)C2=O)sc1C(=O)O"
   },
   "CN(C)c1ccc([PH](C(C)(C)C)(C(C)(C)C)[Pd]([Cl])([Cl])[PH](c2ccc(N(C)C)cc2)(C(C)(C)C)C(C)(C)C)cc1": {
    "name": "dichlorobis[di-tert-butyl(4-dimethylaminophenyl)phosphine]palladium(II)",
    "abbr": "PdCl2(Amphos)2",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)c1ccc([PH](C(C)(C)C)(C(C)(C)C)[Pd]([Cl])([Cl])[PH](c2ccc(N(C)C)cc2)(C(C)(C)C)C(C)(C)C)cc1"
   },
   "CN(C)[C+](On1nnc2ccccc21)N(C)C": {
    "name": "O-(benzotriazol-1-yl)-N,N,N',N'-tetramethyluronium ion",
    "abbr": "TBTU",
    "role": "coupling reagent (activates an acid)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CN(C)[C+](On1nnc2ccccc21)N(C)C"
   },
   "Cc1nn(C)c(C)c1S(=O)(=O)Cl": {
    "name": "1,3,5-trimethylpyrazole-4-sulfonyl chloride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1nn(C)c(C)c1S(=O)(=O)Cl"
   },
   "COc1ccc(CN2C(=O)SC[C@H]2[C@@]2(OC)C[C@H]3C[C@@H](CCCC=CCCC(C)=CC(=O)O3)O2)cc1": {
    "name": "(4R)-4-[(1R,13R,15R)-15-methoxy-5-methyl-3-oxo-2,14-dioxabicyclo[11.3.1]heptadeca-4,8-dien-15-yl]-3-[(4-methoxyphenyl)methyl]-1,3-thiazolidin-2-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "COc1ccc(CN2C(=O)SC[C@H]2[C@@]2(OC)C[C@H]3C[C@@H](CCCC=CCCC(C)=CC(=O)O3)O2)cc1"
   },
   "Oc1ccc2ccccc2c1-c1c(O)ccc2ccccc12": {
    "name": "1,1'-bi-2-naphthol",
    "abbr": "BINOL",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1ccc2ccccc2c1-c1c(O)ccc2ccccc12"
   },
   "O=C(CCl)CCl": {
    "name": "1,3-dichloroacetone",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(CCl)CCl"
   },
   "Oc1ccc2c(c1)OCO2": {
    "name": "sesamol",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Oc1ccc2c(c1)OCO2"
   },
   "[Cl][Ru]([Cl])(=[CH]c1ccccc1)([P](C1CCCCC1)(C1CCCCC1)C1CCCCC1)[P](C1CCCCC1)(C1CCCCC1)C1CCCCC1": {
    "name": "Grubbs 1st-generation catalyst",
    "abbr": "Grubbs I",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Cl][Ru]([Cl])(=[CH]c1ccccc1)([P](C1CCCCC1)(C1CCCCC1)C1CCCCC1)[P](C1CCCCC1)(C1CCCCC1)C1CCCCC1"
   },
   "O=C(O)c1cccc(C(=O)O)n1": {
    "name": "pyridine-2,6-dicarboxylic acid",
    "abbr": "dipicolinic acid",
    "role": "ligand",
    "also": "additive",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C(O)c1cccc(C(=O)O)n1"
   },
   "[Br][Au]([Br])[Br]": {
    "name": "gold(III) bromide",
    "abbr": "AuBr3",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Br][Au]([Br])[Br]"
   },
   "O=CC(=O)O": {
    "name": "glyoxylic acid",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=CC(=O)O"
   },
   "C=C=C": {
    "name": "propadiene",
    "abbr": "allene",
    "role": "gas",
    "also": "electrophile / alkylating agent",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=C=C"
   },
   "Cc1c(C)c(C)c(C)c(C)c1C": {
    "name": "hexamethylbenzene",
    "abbr": "HMB",
    "role": "additive",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1c(C)c(C)c(C)c(C)c1C"
   },
   "[Pb]": {
    "name": "lead",
    "abbr": "Pb",
    "role": "reactant (inorganic)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "[Pb]"
   },
   "Cc1ccccc1-c1ccccc1P(C(C)(C)C)C(C)(C)C": {
    "name": "2-(di-tert-butylphosphino)-2'-methylbiphenyl",
    "abbr": "tBuMePhos",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccccc1-c1ccccc1P(C(C)(C)C)C(C)(C)C"
   },
   "O=S([O-])CO": {
    "name": "hydroxymethanesulfinate ion",
    "abbr": "Rongalite",
    "role": "reductant",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=S([O-])CO"
   },
   "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1": {
    "name": "[Ir(dF(CF3)ppy)2(dtbbpy)]+",
    "abbr": "[Ir(dF(CF3)ppy)2(dtbbpy)]PF6",
    "role": "catalyst (metal)",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1"
   },
   "O=C1CCC1": {
    "name": "cyclobutanone",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1CCC1"
   },
   "O=Cc1ccncc1": {
    "name": "pyridine-4-carboxaldehyde",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=Cc1ccncc1"
   },
   "O=c1cccc[nH]1": {
    "name": "2-pyridone",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=c1cccc[nH]1"
   },
   "CCCCNCCCC": {
    "name": "dibutylamine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 11.3
+   "pKaH": 11.3,
+   "typed": "CCCCNCCCC"
   },
   "NC(=O)c1ccccc1": {
    "name": "benzamide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NC(=O)c1ccccc1"
   },
   "CCSc1ccc(Cl)cc1NNC(=O)c1cc(C)c(Br)cc1[N+](=O)[O-]": {
    "name": "4-bromo-N'-[5-chloro-2-(ethylsulfanyl)phenyl]-5-methyl-2-nitrobenzohydrazide",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCSc1ccc(Cl)cc1NNC(=O)c1cc(C)c(Br)cc1[N+](=O)[O-]"
   },
   "CC(C)(C)P([C]1[CH][CH][CH][CH]1)C(C)(C)C": {
    "name": "(di-tert-butylphosphino)cyclopentadienyl",
    "abbr": "dtbpf (half)",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CC(C)(C)P([C]1[CH][CH][CH][CH]1)C(C)(C)C"
   },
   "C=CC": {
    "name": "propene",
    "abbr": "",
    "role": "gas",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC"
   },
   "O=C1OC(=O)c2ccccc21": {
    "name": "phthalic anhydride",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1OC(=O)c2ccccc21"
   },
   "CNCCC(c1ccccc1)c1cccc2cc[nH]c12": {
    "name": "N-methyl-3-phenyl-3-(indol-7-yl)propylamine",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CNCCC(c1ccccc1)c1cccc2cc[nH]c12"
   },
   "c1ccc([PH+](c2ccccc2)c2ccccc2)cc1": {
    "name": "triphenylphosphonium ion",
    "abbr": "HPPh3+",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "c1ccc([PH+](c2ccccc2)c2ccccc2)cc1"
   },
   "CCOCCOCCO": {
    "name": "2-(2-ethoxyethoxy)ethanol",
    "abbr": "Carbitol",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "CCOCCOCCO"
   },
   "O=C1C(Br)=C(c2ccccc2)c2ccc(O)cc21": {
    "name": "2-bromo-6-hydroxy-3-phenyl-1H-inden-1-one",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "O=C1C(Br)=C(c2ccccc2)c2ccc(O)cc21"
   },
   "Cc1ccc(S(=O)(=O)N[C@H](c2ccccc2)[C@H](N)c2ccccc2)cc1": {
    "name": "(1R,2R)-N-tosyl-1,2-diphenylethylenediamine",
    "abbr": "TsDPEN",
    "role": "ligand",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "Cc1ccc(S(=O)(=O)N[C@H](c2ccccc2)[C@H](N)c2ccccc2)cc1"
   },
   "ClC(Cl)=C(Cl)Cl": {
    "name": "tetrachloroethylene",
    "abbr": "PCE",
    "role": "solvent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "ClC(Cl)=C(Cl)Cl"
   },
   "NCCc1ccccc1": {
    "name": "2-phenylethylamine",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "NCCc1ccccc1"
   },
   "OB(O)c1cncnc1": {
    "name": "pyrimidin-5-ylboronic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "OB(O)c1cncnc1"
   },
   "C=CC(=O)OCC": {
    "name": "ethyl acrylate",
    "abbr": "",
    "role": "electrophile / alkylating agent",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C=CC(=O)OCC"
   },
   "CCN1CCCCC1": {
    "name": "N-ethylpiperidine",
    "abbr": "",
    "role": "base",
    "also": "",
-   "pKaH": 10.4
+   "pKaH": 10.4,
+   "typed": "CCN1CCCCC1"
   },
   "C1CCC([NH2+]C2CCCCC2)CC1": {
    "name": "dicyclohexylammonium ion",
    "abbr": "DCHA",
    "role": "counter-ion / spectator ion",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "C1CCC([NH2+]C2CCCCC2)CC1"
   },
   "N#C[O-]": {
    "name": "cyanate ion",
    "abbr": "",
    "role": "nucleophile",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#C[O-]"
   },
   "N#CC1(COc2cc(F)c(C(=O)O)cc2C2CC2)C2CC3CC(C2)CC1C3": {
    "name": "4-[(2-cyanoadamantan-2-yl)methoxy]-5-cyclopropyl-2-fluorobenzoic acid",
    "abbr": "",
    "role": "other",
    "also": "",
-   "pKaH": null
+   "pKaH": null,
+   "typed": "N#CC1(COc2cc(F)c(C(=O)O)cc2C2CC2)C2CC3CC(C2)CC1C3"
   },
   "CC1CCCN(C)C1(C)C": {
    "name": "1,2,2,3-tetramethylpiperidine (likely mis-drawn TMP)",
    "abbr": "TMP",
    "role": "base",
    "also": "",
-   "pKaH": 11.0
+   "pKaH": 11.0,
+   "typed": "CC1CCCN(C)C1(C)C"
   }
  },
  "byproducts": [
@@ -24106,6 +25918,7012 @@ window.REACTION_RULES = {
    "byproducts": [],
    "text": "",
    "why": "Ritter reaction: the carbocation from the alcohol is trapped by the nitrile and hydrated to the amide; overall no by-product (H2SO4 is only the acid catalyst)."
+  }
+ ],
+ "interferences": [
+  {
+   "id": "I001",
+   "key": "ring-ortho-nitro",
+   "name": "nitro, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[N+;!900*](=O)[O-])]",
+   "prefilter": "[c]-[N+](=O)[O-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "nitro (σp +0.78): the strongest common electron-withdrawing group (induction and resonance)",
+   "sigma": 0.78,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I002",
+   "key": "ring-meta-nitro",
+   "name": "nitro, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[N+;!900*](=O)[O-]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[N+;!900*](=O)[O-])]",
+   "prefilter": "[c]-[N+](=O)[O-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "nitro (σm +0.71): the strongest common electron-withdrawing group (induction and resonance)",
+   "sigma": 0.71,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I003",
+   "key": "ring-para-nitro",
+   "name": "nitro, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[N+;!900*](=O)[O-]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[N+;!900*](=O)[O-])]",
+   "prefilter": "[c]-[N+](=O)[O-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "nitro (σp +0.78): the strongest common electron-withdrawing group (induction and resonance)",
+   "sigma": 0.78,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I004",
+   "key": "ring-ortho-cyano",
+   "name": "cyano, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[C;!900*]#N)]",
+   "prefilter": "[c]-C#N",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "cyano (σp +0.66): withdraws by induction and by resonance",
+   "sigma": 0.66,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I005",
+   "key": "ring-meta-cyano",
+   "name": "cyano, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[C;!900*]#N):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[C;!900*]#N)]",
+   "prefilter": "[c]-C#N",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "cyano (σm +0.56): withdraws by induction and by resonance",
+   "sigma": 0.56,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I006",
+   "key": "ring-para-cyano",
+   "name": "cyano, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[C;!900*]#N):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[C;!900*]#N)]",
+   "prefilter": "[c]-C#N",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "cyano (σp +0.66): withdraws by induction and by resonance",
+   "sigma": 0.66,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I007",
+   "key": "ring-ortho-cf3",
+   "name": "trifluoromethyl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[C;!900*](F)(F)F)]",
+   "prefilter": "[c]-C(F)(F)F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "trifluoromethyl (σp +0.54): withdraws by induction (three C–F dipoles); no resonance",
+   "sigma": 0.54,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I008",
+   "key": "ring-meta-cf3",
+   "name": "trifluoromethyl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[C;!900*](F)(F)F):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[C;!900*](F)(F)F)]",
+   "prefilter": "[c]-C(F)(F)F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "trifluoromethyl (σm +0.43): withdraws by induction (three C–F dipoles); no resonance",
+   "sigma": 0.43,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I009",
+   "key": "ring-para-cf3",
+   "name": "trifluoromethyl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[C;!900*](F)(F)F):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[C;!900*](F)(F)F)]",
+   "prefilter": "[c]-C(F)(F)F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "trifluoromethyl (σp +0.54): withdraws by induction (three C–F dipoles); no resonance",
+   "sigma": 0.54,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I010",
+   "key": "ring-ortho-sulfonyl",
+   "name": "sulfonyl (sulfone, sulfonamide), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[SX4;!900*](=O)=O)]",
+   "prefilter": "[c]-[SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "sulfonyl (sulfone, sulfonamide) (σp +0.72): withdraws by induction and by resonance",
+   "sigma": 0.72,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I011",
+   "key": "ring-meta-sulfonyl",
+   "name": "sulfonyl (sulfone, sulfonamide), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[SX4;!900*](=O)=O):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[SX4;!900*](=O)=O)]",
+   "prefilter": "[c]-[SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "sulfonyl (sulfone, sulfonamide) (σm +0.60): withdraws by induction and by resonance",
+   "sigma": 0.6,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I012",
+   "key": "ring-para-sulfonyl",
+   "name": "sulfonyl (sulfone, sulfonamide), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[SX4;!900*](=O)=O):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[SX4;!900*](=O)=O)]",
+   "prefilter": "[c]-[SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "sulfonyl (sulfone, sulfonamide) (σp +0.72): withdraws by induction and by resonance",
+   "sigma": 0.72,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I013",
+   "key": "ring-ortho-formyl",
+   "name": "formyl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CH1;!900*]=O)]",
+   "prefilter": "[c]-[CH1]=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "formyl (σp +0.42): the C=O pulls electron density out of the ring, most at ortho and para",
+   "sigma": 0.42,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I014",
+   "key": "ring-meta-formyl",
+   "name": "formyl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CH1;!900*]=O):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CH1;!900*]=O)]",
+   "prefilter": "[c]-[CH1]=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "formyl (σm +0.35): the C=O pulls electron density out of the ring, most at ortho and para",
+   "sigma": 0.35,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I015",
+   "key": "ring-para-formyl",
+   "name": "formyl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CH1;!900*]=O):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CH1;!900*]=O)]",
+   "prefilter": "[c]-[CH1]=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "formyl (σp +0.42): the C=O pulls electron density out of the ring, most at ortho and para",
+   "sigma": 0.42,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I016",
+   "key": "ring-ortho-acyl",
+   "name": "acyl (ketone), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX3;!900*](=O)[#6])]",
+   "prefilter": "[c]-[CX3](=O)[#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "acyl (ketone) (σp +0.50): the C=O pulls electron density out of the ring, most at ortho and para",
+   "sigma": 0.5,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I017",
+   "key": "ring-meta-acyl",
+   "name": "acyl (ketone), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CX3;!900*](=O)[#6]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[#6])]",
+   "prefilter": "[c]-[CX3](=O)[#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "acyl (ketone) (σm +0.38): the C=O pulls electron density out of the ring, most at ortho and para",
+   "sigma": 0.38,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I018",
+   "key": "ring-para-acyl",
+   "name": "acyl (ketone), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CX3;!900*](=O)[#6]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[#6])]",
+   "prefilter": "[c]-[CX3](=O)[#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "acyl (ketone) (σp +0.50): the C=O pulls electron density out of the ring, most at ortho and para",
+   "sigma": 0.5,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I019",
+   "key": "ring-ortho-carboxy",
+   "name": "carboxy (acid, ester), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX3;!900*](=O)[OX2])]",
+   "prefilter": "[c]-[CX3](=O)[OX2]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "carboxy (acid, ester) (σp +0.45): an acid or ester C=O withdraws electrons from the ring",
+   "sigma": 0.45,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I020",
+   "key": "ring-meta-carboxy",
+   "name": "carboxy (acid, ester), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CX3;!900*](=O)[OX2]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[OX2])]",
+   "prefilter": "[c]-[CX3](=O)[OX2]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "carboxy (acid, ester) (σm +0.37): an acid or ester C=O withdraws electrons from the ring",
+   "sigma": 0.37,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I021",
+   "key": "ring-para-carboxy",
+   "name": "carboxy (acid, ester), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CX3;!900*](=O)[OX2]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[OX2])]",
+   "prefilter": "[c]-[CX3](=O)[OX2]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "carboxy (acid, ester) (σp +0.45): an acid or ester C=O withdraws electrons from the ring",
+   "sigma": 0.45,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I022",
+   "key": "ring-ortho-carboxamide",
+   "name": "carboxamide, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX3;!900*](=O)[NX3])]",
+   "prefilter": "[c]-[CX3](=O)[NX3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "carboxamide (σp +0.36): the amide C=O withdraws, less than an ester does",
+   "sigma": 0.36,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I023",
+   "key": "ring-meta-carboxamide",
+   "name": "carboxamide, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CX3;!900*](=O)[NX3]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[NX3])]",
+   "prefilter": "[c]-[CX3](=O)[NX3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "carboxamide (σm +0.28): the amide C=O withdraws, less than an ester does",
+   "sigma": 0.28,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I024",
+   "key": "ring-para-carboxamide",
+   "name": "carboxamide, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CX3;!900*](=O)[NX3]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[NX3])]",
+   "prefilter": "[c]-[CX3](=O)[NX3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "carboxamide (σp +0.36): the amide C=O withdraws, less than an ester does",
+   "sigma": 0.36,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I025",
+   "key": "ring-ortho-ocf3",
+   "name": "trifluoromethoxy, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX2;!900*]C(F)(F)F)]",
+   "prefilter": "[c]-[OX2]C(F)(F)F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "trifluoromethoxy (σp +0.35): withdraws by induction; the O lone pair is held back by the CF3",
+   "sigma": 0.35,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I026",
+   "key": "ring-meta-ocf3",
+   "name": "trifluoromethoxy, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX2;!900*]C(F)(F)F):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX2;!900*]C(F)(F)F)]",
+   "prefilter": "[c]-[OX2]C(F)(F)F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "trifluoromethoxy (σm +0.38): withdraws by induction; the O lone pair is held back by the CF3",
+   "sigma": 0.38,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I027",
+   "key": "ring-para-ocf3",
+   "name": "trifluoromethoxy, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX2;!900*]C(F)(F)F):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX2;!900*]C(F)(F)F)]",
+   "prefilter": "[c]-[OX2]C(F)(F)F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "trifluoromethoxy (σp +0.35): withdraws by induction; the O lone pair is held back by the CF3",
+   "sigma": 0.35,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I028",
+   "key": "ring-ortho-osulfonyl",
+   "name": "sulfonyloxy (OMs, OTs), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX2;!900*][SX4](=O)=O)]",
+   "prefilter": "[c]-[OX2][SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "sulfonyloxy (OMs, OTs) (σp +0.36): withdraws by induction; the O lone pair is held back by the sulfonyl group (triflate is stronger: σp 0.53)",
+   "sigma": 0.36,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I029",
+   "key": "ring-meta-osulfonyl",
+   "name": "sulfonyloxy (OMs, OTs), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX2;!900*][SX4](=O)=O):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX2;!900*][SX4](=O)=O)]",
+   "prefilter": "[c]-[OX2][SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "sulfonyloxy (OMs, OTs) (σm +0.39): withdraws by induction; the O lone pair is held back by the sulfonyl group (triflate is stronger: σp 0.53)",
+   "sigma": 0.39,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I030",
+   "key": "ring-para-osulfonyl",
+   "name": "sulfonyloxy (OMs, OTs), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX2;!900*][SX4](=O)=O):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX2;!900*][SX4](=O)=O)]",
+   "prefilter": "[c]-[OX2][SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "sulfonyloxy (OMs, OTs) (σp +0.36): withdraws by induction; the O lone pair is held back by the sulfonyl group (triflate is stronger: σp 0.53)",
+   "sigma": 0.36,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I031",
+   "key": "ring-ortho-fluoro",
+   "name": "fluoro, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[F;!900*])]",
+   "prefilter": "[c]-F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "fluoro (σp +0.06): strongly withdrawing by induction but a lone-pair donor: directs ortho/para in electrophilic substitution",
+   "sigma": 0.06,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I032",
+   "key": "ring-meta-fluoro",
+   "name": "fluoro, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[F;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[F;!900*])]",
+   "prefilter": "[c]-F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "fluoro (σm +0.34): strongly withdrawing by induction but a lone-pair donor: directs ortho/para in electrophilic substitution",
+   "sigma": 0.34,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I033",
+   "key": "ring-para-fluoro",
+   "name": "fluoro, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[F;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[F;!900*])]",
+   "prefilter": "[c]-F",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At para induction and resonance both act.",
+   "why": "fluoro (σp +0.06): strongly withdrawing by induction but a lone-pair donor: directs ortho/para in electrophilic substitution",
+   "sigma": 0.06,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I034",
+   "key": "ring-ortho-chloro",
+   "name": "chloro, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[Cl;!900*])]",
+   "prefilter": "[c]-Cl",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "chloro (σp +0.23): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.23,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I035",
+   "key": "ring-meta-chloro",
+   "name": "chloro, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[Cl;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[Cl;!900*])]",
+   "prefilter": "[c]-Cl",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "chloro (σm +0.37): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.37,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I036",
+   "key": "ring-para-chloro",
+   "name": "chloro, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[Cl;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[Cl;!900*])]",
+   "prefilter": "[c]-Cl",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At para induction and resonance both act.",
+   "why": "chloro (σp +0.23): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.23,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I037",
+   "key": "ring-ortho-bromo",
+   "name": "bromo, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[Br;!900*])]",
+   "prefilter": "[c]-Br",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "bromo (σp +0.23): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.23,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I038",
+   "key": "ring-meta-bromo",
+   "name": "bromo, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[Br;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[Br;!900*])]",
+   "prefilter": "[c]-Br",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "bromo (σm +0.39): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.39,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I039",
+   "key": "ring-para-bromo",
+   "name": "bromo, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[Br;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[Br;!900*])]",
+   "prefilter": "[c]-Br",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At para induction and resonance both act.",
+   "why": "bromo (σp +0.23): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.23,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I040",
+   "key": "ring-ortho-iodo",
+   "name": "iodo, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[I;!900*])]",
+   "prefilter": "[c]-I",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "iodo (σp +0.18): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.18,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I041",
+   "key": "ring-meta-iodo",
+   "name": "iodo, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[I;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[I;!900*])]",
+   "prefilter": "[c]-I",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "iodo (σm +0.35): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.35,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I042",
+   "key": "ring-para-iodo",
+   "name": "iodo, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[I;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[I;!900*])]",
+   "prefilter": "[c]-I",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws by induction but donates by resonance: slows electrophilic substitution yet directs it ortho/para; speeds SNAr a little. At para induction and resonance both act.",
+   "why": "iodo (σp +0.18): withdrawing by induction, a weak lone-pair donor: deactivates but directs ortho/para",
+   "sigma": 0.18,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I043",
+   "key": "ring-ortho-sr",
+   "name": "thioether, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[SX2;!$(S-C(F)(F)F);!$(S-C#N);!900*][#6])]",
+   "prefilter": "[c]-[SX2;!$(S-C(F)(F)F);!$(S-C#N)][#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "thioether (σp +0.00): a weak donor by resonance, a weak withdrawer by induction",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I044",
+   "key": "ring-meta-sr",
+   "name": "thioether, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[SX2;!$(S-C(F)(F)F);!$(S-C#N);!900*][#6]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[SX2;!$(S-C(F)(F)F);!$(S-C#N);!900*][#6])]",
+   "prefilter": "[c]-[SX2;!$(S-C(F)(F)F);!$(S-C#N)][#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "thioether (σm +0.15): a weak donor by resonance, a weak withdrawer by induction",
+   "sigma": 0.15,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I045",
+   "key": "ring-para-sr",
+   "name": "thioether, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[SX2;!$(S-C(F)(F)F);!$(S-C#N);!900*][#6]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[SX2;!$(S-C(F)(F)F);!$(S-C#N);!900*][#6])]",
+   "prefilter": "[c]-[SX2;!$(S-C(F)(F)F);!$(S-C#N)][#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "thioether (σp +0.00): a weak donor by resonance, a weak withdrawer by induction",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I046",
+   "key": "ring-ortho-nhcor",
+   "name": "acylamino (amide N–H), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[NX3;H1;!900*]C(=O))]",
+   "prefilter": "[c]-[NX3;H1]C(=O)",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "acylamino (amide N–H) (σp +0.00): the N lone pair is shared with the C=O: a moderate donor",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I047",
+   "key": "ring-meta-nhcor",
+   "name": "acylamino (amide N–H), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[NX3;H1;!900*]C(=O)):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[NX3;H1;!900*]C(=O))]",
+   "prefilter": "[c]-[NX3;H1]C(=O)",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "acylamino (amide N–H) (σm +0.21): the N lone pair is shared with the C=O: a moderate donor",
+   "sigma": 0.21,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I048",
+   "key": "ring-para-nhcor",
+   "name": "acylamino (amide N–H), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[NX3;H1;!900*]C(=O)):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[NX3;H1;!900*]C(=O))]",
+   "prefilter": "[c]-[NX3;H1]C(=O)",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "acylamino (amide N–H) (σp +0.00): the N lone pair is shared with the C=O: a moderate donor",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I049",
+   "key": "ring-ortho-nhso2",
+   "name": "sulfonylamino (N–H sulfonamide), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[NX3;H1;!900*][SX4](=O)=O)]",
+   "prefilter": "[c]-[NX3;H1][SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "sulfonylamino (N–H sulfonamide) (σp +0.03): the N lone pair is shared with the sulfonyl group: about neutral, a weak ortho/para director",
+   "sigma": 0.03,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I050",
+   "key": "ring-meta-nhso2",
+   "name": "sulfonylamino (N–H sulfonamide), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[NX3;H1;!900*][SX4](=O)=O):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[NX3;H1;!900*][SX4](=O)=O)]",
+   "prefilter": "[c]-[NX3;H1][SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "sulfonylamino (N–H sulfonamide) (σm +0.20): the N lone pair is shared with the sulfonyl group: about neutral, a weak ortho/para director",
+   "sigma": 0.2,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I051",
+   "key": "ring-para-nhso2",
+   "name": "sulfonylamino (N–H sulfonamide), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[NX3;H1;!900*][SX4](=O)=O):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[NX3;H1;!900*][SX4](=O)=O)]",
+   "prefilter": "[c]-[NX3;H1][SX4](=O)=O",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "sulfonylamino (N–H sulfonamide) (σp +0.03): the N lone pair is shared with the sulfonyl group: about neutral, a weak ortho/para director",
+   "sigma": 0.03,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I052",
+   "key": "ring-ortho-nr2",
+   "name": "dialkylamino, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6])]",
+   "prefilter": "[c]-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c)]([#6])[#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "dialkylamino (σp -0.83): the N lone pair donates strongly into the ring (resonance)",
+   "sigma": -0.83,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I053",
+   "key": "ring-meta-nr2",
+   "name": "dialkylamino, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6])]",
+   "prefilter": "[c]-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c)]([#6])[#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "dialkylamino (σm -0.16): the N lone pair donates strongly into the ring (resonance)",
+   "sigma": -0.16,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I054",
+   "key": "ring-para-nr2",
+   "name": "dialkylamino, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6])]",
+   "prefilter": "[c]-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c)]([#6])[#6]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "dialkylamino (σp -0.83): the N lone pair donates strongly into the ring (resonance)",
+   "sigma": -0.83,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I055",
+   "key": "ring-ortho-nh",
+   "name": "amino (NH2, NHR), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*])]",
+   "prefilter": "[c]-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "amino (NH2, NHR) (σp -0.66): the N lone pair donates strongly into the ring (resonance)",
+   "sigma": -0.66,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I056",
+   "key": "ring-meta-nh",
+   "name": "amino (NH2, NHR), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*])]",
+   "prefilter": "[c]-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "amino (NH2, NHR) (σm -0.16): the N lone pair donates strongly into the ring (resonance)",
+   "sigma": -0.16,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I057",
+   "key": "ring-para-nh",
+   "name": "amino (NH2, NHR), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*])]",
+   "prefilter": "[c]-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "amino (NH2, NHR) (σp -0.66): the N lone pair donates strongly into the ring (resonance)",
+   "sigma": -0.66,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I058",
+   "key": "ring-ortho-oh",
+   "name": "hydroxy, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX2H1;!900*])]",
+   "prefilter": "[c]-[OX2H1]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "hydroxy (σp -0.37): the O lone pair donates into the ring (resonance)",
+   "sigma": -0.37,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I059",
+   "key": "ring-meta-oh",
+   "name": "hydroxy, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX2H1;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX2H1;!900*])]",
+   "prefilter": "[c]-[OX2H1]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "hydroxy (σm +0.12): the O lone pair donates into the ring (resonance)",
+   "sigma": 0.12,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I060",
+   "key": "ring-para-oh",
+   "name": "hydroxy, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX2H1;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX2H1;!900*])]",
+   "prefilter": "[c]-[OX2H1]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "hydroxy (σp -0.37): the O lone pair donates into the ring (resonance)",
+   "sigma": -0.37,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I061",
+   "key": "ring-ortho-or",
+   "name": "alkoxy, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX2;!900*][CX4;!$(C(F)(F)F)])]",
+   "prefilter": "[c]-[OX2][CX4;!$(C(F)(F)F)]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "alkoxy (σp -0.27): the O lone pair donates into the ring (resonance)",
+   "sigma": -0.27,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I062",
+   "key": "ring-meta-or",
+   "name": "alkoxy, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX2;!900*][CX4;!$(C(F)(F)F)])]",
+   "prefilter": "[c]-[OX2][CX4;!$(C(F)(F)F)]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "alkoxy (σm +0.12): the O lone pair donates into the ring (resonance)",
+   "sigma": 0.12,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I063",
+   "key": "ring-para-or",
+   "name": "alkoxy, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX2;!900*][CX4;!$(C(F)(F)F)])]",
+   "prefilter": "[c]-[OX2][CX4;!$(C(F)(F)F)]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "alkoxy (σp -0.27): the O lone pair donates into the ring (resonance)",
+   "sigma": -0.27,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I064",
+   "key": "ring-ortho-oar",
+   "name": "aryloxy, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX2;!900*]c)]",
+   "prefilter": "[c]-[OX2]c",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "aryloxy (σp -0.03): the O lone pair is shared with two rings: a weak donor",
+   "sigma": -0.03,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I065",
+   "key": "ring-meta-oar",
+   "name": "aryloxy, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX2;!900*]c):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX2;!900*]c)]",
+   "prefilter": "[c]-[OX2]c",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "aryloxy (σm +0.25): the O lone pair is shared with two rings: a weak donor",
+   "sigma": 0.25,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I066",
+   "key": "ring-para-oar",
+   "name": "aryloxy, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX2;!900*]c):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX2;!900*]c)]",
+   "prefilter": "[c]-[OX2]c",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "aryloxy (σp -0.03): the O lone pair is shared with two rings: a weak donor",
+   "sigma": -0.03,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I067",
+   "key": "ring-ortho-ocor",
+   "name": "acyloxy, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX2;!900*]C(=O))]",
+   "prefilter": "[c]-[OX2]C(=O)",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws by induction (σp > 0: speeds nucleophilic attack a little) yet donates to a cation by resonance (σp⁺ < 0): a moderate activator of electrophilic substitution that directs ortho/para. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "acyloxy (σp +0.31): the O lone pair is shared with the C=O: it withdraws by induction (σp is positive) yet donates to a cation by resonance (σp⁺ −0.19)",
+   "sigma": 0.31,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I068",
+   "key": "ring-meta-ocor",
+   "name": "acyloxy, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX2;!900*]C(=O)):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX2;!900*]C(=O))]",
+   "prefilter": "[c]-[OX2]C(=O)",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws by induction (σp > 0: speeds nucleophilic attack a little) yet donates to a cation by resonance (σp⁺ < 0): a moderate activator of electrophilic substitution that directs ortho/para. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "acyloxy (σm +0.39): the O lone pair is shared with the C=O: it withdraws by induction (σp is positive) yet donates to a cation by resonance (σp⁺ −0.19)",
+   "sigma": 0.39,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I069",
+   "key": "ring-para-ocor",
+   "name": "acyloxy, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX2;!900*]C(=O)):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX2;!900*]C(=O))]",
+   "prefilter": "[c]-[OX2]C(=O)",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws by induction (σp > 0: speeds nucleophilic attack a little) yet donates to a cation by resonance (σp⁺ < 0): a moderate activator of electrophilic substitution that directs ortho/para. At para induction and resonance both act.",
+   "why": "acyloxy (σp +0.31): the O lone pair is shared with the C=O: it withdraws by induction (σp is positive) yet donates to a cation by resonance (σp⁺ −0.19)",
+   "sigma": 0.31,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I070",
+   "key": "ring-ortho-methyl",
+   "name": "methyl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CH3;!900*])]",
+   "prefilter": "[c]-[CH3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "methyl (σp -0.17): a weak donor (induction, hyperconjugation)",
+   "sigma": -0.17,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I071",
+   "key": "ring-meta-methyl",
+   "name": "methyl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CH3;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CH3;!900*])]",
+   "prefilter": "[c]-[CH3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "methyl (σm -0.07): a weak donor (induction, hyperconjugation)",
+   "sigma": -0.07,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I072",
+   "key": "ring-para-methyl",
+   "name": "methyl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CH3;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CH3;!900*])]",
+   "prefilter": "[c]-[CH3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "methyl (σp -0.17): a weak donor (induction, hyperconjugation)",
+   "sigma": -0.17,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I073",
+   "key": "ring-ortho-alkyl",
+   "name": "alkyl (not methyl), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*])]",
+   "prefilter": "[c]-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)])]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "alkyl (not methyl) (σp -0.15): a weak donor (induction, hyperconjugation); bulkier than methyl",
+   "sigma": -0.15,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I074",
+   "key": "ring-meta-alkyl",
+   "name": "alkyl (not methyl), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*])]",
+   "prefilter": "[c]-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)])]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "alkyl (not methyl) (σm -0.07): a weak donor (induction, hyperconjugation); bulkier than methyl",
+   "sigma": -0.07,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I075",
+   "key": "ring-para-alkyl",
+   "name": "alkyl (not methyl), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*])]",
+   "prefilter": "[c]-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)])]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "alkyl (not methyl) (σp -0.15): a weak donor (induction, hyperconjugation); bulkier than methyl",
+   "sigma": -0.15,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I076",
+   "key": "ring-ortho-aryl",
+   "name": "aryl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[c;!900*])]",
+   "prefilter": "[c]-c",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon. A ring at ortho also twists out of the plane; with three or more ortho groups the biaryl axis is locked (atropisomers).",
+   "why": "aryl (σp -0.01): a second ring: a weak donor by resonance",
+   "sigma": -0.01,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I077",
+   "key": "ring-meta-aryl",
+   "name": "aryl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[c;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[c;!900*])]",
+   "prefilter": "[c]-c",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "aryl (σm +0.06): a second ring: a weak donor by resonance",
+   "sigma": 0.06,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I078",
+   "key": "ring-para-aryl",
+   "name": "aryl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[c;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[c;!900*])]",
+   "prefilter": "[c]-c",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "aryl (σp -0.01): a second ring: a weak donor by resonance",
+   "sigma": -0.01,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I079",
+   "key": "ring-ortho-vinyl",
+   "name": "vinyl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX3;!900*]=[CX3])]",
+   "prefilter": "[c]-[CX3]=[CX3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "vinyl (σp -0.04): conjugated C=C: a weak donor",
+   "sigma": -0.04,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I080",
+   "key": "ring-meta-vinyl",
+   "name": "vinyl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CX3;!900*]=[CX3]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CX3;!900*]=[CX3])]",
+   "prefilter": "[c]-[CX3]=[CX3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "vinyl (σm +0.06): conjugated C=C: a weak donor",
+   "sigma": 0.06,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I081",
+   "key": "ring-para-vinyl",
+   "name": "vinyl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CX3;!900*]=[CX3]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CX3;!900*]=[CX3])]",
+   "prefilter": "[c]-[CX3]=[CX3]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "vinyl (σp -0.04): conjugated C=C: a weak donor",
+   "sigma": -0.04,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I082",
+   "key": "ring-ortho-ethynyl",
+   "name": "ethynyl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[C;!900*]#C)]",
+   "prefilter": "[c]-C#C",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "ethynyl (σp +0.23): an sp carbon: weakly electron-withdrawing",
+   "sigma": 0.23,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I083",
+   "key": "ring-meta-ethynyl",
+   "name": "ethynyl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[C;!900*]#C):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[C;!900*]#C)]",
+   "prefilter": "[c]-C#C",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "ethynyl (σm +0.21): an sp carbon: weakly electron-withdrawing",
+   "sigma": 0.21,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I084",
+   "key": "ring-para-ethynyl",
+   "name": "ethynyl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[C;!900*]#C):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[C;!900*]#C)]",
+   "prefilter": "[c]-C#C",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "ethynyl (σp +0.23): an sp carbon: weakly electron-withdrawing",
+   "sigma": 0.23,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I085",
+   "key": "ring-ortho-silyl",
+   "name": "silyl, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[SiX4;!900*])]",
+   "prefilter": "[c]-[SiX4]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "silyl (σp -0.07): a weak donor (σ-donation, β-effect)",
+   "sigma": -0.07,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I086",
+   "key": "ring-meta-silyl",
+   "name": "silyl, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[SiX4;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[SiX4;!900*])]",
+   "prefilter": "[c]-[SiX4]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "silyl (σm -0.04): a weak donor (σ-donation, β-effect)",
+   "sigma": -0.04,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I087",
+   "key": "ring-para-silyl",
+   "name": "silyl, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[SiX4;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[SiX4;!900*])]",
+   "prefilter": "[c]-[SiX4]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "silyl (σp -0.07): a weak donor (σ-donation, β-effect)",
+   "sigma": -0.07,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I088",
+   "key": "ring-ortho-nr3plus",
+   "name": "ammonium, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[NX4+;!900*])]",
+   "prefilter": "[c]-[NX4+]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "ammonium (σp +0.82): a positive charge next to the ring withdraws strongly",
+   "sigma": 0.82,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I089",
+   "key": "ring-meta-nr3plus",
+   "name": "ammonium, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[NX4+;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[NX4+;!900*])]",
+   "prefilter": "[c]-[NX4+]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "ammonium (σm +0.88): a positive charge next to the ring withdraws strongly",
+   "sigma": 0.88,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I090",
+   "key": "ring-para-nr3plus",
+   "name": "ammonium, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[NX4+;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[NX4+;!900*])]",
+   "prefilter": "[c]-[NX4+]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "withdraws electrons: speeds nucleophilic attack at the ring carbon (SNAr, oxidative addition, metalation next to it), slows electrophilic substitution. At para induction and resonance both act.",
+   "why": "ammonium (σp +0.82): a positive charge next to the ring withdraws strongly",
+   "sigma": 0.82,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I091",
+   "key": "ring-ortho-ominus",
+   "name": "phenoxide (O⁻), ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[OX1-;!900*])]",
+   "prefilter": "[c]-[OX1-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "phenoxide (O⁻) (σp -0.81): an anionic O donates more strongly than OH",
+   "sigma": -0.81,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I092",
+   "key": "ring-meta-ominus",
+   "name": "phenoxide (O⁻), meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[OX1-;!900*]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[OX1-;!900*])]",
+   "prefilter": "[c]-[OX1-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "phenoxide (O⁻) (σm -0.47): an anionic O donates more strongly than OH",
+   "sigma": -0.47,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I093",
+   "key": "ring-para-ominus",
+   "name": "phenoxide (O⁻), para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[OX1-;!900*]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[OX1-;!900*])]",
+   "prefilter": "[c]-[OX1-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "donates electrons: speeds electrophilic substitution at the ring carbon, slows nucleophilic attack (SNAr, oxidative addition). At para induction and resonance both act.",
+   "why": "phenoxide (O⁻) (σp -0.81): an anionic O donates more strongly than OH",
+   "sigma": -0.81,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I094",
+   "key": "ring-ortho-co2minus",
+   "name": "carboxylate, ortho to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX3;!900*](=O)[OX1-])]",
+   "prefilter": "[c]-[CX3](=O)[OX1-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom next to the reacting carbon (ortho)",
+   "effect": "has almost no net electronic effect on the ring carbon (σ close to 0); a carboxylate is a weak meta director in electrophilic substitution. At ortho the electronic effect is like para, and the group also crowds the carbon.",
+   "why": "carboxylate (σp +0.00): an anionic carboxylate: neutral to weakly donating",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I095",
+   "key": "ring-meta-co2minus",
+   "name": "carboxylate, meta to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:c(-[CX3;!900*](=O)[OX1-]):a:a:a:1),$([c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[OX1-])]",
+   "prefilter": "[c]-[CX3](=O)[OX1-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom two bonds from the reacting carbon, inside the same six-membered ring (meta)",
+   "effect": "has almost no net electronic effect on the ring carbon (σ close to 0); a carboxylate is a weak meta director in electrophilic substitution. At meta mostly the inductive part acts; resonance does not reach this position.",
+   "why": "carboxylate (σm -0.10): an anionic carboxylate: neutral to weakly donating",
+   "sigma": -0.1,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I096",
+   "key": "ring-para-co2minus",
+   "name": "carboxylate, para to the reacting aromatic carbon",
+   "group": "ring substituent (position)",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:c(-[CX3;!900*](=O)[OX1-]):a:a:1),$([c;r5]:[c;r5]:[c;r5]:[c;r5]-[CX3;!900*](=O)[OX1-])]",
+   "prefilter": "[c]-[CX3](=O)[OX1-]",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "on the ring atom opposite the reacting carbon, inside the same six-membered ring (para)",
+   "effect": "has almost no net electronic effect on the ring carbon (σ close to 0); a carboxylate is a weak meta director in electrophilic substitution. At para induction and resonance both act.",
+   "why": "carboxylate (σp +0.00): an anionic carboxylate: neutral to weakly donating",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I097",
+   "key": "ring-alpha-N",
+   "name": "reacting carbon next to a pyridine-type ring nitrogen (α)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:[nX2])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is bonded to a pyridine-type ring N (2-position of pyridine, C2 of azoles)",
+   "effect": "electron-poor carbon: nucleophiles add here (SNAr, Chichibabin, Minisci) and the C–X bond is activated for oxidative addition",
+   "why": "the ring N pulls electron density from the neighbouring carbon and takes the negative charge of the intermediate",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I098",
+   "key": "ring-beta-N",
+   "name": "reacting carbon one atom from a pyridine-type ring nitrogen (β)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:c:[nX2]:a:a:a:1),$([c;r5]:[c;r5]:[nX2;r5])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is two bonds from a pyridine-type ring N, in the same ring (3-position of pyridine)",
+   "effect": "the least electron-poor position of an azine: electrophilic substitution goes here (when it goes at all)",
+   "why": "no resonance structure puts the charge on N, so the β position behaves like a deactivated benzene carbon",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I099",
+   "key": "ring-gamma-N",
+   "name": "reacting carbon opposite a pyridine-type ring nitrogen (γ)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:[nX2]:a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is para to a pyridine-type ring N in the same six-membered ring (4-position of pyridine)",
+   "effect": "electron-poor carbon: nucleophiles add here (SNAr, Minisci) and oxidative addition is easy",
+   "why": "the ring N takes the negative charge of the intermediate by resonance",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I100",
+   "key": "ring-between-2N",
+   "name": "reacting carbon between two ring nitrogens",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c(:n):n)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "C2 of pyrimidine, imidazole, triazole: a ring N on each side",
+   "effect": "the most electron-poor carbon of an azole (C2 of imidazole, thiazole, triazole): its C–H is the acidic one and lithiates or couples first; in pyrimidines, quinazolines and purines SNAr and oxidative addition go to C4 / C6 before C2 (2,4-dichloropyrimidine reacts first at C4)",
+   "why": "two ring N atoms withdraw electrons and stabilise the anion",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I101",
+   "key": "ring-alpha-azinium",
+   "name": "reacting carbon next to a ring N⁺ (pyridinium, N-oxide)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:[n+])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is bonded to a positively charged ring N (C2 of an N-oxide or N-alkylpyridinium)",
+   "effect": "very electron-poor: nucleophiles add here (POCl3 / Ac2O chlorination and acyloxylation of N-oxides, Minisci, Reissert), metalation and Pd C–H activation are directed here",
+   "why": "the positive charge withdraws strongly and takes the incoming nucleophile",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I102",
+   "key": "ring-gamma-azinium",
+   "name": "reacting carbon opposite a ring N⁺ (γ of pyridinium, N-oxide)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c1:a:a:[n+]:a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is para to a positively charged ring N",
+   "effect": "electron-poor: nucleophiles add here (4-substitution of pyridine N-oxides and pyridiniums), nitration of N-oxides goes here",
+   "why": "the positive charge withdraws and resonance carries it to this position",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I103",
+   "key": "ring-alpha-S",
+   "name": "reacting carbon next to a ring sulfur (α)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:s)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "a carbon bonded to a ring S: C2/C5 of thiophene, C2/C5 of thiazole",
+   "effect": "thiophene: electrophilic substitution and lithiation go to the α carbon first; thiazole: C2 (between S and N) is the acidic, lithiated and nucleophile-attacked carbon, C5 is the electrophilic-substitution site",
+   "why": "the S lone pair stabilises the cation formed by attack at the α carbon better than at β",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I104",
+   "key": "ring-alpha-O",
+   "name": "reacting carbon next to a ring oxygen (α)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:o)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "a carbon bonded to a ring O: C2/C5 of furan, C2 of oxazole",
+   "effect": "furan: electrophilic substitution goes to the α carbon first (furan is more reactive than thiophene); oxazole: C2 is the acidic, lithiated carbon, C5 the electrophilic-substitution site",
+   "why": "the O lone pair stabilises the cation formed by attack at the α carbon",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I105",
+   "key": "ring-beta-SO",
+   "name": "reacting carbon one atom from a ring sulfur or oxygen (β, five-membered ring)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;r5;$(c:c:[s,o])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "C3 of thiophene or furan (a five-membered ring carbon two bonds from S or O)",
+   "effect": "the less reactive position of the ring toward electrophiles; reached when both α positions are taken",
+   "why": "the cation formed by β attack has fewer resonance forms",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I106",
+   "key": "ring-alpha-NR",
+   "name": "reacting carbon next to a pyrrole-type ring nitrogen (N–H or N–R)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;r5;$(c:[nX3;r5;+0])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "a five-membered-ring carbon bonded to a neutral pyrrole-type N: C2/C5 of pyrrole, C2 of indole, C2/C5 of N-substituted imidazole",
+   "effect": "pyrrole: electrophilic substitution goes to C2 first; indole: C2 is the carbon that lithiates and couples (C–H activation) while electrophiles go to C3; the N substituent directs metalation to C2",
+   "why": "the N lone pair is part of the aromatic sextet and donates strongly to the α carbon",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I107",
+   "key": "ring-beta-NR",
+   "name": "reacting carbon one atom from a pyrrole-type ring nitrogen (β)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;r5;$([c;r5]:[c;r5]:[nX3;r5;+0])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "C3 of indole or pyrrole",
+   "effect": "indole C3 is the most nucleophilic carbon (Vilsmeier, Mannich, halogenation, Friedel–Crafts); pyrrole C3 reacts when C2 is blocked",
+   "why": "attack at C3 of indole keeps the benzene ring aromatic in the cation",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I108",
+   "key": "ring-5-membered",
+   "name": "reacting carbon in an electron-rich five-membered ring (furan, thiophene, pyrrole and their benzo-fused forms)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;r5;$(c1:c:c:c:[o,s,nX3;+0]:1),$(c1:c:c:[o,s,nX3;+0]:c:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is in a five-membered ring made of one O, S or pyrrole-type N and four carbons",
+   "effect": "electron-rich ring (six electrons on five atoms): electrophilic substitution is far faster than for benzene (pyrrole ≫ furan > thiophene)",
+   "why": "π-excessive heteroaromatics",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I109",
+   "key": "ring-fused-alpha",
+   "name": "reacting carbon next to a ring-fusion atom (α of naphthalene, quinoline …)",
+   "group": "ring type",
+   "kind": "electronic",
+   "anchor": "aromatic C",
+   "smarts": "[c;r6;$(c:[c;R2;$(c(:a)(:a):a)])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "a six-membered-ring carbon bonded to a ring-fusion carbon whose other neighbours are aromatic too (C1 of naphthalene, C5/C8 of quinoline, C4/C7 of indole; not the benzo carbons of benzodioxole, tetralin or indoline)",
+   "effect": "naphthalene: the α position is the kinetic site of electrophilic substitution (more hindered, peri, for large reagents); in indole, benzimidazole and benzofuran the benzo carbons C4/C7 are less reactive than the hetero ring",
+   "why": "more resonance forms of the naphthalene intermediate keep the other ring aromatic",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I110",
+   "key": "ring-peri",
+   "name": "reacting carbon with a substituent in the peri position",
+   "group": "ring sterics",
+   "kind": "hindrance",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:[c;R2]:[c;$(c-!@[!#1;!900*])])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "a substituent sits on the ring atom of the neighbouring ring that is next to the fusion carbon (C8 for C1 of naphthalene, C4 for C3 of indole)",
+   "effect": "peri strain: attack and coupling at this carbon are slowed (1,8-disubstituted naphthalenes, 3,4-disubstituted indoles), large reagents go elsewhere",
+   "why": "the peri substituent lies in the plane of the ring, about 2.5 Å from the reacting carbon",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I111",
+   "key": "ring-ortho-1",
+   "name": "at least one ortho substituent",
+   "group": "ring sterics",
+   "kind": "hindrance",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:[c;$(c-[!#1;!900*])])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "a ring neighbour of the reacting carbon carries a substituent (also a ring-fused alkyl group)",
+   "effect": "crowding next to the reacting carbon: slows attack and coupling, favours the less hindered position",
+   "why": "the new bond has to form in the plane of the ring beside a substituent",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I112",
+   "key": "ring-ortho-2",
+   "name": "two ortho substituents (2,6-disubstituted)",
+   "group": "ring sterics",
+   "kind": "hindrance",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c(:[c;$(c-[!#1;!900*])]):[c;$(c-[!#1;!900*])])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "both ring neighbours of the reacting carbon carry a substituent",
+   "effect": "strongly hindered: couplings and substitutions need forcing conditions or special ligands; other positions win when they exist",
+   "why": "the reacting carbon is flanked on both sides",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I113",
+   "key": "ring-ortho-branched",
+   "name": "a branched ortho substituent",
+   "group": "ring sterics",
+   "kind": "hindrance",
+   "anchor": "aromatic C",
+   "smarts": "[c;$(c:c-[CX4;D3,D4;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "an ortho substituent that is itself branched (isopropyl, tert-butyl, CHR2)",
+   "effect": "much bulkier than an ortho methyl: blocks the position for most reagents",
+   "why": "the branched group sits over the reacting carbon",
+   "sigma": null,
+   "source": "Taft steric constants Es: i-Pr −0.47, t-Bu −1.54"
+  },
+  {
+   "id": "I114",
+   "key": "azole-n-hindered",
+   "name": "azole nitrogen with a substituent on a neighbouring carbon",
+   "group": "ring nitrogen",
+   "kind": "hindrance",
+   "anchor": "aromatic n",
+   "smarts": "[n;r5;$(n:c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting five-membered-ring N is next to a ring carbon that carries a substituent",
+   "effect": "slower alkylation / arylation: the less hindered ring N of a pyrazole, imidazole or triazole reacts",
+   "why": "the substituent crowds the lone pair or the new N–R bond",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I115",
+   "key": "azole-n-hindered-2",
+   "name": "azole nitrogen with substituents on both neighbouring carbons",
+   "group": "ring nitrogen",
+   "kind": "hindrance",
+   "anchor": "aromatic n",
+   "smarts": "[n;r5;$(n(:c-[!#1;!900*]):c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "both ring carbons next to the reacting N carry substituents",
+   "effect": "strongly hindered: this ring N is the last to react",
+   "why": "both sides of the lone pair are crowded",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I116",
+   "key": "azole-n-next-to-N",
+   "name": "azole nitrogen next to another ring nitrogen",
+   "group": "ring nitrogen",
+   "kind": "electronic",
+   "anchor": "aromatic n",
+   "smarts": "[n;r5;$(n:n)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N is bonded to another ring N (pyrazole, indazole, triazole, tetrazole)",
+   "effect": "N-alkylation gives N1 / N2 regioisomer mixtures: the product ratio follows sterics and the tautomer that reacts, so the less hindered N usually wins",
+   "why": "the anion is delocalised over both N atoms",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I117",
+   "key": "azole-n-1,3",
+   "name": "azole nitrogen separated from another ring nitrogen by one carbon",
+   "group": "ring nitrogen",
+   "kind": "electronic",
+   "anchor": "aromatic n",
+   "smarts": "[n;r5;$(n:c:n)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "imidazole, benzimidazole, purine: N–C–N",
+   "effect": "the basic pyridine-type N is the nucleophile of neutral imidazoles; the anion alkylates at either N",
+   "why": "the amidine-like N–C=N unit",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I118",
+   "key": "azole-n-fused",
+   "name": "azole nitrogen next to a ring-fusion carbon",
+   "group": "ring nitrogen",
+   "kind": "steric",
+   "anchor": "aromatic n",
+   "smarts": "[n;r5;$(n:[c;R2])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N is bonded to a carbon shared with a second ring (indole N1, benzimidazole, indazole N1)",
+   "effect": "more hindered by the peri C–H of the fused ring, but conjugation keeps the N–R product stable",
+   "why": "the fused ring crowds one side",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I119",
+   "key": "azine-n",
+   "name": "six-membered ring nitrogen",
+   "group": "ring nitrogen",
+   "kind": "electronic",
+   "anchor": "aromatic n",
+   "smarts": "[n;r6]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N is the N of pyridine, pyrimidine or pyridone",
+   "effect": "pyridine N: quaternises with alkyl halides, forms N-oxides, binds metals; pyridone N–H vs O: N-alkylation with soft electrophiles, O-alkylation with hard ones or Ag salts",
+   "why": "the lone pair lies in the ring plane, not in the π system",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I120",
+   "key": "azine-n-hindered",
+   "name": "six-membered ring nitrogen with a substituent on a neighbouring carbon",
+   "group": "ring nitrogen",
+   "kind": "hindrance",
+   "anchor": "aromatic n",
+   "smarts": "[n;r6;$(n:c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting ring N is next to a carbon that carries a substituent (2-substituted pyridine)",
+   "effect": "slower quaternisation, N-oxidation and metal binding (2-picoline is less nucleophilic at N than pyridine)",
+   "why": "the substituent crowds the lone pair",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I121",
+   "key": "azine-n-hindered-2",
+   "name": "six-membered ring nitrogen with substituents on both neighbouring carbons",
+   "group": "ring nitrogen",
+   "kind": "hindrance",
+   "anchor": "aromatic n",
+   "smarts": "[n;r6;$(n(:c-[!#1;!900*]):c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "both carbons next to the reacting ring N carry substituents (2,6-disubstituted pyridine)",
+   "effect": "a hindered base that does not alkylate or bind metals (2,6-lutidine, 2,6-di-tert-butylpyridine)",
+   "why": "both sides of the lone pair are crowded",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I122",
+   "key": "sp3-methyl",
+   "name": "methyl-type carbon (no carbon substituent)",
+   "group": "sp3 carbon: substitution degree",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the attacked carbon had no carbon substituent (CH3–X); only unchanged carbons are counted, the sp3-<degree>-at-<atom> rows below count all carbon neighbours",
+   "effect": "the fastest SN2 and the least hindered position; no cation possible",
+   "why": "no substituent blocks the backside; no alkyl group stabilises a cation",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN2)"
+  },
+  {
+   "id": "I123",
+   "key": "sp3-primary",
+   "name": "primary carbon (one carbon substituent)",
+   "group": "sp3 carbon: substitution degree",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6;!900*]);!$(C(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the attacked carbon had one carbon substituent (R–CH2–X)",
+   "effect": "open: SN2 fast, E2 with bulky bases",
+   "why": "one substituent only: the backside is open",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN2)"
+  },
+  {
+   "id": "I124",
+   "key": "sp3-secondary",
+   "name": "secondary carbon (two carbon substituents)",
+   "group": "sp3 carbon: substitution degree",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6;!900*])-[#6;!900*]);!$(C(-[#6;!900*])(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the attacked carbon had two carbon substituents (R2CH–X)",
+   "effect": "SN2 slower; SN1, E1 and E2 compete",
+   "why": "two substituents crowd the backside and stabilise a cation",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN2 / SN1)"
+  },
+  {
+   "id": "I125",
+   "key": "sp3-tertiary",
+   "name": "tertiary carbon (three carbon substituents)",
+   "group": "sp3 carbon: substitution degree",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6;!900*])(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the attacked carbon had three carbon substituents (R3C–X)",
+   "effect": "no SN2: SN1 / E1 through the cation, or E2",
+   "why": "the backside is shielded; three alkyl groups stabilise the cation",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN1)"
+  },
+  {
+   "id": "I126",
+   "key": "sp3-benzylic",
+   "name": "benzylic carbon",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[c;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is attached to an aromatic ring",
+   "effect": "SN1 and SN2 both fast; radical and oxidation chemistry at this C–H; easily inserted by metals",
+   "why": "the ring stabilises the cation, the radical and the SN2 transition state",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I127",
+   "key": "sp3-allylic",
+   "name": "allylic carbon",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;X3;!$(C=O);!900*]=C)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is attached to a C=C",
+   "effect": "SN1 and SN2 fast; SN2′ and allylic transposition possible; radical reactions at this C–H",
+   "why": "the π bond stabilises the cation, the radical and the transition state",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I128",
+   "key": "sp3-propargylic",
+   "name": "propargylic carbon",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;X2;!900*]#[#6])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is attached to a C≡C",
+   "effect": "SN2 fast (like allylic); SN2′ gives allenes",
+   "why": "the π system activates the transition state",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I129",
+   "key": "sp3-alpha-carbonyl",
+   "name": "carbon α to a carbonyl group",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;X3;!900*]=[O,N,S])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is next to a C=O or C=N",
+   "effect": "SN2 much faster (α-halo ketones are among the most reactive alkylating agents); the C–H is acidic: enolate chemistry",
+   "why": "the π* of the C=O lowers the SN2 transition state; the C–H is acidic",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I130",
+   "key": "sp3-alpha-nitrile",
+   "name": "carbon α to a nitrile",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;X2;!900*]#N)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is next to a C≡N",
+   "effect": "SN2 fast; the C–H is acidic (acetonitrile pKa 31 in DMSO)",
+   "why": "the nitrile lowers the SN2 transition state and acidifies the C–H",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I131",
+   "key": "sp3-alpha-CF3",
+   "name": "carbon next to a CF3 group",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;!900*](F)(F)F)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon carries a CF3 group it already had (a CF3 the reaction put there does not count)",
+   "effect": "SN2 and SN1 slowed: the CF3 destabilises positive charge and the transition state",
+   "why": "the CF3 group withdraws strongly by induction (Taft σ* +2.61)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft; Taft σ* values"
+  },
+  {
+   "id": "I132",
+   "key": "sp3-alpha-halogen",
+   "name": "a halogen stays on the reacting carbon",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[F,Cl,Br,I;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon keeps a halogen (CHX2, CX3)",
+   "effect": "SN2 slowed (inductive, steric); SN1 favoured by lone-pair donation (Cl, Br)",
+   "why": "a halogen both withdraws and donates a lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I133",
+   "key": "sp3-alpha-oxygen",
+   "name": "an oxygen stays on the reacting carbon",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[OX2;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon keeps an OR group (acetal carbon, α-alkoxy halide)",
+   "effect": "SN1 very fast (oxocarbenium ion): α-alkoxy halides such as MOMCl are strongly activated; SN2 at an acetal carbon is unusual",
+   "why": "the O lone pair stabilises the cation",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I134",
+   "key": "sp3-alpha-nitrogen",
+   "name": "a nitrogen stays on the reacting carbon",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[NX3;+0;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon keeps an amino group (aminal, α-amino)",
+   "effect": "SN1 very fast (iminium ion); the α-amino C–H is easily oxidised",
+   "why": "the N lone pair stabilises the cation",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I135",
+   "key": "sp3-neopentyl",
+   "name": "neopentyl-type carbon (β-quaternary)",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "hindrance",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;X4;D4;!900*;!$(C(F)(F)F)])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the carbon next to the reacting one is quaternary (CH2–CMe3)",
+   "effect": "SN2 essentially blocked (about 10^5 slower than ethyl); SN1 gives rearrangement",
+   "why": "the tert-butyl group shields the backside of the CH2",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN2); Streitwieser relative rates; Taft Es −1.74"
+  },
+  {
+   "id": "I136",
+   "key": "sp3-beta-branched",
+   "name": "β-branched carbon (isobutyl-type)",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "hindrance",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[C;X4;H1;!900*]([#6])[#6])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the carbon next to the reacting one carries two further carbons (CH2–CHR2)",
+   "effect": "SN2 about 30-fold slower than for an unbranched chain; E2 gets competitive",
+   "why": "the branch crowds the approach of the nucleophile",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN2); Streitwieser relative rates; Taft Es −0.93"
+  },
+  {
+   "id": "I137",
+   "key": "sp3-beta-opened",
+   "name": "carbon next to a carbon that now bears the O, N or S the reaction released from it (ring opening)",
+   "group": "sp3 carbon: neighbour effect",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[CX4;!900*]-[900O,900N,900S]);!$(C1-[CX4;!900*]-[900O,900N,900S]-1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the neighbouring carbon keeps a heteroatom whose bond to the reacting carbon was broken (epoxide, aziridine, cyclic sulfate opened at this carbon; a three-membered ring closed onto this carbon does not count)",
+   "effect": "regioselectivity of ring opening: nucleophiles attack the less hindered carbon of an epoxide under basic or neutral conditions (SN2), the more substituted carbon under acid; the β-hydroxy / β-amino group left behind can chelate",
+   "why": "the strained ring is opened at the carbon the pattern marks",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (epoxide opening)"
+  },
+  {
+   "id": "I138",
+   "key": "sp3-ring3",
+   "name": "carbon in a three-membered ring (epoxide, aziridine, cyclopropane)",
+   "group": "sp3 carbon: ring",
+   "kind": "geometry",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;r3]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is in a ring of 3 atoms in the product",
+   "effect": "a strained ring was formed or kept at this carbon: three-membered rings form by intramolecular SN2 (halohydrin to epoxide), carbene or peracid addition, and open easily with nucleophiles or acid",
+   "why": "ring size sets strain and the geometry of the attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (ring strain)"
+  },
+  {
+   "id": "I139",
+   "key": "sp3-ring4",
+   "name": "carbon in a four-membered ring (oxetane, azetidine, cyclobutane)",
+   "group": "sp3 carbon: ring",
+   "kind": "geometry",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;r4]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is in a ring of 4 atoms in the product",
+   "effect": "a strained ring was formed or kept at this carbon; four-membered rings form slowly and open easily under acid",
+   "why": "ring size sets strain and the geometry of the attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (ring strain)"
+  },
+  {
+   "id": "I140",
+   "key": "sp3-ring5",
+   "name": "carbon in a five-membered ring",
+   "group": "sp3 carbon: ring",
+   "kind": "geometry",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;r5]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is in a ring of 5 atoms in the product",
+   "effect": "a five-membered ring carbon: five-membered rings close easily (5-exo); SN2 at cyclopentyl is not slowed by ring strain the way it is at cyclohexyl",
+   "why": "ring size sets strain and the geometry of the attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (ring strain)"
+  },
+  {
+   "id": "I141",
+   "key": "sp3-ring6",
+   "name": "carbon in a six-membered ring",
+   "group": "sp3 carbon: ring",
+   "kind": "geometry",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;r6]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is in a ring of 6 atoms in the product",
+   "effect": "a six-membered ring carbon: SN2 at cyclohexyl is much slower than at cyclopentyl or at an open-chain secondary carbon; axial or equatorial position decides E2 (anti-periplanar H) and the face of attack",
+   "why": "ring size sets strain and the geometry of the attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (ring strain)"
+  },
+  {
+   "id": "I142",
+   "key": "sp3-methyl-at-O",
+   "name": "methyl carbon that now carries an oxygen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6]);$(C-[900O])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (no carbon substituent) is bonded to an oxygen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I143",
+   "key": "sp3-methyl-at-N",
+   "name": "methyl carbon that now carries a nitrogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6]);$(C-[900N])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (no carbon substituent) is bonded to a nitrogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I144",
+   "key": "sp3-methyl-at-S",
+   "name": "methyl carbon that now carries a sulfur",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6]);$(C-[900S])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (no carbon substituent) is bonded to a sulfur the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I145",
+   "key": "sp3-methyl-at-X",
+   "name": "methyl carbon that now carries a halogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6]);$(C-[900F,900Cl,900Br,900I])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (no carbon substituent) is bonded to a halogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I146",
+   "key": "sp3-methyl-at-M",
+   "name": "methyl carbon that now carries a boron, silicon or phosphorus",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6]);$(C-[900B,900Si,900P])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (no carbon substituent) is bonded to a boron, silicon or phosphorus the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I147",
+   "key": "sp3-methyl-at-C",
+   "name": "methyl carbon that now carries a carbon",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;!$(C-[#6;!900*]);$(C-[900C,900c])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (no carbon substituent besides the new bond) is bonded to a carbon the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I148",
+   "key": "sp3-primary-at-O",
+   "name": "primary carbon that now carries an oxygen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6]);!$(C(-[#6])-[#6]);$(C-[900O])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (one carbon substituent) is bonded to an oxygen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I149",
+   "key": "sp3-primary-at-N",
+   "name": "primary carbon that now carries a nitrogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6]);!$(C(-[#6])-[#6]);$(C-[900N])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (one carbon substituent) is bonded to a nitrogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I150",
+   "key": "sp3-primary-at-S",
+   "name": "primary carbon that now carries a sulfur",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6]);!$(C(-[#6])-[#6]);$(C-[900S])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (one carbon substituent) is bonded to a sulfur the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I151",
+   "key": "sp3-primary-at-X",
+   "name": "primary carbon that now carries a halogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6]);!$(C(-[#6])-[#6]);$(C-[900F,900Cl,900Br,900I])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (one carbon substituent) is bonded to a halogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I152",
+   "key": "sp3-primary-at-M",
+   "name": "primary carbon that now carries a boron, silicon or phosphorus",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6]);!$(C(-[#6])-[#6]);$(C-[900B,900Si,900P])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (one carbon substituent) is bonded to a boron, silicon or phosphorus the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I153",
+   "key": "sp3-primary-at-C",
+   "name": "primary carbon that now carries a carbon",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[#6;!900*]);!$(C(-[#6;!900*])-[#6;!900*]);$(C-[900C,900c])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (one carbon substituent besides the new bond) is bonded to a carbon the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I154",
+   "key": "sp3-secondary-at-O",
+   "name": "secondary carbon that now carries an oxygen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])-[#6]);!$(C(-[#6])(-[#6])-[#6]);$(C-[900O])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (two carbon substituents) is bonded to an oxygen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I155",
+   "key": "sp3-secondary-at-N",
+   "name": "secondary carbon that now carries a nitrogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])-[#6]);!$(C(-[#6])(-[#6])-[#6]);$(C-[900N])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (two carbon substituents) is bonded to a nitrogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I156",
+   "key": "sp3-secondary-at-S",
+   "name": "secondary carbon that now carries a sulfur",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])-[#6]);!$(C(-[#6])(-[#6])-[#6]);$(C-[900S])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (two carbon substituents) is bonded to a sulfur the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I157",
+   "key": "sp3-secondary-at-X",
+   "name": "secondary carbon that now carries a halogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])-[#6]);!$(C(-[#6])(-[#6])-[#6]);$(C-[900F,900Cl,900Br,900I])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (two carbon substituents) is bonded to a halogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I158",
+   "key": "sp3-secondary-at-M",
+   "name": "secondary carbon that now carries a boron, silicon or phosphorus",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])-[#6]);!$(C(-[#6])(-[#6])-[#6]);$(C-[900B,900Si,900P])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (two carbon substituents) is bonded to a boron, silicon or phosphorus the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I159",
+   "key": "sp3-secondary-at-C",
+   "name": "secondary carbon that now carries a carbon",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6;!900*])-[#6;!900*]);!$(C(-[#6;!900*])(-[#6;!900*])-[#6;!900*]);$(C-[900C,900c])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (two carbon substituents besides the new bond) is bonded to a carbon the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I160",
+   "key": "sp3-tertiary-at-O",
+   "name": "tertiary carbon that now carries an oxygen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])(-[#6])-[#6]);$(C-[900O])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (three carbon substituents) is bonded to an oxygen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I161",
+   "key": "sp3-tertiary-at-N",
+   "name": "tertiary carbon that now carries a nitrogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])(-[#6])-[#6]);$(C-[900N])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (three carbon substituents) is bonded to a nitrogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I162",
+   "key": "sp3-tertiary-at-S",
+   "name": "tertiary carbon that now carries a sulfur",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])(-[#6])-[#6]);$(C-[900S])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (three carbon substituents) is bonded to a sulfur the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I163",
+   "key": "sp3-tertiary-at-X",
+   "name": "tertiary carbon that now carries a halogen",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])(-[#6])-[#6]);$(C-[900F,900Cl,900Br,900I])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (three carbon substituents) is bonded to a halogen the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I164",
+   "key": "sp3-tertiary-at-M",
+   "name": "tertiary carbon that now carries a boron, silicon or phosphorus",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6])(-[#6])-[#6]);$(C-[900B,900Si,900P])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (three carbon substituents) is bonded to a boron, silicon or phosphorus the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I165",
+   "key": "sp3-tertiary-at-C",
+   "name": "tertiary carbon that now carries a carbon",
+   "group": "sp3 carbon: where the new group went",
+   "kind": "steric",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C(-[#6;!900*])(-[#6;!900*])-[#6;!900*]);$(C-[900C,900c])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon (three carbon substituents besides the new bond) is bonded to a carbon the reaction put there",
+   "effect": "regioselectivity of additions and ring openings: the new group goes to the more substituted carbon in cationic / SN1-like reactions (Markovnikov: hydration, hydrohalogenation, halohydrin, acid-catalysed epoxide opening), to the less substituted carbon in SN2-like, radical and hydroboration reactions (anti-Markovnikov: base-catalysed epoxide opening, hydroboration, radical HBr)",
+   "why": "the two ends of the old double bond (or ring) differ in how well they carry positive charge or how open they are to attack",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (alkene additions, epoxide opening)"
+  },
+  {
+   "id": "I166",
+   "key": "co-aryl",
+   "name": "aryl on the carbonyl carbon",
+   "group": "carbonyl carbon",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[c;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon (acyl substitution) is bonded to an aromatic ring",
+   "effect": "less electrophilic than an alkyl carbonyl (conjugation) and more hindered; ortho substituents twist it out of conjugation",
+   "why": "the ring donates into the C=O by resonance",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I167",
+   "key": "co-vinyl",
+   "name": "C=C on the carbonyl carbon (enone, acrylate)",
+   "group": "carbonyl carbon",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[C;X3;!$(C=O);!900*]=C)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is bonded to a C=C",
+   "effect": "hard nucleophiles add 1,2; soft nucleophiles add 1,4 at the β carbon instead",
+   "why": "conjugation spreads the electrophilicity to the β carbon",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I168",
+   "key": "co-alpha-branched",
+   "name": "α-branched carbonyl (CHR2 next to C=O)",
+   "group": "carbonyl carbon",
+   "kind": "hindrance",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[CX4;H1;!900*](-[#6])-[#6])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is bonded to a CH that carries two more carbons",
+   "effect": "additions and acyl substitutions slower; the α C–H is more easily epimerised",
+   "why": "the branch crowds the approach to the carbonyl",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I169",
+   "key": "co-alpha-quaternary",
+   "name": "α-quaternary carbonyl (CR3 next to C=O)",
+   "group": "carbonyl carbon",
+   "kind": "hindrance",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[CX4;H0;!900*](-[#6])-[#6])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is bonded to a carbon with no H and at least two further carbons (pivaloyl, Aib, α-hydroxyisobutyryl)",
+   "effect": "strongly hindered: additions and hydrolysis are slow (pivalates survive conditions that cleave acetates); no α C–H, so no enolisation",
+   "why": "the tert-alkyl group shields the carbonyl carbon",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Taft Es t-Bu −1.54"
+  },
+  {
+   "id": "I170",
+   "key": "co-alpha-hetero",
+   "name": "α-heteroatom (halogen, O, N) on the carbon next to the carbonyl",
+   "group": "carbonyl carbon",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[CX4;$(C-[F,Cl,Br,I,O,N]);!$(C(F)(F)F);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the carbon next to the retained carbonyl carbon carries a halogen, O or N (a CF3 has its own row)",
+   "effect": "α-halo carbonyls are more electrophilic at C=O and far more reactive in SN2; α-alkoxy / α-amino groups chelate Lewis acids (chelation-controlled addition)",
+   "why": "induction withdraws electron density; the heteroatom can bind the metal",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I171",
+   "key": "co-alpha-CF3",
+   "name": "CF3 on the carbonyl carbon",
+   "group": "carbonyl carbon",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[C;!900*](F)(F)F)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is bonded to a CF3 it already had (trifluoromethyl ketone, trifluoroacetamide)",
+   "effect": "much more electrophilic: hydrates readily and adds nucleophiles without catalysts; trifluoroacetamides are cleaved easily",
+   "why": "the CF3 withdraws strongly (Taft σ* +2.61)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft; Taft σ* values"
+  },
+  {
+   "id": "I172",
+   "key": "co-two-hetero",
+   "name": "two heteroatoms on the carbonyl carbon (carbamate, urea, carbonate)",
+   "group": "carbonyl carbon",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=O);$(C(-[O,N])-[O,N])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon carries two O/N substituents",
+   "effect": "poorly electrophilic: carbamates and ureas survive conditions that cleave amides and esters",
+   "why": "two lone pairs donate into the C=O",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I173",
+   "key": "co-heteroaryl",
+   "name": "azinyl on the carbonyl carbon",
+   "group": "carbonyl carbon",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[c;$(c:[nX2]);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is bonded to a ring carbon next to a pyridine-type ring N (picolinoyl-type; pyrrole-type N–H / N–R do not count)",
+   "effect": "more electrophilic than a phenyl carbonyl; the ring N chelates metals and directs",
+   "why": "the azine is electron-poor and can bind",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I174",
+   "key": "co-ring4",
+   "name": "carbonyl in a 4-membered ring",
+   "group": "carbonyl carbon",
+   "kind": "geometry",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);r4]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is in a ring of 4 atoms (lactam, lactone, cyclic ketone)",
+   "effect": "strained ring carbonyl: β-lactams and cyclobutanones are very reactive to nucleophiles",
+   "why": "ring size sets strain and the face that is attacked",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I175",
+   "key": "co-ring5",
+   "name": "carbonyl in a 5-membered ring",
+   "group": "carbonyl carbon",
+   "kind": "geometry",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);r5]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is in a ring of 5 atoms (lactam, lactone, cyclic ketone)",
+   "effect": "γ-lactones and γ-lactams are the least strained and the most stable lactones and lactams; cyclopentanone adds nucleophiles more slowly than cyclohexanone (adding to the C=O increases eclipsing in the five-membered ring)",
+   "why": "ring size sets strain and the face that is attacked",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I176",
+   "key": "co-ring6",
+   "name": "carbonyl in a 6-membered ring",
+   "group": "carbonyl carbon",
+   "kind": "geometry",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);r6]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the retained carbonyl carbon is in a ring of 6 atoms (lactam, lactone, cyclic ketone)",
+   "effect": "δ-valerolactone is strained and opens faster than γ-butyrolactone; cyclohexanone adds nucleophiles faster than cyclopentanone and acyclic ketones (the sp2 → sp3 change relieves torsional strain); axial or equatorial attack decides the diastereomer",
+   "why": "ring size sets strain and the face that is attacked",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I177",
+   "key": "n-aryl",
+   "name": "nitrogen on an aromatic ring",
+   "group": "nitrogen",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[c;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen was bonded to an aromatic carbon (aniline, N-aryl amide)",
+   "effect": "a weaker nucleophile and base than an alkylamine (the lone pair is delocalised into the ring: aniline pKaH 4.6 against 10.6), but a stronger acid; in acylation it reacts after the alkylamine and before an alcohol",
+   "why": "conjugation of the lone pair with the ring",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Reactivity_Order: amine > aniline > alcohol > phenol for acylation"
+  },
+  {
+   "id": "I178",
+   "key": "n-heteroaryl",
+   "name": "nitrogen on an azine carbon",
+   "group": "nitrogen",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[c;$(c:[nX2]);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen was bonded to a ring carbon next to a pyridine-type ring N (2-aminopyridine, 2-aminopyrimidine, 2-aminothiazole)",
+   "effect": "a much weaker nucleophile at the exocyclic N (amidine-like delocalisation); alkylation tends to go on the ring N instead",
+   "why": "the lone pair is shared with the C=N of the ring",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I179",
+   "key": "n-alpha-branched",
+   "name": "nitrogen on a branched carbon",
+   "group": "nitrogen",
+   "kind": "hindrance",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[CX4;D3,D4;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen was bonded to a CH or quaternary carbon (isopropyl, tert-butyl)",
+   "effect": "slower acylation, alkylation and coupling; tert-alkyl amines and alcohols are poor nucleophiles; the less hindered nucleophile of the molecule reacts first",
+   "why": "the branch crowds the lone pair",
+   "sigma": null,
+   "source": "Taft steric constants Es: i-Pr −0.47, t-Bu −1.54"
+  },
+  {
+   "id": "I180",
+   "key": "n-benzylic",
+   "name": "nitrogen on a benzylic carbon",
+   "group": "nitrogen",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[CX4;$(C-c);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen was bonded to a CH2 or CH attached to an aromatic ring",
+   "effect": "an ordinary nucleophile; the benzylic C–N bond is cleaved by hydrogenolysis (protecting group) and by acid for electron-rich rings",
+   "why": "the ring stabilises the benzylic cation and radical",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I181",
+   "key": "n-alpha-ewg",
+   "name": "nitrogen next to an electron-withdrawing carbon",
+   "group": "nitrogen",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[CX4;$(C-[$(C(F)(F)F),$(C#N),$(C=O)]);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen was bonded to a carbon that carries CF3, CN or C=O",
+   "effect": "weaker nucleophile and base (2,2,2-trifluoroethylamine pKaH 5.7 against 10.7 for ethylamine) and stronger acid (CF3CH2OH pKa 12.4 against 15.9 for ethanol)",
+   "why": "the withdrawing group pulls on the lone pair",
+   "sigma": null,
+   "source": "Taft σ*; Evans pKa table"
+  },
+  {
+   "id": "I182",
+   "key": "n-in-ring",
+   "name": "nitrogen in a ring",
+   "group": "nitrogen",
+   "kind": "steric",
+   "anchor": "nitrogen",
+   "smarts": "[N;R]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen is part of a ring (piperidine, pyrrolidine, morpholine, lactam)",
+   "effect": "ring amines are more nucleophilic than acyclic ones of the same basicity (the alkyl groups are tied back)",
+   "why": "the substituents are held away from the lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I183",
+   "key": "n-ring-small",
+   "name": "nitrogen in a three- or four-membered ring",
+   "group": "nitrogen",
+   "kind": "geometry",
+   "anchor": "nitrogen",
+   "smarts": "[N;r3,r4]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen is in an epoxide / aziridine / oxetane / azetidine ring in the product",
+   "effect": "a strained ring was formed or kept: forming it needs a reactive pair (intramolecular SN2, peracid, nitrene); the ring opens easily under acid or with nucleophiles",
+   "why": "ring strain of about 26 kcal/mol",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (ring strain)"
+  },
+  {
+   "id": "I184",
+   "key": "n-ring-medium",
+   "name": "nitrogen in a seven- to nine-membered ring",
+   "group": "nitrogen",
+   "kind": "geometry",
+   "anchor": "nitrogen",
+   "smarts": "[N;r7,r8,r9]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen is in a ring of seven to nine atoms in the product",
+   "effect": "medium rings close slowly (entropy and transannular strain): seven- to nine-membered lactams and ethers need high dilution or templates",
+   "why": "transannular strain and a low effective molarity",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I262",
+   "key": "n-ring-macro",
+   "name": "nitrogen in a macrocycle",
+   "group": "nitrogen",
+   "kind": "geometry",
+   "anchor": "nitrogen",
+   "smarts": "[N;R;!r3;!r4;!r5;!r6;!r7;!r8;!r9]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen is in a ring of ten or more atoms in the product (macrolactamisation, macrolactonisation, ring-closing)",
+   "effect": "macrocycle closures need high dilution (0.001–0.01 M), slow addition or a template; competing oligomerisation is the usual failure",
+   "why": "entropy of ring closure against intermolecular reaction",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I185",
+   "key": "o-aryl",
+   "name": "oxygen on an aromatic ring",
+   "group": "oxygen",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[c;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen was bonded to an aromatic carbon (phenol, aryl ether)",
+   "effect": "a weaker nucleophile than an alcohol but a much stronger acid (phenol pKa 10 against 16 for an alcohol): easily deprotonated, so alkylation with a mild base goes at a phenol before an alcohol; in acylation it reacts after an alcohol",
+   "why": "conjugation of the lone pair with the ring",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Reactivity_Order: amine > aniline > alcohol > phenol for acylation"
+  },
+  {
+   "id": "I186",
+   "key": "o-heteroaryl",
+   "name": "oxygen on an azine carbon",
+   "group": "oxygen",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[c;$(c:[nX2]);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen was bonded to a ring carbon next to a pyridine-type ring N (2-alkoxypyridine, 2-aryloxypyridine)",
+   "effect": "a poorer donor than an alkoxy on benzene (the lone pair is shared with the C=N of the ring); the C–O bond is cleaved by acid, giving the pyridone",
+   "why": "the lone pair is shared with the C=N of the ring",
+   "sigma": null,
+   "source": "Joule & Mills, Heterocyclic Chemistry"
+  },
+  {
+   "id": "I187",
+   "key": "o-alpha-branched",
+   "name": "oxygen on a branched carbon",
+   "group": "oxygen",
+   "kind": "hindrance",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[CX4;D3,D4;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen was bonded to a CH or quaternary carbon (isopropyl, tert-butyl)",
+   "effect": "slower acylation, alkylation and coupling; tert-alkyl amines and alcohols are poor nucleophiles; the less hindered nucleophile of the molecule reacts first",
+   "why": "the branch crowds the lone pair",
+   "sigma": null,
+   "source": "Taft steric constants Es: i-Pr −0.47, t-Bu −1.54"
+  },
+  {
+   "id": "I188",
+   "key": "o-benzylic",
+   "name": "oxygen on a benzylic carbon",
+   "group": "oxygen",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[CX4;$(C-c);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen was bonded to a CH2 or CH attached to an aromatic ring",
+   "effect": "an ordinary nucleophile; the benzylic C–O bond is cleaved by hydrogenolysis (protecting group) and by acid for electron-rich rings",
+   "why": "the ring stabilises the benzylic cation and radical",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I189",
+   "key": "o-alpha-ewg",
+   "name": "oxygen next to an electron-withdrawing carbon",
+   "group": "oxygen",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[CX4;$(C-[$(C(F)(F)F),$(C#N),$(C=O)]);!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen was bonded to a carbon that carries CF3, CN or C=O",
+   "effect": "weaker nucleophile and base (2,2,2-trifluoroethylamine pKaH 5.7 against 10.7 for ethylamine) and stronger acid (CF3CH2OH pKa 12.4 against 15.9 for ethanol)",
+   "why": "the withdrawing group pulls on the lone pair",
+   "sigma": null,
+   "source": "Taft σ*; Evans pKa table"
+  },
+  {
+   "id": "I190",
+   "key": "o-in-ring",
+   "name": "oxygen in a ring",
+   "group": "oxygen",
+   "kind": "steric",
+   "anchor": "oxygen",
+   "smarts": "[O;R]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen is part of a ring (THF, THP, dioxane, lactone, cyclic ether)",
+   "effect": "ring ethers are better donors than acyclic ones (the alkyl groups are tied back) and open under acid",
+   "why": "the substituents are held away from the lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I191",
+   "key": "o-ring-small",
+   "name": "oxygen in a three- or four-membered ring",
+   "group": "oxygen",
+   "kind": "geometry",
+   "anchor": "oxygen",
+   "smarts": "[O;r3,r4]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen is in an epoxide / aziridine / oxetane / azetidine ring in the product",
+   "effect": "a strained ring was formed or kept: forming it needs a reactive pair (intramolecular SN2, peracid, nitrene); the ring opens easily under acid or with nucleophiles",
+   "why": "ring strain of about 26 kcal/mol",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (ring strain)"
+  },
+  {
+   "id": "I192",
+   "key": "o-ring-medium",
+   "name": "oxygen in a seven- to nine-membered ring",
+   "group": "oxygen",
+   "kind": "geometry",
+   "anchor": "oxygen",
+   "smarts": "[O;r7,r8,r9]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen is in a ring of seven to nine atoms in the product",
+   "effect": "medium rings close slowly (entropy and transannular strain): seven- to nine-membered lactams and ethers need high dilution or templates",
+   "why": "transannular strain and a low effective molarity",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I263",
+   "key": "o-ring-macro",
+   "name": "oxygen in a macrocycle",
+   "group": "oxygen",
+   "kind": "geometry",
+   "anchor": "oxygen",
+   "smarts": "[O;R;!r3;!r4;!r5;!r6;!r7;!r8;!r9]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen is in a ring of ten or more atoms in the product (macrolactamisation, macrolactonisation, ring-closing)",
+   "effect": "macrocycle closures need high dilution (0.001–0.01 M), slow addition or a template; competing oligomerisation is the usual failure",
+   "why": "entropy of ring closure against intermolecular reaction",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I193",
+   "key": "n-acyl-origin",
+   "name": "nitrogen that was an amide / carbamate / sulfonamide N",
+   "group": "nitrogen",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;X3;$(N-[C,S;X3,X4;!900*]=[O,S])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N was bonded to a C=O, C=S or S=O (amide, carbamate, sulfonamide, imide)",
+   "effect": "a poor nucleophile (lone pair delocalised) but an acid: reacts after deprotonation (NaH, Cs2CO3) or under Mitsunobu / Buchwald / Chan–Lam conditions",
+   "why": "the lone pair is shared with the carbonyl or sulfonyl group",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I194",
+   "key": "n-adjacent-hetero",
+   "name": "nitrogen next to another heteroatom (hydrazine, hydroxylamine)",
+   "group": "nitrogen",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;X3;$(N-[N,O,n;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N is bonded to another N or O (α-effect nucleophile)",
+   "effect": "more nucleophilic than its pKaH suggests (the α-effect): hydrazines and hydroxylamines react at the terminal N",
+   "why": "repulsion between adjacent lone pairs raises the HOMO",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I195",
+   "key": "n-primary-origin",
+   "name": "nitrogen with one carbon substituent (primary amine before)",
+   "group": "nitrogen",
+   "kind": "steric",
+   "anchor": "nitrogen",
+   "smarts": "[N;X3;$(N-[#6;!900*]);!$(N(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N had one carbon substituent (primary amine)",
+   "effect": "the least hindered amine: acylation, alkylation and reductive amination are fastest; over-alkylation is the usual problem",
+   "why": "two N–H bonds: little steric hindrance",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I196",
+   "key": "n-secondary-origin",
+   "name": "nitrogen with two carbon substituents (secondary amine before)",
+   "group": "nitrogen",
+   "kind": "steric",
+   "anchor": "nitrogen",
+   "smarts": "[N;X3;$(N(-[#6;!900*])-[#6;!900*]);!$(N(-[#6;!900*])(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N had two carbon substituents (secondary amine)",
+   "effect": "more nucleophilic than primary (more electron-rich) but more hindered: acylates well, alkylates cleanly once",
+   "why": "two alkyl groups push electrons in but add bulk",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I197",
+   "key": "n-tertiary-origin",
+   "name": "nitrogen with three carbon substituents (tertiary amine before)",
+   "group": "nitrogen",
+   "kind": "steric",
+   "anchor": "nitrogen",
+   "smarts": "[N;X3,X4;$(N(-[#6;!900*])(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting N had three carbon substituents (tertiary amine)",
+   "effect": "a base and nucleophilic catalyst; quaternises with alkyl halides; hindered tertiary amines (DIPEA) only deprotonate",
+   "why": "three alkyl groups: strongest base, most hindered",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I198",
+   "key": "o-primary-origin",
+   "name": "oxygen on a primary carbinol carbon (R–CH2–O or CH3–O)",
+   "group": "oxygen",
+   "kind": "steric",
+   "anchor": "oxygen",
+   "smarts": "[O;X2;$(O-[CX4;H2,H3;!900*]);!$(O(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting O is bonded to a CH2 or CH3 and to nothing but the new bond (a primary alcohol or methanol before; ethers are excluded)",
+   "effect": "esterifies, oxidises, substitutes and alkylates faster at a primary carbinol than at a secondary or tertiary one",
+   "why": "primary alcohols are the least hindered",
+   "sigma": null,
+   "source": "Reactivity_Order: esterification, oxidation, substitution"
+  },
+  {
+   "id": "I199",
+   "key": "s-aryl",
+   "name": "sulfur on an aromatic ring",
+   "group": "sulfur",
+   "kind": "electronic",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-[c;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting S was bonded to an aromatic carbon (thiophenol, aryl sulfide)",
+   "effect": "arylthiolates (thiophenol pKa 6.6) are weaker bases than alkylthiolates (pKa about 10.5) and still soft nucleophiles: they do SNAr and Pd / Cu couplings; aryl sulfides oxidise more slowly",
+   "why": "conjugation of the S lone pair with the ring",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I200",
+   "key": "s-alkyl",
+   "name": "sulfur on an alkyl carbon",
+   "group": "sulfur",
+   "kind": "electronic",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-[CX4;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting S was bonded to an sp3 carbon (thiol, dialkyl sulfide)",
+   "effect": "soft and strongly nucleophilic: alkylates, adds to Michael acceptors, oxidises to sulfoxide and sulfone",
+   "why": "a large polarisable lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I201",
+   "key": "n-aryl-ortho2",
+   "name": "nitrogen on an aromatic ring with two ortho substituents",
+   "group": "nitrogen",
+   "kind": "hindrance",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-c(:c-[!#1;!900*]):c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting nitrogen was bonded to a ring carbon whose both neighbours carry substituents (2,6-disubstituted aniline, phenol or thiophenol)",
+   "effect": "strongly hindered: acylation, alkylation and coupling are slow (2,6-dimethylaniline acylates far more slowly than aniline; Buchwald needs bulky ligands)",
+   "why": "the two ortho groups flank the lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I202",
+   "key": "o-aryl-ortho2",
+   "name": "oxygen on an aromatic ring with two ortho substituents",
+   "group": "oxygen",
+   "kind": "hindrance",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-c(:c-[!#1;!900*]):c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting oxygen was bonded to a ring carbon whose both neighbours carry substituents (2,6-disubstituted aniline, phenol or thiophenol)",
+   "effect": "strongly hindered: acylation, alkylation and coupling are slow (2,6-dimethylaniline acylates far more slowly than aniline; Buchwald needs bulky ligands)",
+   "why": "the two ortho groups flank the lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I203",
+   "key": "s-aryl-ortho2",
+   "name": "sulfur on an aromatic ring with two ortho substituents",
+   "group": "sulfur",
+   "kind": "hindrance",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-c(:c-[!#1;!900*]):c-[!#1;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting sulfur was bonded to a ring carbon whose both neighbours carry substituents (2,6-disubstituted aniline, phenol or thiophenol)",
+   "effect": "strongly hindered: acylation, alkylation and coupling are slow (2,6-dimethylaniline acylates far more slowly than aniline; Buchwald needs bulky ligands)",
+   "why": "the two ortho groups flank the lone pair",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I204",
+   "key": "n-aryl-p-ewg",
+   "name": "nitrogen on an aryl ring with a para electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[c;!900*]1:a:a:c(-[N+;!900*](=O)[O-]):a:a:1),$(N-[c;!900*]1:a:a:c(-[C;!900*]#N):a:a:1),$(N-[c;!900*]1:a:a:c(-[C;!900*](F)(F)F):a:a:1),$(N-[c;!900*]1:a:a:c(-[SX4;!900*](=O)=O):a:a:1),$(N-[c;!900*]1:a:a:c(-[CH1;!900*]=O):a:a:1),$(N-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[#6]):a:a:1),$(N-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[OX2]):a:a:1),$(N-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[NX3]):a:a:1),$(N-[c;!900*]1:a:a:c(-[OX2;!900*]C(F)(F)F):a:a:1),$(N-[c;!900*]1:a:a:c(-[OX2;!900*][SX4](=O)=O):a:a:1),$(N-[c;!900*]1:a:a:c(-[OX2;!900*]C(=O)):a:a:1),$(N-[c;!900*]1:a:a:c(-[NX4+;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "weaker nucleophile and base (p-nitroaniline pKaH 1.0 against 4.6 for aniline) and stronger acid: reacts after the more electron-rich amine of the molecule; needs a stronger base or a more reactive electrophile",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I205",
+   "key": "n-aryl-o-ewg",
+   "name": "nitrogen on an aryl ring with a ortho electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[c;!900*]:c-[N+;!900*](=O)[O-]),$(N-[c;!900*]:c-[C;!900*]#N),$(N-[c;!900*]:c-[C;!900*](F)(F)F),$(N-[c;!900*]:c-[SX4;!900*](=O)=O),$(N-[c;!900*]:c-[CH1;!900*]=O),$(N-[c;!900*]:c-[CX3;!900*](=O)[#6]),$(N-[c;!900*]:c-[CX3;!900*](=O)[OX2]),$(N-[c;!900*]:c-[CX3;!900*](=O)[NX3]),$(N-[c;!900*]:c-[OX2;!900*]C(F)(F)F),$(N-[c;!900*]:c-[OX2;!900*][SX4](=O)=O),$(N-[c;!900*]:c-[OX2;!900*]C(=O)),$(N-[c;!900*]:c-[NX4+;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "a far weaker nucleophile and base (o-nitroaniline pKaH −0.3 against 4.6 for aniline; the nitro group also hydrogen-bonds to the N–H and crowds it): needs a stronger base or a more reactive electrophile; reacts after other amines",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I206",
+   "key": "n-aryl-p-edg",
+   "name": "nitrogen on an aryl ring with a para electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[c;!900*]1:a:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:1),$(N-[c;!900*]1:a:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:1),$(N-[c;!900*]1:a:a:c(-[OX2H1;!900*]):a:a:1),$(N-[c;!900*]1:a:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:1),$(N-[c;!900*]1:a:a:c(-[CH3;!900*]):a:a:1),$(N-[c;!900*]1:a:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:1),$(N-[c;!900*]1:a:a:c(-[OX1-;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "stronger nucleophile and base (p-anisidine pKaH 5.3, p-toluidine 5.1 against 4.6 for aniline): reacts before less electron-rich anilines",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I207",
+   "key": "n-aryl-o-edg",
+   "name": "nitrogen on an aryl ring with a ortho electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "nitrogen",
+   "smarts": "[N;$(N-[c;!900*]:c-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]),$(N-[c;!900*]:c-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]),$(N-[c;!900*]:c-[OX2H1;!900*]),$(N-[c;!900*]:c-[OX2;!900*][CX4;!$(C(F)(F)F)]),$(N-[c;!900*]:c-[CH3;!900*]),$(N-[c;!900*]:c-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]),$(N-[c;!900*]:c-[OX1-;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "about as basic as aniline (o-toluidine pKaH 4.4, o-anisidine 4.5 against 4.6) and more hindered: the ortho group crowds the N and twists it out of conjugation, so acylation and coupling are slower than for the para isomer",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I208",
+   "key": "o-aryl-p-ewg",
+   "name": "oxygen on an aryl ring with a para electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[c;!900*]1:a:a:c(-[N+;!900*](=O)[O-]):a:a:1),$(O-[c;!900*]1:a:a:c(-[C;!900*]#N):a:a:1),$(O-[c;!900*]1:a:a:c(-[C;!900*](F)(F)F):a:a:1),$(O-[c;!900*]1:a:a:c(-[SX4;!900*](=O)=O):a:a:1),$(O-[c;!900*]1:a:a:c(-[CH1;!900*]=O):a:a:1),$(O-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[#6]):a:a:1),$(O-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[OX2]):a:a:1),$(O-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[NX3]):a:a:1),$(O-[c;!900*]1:a:a:c(-[OX2;!900*]C(F)(F)F):a:a:1),$(O-[c;!900*]1:a:a:c(-[OX2;!900*][SX4](=O)=O):a:a:1),$(O-[c;!900*]1:a:a:c(-[OX2;!900*]C(=O)):a:a:1),$(O-[c;!900*]1:a:a:c(-[NX4+;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "a weaker nucleophile and a stronger acid (p-nitrophenol pKa 7.2 against 10.0 for phenol): easily deprotonated (K2CO3 is enough) but a poorer nucleophile; a better leaving group",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I209",
+   "key": "o-aryl-o-ewg",
+   "name": "oxygen on an aryl ring with a ortho electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[c;!900*]:c-[N+;!900*](=O)[O-]),$(O-[c;!900*]:c-[C;!900*]#N),$(O-[c;!900*]:c-[C;!900*](F)(F)F),$(O-[c;!900*]:c-[SX4;!900*](=O)=O),$(O-[c;!900*]:c-[CH1;!900*]=O),$(O-[c;!900*]:c-[CX3;!900*](=O)[#6]),$(O-[c;!900*]:c-[CX3;!900*](=O)[OX2]),$(O-[c;!900*]:c-[CX3;!900*](=O)[NX3]),$(O-[c;!900*]:c-[OX2;!900*]C(F)(F)F),$(O-[c;!900*]:c-[OX2;!900*][SX4](=O)=O),$(O-[c;!900*]:c-[OX2;!900*]C(=O)),$(O-[c;!900*]:c-[NX4+;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "a stronger acid and a weaker nucleophile (o-nitrophenol pKa 7.2 against 10.0 for phenol; the nitro group hydrogen-bonds to the O–H and crowds the O)",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I210",
+   "key": "o-aryl-p-edg",
+   "name": "oxygen on an aryl ring with a para electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[c;!900*]1:a:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:1),$(O-[c;!900*]1:a:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:1),$(O-[c;!900*]1:a:a:c(-[OX2H1;!900*]):a:a:1),$(O-[c;!900*]1:a:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:1),$(O-[c;!900*]1:a:a:c(-[CH3;!900*]):a:a:1),$(O-[c;!900*]1:a:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:1),$(O-[c;!900*]1:a:a:c(-[OX1-;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "a more nucleophilic, less acidic phenol (p-methoxyphenol pKa 10.2)",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I211",
+   "key": "o-aryl-o-edg",
+   "name": "oxygen on an aryl ring with a ortho electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "oxygen",
+   "smarts": "[O;$(O-[c;!900*]:c-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]),$(O-[c;!900*]:c-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]),$(O-[c;!900*]:c-[OX2H1;!900*]),$(O-[c;!900*]:c-[OX2;!900*][CX4;!$(C(F)(F)F)]),$(O-[c;!900*]:c-[CH3;!900*]),$(O-[c;!900*]:c-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]),$(O-[c;!900*]:c-[OX1-;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "about as acidic as phenol (o-cresol pKa 10.3, guaiacol 10.0) and more hindered; an ortho alkoxy group can chelate a metal or a Lewis acid",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I212",
+   "key": "s-aryl-p-ewg",
+   "name": "sulfur on an aryl ring with a para electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-[c;!900*]1:a:a:c(-[N+;!900*](=O)[O-]):a:a:1),$(S-[c;!900*]1:a:a:c(-[C;!900*]#N):a:a:1),$(S-[c;!900*]1:a:a:c(-[C;!900*](F)(F)F):a:a:1),$(S-[c;!900*]1:a:a:c(-[SX4;!900*](=O)=O):a:a:1),$(S-[c;!900*]1:a:a:c(-[CH1;!900*]=O):a:a:1),$(S-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[#6]):a:a:1),$(S-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[OX2]):a:a:1),$(S-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[NX3]):a:a:1),$(S-[c;!900*]1:a:a:c(-[OX2;!900*]C(F)(F)F):a:a:1),$(S-[c;!900*]1:a:a:c(-[OX2;!900*][SX4](=O)=O):a:a:1),$(S-[c;!900*]1:a:a:c(-[OX2;!900*]C(=O)):a:a:1),$(S-[c;!900*]1:a:a:c(-[NX4+;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "a weaker, less basic thiolate nucleophile; stronger acid",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I213",
+   "key": "s-aryl-o-ewg",
+   "name": "sulfur on an aryl ring with a ortho electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-[c;!900*]:c-[N+;!900*](=O)[O-]),$(S-[c;!900*]:c-[C;!900*]#N),$(S-[c;!900*]:c-[C;!900*](F)(F)F),$(S-[c;!900*]:c-[SX4;!900*](=O)=O),$(S-[c;!900*]:c-[CH1;!900*]=O),$(S-[c;!900*]:c-[CX3;!900*](=O)[#6]),$(S-[c;!900*]:c-[CX3;!900*](=O)[OX2]),$(S-[c;!900*]:c-[CX3;!900*](=O)[NX3]),$(S-[c;!900*]:c-[OX2;!900*]C(F)(F)F),$(S-[c;!900*]:c-[OX2;!900*][SX4](=O)=O),$(S-[c;!900*]:c-[OX2;!900*]C(=O)),$(S-[c;!900*]:c-[NX4+;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "a weaker, less basic thiolate nucleophile and a stronger acid; the ortho group also crowds the S",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I214",
+   "key": "s-aryl-p-edg",
+   "name": "sulfur on an aryl ring with a para electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-[c;!900*]1:a:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:1),$(S-[c;!900*]1:a:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:1),$(S-[c;!900*]1:a:a:c(-[OX2H1;!900*]):a:a:1),$(S-[c;!900*]1:a:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:1),$(S-[c;!900*]1:a:a:c(-[CH3;!900*]):a:a:1),$(S-[c;!900*]1:a:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:1),$(S-[c;!900*]1:a:a:c(-[OX1-;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "a more basic, more nucleophilic thiolate",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I215",
+   "key": "s-aryl-o-edg",
+   "name": "sulfur on an aryl ring with a ortho electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sulfur",
+   "smarts": "[S;$(S-[c;!900*]:c-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]),$(S-[c;!900*]:c-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]),$(S-[c;!900*]:c-[OX2H1;!900*]),$(S-[c;!900*]:c-[OX2;!900*][CX4;!$(C(F)(F)F)]),$(S-[c;!900*]:c-[CH3;!900*]),$(S-[c;!900*]:c-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]),$(S-[c;!900*]:c-[OX1-;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "a thiolate about as nucleophilic as thiophenolate, more hindered by the ortho group",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I216",
+   "key": "co-aryl-p-ewg",
+   "name": "the retained carbonyl carbon on an aryl ring with a para electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[c;!900*]1:a:a:c(-[N+;!900*](=O)[O-]):a:a:1),$(C-[c;!900*]1:a:a:c(-[C;!900*]#N):a:a:1),$(C-[c;!900*]1:a:a:c(-[C;!900*](F)(F)F):a:a:1),$(C-[c;!900*]1:a:a:c(-[SX4;!900*](=O)=O):a:a:1),$(C-[c;!900*]1:a:a:c(-[CH1;!900*]=O):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[#6]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[OX2]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[NX3]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*]C(F)(F)F):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*][SX4](=O)=O):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*]C(=O)):a:a:1),$(C-[c;!900*]1:a:a:c(-[NX4+;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "more electrophilic carbonyl: acyl substitution and addition are faster (p-nitrobenzoyl chloride reacts much faster than benzoyl chloride)",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I217",
+   "key": "co-aryl-o-ewg",
+   "name": "the retained carbonyl carbon on an aryl ring with a ortho electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[c;!900*]:c-[N+;!900*](=O)[O-]),$(C-[c;!900*]:c-[C;!900*]#N),$(C-[c;!900*]:c-[C;!900*](F)(F)F),$(C-[c;!900*]:c-[SX4;!900*](=O)=O),$(C-[c;!900*]:c-[CH1;!900*]=O),$(C-[c;!900*]:c-[CX3;!900*](=O)[#6]),$(C-[c;!900*]:c-[CX3;!900*](=O)[OX2]),$(C-[c;!900*]:c-[CX3;!900*](=O)[NX3]),$(C-[c;!900*]:c-[OX2;!900*]C(F)(F)F),$(C-[c;!900*]:c-[OX2;!900*][SX4](=O)=O),$(C-[c;!900*]:c-[OX2;!900*]C(=O)),$(C-[c;!900*]:c-[NX4+;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "more electrophilic carbonyl: acyl substitution and addition are faster (p-nitrobenzoyl chloride reacts much faster than benzoyl chloride) An ortho group also crowds the atom.",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I218",
+   "key": "co-aryl-p-edg",
+   "name": "the retained carbonyl carbon on an aryl ring with a para electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[c;!900*]1:a:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:1),$(C-[c;!900*]1:a:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2H1;!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CH3;!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX1-;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "less electrophilic carbonyl (the ring donates into the C=O): slower acyl substitution and addition",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I219",
+   "key": "co-aryl-o-edg",
+   "name": "the retained carbonyl carbon on an aryl ring with a ortho electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "carbonyl C",
+   "smarts": "[C;X3;$(C=[O,N,S]);$(C-[c;!900*]:c-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]),$(C-[c;!900*]:c-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]),$(C-[c;!900*]:c-[OX2H1;!900*]),$(C-[c;!900*]:c-[OX2;!900*][CX4;!$(C(F)(F)F)]),$(C-[c;!900*]:c-[CH3;!900*]),$(C-[c;!900*]:c-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]),$(C-[c;!900*]:c-[OX1-;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "less electrophilic carbonyl (the ring donates into the C=O): slower acyl substitution and addition An ortho group also crowds the atom.",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I220",
+   "key": "bz-aryl-p-ewg",
+   "name": "the reacting sp3 carbon on an aryl ring with a para electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[c;!900*]1:a:a:c(-[N+;!900*](=O)[O-]):a:a:1),$(C-[c;!900*]1:a:a:c(-[C;!900*]#N):a:a:1),$(C-[c;!900*]1:a:a:c(-[C;!900*](F)(F)F):a:a:1),$(C-[c;!900*]1:a:a:c(-[SX4;!900*](=O)=O):a:a:1),$(C-[c;!900*]1:a:a:c(-[CH1;!900*]=O):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[#6]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[OX2]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX3;!900*](=O)[NX3]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*]C(F)(F)F):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*][SX4](=O)=O):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*]C(=O)):a:a:1),$(C-[c;!900*]1:a:a:c(-[NX4+;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "SN2 slightly faster, SN1 much slower (the benzylic cation is destabilised)",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I221",
+   "key": "bz-aryl-o-ewg",
+   "name": "the reacting sp3 carbon on an aryl ring with a ortho electron-withdrawing group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[c;!900*]:c-[N+;!900*](=O)[O-]),$(C-[c;!900*]:c-[C;!900*]#N),$(C-[c;!900*]:c-[C;!900*](F)(F)F),$(C-[c;!900*]:c-[SX4;!900*](=O)=O),$(C-[c;!900*]:c-[CH1;!900*]=O),$(C-[c;!900*]:c-[CX3;!900*](=O)[#6]),$(C-[c;!900*]:c-[CX3;!900*](=O)[OX2]),$(C-[c;!900*]:c-[CX3;!900*](=O)[NX3]),$(C-[c;!900*]:c-[OX2;!900*]C(F)(F)F),$(C-[c;!900*]:c-[OX2;!900*][SX4](=O)=O),$(C-[c;!900*]:c-[OX2;!900*]C(=O)),$(C-[c;!900*]:c-[NX4+;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries nitro, cyano, CF3, a carbonyl, a sulfonyl, an ammonium, an acyloxy, OCF3 or a sulfonyloxy group",
+   "effect": "SN2 slightly faster, SN1 much slower (the benzylic cation is destabilised) An ortho group also crowds the atom.",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I222",
+   "key": "bz-aryl-p-edg",
+   "name": "the reacting sp3 carbon on an aryl ring with a para electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[c;!900*]1:a:a:c(-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]):a:a:1),$(C-[c;!900*]1:a:a:c(-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2H1;!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX2;!900*][CX4;!$(C(F)(F)F)]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CH3;!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]):a:a:1),$(C-[c;!900*]1:a:a:c(-[OX1-;!900*]):a:a:1)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose para position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "SN1 far faster (p-methoxybenzyl chloride solvolyses orders of magnitude faster than benzyl chloride: the PMB group is acid-labile); SN2 about as for benzyl",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I223",
+   "key": "bz-aryl-o-edg",
+   "name": "the reacting sp3 carbon on an aryl ring with a ortho electron-donating group",
+   "group": "aryl ring on the reacting atom",
+   "kind": "electronic",
+   "anchor": "sp3 C",
+   "smarts": "[C;X4;$(C-[c;!900*]:c-[NX3;H0;+0;!$(N-C=O);!$(N-S=O);!$(N(-c)-c);!900*]([#6])[#6]),$(C-[c;!900*]:c-[NX3;H2,H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8]);!900*]),$(C-[c;!900*]:c-[OX2H1;!900*]),$(C-[c;!900*]:c-[OX2;!900*][CX4;!$(C(F)(F)F)]),$(C-[c;!900*]:c-[CH3;!900*]),$(C-[c;!900*]:c-[CX4;!H3;!$(C-[F,Cl,Br,I,$(C#N)]);!900*]),$(C-[c;!900*]:c-[OX1-;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting atom is bonded to an aromatic carbon (unchanged) whose ortho position carries an alkoxy, hydroxy, phenoxide, amino or alkyl group",
+   "effect": "SN1 far faster (p-methoxybenzyl chloride solvolyses orders of magnitude faster than benzyl chloride: the PMB group is acid-labile); SN2 about as for benzyl An ortho group also crowds the atom.",
+   "why": "Hammett effect through the ring (σ values of the substituent)",
+   "sigma": null,
+   "source": "Hansch, Leo, Taft, Chem. Rev. 91, 165 (1991); Clayden, Organic Chemistry (aromatic substitution)"
+  },
+  {
+   "id": "I224",
+   "key": "alkene-terminal",
+   "name": "carbon of a vinyl group (CH=CH2)",
+   "group": "alkene carbon",
+   "kind": "steric",
+   "anchor": "alkene C",
+   "smarts": "[C;X3;H1;$(C=[C;H2])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is the CH of a vinyl group",
+   "effect": "the least hindered alkene: Heck, metathesis and hydroboration are fast; electrophiles end up on the CH2 (Markovnikov)",
+   "why": "one substituent only",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I225",
+   "key": "alkene-conjugated-carbonyl",
+   "name": "alkene conjugated with an electron-withdrawing group (enone, acrylate, acrylonitrile, nitroalkene, vinyl sulfone)",
+   "group": "alkene carbon",
+   "kind": "electronic",
+   "anchor": "alkene C",
+   "smarts": "[C;X3;$(C=C-[$([CX3]=[O,N]),$([CX2]#N),$([N+](=O)[O-]),$([SX4](=O)=O)]);!$(C=O)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is part of a C=C next to a C=O, C≡N, NO2 or SO2",
+   "effect": "electron-poor alkene: nucleophiles add at the β carbon, electrophiles react slowly; a good dienophile",
+   "why": "the acceptor withdraws electrons from the C=C",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I226",
+   "key": "alkene-styrenyl",
+   "name": "alkene conjugated with an aromatic ring",
+   "group": "alkene carbon",
+   "kind": "electronic",
+   "anchor": "alkene C",
+   "smarts": "[C;X3;$(C=C-c);!$(C=O)]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is part of a C=C next to an aromatic ring (styrene)",
+   "effect": "electrophiles add to give the benzylic cation; hydrogenation and radical additions are fast",
+   "why": "the ring stabilises the cation or radical",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I227",
+   "key": "alkene-electron-rich",
+   "name": "alkene with an oxygen or nitrogen donor (enol ether, enamine)",
+   "group": "alkene carbon",
+   "kind": "electronic",
+   "anchor": "alkene C",
+   "smarts": "[C;X3;$(C=C-[O,N;X2,X3;+0;!$(*-[C,S,P]=[O,S,N])])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon is part of an enol ether, enamine or a simple vinyl ether / vinyl amine (not an enamide, enol ester or enol triflate)",
+   "effect": "very electron-rich: reacts with electrophiles at the β carbon (Vilsmeier, halogenation, Mannich) and hydrolyses in mild acid",
+   "why": "the donor lone pair raises the HOMO of the C=C",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I228",
+   "key": "alkene-two-carbons",
+   "name": "alkene carbon with two carbon substituents (no H)",
+   "group": "alkene carbon",
+   "kind": "steric",
+   "anchor": "alkene C",
+   "smarts": "[C;X3;$(C(=C)(-[#6;!900*])-[#6;!900*])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the reacting carbon has two carbon substituents besides the double bond (1,1-disubstituted, trisubstituted or tetrasubstituted alkene)",
+   "effect": "more electron-rich (faster with electrophiles: epoxidation, halogenation) but more hindered for catalysts (hydrogenation, hydroboration slower)",
+   "why": "alkyl groups donate and crowd",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I229",
+   "key": "alkene-new-bond-to-C",
+   "name": "retained alkene carbon that took a new carbon",
+   "group": "alkene carbon",
+   "kind": "steric",
+   "anchor": "alkene C",
+   "smarts": "[C;X3;$(C=C);$(C-[900C,900c])]",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "",
+   "where": "the alkene carbon is bonded to a carbon the reaction put there (Heck, Suzuki or Negishi of a vinyl partner)",
+   "effect": "Heck: the aryl goes to the less substituted carbon of the alkene (neutral Pd) or the more substituted one (cationic Pd, electron-rich alkene)",
+   "why": "sterics against polarisation in the insertion step",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I230",
+   "key": "quench-organometallic-acidic-XH",
+   "name": "Grignard or organolithium + a group with an acidic X–H",
+   "group": "reagent + group",
+   "kind": "quencher",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F029"
+    ],
+    [
+     "frag:F140"
+    ],
+    [
+     "frag:F141"
+    ],
+    [
+     "smiles:[CH3][Mg+]"
+    ],
+    [
+     "smiles:C[CH2][Mg+]"
+    ],
+    [
+     "smiles:[CH2-]CCC"
+    ]
+   ],
+   "groups": [
+    "F001",
+    "F118",
+    "F003",
+    "F014",
+    "F015",
+    "F016",
+    "F017",
+    "F129",
+    "F197",
+    "F198",
+    "F199",
+    "F028",
+    "F072",
+    "F002",
+    "F034",
+    "F026",
+    "F094",
+    "F176",
+    "F177",
+    "F178",
+    "F181",
+    "F115",
+    "F182",
+    "F183",
+    "F096",
+    "F097",
+    "F095",
+    "F120",
+    "F185",
+    "F186",
+    "F187",
+    "F067",
+    "F068",
+    "F089",
+    "F090",
+    "F109",
+    "F110",
+    "F111",
+    "F114",
+    "F008",
+    "F048",
+    "F169",
+    "F102",
+    "F049",
+    "F099",
+    "F056",
+    "F150",
+    "F098"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "quenches",
+   "where": "",
+   "effect": "the reagent is destroyed first: each O–H, N–H, S–H, CO2H or terminal C–H protonates one equivalent of R–M (R–H forms); protect the group or use an extra equivalent per acidic H",
+   "why": "the carbon bound to the metal is a very strong base (conjugate acid pKa 45–50); an O–H, N–H or S–H is deprotonated at once (C–H acids such as ketone α-H compete with addition to the carbonyl, and addition usually wins for aldehydes and unhindered ketones)",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (organometallics); Fragment_Conditions F029"
+  },
+  {
+   "id": "I231",
+   "key": "quench-strong-base-acidic-XH",
+   "name": "a strong base + several different acidic groups",
+   "group": "reagent + group",
+   "kind": "competing site",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F142"
+    ],
+    [
+     "frag:F143"
+    ],
+    [
+     "frag:F140"
+    ],
+    [
+     "frag:F029"
+    ],
+    [
+     "frag:F141"
+    ],
+    [
+     "smiles:[NH2-]"
+    ],
+    [
+     "smiles:[Li][N]([Si](C)(C)C)[Si](C)(C)C"
+    ],
+    [
+     "smiles:CC(C)(C)[O-]"
+    ],
+    [
+     "smiles:CCC(C)(C)[O-]"
+    ],
+    [
+     "smiles:CC(C)(C)[O][K]"
+    ],
+    [
+     "smiles:CC(C)(C)[O][Na]"
+    ],
+    [
+     "smiles:C[Si](C)(C)[O][K]"
+    ]
+   ],
+   "groups": [
+    "F001",
+    "F014",
+    "F028",
+    "F072",
+    "F176",
+    "F026",
+    "F034",
+    "F094",
+    "F096",
+    "F097",
+    "F095",
+    "F067",
+    "F068",
+    "F089",
+    "F090",
+    "F008",
+    "F048",
+    "F169",
+    "F102",
+    "F192",
+    "F193",
+    "F194",
+    "F195",
+    "F049",
+    "F099",
+    "F056",
+    "F098",
+    "F150"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 2,
+   "needs": "",
+   "page": true,
+   "effect_kind": "competes",
+   "where": "",
+   "effect": "the base removes the most acidic proton first and a second equivalent the next: with several sites the product follows the acidity order (carboxylic acid 4–5, phenol 10, alcohol 16, amide N–H 17, ketone α-C–H 19–20, ester α-C–H 25, terminal alkyne 25)",
+   "why": "the equilibrium constant of a proton transfer is 10^ΔpKa",
+   "sigma": null,
+   "source": "Evans pKa table; Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I232",
+   "key": "incompatible-hydride-acidic-XH",
+   "name": "a metal hydride (LiAlH4, DIBAL-H, NaH) + O–H, N–H or CO2H",
+   "group": "reagent + group",
+   "kind": "quencher",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F042"
+    ],
+    [
+     "frag:F143",
+     "smiles:[Al+3]"
+    ],
+    [
+     "smiles:COCC[O][AlH2-][O]CCOC"
+    ],
+    [
+     "frag:F143"
+    ],
+    [
+     "frag:F145"
+    ],
+    [
+     "smiles:CCC(C)[BH-](C(C)CC)C(C)CC"
+    ]
+   ],
+   "groups": [
+    "F001",
+    "F118",
+    "F003",
+    "F014",
+    "F015",
+    "F016",
+    "F017",
+    "F129",
+    "F197",
+    "F198",
+    "F199",
+    "F028",
+    "F072",
+    "F002",
+    "F034",
+    "F026",
+    "F094",
+    "F176",
+    "F177",
+    "F178",
+    "F181",
+    "F115",
+    "F182",
+    "F183",
+    "F096",
+    "F097",
+    "F095",
+    "F120",
+    "F185",
+    "F186",
+    "F187",
+    "F067",
+    "F068",
+    "F089",
+    "F090",
+    "F109",
+    "F110",
+    "F111",
+    "F114",
+    "F008",
+    "F048",
+    "F169",
+    "F102",
+    "F049",
+    "F099",
+    "F056",
+    "F150",
+    "F098"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "quenches",
+   "where": "",
+   "effect": "H2 is evolved and one hydride used up per acidic proton; the alkoxide / amide formed may react more slowly than the free group (carboxylic acids are reduced via the carboxylate only with excess LiAlH4)",
+   "why": "hydride is a strong base (conjugate acid H2, pKa about 35)",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (reduction); Fragment_Conditions F042"
+  },
+  {
+   "id": "I233",
+   "key": "also-reduced-LiAlH4",
+   "name": "LiAlH4 + other reducible groups",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F042"
+    ],
+    [
+     "frag:F143",
+     "smiles:[Al+3]"
+    ],
+    [
+     "smiles:COCC[O][AlH2-][O]CCOC"
+    ]
+   ],
+   "groups": [
+    "F004",
+    "F139",
+    "F138",
+    "F021",
+    "F120",
+    "F184",
+    "F185",
+    "F202",
+    "F022",
+    "F191",
+    "F001",
+    "F118",
+    "F020",
+    "F041",
+    "F018",
+    "F117",
+    "F019",
+    "F116",
+    "F031",
+    "F040",
+    "F124",
+    "F121",
+    "F136",
+    "F074",
+    "F079",
+    "F100",
+    "F122",
+    "F023",
+    "F025",
+    "F056",
+    "F055",
+    "F010",
+    "F011",
+    "F012",
+    "F044",
+    "F045",
+    "F066",
+    "F077",
+    "F049",
+    "F125"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "also reduced: esters, amides, nitriles, acids, acyl chlorides, epoxides, azides, carbamates (to N-methyl) and most alkyl halides and sulfonates; aliphatic nitro compounds go to amines and nitroarenes to azo compounds; unless the amount is limited the molecule is reduced at every one of them",
+   "why": "a very strong hydride donor with little selectivity between polar functional groups",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (reduction)"
+  },
+  {
+   "id": "I234",
+   "key": "spared-by-NaBH4",
+   "name": "NaBH4 + an amide, carbamate or nitro group",
+   "group": "reagent + group",
+   "kind": "selectivity",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:[BH4-]",
+     "smiles:[Na+]",
+     "not:smiles:[Li+]",
+     "not:role:Lewis acid",
+     "not:elem:Co",
+     "not:elem:Ni",
+     "not:elem:Cu",
+     "not:elem:Pd",
+     "not:elem:Pt",
+     "not:elem:Ca",
+     "not:smiles:II"
+    ]
+   ],
+   "groups": [
+    "F021",
+    "F077",
+    "F120",
+    "F025"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "spared",
+   "where": "",
+   "effect": "usually survive: NaBH4 alone reduces aldehydes, ketones, acyl chlorides and (with acid) imines at 0–25 °C but leaves amides, carbamates and nitro groups; esters, nitriles and acids also survive without an additive, but in the recorded reactions they are reduced about as often as with other reagents (they are the target, or LiCl / CaCl2 / CoCl2 / I2 / heat is added)",
+   "why": "the N lone pair makes an amide or carbamate C=O far less electrophilic than a ketone, and NaBH4 is a mild hydride donor",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Known_No_Reaction sheet (NaBH4)"
+  },
+  {
+   "id": "I235",
+   "key": "also-reduced-LiBH4",
+   "name": "LiBH4 + an ester, lactone, epoxide or acid derivative",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:[BH4-]",
+     "smiles:[Li+]"
+    ]
+   ],
+   "groups": [
+    "F004",
+    "F139",
+    "F138",
+    "F023",
+    "F124",
+    "F020",
+    "F041",
+    "F121"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "also reduced: unlike NaBH4, LiBH4 reduces esters, lactones, epoxides and acyl derivatives (the Li⁺ activates the C=O); it still leaves acids, amides, nitriles and nitro groups largely alone",
+   "why": "the lithium ion is a better Lewis acid than sodium",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (reduction)"
+  },
+  {
+   "id": "I236",
+   "key": "also-oxidised-by-peroxide",
+   "name": "a peroxide or peracid (H2O2, mCPBA, peracetic acid, Oxone) + a sulfide, tertiary amine, alkene or electron-rich ring",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:O=C(OO)c1cccc(Cl)c1"
+    ],
+    [
+     "smiles:CC(=O)OO"
+    ],
+    [
+     "smiles:OO"
+    ],
+    [
+     "smiles:O=S(=O)([O-])O[O-]"
+    ],
+    [
+     "smiles:O=S([O-])OO"
+    ]
+   ],
+   "groups": [
+    "F073",
+    "F072",
+    "F093",
+    "F179",
+    "F180",
+    "F005",
+    "F006",
+    "F126",
+    "F127",
+    "F203",
+    "F106",
+    "F105",
+    "F104",
+    "F028",
+    "F026",
+    "F019",
+    "F091"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "also oxidised: sulfides to sulfoxide and sulfone, tertiary amines and pyridines to N-oxides, alkenes to epoxides, enol ethers and enamines, electron-rich heteroarenes, phenols and anilines (to quinones and tars), ketones to esters (Baeyer–Villiger)",
+   "why": "a peracid is an electrophilic oxygen donor: it takes electrons from whichever group is the most electron-rich first",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (oxidation)"
+  },
+  {
+   "id": "I237",
+   "key": "also-oxidised-by-metal-oxo",
+   "name": "a chromium(VI), permanganate, ruthenium or hypervalent-iodine oxidant + other oxidisable groups",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:CC(=O)OI1(OC(C)=O)(OC(C)=O)OC(=O)c2ccccc21"
+    ],
+    [
+     "smiles:O=C(O)c1ccccc1I(=O)=O"
+    ],
+    [
+     "smiles:CC(=O)OI(OC(C)=O)c1ccccc1"
+    ],
+    [
+     "smiles:O=C(OI(OC(=O)C(F)(F)F)c1ccccc1)C(F)(F)F"
+    ],
+    [
+     "smiles:[O]=[Cr](=[O])([O-])[Cl]"
+    ],
+    [
+     "smiles:[O]=[Cr](=[O])=[O]"
+    ],
+    [
+     "smiles:[O]=[Cr](=[O])([O-])[O][Cr](=[O])(=[O])[O-]"
+    ],
+    [
+     "smiles:[O]=[Cr](=[O])([OH])[OH]"
+    ],
+    [
+     "smiles:[O]=[Mn](=[O])(=[O])[O-]"
+    ],
+    [
+     "smiles:[O]=[Ru](=[O])(=[O])[O-]"
+    ],
+    [
+     "smiles:[O]=[Ru]=[O]"
+    ]
+   ],
+   "groups": [
+    "F003",
+    "F015",
+    "F199",
+    "F073",
+    "F072",
+    "F130"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "also oxidised: primary and secondary alcohols (to aldehydes / ketones; tertiary alcohols are not oxidised), sulfides and thiols, and benzyl ethers (chromic acid, permanganate, ruthenium tetroxide); permanganate and chromic acid carry aldehydes on to acids, while Dess–Martin periodinane and IBX stop at the aldehyde or ketone; alkenes and benzylic C–H are attacked only by the strongest of these (permanganate, RuO4), which the recorded reactions do not show often enough to list them",
+   "why": "high-valent metal oxo and iodine(V) reagents take hydrides or electrons from whatever is most oxidisable",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (oxidation)"
+  },
+  {
+   "id": "I238",
+   "key": "cleaved-by-acid",
+   "name": "a strong acid (TFA, HCl, HBr, H2SO4, TsOH, MsOH, TfOH, formic acid) + an acid-labile protecting group",
+   "group": "reagent + group",
+   "kind": "protecting group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:O=C(O)C(F)(F)F"
+    ],
+    [
+     "smiles:Cl"
+    ],
+    [
+     "smiles:Br"
+    ],
+    [
+     "smiles:I"
+    ],
+    [
+     "smiles:F"
+    ],
+    [
+     "smiles:O=S(=O)(O)O"
+    ],
+    [
+     "smiles:Cc1ccc(S(=O)(=O)O)cc1"
+    ],
+    [
+     "smiles:CS(=O)(=O)O"
+    ],
+    [
+     "smiles:O=S(=O)(O)C(F)(F)F"
+    ],
+    [
+     "smiles:CC1(C)C2CCC1(CS(=O)(=O)O)C(=O)C2"
+    ],
+    [
+     "smiles:[O-][Cl+3]([O-])([O-])O"
+    ],
+    [
+     "smiles:O=CO"
+    ],
+    [
+     "smiles:O=P(O)(O)O"
+    ],
+    [
+     "smiles:[H+]"
+    ]
+   ],
+   "groups": [
+    "F078",
+    "F039",
+    "F052",
+    "F134",
+    "F132",
+    "F126",
+    "F200",
+    "F201"
+   ],
+   "groupWhere": "substrate",
+   "show": "both",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "cleaved",
+   "where": "",
+   "effect": "removed or opened: Boc and tert-butyl esters / ethers (TFA, HCl), acetals, THP and MOM ethers, trityl, PMB, enol ethers and silyl ethers are cleaved by acid; benzyl carbamates (Cbz) survive TFA and HCl but go with HBr / AcOH; choose a base-mediated step or a milder acid when the group must survive",
+   "why": "the cation formed on protonation is stabilised (tert-butyl, oxocarbenium, trityl, benzylic)",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I239",
+   "key": "cleaved-by-boron-halide",
+   "name": "BBr3 / BCl3 / TMSI / TMSBr / HBr + an ether, benzyl group or acid-labile group",
+   "group": "reagent + group",
+   "kind": "protecting group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:BrB(Br)Br"
+    ],
+    [
+     "smiles:ClB(Cl)Cl"
+    ],
+    [
+     "smiles:Br"
+    ],
+    [
+     "smiles:I"
+    ],
+    [
+     "smiles:C[Si](C)(C)I"
+    ],
+    [
+     "smiles:C[Si](C)(C)Br"
+    ]
+   ],
+   "groups": [
+    "F050",
+    "F051",
+    "F024",
+    "F130",
+    "F131",
+    "F078",
+    "F039",
+    "F052",
+    "F103"
+   ],
+   "groupWhere": "substrate",
+   "show": "both",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "cleaved",
+   "where": "",
+   "effect": "cleaved: methyl and benzyl ethers (BBr3 and BCl3 at −78 °C to rt), aryl alkyl ethers, benzyl carbamates and esters, tert-butyl groups, acetals, silyl ethers and phosphonate esters (TMSBr)",
+   "why": "the boron halide binds the ether O, and bromide displaces the alkyl group",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I240",
+   "key": "cleaved-by-base-nucleophile",
+   "name": "hydroxide or an alkoxide + a base-labile group",
+   "group": "reagent + group",
+   "kind": "protecting group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F060",
+     "not:smiles:CCOC([O-])[O-]",
+     "not:smiles:COC([O-])[O-]"
+    ],
+    [
+     "smiles:[Li][OH]"
+    ],
+    [
+     "smiles:CC(C)(C)[O][K]"
+    ],
+    [
+     "smiles:CC(C)(C)[O][Na]"
+    ],
+    [
+     "smiles:C[O][Na]"
+    ],
+    [
+     "smiles:C[Si](C)(C)[O-]"
+    ],
+    [
+     "smiles:C[Si](C)(C)[O][K]"
+    ]
+   ],
+   "groups": [
+    "F004",
+    "F139",
+    "F138",
+    "F136",
+    "F135",
+    "F124",
+    "F079",
+    "F074",
+    "F125",
+    "F023",
+    "F041",
+    "F020",
+    "F121",
+    "F080",
+    "F069",
+    "F065",
+    "F066",
+    "F064"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "cleaved",
+   "where": "",
+   "effect": "attacked: esters hydrolyse or transesterify (with an alkoxide the alkoxy group of the ester exchanges), Fmoc and trifluoroacetyl come off, carbonates, thioesters and active esters are cleaved, α-halo carbonyls and epoxides are opened, sulfonates are displaced",
+   "why": "hydroxide and alkoxides are strong nucleophiles toward carbonyl carbons; Fmoc is removed by E1cB (fluorenyl C–H pKa about 23)",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I241",
+   "key": "cleaved-by-Pd0",
+   "name": "a palladium catalyst + an allyl ester, carbamate or ether",
+   "group": "reagent + group",
+   "kind": "protecting group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "elem:Pd"
+    ]
+   ],
+   "groups": [
+    "F133"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "cleaved",
+   "where": "",
+   "effect": "cleaved: Pd(0) ionises allyl carbonates, carbamates (Alloc), esters and ethers into a π-allyl complex that a nucleophile (amine, morpholine, dimedone, silane) takes; allyl groups are otherwise stable to acid and base",
+   "why": "oxidative addition of Pd(0) into the allylic C–O bond",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I242",
+   "key": "also-hydrogenated",
+   "name": "H2 with Pd / Pt / Rh / Ni + other reducible groups",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F164",
+     "smiles:[H][H]"
+    ]
+   ],
+   "groups": [
+    "F005",
+    "F006",
+    "F007",
+    "F008",
+    "F030",
+    "F130",
+    "F131",
+    "F132",
+    "F025",
+    "F056",
+    "F055",
+    "F013",
+    "F084",
+    "F047",
+    "F086",
+    "F170",
+    "F175",
+    "F036",
+    "F174",
+    "F022",
+    "F191",
+    "F031",
+    "F049",
+    "F196",
+    "F204",
+    "F018",
+    "F117",
+    "F057"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "also reduced or cleaved: alkenes and alkynes, benzyl ethers / benzyl esters / Cbz / PMB (hydrogenolysis), nitro groups and azides, aryl iodides, bromides and (slowly) chlorides, benzylic halides, nitriles, imines and oximes",
+   "why": "a metal surface binds π systems and activates H2; weak benzylic C–O / C–N bonds and weak C–X bonds are cleaved",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis; Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I243",
+   "key": "desulfurised-by-Raney-Ni",
+   "name": "Raney nickel + sulfur",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:[Ni]"
+    ]
+   ],
+   "groups": [
+    "F072",
+    "F073",
+    "F076",
+    "F104",
+    "F074"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "desulfurised: Raney Ni replaces C–S bonds by C–H (thioethers, thiols, thiophenes, thioacetals), whatever else is being hydrogenated",
+   "why": "nickel binds sulfur strongly and hydrogenolyses the C–S bond",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I244",
+   "key": "poisoned-by-sulfur",
+   "name": "hydrogenation over Pd / Pt / Rh / Ru / Ir + sulfur",
+   "group": "reagent + group",
+   "kind": "catalyst poison",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F164",
+     "smiles:[H][H]",
+     "not:elem:Ni"
+    ]
+   ],
+   "groups": [
+    "F072",
+    "F073",
+    "F076",
+    "F074",
+    "F075",
+    "F104"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "poisons",
+   "where": "",
+   "effect": "the catalyst is poisoned or inhibited: thiols, sulfides, thioureas and thiophenes bind Pd and Pt irreversibly (use much more catalyst, a sulfur-tolerant catalyst, or do the step before the sulfur is introduced); cross-couplings of thiophenes and aryl sulfides usually work with a suitable ligand",
+   "why": "soft sulfur lone pairs bind the soft metal more strongly than the substrate",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Hartwig, Organotransition Metal Chemistry"
+  },
+  {
+   "id": "I245",
+   "key": "inhibited-by-chelating-N",
+   "name": "a palladium or copper catalyst + a chelating nitrogen group",
+   "group": "reagent + group",
+   "kind": "catalyst poison",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F164"
+    ],
+    [
+     "frag:F165"
+    ]
+   ],
+   "groups": [
+    "F096",
+    "F097",
+    "F098",
+    "F099",
+    "F114",
+    "F115",
+    "F182",
+    "F183"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "poisons",
+   "where": "",
+   "effect": "hydrazines, hydroxylamines, amidines, tetrazoles and 2-aminoazines chelate the metal and slow couplings (use a bidentate or bulky ligand, protect the nitrogen, or add a Lewis acid to tie it up)",
+   "why": "a bidentate N,N group competes with the substrate and the ligand for the metal",
+   "sigma": null,
+   "source": "Hartwig, Organotransition Metal Chemistry"
+  },
+  {
+   "id": "I246",
+   "key": "consumed-lewis-acid",
+   "name": "a Lewis acid (AlCl3, TiCl4, BF3, ZnCl2, BBr3) + a basic nitrogen or oxygen",
+   "group": "reagent + group",
+   "kind": "catalyst poison",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:FB(F)F"
+    ],
+    [
+     "smiles:BrB(Br)Br"
+    ],
+    [
+     "smiles:ClB(Cl)Cl"
+    ],
+    [
+     "smiles:[Cl][Ti]([Cl])([Cl])[Cl]"
+    ],
+    [
+     "smiles:[Cl][Sn]([Cl])([Cl])[Cl]"
+    ],
+    [
+     "smiles:[Cl][Fe]([Cl])[Cl]"
+    ],
+    [
+     "smiles:[Al+3]",
+     "smiles:[Cl-]"
+    ],
+    [
+     "smiles:[Zn+2]",
+     "smiles:[Cl-]"
+    ],
+    [
+     "smiles:C[Si](C)(C)OS(=O)(=O)C(F)(F)F"
+    ]
+   ],
+   "groups": [
+    "F002",
+    "F034",
+    "F093",
+    "F026",
+    "F094",
+    "F091",
+    "F112",
+    "F113",
+    "F115",
+    "F021",
+    "F184",
+    "F095",
+    "F004",
+    "F019",
+    "F018",
+    "F024",
+    "F050",
+    "F028",
+    "F003",
+    "F014",
+    "F015",
+    "F001",
+    "F118"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "poisons",
+   "where": "",
+   "effect": "the Lewis acid is bound and used up by the basic site (an amine, azine or amide takes one equivalent), so the group it was meant to activate stays untouched: Friedel–Crafts fails on anilines and pyridines; use one extra equivalent per basic site",
+   "why": "a free lone pair coordinates the Lewis acid; the complexed group is then a strong electron-withdrawing group",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (Friedel–Crafts); Directing_Groups: blocks Friedel–Crafts"
+  },
+  {
+   "id": "I247",
+   "key": "competing-nucleophile-acylation",
+   "name": "an acylating, sulfonylating or alkylating agent + several nucleophilic sites",
+   "group": "reagent + group",
+   "kind": "competing site",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F020"
+    ],
+    [
+     "frag:F041"
+    ],
+    [
+     "frag:F064"
+    ],
+    [
+     "role:coupling reagent (activates an acid)"
+    ],
+    [
+     "smiles:CC(=O)OC(C)=O"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F010"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F011"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F012"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F036"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F174"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F066"
+    ],
+    [
+     "role:electrophile / alkylating agent",
+     "frag:F125"
+    ]
+   ],
+   "groups": [
+    "F002",
+    "F034",
+    "F026",
+    "F094",
+    "F176",
+    "F177",
+    "F178",
+    "F181",
+    "F115",
+    "F003",
+    "F014",
+    "F015",
+    "F028",
+    "F072",
+    "F090",
+    "F129",
+    "F017",
+    "F197",
+    "F198"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "competes",
+   "where": "",
+   "effect": "which site reacts decides the product: amines are acylated before alcohols before phenols; with a base, alkylation follows acidity (phenol O before alcohol O) and softness (S and N before O with soft electrophiles; hard electrophiles go to O); ambident anions (pyridone, amide, azole) give N- and O-products",
+   "why": "nucleophilicity falls with delocalisation of the lone pair and rises with basicity and polarisability; with a base the most acidic site is the one deprotonated",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Reactivity_Order sheet"
+  },
+  {
+   "id": "I248",
+   "key": "competing-radical-or-ring-bromination",
+   "name": "NBS or Br2 + an electron-rich ring, alkene or benzylic C–H",
+   "group": "reagent + group",
+   "kind": "competing site",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:BrBr"
+    ],
+    [
+     "smiles:O=C1CCC(=O)N1Br"
+    ],
+    [
+     "smiles:CC1(C)C(=O)N(Br)C(=O)N1Br"
+    ],
+    [
+     "smiles:ClBr"
+    ]
+   ],
+   "groups": [
+    "F035",
+    "F037",
+    "F038",
+    "F005",
+    "F006",
+    "F028",
+    "F026",
+    "F050",
+    "F106",
+    "F105",
+    "F104"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "competes",
+   "where": "",
+   "effect": "radical bromination goes at the weakest C–H (allylic, benzylic) but the same reagent adds to alkenes and brominates electron-rich rings by electrophilic substitution; light or a radical initiator in CCl4 / PhCF3 favours the radical path, polar solvents and acid the ring",
+   "why": "conditions decide between a radical chain and electrophilic bromine",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry; Condition_Suggestions sheet"
+  },
+  {
+   "id": "I249",
+   "key": "competing-diazonium-coupling",
+   "name": "a diazonium salt (or nitrite making one) + a phenol, aniline or active methylene",
+   "group": "reagent + group",
+   "kind": "competing site",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F027"
+    ],
+    [
+     "smiles:O=N[O-]"
+    ],
+    [
+     "smiles:CC(C)(C)ON=O"
+    ],
+    [
+     "smiles:CC(C)CCON=O"
+    ]
+   ],
+   "groups": [
+    "F028",
+    "F026",
+    "F002",
+    "F034",
+    "F102",
+    "F106",
+    "F105"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "competes",
+   "where": "",
+   "effect": "azo coupling: the diazonium ion attacks phenols (pH 8–10, ortho / para to O⁻), anilines (pH 4–6) and active methylene compounds (Japp–Klingemann) before it can be used for Sandmeyer or reduction; keep it at 0–5 °C and add the nucleophile on purpose",
+   "why": "the diazonium ion is a weak electrophile that picks the most electron-rich partner",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (diazonium salts); Fragment_Conditions F027"
+  },
+  {
+   "id": "I250",
+   "key": "activates-every-OH",
+   "name": "SOCl2, POCl3, PCl5, oxalyl chloride or Tf2O + several O–H / N–H groups",
+   "group": "reagent + group",
+   "kind": "competing site",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:O=S(Cl)Cl"
+    ],
+    [
+     "smiles:O=P(Cl)(Cl)Cl"
+    ],
+    [
+     "smiles:ClP(Cl)(Cl)(Cl)Cl"
+    ],
+    [
+     "smiles:O=C(Cl)C(=O)Cl"
+    ],
+    [
+     "smiles:O=S(=O)(OS(=O)(=O)C(F)(F)F)C(F)(F)F"
+    ],
+    [
+     "smiles:O=S(Br)Br"
+    ],
+    [
+     "smiles:BrP(Br)Br"
+    ],
+    [
+     "smiles:ClP(Cl)Cl"
+    ],
+    [
+     "smiles:O=P(Br)(Br)Br"
+    ]
+   ],
+   "groups": [
+    "F001",
+    "F118",
+    "F003",
+    "F014",
+    "F015",
+    "F016",
+    "F017",
+    "F129",
+    "F197",
+    "F198",
+    "F199",
+    "F028",
+    "F120",
+    "F089",
+    "F049"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "every hydroxyl group, acid, primary amide (to nitrile), azole N–H and oxime (Beckmann) can react: acids become acyl chlorides, alcohols chlorides or sulfonates, primary amides dehydrate; amines are protonated or sulfonylated",
+   "why": "these reagents turn any O–H into a leaving group",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I251",
+   "key": "cleaved-by-fluoride",
+   "name": "fluoride (TBAF, CsF, HF) + silyl ethers",
+   "group": "reagent + group",
+   "kind": "protecting group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F154"
+    ],
+    [
+     "smiles:F"
+    ]
+   ],
+   "groups": [
+    "F052",
+    "F053"
+   ],
+   "groupWhere": "substrate",
+   "show": "both",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "cleaved",
+   "where": "",
+   "effect": "silyl ethers (TMS, TES, TBS, TIPS, TBDPS) and C-silyl groups are cleaved, fastest for the least hindered (TMS ≫ TES > TBS > TIPS ≈ TBDPS); the alkoxide formed can act as a base and move acyl or silyl groups",
+   "why": "the Si–F bond (about 140 kcal/mol) is far stronger than Si–O",
+   "sigma": null,
+   "source": "Greene, Protective Groups in Organic Synthesis"
+  },
+  {
+   "id": "I252",
+   "key": "also-attacked-by-organometallic",
+   "name": "a Grignard or organolithium + an ester, nitrile, amide, acyl chloride, epoxide or carbonyl elsewhere in the molecule",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F029"
+    ],
+    [
+     "frag:F140"
+    ],
+    [
+     "frag:F141"
+    ],
+    [
+     "smiles:[CH3][Mg+]"
+    ],
+    [
+     "smiles:C[CH2][Mg+]"
+    ],
+    [
+     "smiles:[CH2-]CCC"
+    ]
+   ],
+   "groups": [
+    "F004",
+    "F022",
+    "F191",
+    "F021",
+    "F184",
+    "F123",
+    "F020",
+    "F041",
+    "F023",
+    "F018",
+    "F117",
+    "F019",
+    "F116",
+    "F040",
+    "F031",
+    "F124",
+    "F136",
+    "F121"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "also attacked: esters add twice (to the tertiary alcohol), acyl chlorides over-add, nitriles give ketones after hydrolysis, aldehydes and ketones add, epoxides open, enones take 1,2- or 1,4-addition; protect the group, use a more selective organometallic (organozinc, organocuprate), or use an acyl electrophile that stops at the ketone (Weinreb amide). In the recorded reactions an ester is consumed about as often with a Grignard as with other reagents: chemists choose conditions that spare it, or it is the target",
+   "why": "carbon nucleophiles of this strength attack every electrophilic carbonyl-type carbon",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (organometallics)"
+  },
+  {
+   "id": "I253",
+   "key": "halogen-metal-exchange",
+   "name": "n-BuLi, s-BuLi, t-BuLi or iPrMgCl / iPrMgBr + an aryl bromide / iodide or a vinyl halide",
+   "group": "reagent + group",
+   "kind": "incompatible group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "smiles:[Li][CH2]CCC"
+    ],
+    [
+     "smiles:[Li][C](C)(C)C"
+    ],
+    [
+     "smiles:[Li][CH](C)CC"
+    ],
+    [
+     "smiles:C[CH](C)[Mg][Cl]"
+    ],
+    [
+     "smiles:C[CH](C)[Mg][Br]"
+    ]
+   ],
+   "groups": [
+    "F084",
+    "F013",
+    "F087",
+    "F012",
+    "F171"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": true,
+   "effect_kind": "also_reacts",
+   "where": "",
+   "effect": "halogen–metal exchange: n-BuLi, t-BuLi and iPrMgCl swap with aryl iodides and bromides (and vinyl halides) at −78 °C faster than they add to an ester or nitrile or deprotonate; aldehydes and ketones are still attacked first; the new organometallic then reacts with whatever electrophile is present (aryl chlorides do not exchange)",
+   "why": "the exchange is fast and favours the more stabilised carbanion (sp2 over sp3)",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (organolithiums)"
+  },
+  {
+   "id": "I254",
+   "key": "epimerised-by-base",
+   "name": "a strong base + an α-amino acid derivative",
+   "group": "reagent + group",
+   "kind": "stereochemistry",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "frag:F060",
+     "not:smiles:CCOC([O-])[O-]",
+     "not:smiles:COC([O-])[O-]"
+    ],
+    [
+     "smiles:[Li][OH]"
+    ],
+    [
+     "smiles:CC(C)(C)[O][K]"
+    ],
+    [
+     "smiles:CC(C)(C)[O][Na]"
+    ],
+    [
+     "smiles:C[O][Na]"
+    ],
+    [
+     "smiles:C[Si](C)(C)[O-]"
+    ],
+    [
+     "smiles:C[Si](C)(C)[O][K]"
+    ],
+    [
+     "frag:F142"
+    ],
+    [
+     "frag:F143"
+    ],
+    [
+     "frag:F140"
+    ],
+    [
+     "frag:F029"
+    ],
+    [
+     "frag:F141"
+    ],
+    [
+     "smiles:[NH2-]"
+    ],
+    [
+     "smiles:[Li][N]([Si](C)(C)C)[Si](C)(C)C"
+    ]
+   ],
+   "groups": [
+    "F119"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": false,
+   "effect_kind": "epimerises",
+   "where": "",
+   "effect": "epimerisation: a base that can remove the α C–H racemises or epimerises the stereocentre through the enolate (amino acid esters and amides first; α-aryl ketones and esters too); use a hindered or weaker base, a lower temperature or a shorter time. Knowledge only: the page does not test it, because the fragments cannot tell whether the α carbon is a stereocentre (F119 finds the free acid, which a base turns into a carboxylate that does not enolise)",
+   "why": "enolisation is fast when the α C–H pKa is below the pKaH of the base",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I255",
+   "key": "protic-solvent-slows-SN2",
+   "name": "a protic solvent (water, alcohols) with an anionic nucleophile",
+   "group": "reagent + group",
+   "kind": "medium",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "solvent:protic",
+     "frag:F153"
+    ],
+    [
+     "solvent:protic",
+     "frag:F155"
+    ],
+    [
+     "solvent:protic",
+     "frag:F061"
+    ],
+    [
+     "solvent:protic",
+     "frag:F060"
+    ]
+   ],
+   "groups": [
+    "F010",
+    "F011",
+    "F012",
+    "F043",
+    "F044",
+    "F045"
+   ],
+   "groupWhere": "substrate",
+   "show": "both",
+   "minDistinct": 1,
+   "needs": "solvent",
+   "page": true,
+   "effect_kind": "slows",
+   "where": "",
+   "effect": "SN2 with anionic nucleophiles (halide, azide, cyanide, hydroxide, alkoxide) is slower in protic solvents (hydrogen-bonded nucleophile: 10^3–10^5 slower than in DMF, DMSO or acetone); SN1 and solvolysis are favoured",
+   "why": "protic solvents solvate small anions strongly",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry (SN1 / SN2)"
+  },
+  {
+   "id": "I256",
+   "key": "water-destroys-reagent",
+   "name": "water or a protic solvent with an acyl chloride, anhydride, organometallic or hydride",
+   "group": "reagent + group",
+   "kind": "medium",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "solvent:protic"
+    ]
+   ],
+   "groups": [
+    "F029",
+    "F140",
+    "F141",
+    "F042",
+    "F143",
+    "F145",
+    "F020",
+    "F041",
+    "F124"
+   ],
+   "groupWhere": "both",
+   "show": "both",
+   "minDistinct": 1,
+   "needs": "solvent",
+   "page": true,
+   "effect_kind": "quenches",
+   "where": "",
+   "effect": "hydrolysed or quenched: acyl chlorides and anhydrides are hydrolysed, Grignards, organolithiums and hydrides destroyed; use an anhydrous aprotic solvent (THF, ether, DCM) under inert gas",
+   "why": "these reagents react faster with water than with most organic substrates",
+   "sigma": null,
+   "source": "Fragment_Conditions (F020, F029, F042)"
+  },
+  {
+   "id": "I257",
+   "key": "leaving-group-order",
+   "name": "several leaving groups in one molecule",
+   "group": "reagent + group",
+   "kind": "leaving group",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [
+    "F010",
+    "F011",
+    "F012",
+    "F013",
+    "F047",
+    "F084",
+    "F065",
+    "F066",
+    "F087",
+    "F085"
+   ],
+   "groupWhere": "substrate",
+   "show": "both",
+   "minDistinct": 2,
+   "needs": "",
+   "page": true,
+   "effect_kind": "competes",
+   "where": "",
+   "effect": "which one goes first: Pd / Ni / Cu couplings follow I > Br ≈ OTf > Cl ≫ F (oxidative addition); SN2 follows OTf ≫ I > Br ≈ OTs > Cl ≫ F; SNAr, when addition is rate-limiting, follows F > Cl ≈ Br > I and is helped by ortho / para electron-withdrawing groups and ring nitrogens. With several leaving groups in one molecule the best one for that mechanism reacts first",
+   "why": "bond strength and the stability of the leaving anion (pKa of HX: HI −10, HBr −9, HCl −7, HF 3.2)",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I258",
+   "key": "weak-base-for-the-acid",
+   "name": "a base weaker than the proton it should remove",
+   "group": "reagent + group",
+   "kind": "reagent strength",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [
+    [
+     "role:base"
+    ]
+   ],
+   "groups": [
+    "F101",
+    "F102",
+    "F003",
+    "F014",
+    "F028",
+    "F001",
+    "F008",
+    "F095",
+    "F192",
+    "F193"
+   ],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "",
+   "page": false,
+   "effect_kind": "slows",
+   "where": "",
+   "effect": "little or no reaction when the pKaH of the base is more than 3–5 units below the pKa of the proton: K2CO3 (pKaH 10.3) deprotonates phenols and acids but not alcohols or ketones (use NaH, KOt-Bu or LDA); Et3N (10.8) does not deprotonate amides",
+   "why": "ΔpKa sets the equilibrium (K = 10^ΔpKa); a catalytic amount of the anion is enough when the next step is fast",
+   "sigma": null,
+   "source": "Acids_Bases sheet; Evans pKa table"
+  },
+  {
+   "id": "I259",
+   "key": "temperature-selectivity",
+   "name": "temperature, time and equivalents",
+   "group": "reagent + group",
+   "kind": "medium",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "conditions",
+   "page": false,
+   "effect_kind": "redirects",
+   "where": "",
+   "effect": "kinetic against thermodynamic control: low temperature and short times give the faster product (the less substituted enolate, the 1,2-adduct, ortho substitution), heat and long times the more stable one (the more substituted enolate, the 1,4-adduct, para, rearranged); equivalents decide mono- against bis-reaction",
+   "why": "the recorded reactions list the solvent only; temperature, time and amounts are not in the learned data, so this interference is advisory",
+   "sigma": null,
+   "source": "Clayden, Organic Chemistry"
+  },
+  {
+   "id": "I260",
+   "key": "data-support-size",
+   "name": "starting materials with fewer than 8 heavy atoms",
+   "group": "reagent + group",
+   "kind": "data support",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "size",
+   "page": false,
+   "effect_kind": "unreliable",
+   "where": "",
+   "effect": "the learned predictor was built from patent reactions and has seen almost none this small, so no figure can say how far to trust it there and the page predicts nothing. Measured on 12,000 held-out reactions: 5 had fewer than 8 heavy atoms (too few to measure anything), and starting materials of 8–11 heavy atoms got a right first answer 67 % of the time against a stated chance of 68 %.",
+   "why": "a model can only be as good as the molecules it saw",
+   "sigma": null,
+   "source": "tools/eval_top1.json by_size"
+  },
+  {
+   "id": "I261",
+   "key": "data-support-reagent-role",
+   "name": "a reagent with no reactive role in the Reagents sheet",
+   "group": "reagent + group",
+   "kind": "data support",
+   "anchor": "",
+   "smarts": "",
+   "prefilter": "",
+   "reagent": [],
+   "groups": [],
+   "groupWhere": "substrate",
+   "show": "bystander",
+   "minDistinct": 1,
+   "needs": "reagent",
+   "page": false,
+   "effect_kind": "unreliable",
+   "where": "",
+   "effect": "spectator ions, solvents and parts the sheet does not list tell the model nothing about what the reagent does, so the page asks for a higher stated chance of being right before it shows an answer. Measured: reactions whose reagent has no reactive role in the Reagents sheet got a right first answer 45 % of the time overall; the page shows an answer for them only at a stated chance of 85 %, and the answers it shows were right 91 % of the time.",
+   "why": "measured on held-out patents",
+   "sigma": null,
+   "source": "tools/eval_top1.json by_reagent"
   }
  ]
 };

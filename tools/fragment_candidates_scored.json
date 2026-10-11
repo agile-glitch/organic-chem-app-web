@@ -1,0 +1,1756 @@
+[
+ {
+  "slug": "thiophene_ch",
+  "name": "thiophene / benzothiophene ring C–H",
+  "smarts": "[cH;$(c1:c:c:c:s:1),$(c1:c:c:s:c:1)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1532,
+  "reacted": 126,
+  "new": 69,
+  "reagent_reactions": 1610,
+  "top_reagents": [
+   [
+    "(none)",
+    35
+   ],
+   [
+    "[Li][CH2]CCC",
+    6
+   ],
+   [
+    "[Al+3].[Cl-]",
+    5
+   ]
+  ],
+  "examples": [
+   "N#CCc1ccsc1",
+   "CCOC(=O)c1ccc(C)s1"
+  ]
+ },
+ {
+  "slug": "furan_ch",
+  "name": "furan / benzofuran ring C–H",
+  "smarts": "[cH;$(c1:c:c:c:o:1),$(c1:c:c:o:c:1)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 659,
+  "reacted": 58,
+  "new": 43,
+  "reagent_reactions": 862,
+  "top_reagents": [
+   [
+    "(none)",
+    19
+   ],
+   [
+    "[Li][CH2]CCC",
+    3
+   ],
+   [
+    "BrBr",
+    2
+   ]
+  ],
+  "examples": [
+   "Cc1ccco1",
+   "O=Cc1ccc(-c2ccccc2F)o1"
+  ]
+ },
+ {
+  "slug": "pyrrole_ch",
+  "name": "pyrrole / indole ring C–H",
+  "smarts": "[cH;$(c1:c:c:c:[nX3]:1),$(c1:c:c:[nX3]:c:1)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 2396,
+  "reacted": 256,
+  "new": 194,
+  "reagent_reactions": 2238,
+  "top_reagents": [
+   [
+    "(none)",
+    87
+   ],
+   [
+    "[K+].[OH-]",
+    7
+   ],
+   [
+    "O=P(Cl)(Cl)Cl.[Na+].[OH-]",
+    5
+   ]
+  ],
+  "examples": [
+   "Oc1cccc2[nH]ccc12",
+   "Nc1ncnn2c(CCO)ccc12"
+  ]
+ },
+ {
+  "slug": "azole_c2h",
+  "name": "azole C–H between two ring heteroatoms (imidazole C2–H, thiazole C2–H, oxazole C2–H)",
+  "smarts": "[cH;r5;$(c(:[n,o,s]):[n,o,s])]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1560,
+  "reacted": 255,
+  "new": 198,
+  "reagent_reactions": 7821,
+  "top_reagents": [
+   [
+    "(none)",
+    85
+   ],
+   [
+    "[Li][CH2]CCC",
+    10
+   ],
+   [
+    "[NH4+].[OH-]",
+    6
+   ]
+  ],
+  "examples": [
+   "O=C(n1ccnc1)n1ccnc1",
+   "O=C(n1ccnc1)n1ccnc1"
+  ]
+ },
+ {
+  "slug": "azine_ch",
+  "name": "azine ring C–H (pyridine, pyrimidine, quinoline: the ring that carries the N)",
+  "smarts": "[cH;r6;$(c1:n:*:*:*:*:1),$(c1:*:n:*:*:*:1),$(c1:*:*:n:*:*:1)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 14402,
+  "reacted": 846,
+  "new": 382,
+  "reagent_reactions": 69927,
+  "top_reagents": [
+   [
+    "(none)",
+    226
+   ],
+   [
+    "Cl",
+    12
+   ],
+   [
+    "O=P(Cl)(Cl)Cl",
+    9
+   ]
+  ],
+  "examples": [
+   "[O-][n+]1cccc(F)c1",
+   "CNc1ccccn1"
+  ]
+ },
+ {
+  "slug": "pyrazole_nh",
+  "name": "pyrazole / indazole N–H (N–H next to another ring N)",
+  "smarts": "[nH;r5;$([nH]:n)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1027,
+  "reacted": 368,
+  "new": 307,
+  "reagent_reactions": 1947,
+  "top_reagents": [
+   [
+    "(none)",
+    79
+   ],
+   [
+    "[H-].[Na+]",
+    38
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    37
+   ]
+  ],
+  "examples": [
+   "Fc1cccc2ncnc(Nc3ccc4[nH]ncc4c3)c12",
+   "Ic1cn[nH]c1"
+  ]
+ },
+ {
+  "slug": "imidazole_nh",
+  "name": "imidazole / benzimidazole / purine / azaindole N–H (N–H next to a C=N)",
+  "smarts": "[nH;r5;$([nH]:c:[nX2])]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1264,
+  "reacted": 313,
+  "new": 268,
+  "reagent_reactions": 4613,
+  "top_reagents": [
+   [
+    "(none)",
+    76
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    40
+   ],
+   [
+    "[H-].[Na+]",
+    39
+   ]
+  ],
+  "examples": [
+   "c1c[nH]cn1",
+   "Cc1[nH]cnc1CO"
+  ]
+ },
+ {
+  "slug": "pyrrole_nh",
+  "name": "pyrrole / indole / carbazole N–H (no second ring N next to it)",
+  "smarts": "[nH;r5;!$([nH]:n);!$([nH]:c:[nX2])]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1467,
+  "reacted": 386,
+  "new": 333,
+  "reagent_reactions": 1327,
+  "top_reagents": [
+   [
+    "[H-].[Na+]",
+    91
+   ],
+   [
+    "(none)",
+    90
+   ],
+   [
+    "[K+].[OH-]",
+    16
+   ]
+  ],
+  "examples": [
+   "O=Cc1cccc2[nH]ccc12",
+   "Clc1ccc2[nH]ccc2c1"
+  ]
+ },
+ {
+  "slug": "imidazole_n",
+  "name": "imidazole-type ring N (sp2 N of imidazole, benzimidazole, purine: next to a C bonded to the substituted ring N)",
+  "smarts": "[nX2;r5;+0;$([nX2]:c:[nX3;r5])]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 3787,
+  "reacted": 352,
+  "new": 221,
+  "reagent_reactions": 9413,
+  "top_reagents": [
+   [
+    "(none)",
+    115
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    16
+   ],
+   [
+    "[H-].[Na+]",
+    16
+   ]
+  ],
+  "examples": [
+   "O=C(n1ccnc1)n1ccnc1",
+   "Clc1nc(Cl)c2[nH]cnc2n1"
+  ]
+ },
+ {
+  "slug": "azole_n",
+  "name": "other azole ring N (sp2 N of pyrazole, thiazole, oxazole, triazole, tetrazole)",
+  "smarts": "[nX2;r5;+0;!$([nX2]:c:[nX3;r5])]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 7347,
+  "reacted": 571,
+  "new": 316,
+  "reagent_reactions": 44451,
+  "top_reagents": [
+   [
+    "(none)",
+    128
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    17
+   ],
+   [
+    "[H-].[Na+]",
+    9
+   ]
+  ],
+  "examples": [
+   "CN(C)C(On1nnc2cccnc21)=[N+](C)C",
+   "Nc1n[nH]c2ccccc12"
+  ]
+ },
+ {
+  "slug": "tetrazole",
+  "name": "tetrazole (N–H acid, pKa ≈ 5: carboxylic-acid isostere)",
+  "smarts": "c1nnnn1",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 279,
+  "reacted": 62,
+  "new": 44,
+  "reagent_reactions": 366,
+  "top_reagents": [
+   [
+    "(none)",
+    14
+   ],
+   [
+    "CCN(CC)CC",
+    5
+   ],
+   [
+    "Cl",
+    4
+   ]
+  ],
+  "examples": [
+   "Cc1cc(NCc2ccc(-c3ccccc3-c3nnn(C(c4ccccc4)(c4ccccc4)c4ccccc4)n3)cc2)c(I)c(C)n1",
+   "Nc1ncccc1-c1nn[nH]n1"
+  ]
+ },
+ {
+  "slug": "hetaryl_nh2",
+  "name": "heteroaryl NH2 (2-aminopyridine, aminopyrimidine, aminothiazole: NH2 on a carbon next to a ring N)",
+  "smarts": "[nX2]:c-[NX3;H2;+0]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1711,
+  "reacted": 789,
+  "new": 7,
+  "reagent_reactions": 1857,
+  "top_reagents": [
+   [
+    "(none)",
+    267
+   ],
+   [
+    "c1ccncc1",
+    40
+   ],
+   [
+    "CCN(CC)CC",
+    27
+   ]
+  ],
+  "examples": [
+   "Nc1ccccn1",
+   "Nc1cc(I)ccn1"
+  ]
+ },
+ {
+  "slug": "aryl_ketone",
+  "name": "aryl ketone (acetophenone, benzophenone: Ar–C(=O)–C)",
+  "smarts": "c[CX3](=[OX1])[#6]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 2563,
+  "reacted": 1447,
+  "new": 0,
+  "reagent_reactions": 2338,
+  "top_reagents": [
+   [
+    "(none)",
+    344
+   ],
+   [
+    "Cl",
+    75
+   ],
+   [
+    "[BH4-].[Na+]",
+    74
+   ]
+  ],
+  "examples": [
+   "CC(=O)c1cnccn1",
+   "O=C(CBr)c1ccccc1"
+  ]
+ },
+ {
+  "slug": "aryl_aldehyde",
+  "name": "aromatic aldehyde (ArCHO)",
+  "smarts": "c[CX3H1]=[OX1]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1926,
+  "reacted": 1558,
+  "new": 0,
+  "reagent_reactions": 1490,
+  "top_reagents": [
+   [
+    "(none)",
+    399
+   ],
+   [
+    "[BH4-].[Na+]",
+    79
+   ],
+   [
+    "C1CCNCC1",
+    76
+   ]
+  ],
+  "examples": [
+   "O=Cc1ccccc1O",
+   "O=Cc1ccccc1Br"
+  ]
+ },
+ {
+  "slug": "aryl_acid",
+  "name": "aromatic carboxylic acid (ArCO2H, ArCO2⁻)",
+  "smarts": "c[CX3](=[OX1])[OX2H1,OX1-]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 3091,
+  "reacted": 2604,
+  "new": 1,
+  "reagent_reactions": 3340,
+  "top_reagents": [
+   [
+    "(none)",
+    638
+   ],
+   [
+    "Cl",
+    125
+   ],
+   [
+    "CCN(C(C)C)C(C)C.CN(C)C(On1nnc2cccnc21)=[N+](C)C.F[P-](F)(F)(F)(F)F",
+    98
+   ]
+  ],
+  "examples": [
+   "O=C(O)c1cc[nH]c1",
+   "O=Cc1ccc(C(=O)O)cc1"
+  ]
+ },
+ {
+  "slug": "amino_acid",
+  "name": "α-amino acid / N-protected α-amino acid (N–CH–CO2H)",
+  "smarts": "[NX3][CX4;H1,H2][CX3](=[OX1])[OX2H1,OX1-]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 817,
+  "reacted": 746,
+  "new": 1,
+  "reagent_reactions": 2520,
+  "top_reagents": [
+   [
+    "(none)",
+    160
+   ],
+   [
+    "Cl",
+    31
+   ],
+   [
+    "CCN(C(C)C)C(C)C.CN(C)C(On1nnc2cccnc21)=[N+](C)C.F[P-](F)(F)(F)(F)F",
+    23
+   ]
+  ],
+  "examples": [
+   "NCC(=O)O",
+   "O=C(O)C1CCC2CN1C(=O)N2OCc1ccccc1"
+  ]
+ },
+ {
+  "slug": "primary_amide",
+  "name": "primary amide (C(=O)NH2)",
+  "smarts": "[#6][CX3](=[OX1])[NX3;H2]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 863,
+  "reacted": 341,
+  "new": 5,
+  "reagent_reactions": 1170,
+  "top_reagents": [
+   [
+    "(none)",
+    77
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    12
+   ],
+   [
+    "O=P(Cl)(Cl)Cl",
+    10
+   ]
+  ],
+  "examples": [
+   "NC(=O)c1ccccc1",
+   "NC(=O)c1ccccc1N"
+  ]
+ },
+ {
+  "slug": "imide",
+  "name": "imide (phthalimide, succinimide, glutarimide: C(=O)–N–C(=O))",
+  "smarts": "[CX3](=[OX1])[NX3;+0][CX3]=[OX1]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1207,
+  "reacted": 747,
+  "new": 0,
+  "reagent_reactions": 2358,
+  "top_reagents": [
+   [
+    "(none)",
+    235
+   ],
+   [
+    "NN",
+    61
+   ],
+   [
+    "ClC(Cl)(Cl)Cl.O=C(OOC(=O)c1ccccc1)c1ccccc1",
+    28
+   ]
+  ],
+  "examples": [
+   "O=C1CCC(=O)N1Br",
+   "O=C1CCC(=O)N1Cl"
+  ]
+ },
+ {
+  "slug": "urea",
+  "name": "urea (N–C(=O)–N: ureas, carbamoyl-ureas)",
+  "smarts": "[NX3;+0][CX3](=[OX1])[NX3;+0]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 920,
+  "reacted": 217,
+  "new": 0,
+  "reagent_reactions": 2349,
+  "top_reagents": [
+   [
+    "(none)",
+    47
+   ],
+   [
+    "Cl",
+    13
+   ],
+   [
+    "[H-].[Na+]",
+    13
+   ]
+  ],
+  "examples": [
+   "CC1(C)C(=O)N(Br)C(=O)N1Br",
+   "COC(=O)CC1NC(=O)NC1=O"
+  ]
+ },
+ {
+  "slug": "hydroxamic",
+  "name": "hydroxamic acid / hydroxamate (C(=O)–N–OH, C(=O)–N–OR; Weinreb amide)",
+  "smarts": "[CX3](=[OX1])[NX3][OX2]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 365,
+  "reacted": 257,
+  "new": 38,
+  "reagent_reactions": 568,
+  "top_reagents": [
+   [
+    "(none)",
+    53
+   ],
+   [
+    "Cl",
+    14
+   ],
+   [
+    "CCN(CC)CC",
+    13
+   ]
+  ],
+  "examples": [
+   "O=C1CCC(=O)N1O",
+   "CC(C)(C)OC(=O)NCC(=O)ON1C(=O)CCC1=O"
+  ]
+ },
+ {
+  "slug": "active_ester",
+  "name": "activated ester (N-hydroxysuccinimide, HOBt/HOAt, pentafluorophenyl, p-nitrophenyl ester)",
+  "smarts": "[CX3](=[OX1])[OX2]-[$([#7]),$(c1c(F)c(F)c(F)c(F)c1F),$(c1ccc([N+](=O)[O-])cc1)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 150,
+  "reacted": 139,
+  "new": 7,
+  "reagent_reactions": 187,
+  "top_reagents": [
+   [
+    "(none)",
+    32
+   ],
+   [
+    "CCN(CC)CC",
+    16
+   ],
+   [
+    "CCN(CC)CC.Cl",
+    10
+   ]
+  ],
+  "examples": [
+   "CC(C)(C)OC(=O)NCC(=O)ON1C(=O)CCC1=O",
+   "O=C(ON1C(=O)CCC1=O)c1ccc(F)cc1"
+  ]
+ },
+ {
+  "slug": "alpha_halocarbonyl",
+  "name": "α-halo carbonyl (α-halo ketone, ester, amide)",
+  "smarts": "[CX4;!$(C(F)(F))]([Cl,Br,I])[CX3]=[OX1]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1052,
+  "reacted": 1023,
+  "new": 0,
+  "reagent_reactions": 1232,
+  "top_reagents": [
+   [
+    "(none)",
+    309
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    123
+   ],
+   [
+    "CCN(CC)CC",
+    61
+   ]
+  ],
+  "examples": [
+   "O=C(Cl)CCl",
+   "O=C(CBr)c1ccccc1"
+  ]
+ },
+ {
+  "slug": "enol_ether",
+  "name": "enol ether / vinyl ether (C=C–O–R; dihydropyran, dihydrofuran)",
+  "smarts": "[CX3]=[CX3]-[OX2]-[#6;!$([#6]=O)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 348,
+  "reacted": 215,
+  "new": 70,
+  "reagent_reactions": 477,
+  "top_reagents": [
+   [
+    "(none)",
+    61
+   ],
+   [
+    "Cl",
+    15
+   ],
+   [
+    "Cc1ccc(S(=O)(=O)O)cc1",
+    10
+   ]
+  ],
+  "examples": [
+   "CC1(C)OC(=O)C=C(c2cccc(C#N)c2)O1",
+   "C=C(OCC)c1cc(Cl)ncn1"
+  ]
+ },
+ {
+  "slug": "enamine",
+  "name": "enamine / enaminone (C=C–N, not an enamide)",
+  "smarts": "[CX3]=[CX3]-[NX3;+0;!$(N-C=O);!$(N-S(=O)=O);!$(N-c)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 306,
+  "reacted": 204,
+  "new": 15,
+  "reagent_reactions": 598,
+  "top_reagents": [
+   [
+    "(none)",
+    77
+   ],
+   [
+    "Cl",
+    7
+   ],
+   [
+    "CCN(CC)CC",
+    5
+   ]
+  ],
+  "examples": [
+   "CCOC(=O)/C=C(/C)N",
+   "CSc1cc(C(=O)C(=CN(C)C)C(=O)C2CC2)ccc1C"
+  ]
+ },
+ {
+  "slug": "diazo",
+  "name": "diazo compound (R2C=N2: diazomethane, TMS-diazomethane, diazoacetate)",
+  "smarts": "[#6]=[N+]=[N-]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 69,
+  "reacted": 69,
+  "new": 0,
+  "reagent_reactions": 506,
+  "top_reagents": [
+   [
+    "(none)",
+    44
+   ],
+   [
+    "CC(=O)[O-].[Rh+2]",
+    3
+   ],
+   [
+    "Br",
+    2
+   ]
+  ],
+  "examples": [
+   "C[Si](C)(C)C=[N+]=[N-]",
+   "C[Si](C)(C)C=[N+]=[N-]"
+  ]
+ },
+ {
+  "slug": "amino_alcohol",
+  "name": "1,2-amino alcohol (free N–C–C–OH: ethanolamine, amino-alcohols)",
+  "smarts": "[NX3;!$(N-C=O);!$(N-S(=O)=O)][CX4][CX4][OX2H1]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 887,
+  "reacted": 690,
+  "new": 1,
+  "reagent_reactions": 1546,
+  "top_reagents": [
+   [
+    "(none)",
+    227
+   ],
+   [
+    "CCN(CC)CC",
+    28
+   ],
+   [
+    "CCN(C(C)C)C(C)C",
+    28
+   ]
+  ],
+  "examples": [
+   "CN1CCCCC1CO",
+   "Nc1cccc(Cl)c1NCCO"
+  ]
+ },
+ {
+  "slug": "benzyl_ons",
+  "name": "benzyl group on O, N or S (benzyl ether, N-benzyl amine / amide, benzyl thioether)",
+  "smarts": "c-[CH2;X4]-[OX2,NX3,SX2;!$([OX2]-C=O)]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 6757,
+  "reacted": 2508,
+  "new": 54,
+  "reagent_reactions": 6294,
+  "top_reagents": [
+   [
+    "(none)",
+    515
+   ],
+   [
+    "Cl",
+    117
+   ],
+   [
+    "CCN(CC)CC",
+    104
+   ]
+  ],
+  "examples": [
+   "NCc1ccccc1",
+   "COCOCc1ccc(CF)cn1"
+  ]
+ },
+ {
+  "slug": "benzyl_ester",
+  "name": "benzyl ester / benzyl carbamate (Cbz) / benzyl carbonate: Ar–CH2–O–C(=O)",
+  "smarts": "c-[CH2;X4]-[OX2]-[CX3]=[OX1]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 1043,
+  "reacted": 388,
+  "new": 3,
+  "reagent_reactions": 776,
+  "top_reagents": [
+   [
+    "[Pd]",
+    80
+   ],
+   [
+    "(none)",
+    37
+   ],
+   [
+    "[H][H].[Pd]",
+    20
+   ]
+  ],
+  "examples": [
+   "O=C(Cl)OCc1ccccc1",
+   "CCC1C(=O)N2C(C(=O)OCc3ccc([N+](=O)[O-])cc3)=C(Oc3ccccc3)SC12"
+  ]
+ },
+ {
+  "slug": "pmb",
+  "name": "4-methoxybenzyl (PMB) group on O, N or S",
+  "smarts": "[CH3]-[OX2]-c1ccc(cc1)-[CH2;X4]-[OX2,NX3,SX2]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 346,
+  "reacted": 172,
+  "new": 0,
+  "reagent_reactions": 229,
+  "top_reagents": [
+   [
+    "(none)",
+    38
+   ],
+   [
+    "O=C(O)C(F)(F)F",
+    21
+   ],
+   [
+    "Cl",
+    8
+   ]
+  ],
+  "examples": [
+   "COc1ccc(CN)c(OC)c1",
+   "CCOC(=O)CC1OC(c2cccc(C)c2OC)c2cc(Cl)ccc2N(Cc2ccc(OC)cc2OC)C1=O"
+  ]
+ },
+ {
+  "slug": "allyl_ons",
+  "name": "allyl group on O, N or S (allyl ether, allyl ester, Alloc)",
+  "smarts": "[CH2;X4](-[OX2,NX3,SX2])-[CH]=[CH2]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 229,
+  "reacted": 101,
+  "new": 0,
+  "reagent_reactions": 299,
+  "top_reagents": [
+   [
+    "(none)",
+    33
+   ],
+   [
+    "[Cl-].[Rh].c1ccc(P(c2ccccc2)c2ccccc2)cc1",
+    2
+   ],
+   [
+    "[H-].[Na+]",
+    2
+   ]
+  ],
+  "examples": [
+   "C=CCOc1ccc(N2CCN(c3ccncc3)CC2)cc1",
+   "C=CCNCC(O)c1cccc2c(C)c(C)oc12"
+  ]
+ },
+ {
+  "slug": "trityl",
+  "name": "trityl group (Ph3C–N, Ph3C–O, Ph3C–S)",
+  "smarts": "[CX4](-c)(-c)(-c)-[N,O,S]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 148,
+  "reacted": 50,
+  "new": 1,
+  "reagent_reactions": 124,
+  "top_reagents": [
+   [
+    "(none)",
+    11
+   ],
+   [
+    "Cl",
+    4
+   ],
+   [
+    "O=C(O)C(F)(F)F",
+    3
+   ]
+  ],
+  "examples": [
+   "COc1ccc(C(OC[C@H]2OCC[C@@H]2OC)(c2ccccc2)c2ccc(OC)cc2)cc1",
+   "OC(c1ccccc1)(c1ccccc1)c1ccccc1"
+  ]
+ },
+ {
+  "slug": "fmoc",
+  "name": "fluorenylmethyl carbamate (Fmoc)",
+  "smarts": "[NX3]-C(=O)-O-[CH2]-[CH]1-c2ccccc2-c2ccccc12",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 56,
+  "reacted": 24,
+  "new": 0,
+  "reagent_reactions": 42,
+  "top_reagents": [
+   [
+    "(none)",
+    5
+   ],
+   [
+    "C1CCNCC1",
+    3
+   ],
+   [
+    "C1CCNCC1.CN1CCCC1",
+    1
+   ]
+  ],
+  "examples": [
+   "COCCCn1cc(CN(C(=O)[C@@H]2C[C@H](NCC(C)C)CN(C(=O)OCC3c4ccccc4-c4ccccc43)C2)C2CC2)c2ccccc21",
+   "C[C@@H](O)[C@H](NC(=O)CN)C(=O)NC(=O)OCC1c2ccccc2-c2ccccc21"
+  ]
+ },
+ {
+  "slug": "tfa_acyl",
+  "name": "trifluoroacetyl (trifluoroacetic acid TFA, trifluoroacetamide, trifluoroacetate ester)",
+  "smarts": "[CX3](=[OX1])(C(F)(F)F)[N,O]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 349,
+  "reacted": 291,
+  "new": 3,
+  "reagent_reactions": 31222,
+  "top_reagents": [
+   [
+    "(none)",
+    137
+   ],
+   [
+    "O=C([O-])[O-].[K+]",
+    17
+   ],
+   [
+    "[Na+].[OH-]",
+    8
+   ]
+  ],
+  "examples": [
+   "O=C(O)C(F)(F)F",
+   "O=C(O)C(F)(F)F"
+  ]
+ },
+ {
+  "slug": "acetamide",
+  "name": "acetamide / N-acetyl (CH3–C(=O)–N)",
+  "smarts": "[CH3][CX3](=[OX1])[NX3]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 652,
+  "reacted": 197,
+  "new": 4,
+  "reagent_reactions": 548,
+  "top_reagents": [
+   [
+    "Cl",
+    34
+   ],
+   [
+    "(none)",
+    32
+   ],
+   [
+    "[Na+].[OH-]",
+    8
+   ]
+  ],
+  "examples": [
+   "CC(=O)N(CCS)CCc1ccccc1",
+   "CCN1CCN(c2cccc(N(C)C(C)=O)c2)CC1"
+  ]
+ },
+ {
+  "slug": "acetate_ester",
+  "name": "acetate ester (CH3–C(=O)–O–C: acetyl protecting group on an alcohol or phenol)",
+  "smarts": "[CH3][CX3](=[OX1])[OX2][#6]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 760,
+  "reacted": 526,
+  "new": 19,
+  "reagent_reactions": 3852,
+  "top_reagents": [
+   [
+    "(none)",
+    111
+   ],
+   [
+    "c1ccncc1",
+    47
+   ],
+   [
+    "Cl",
+    21
+   ]
+  ],
+  "examples": [
+   "CC(=O)OC(C)=O",
+   "CC(=O)Oc1ccccc1-c1nc2ccc(F)cc2c(=O)o1"
+  ]
+ },
+ {
+  "slug": "methyl_ethyl_ester",
+  "name": "methyl / ethyl ester (saponified by LiOH, NaOH; the common ester protecting group)",
+  "smarts": "[#6][CX3](=[OX1])[OX2][CH3,$([CH2][CH3])]",
+  "kind": "substrate",
+  "check_problems": [],
+  "support": 7845,
+  "reacted": 4039,
+  "new": 269,
+  "reagent_reactions": 6311,
+  "top_reagents": [
+   [
+    "(none)",
+    567
+   ],
+   [
+    "[Na+].[OH-]",
+    429
+   ],
+   [
+    "[Li+].[OH-]",
+    256
+   ]
+  ],
+  "examples": [
+   "CCOC(=O)c1c[nH]c2ccc(I)cc2c1=O",
+   "CCOC(=O)c1ncc2c(CC)noc2c1O"
+  ]
+ },
+ {
+  "slug": "organolithium",
+  "name": "organolithium (R–Li: n-BuLi, s-BuLi, t-BuLi, MeLi, PhLi)",
+  "smarts": "[Li]-[#6]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 92,
+  "reacted": 92,
+  "new": 91,
+  "reagent_reactions": 15942,
+  "top_reagents": [
+   [
+    "(none)",
+    32
+   ],
+   [
+    "CI",
+    7
+   ],
+   [
+    "C[P+](c1ccccc1)(c1ccccc1)c1ccccc1.[Br-]",
+    6
+   ]
+  ],
+  "examples": [
+   "[Li][CH3]",
+   "[Li][CH2]CCC"
+  ]
+ },
+ {
+  "slug": "grignard_ci",
+  "name": "Grignard reagent, chloride / iodide (R–MgCl, R–MgI: MeMgCl, iPrMgCl)",
+  "smarts": "[#6]-[Mg]-[Cl,I]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 58,
+  "reacted": 58,
+  "new": 53,
+  "reagent_reactions": 1500,
+  "top_reagents": [
+   [
+    "(none)",
+    27
+   ],
+   [
+    "[Cl-].[NH4+]",
+    7
+   ],
+   [
+    "[Cl-].[Zn+2]",
+    2
+   ]
+  ],
+  "examples": [
+   "C=C(C)[CH2][Mg][Cl]",
+   "Cc1cccc[c]1[Mg][Cl]"
+  ]
+ },
+ {
+  "slug": "amide_base",
+  "name": "metal amide base (LDA, LiHMDS, NaHMDS, KHMDS, LiTMP)",
+  "smarts": "[N-;X2;$([N-]([Si])[Si]),$([N-]([CX4])[CX4])]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 55,
+  "reacted": 55,
+  "new": 55,
+  "reagent_reactions": 7016,
+  "top_reagents": [
+   [
+    "CI.[Li+]",
+    15
+   ],
+   [
+    "[Li+]",
+    9
+   ],
+   [
+    "C[P+](c1ccccc1)(c1ccccc1)c1ccccc1.[Br-].[Li+]",
+    2
+   ]
+  ],
+  "examples": [
+   "C[Si](C)(C)[N-][Si](C)(C)C",
+   "CC(C)[N-]C(C)C"
+  ]
+ },
+ {
+  "slug": "hydride",
+  "name": "metal hydride (H⁻: NaH, KH, CaH2)",
+  "smarts": "[#1;-]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 48786,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "borohydride",
+  "name": "borohydride (NaBH4, NaBH3CN, NaBH(OAc)3, LiBH4)",
+  "smarts": "[$([BH4-]),$([BH3-]C#N),$([BH-](O)(O)O)]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 81,
+  "reacted": 81,
+  "new": 31,
+  "reagent_reactions": 29729,
+  "top_reagents": [
+   [
+    "C=O.[Na+]",
+    27
+   ],
+   [
+    "CC(=O)[O-].[NH4+].[Na+]",
+    10
+   ],
+   [
+    "[Na+]",
+    7
+   ]
+  ],
+  "examples": [
+   "CC(=O)O[BH-](OC(C)=O)OC(C)=O",
+   "CC(=O)O[BH-](OC(C)=O)OC(C)=O"
+  ]
+ },
+ {
+  "slug": "alkyl_alh",
+  "name": "alkylaluminium hydride (DIBAL-H, Red-Al)",
+  "smarts": "[AlH]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 1207,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "phosphine",
+  "name": "phosphine (PPh3, PBu3, PCy3 and phosphine ligands: P with three carbons)",
+  "smarts": "[PX3;+0]([#6])([#6])[#6]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 62,
+  "reacted": 61,
+  "new": 55,
+  "reagent_reactions": 43289,
+  "top_reagents": [
+   [
+    "(none)",
+    22
+   ],
+   [
+    "CC(C)OC(=O)/N=N/C(=O)OC(C)C",
+    3
+   ],
+   [
+    "CC(C)OC(=O)N=NC(=O)OC(C)C",
+    2
+   ]
+  ],
+  "examples": [
+   "c1ccc(P(c2ccccc2)c2ccccc2)cc1",
+   "COc1cc(P(c2ccccc2)c2ccccc2)c(Br)c(OC)n1"
+  ]
+ },
+ {
+  "slug": "phosphonium",
+  "name": "phosphonium salt / ylide (Wittig reagents: R4P⁺, R3P=CR2)",
+  "smarts": "[$([PX4+]([#6])([#6])([#6])[#6]),$([CX3]=[PX4]([#6])([#6])[#6])]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 97,
+  "reacted": 93,
+  "new": 68,
+  "reagent_reactions": 1200,
+  "top_reagents": [
+   [
+    "(none)",
+    28
+   ],
+   [
+    "[Br-]",
+    6
+   ],
+   [
+    "CC(C)(C)[O-].[Cl-].[K+]",
+    4
+   ]
+  ],
+  "examples": [
+   "COC[P+](c1ccccc1)(c1ccccc1)c1ccccc1",
+   "COC(=O)C=P(c1ccccc1)(c1ccccc1)c1ccccc1"
+  ]
+ },
+ {
+  "slug": "carbodiimide",
+  "name": "carbodiimide (EDC, DCC, DIC: N=C=N)",
+  "smarts": "[NX2]=[CX2]=[NX2]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 60,
+  "reacted": 60,
+  "new": 19,
+  "reagent_reactions": 20844,
+  "top_reagents": [
+   [
+    "(none)",
+    10
+   ],
+   [
+    "Cl",
+    4
+   ],
+   [
+    "[Cl][Ti]([Cl])([Cl])[Cl]",
+    3
+   ]
+  ],
+  "examples": [
+   "CCN=C=NCCCN(C)C",
+   "CCN=C=NCCCN(C)C"
+  ]
+ },
+ {
+  "slug": "uronium_coupling",
+  "name": "uronium / phosphonium coupling reagent (HATU, HBTU, TBTU, BOP, PyBOP)",
+  "smarts": "[$([CX3](=[N+;X3])([NX3])[OX2][#7]),$([PX4+]([#7])([#7])([#7])[OX2][#7])]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 110,
+  "reacted": 110,
+  "new": 108,
+  "reagent_reactions": 20496,
+  "top_reagents": [
+   [
+    "CCN(C(C)C)C(C)C.F[P-](F)(F)(F)(F)F",
+    10
+   ],
+   [
+    "CCN(C(C)C)C(C)C.Cl.F[P-](F)(F)(F)(F)F",
+    4
+   ],
+   [
+    "CCN(C(C)C)C(C)C.CNOC.Cl.F[P-](F)(F)(F)(F)F",
+    4
+   ]
+  ],
+  "examples": [
+   "CN(C)C(On1nnc2cccnc21)=[N+](C)C",
+   "CN(C)C(On1nnc2cccnc21)=[N+](C)C"
+  ]
+ },
+ {
+  "slug": "hobt",
+  "name": "N-hydroxybenzotriazole (HOBt, HOAt: coupling additive)",
+  "smarts": "[OX2H1,OX1-][nX3]1:[nX2]:[nX2]:c:c:1",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 68,
+  "reacted": 68,
+  "new": 68,
+  "reagent_reactions": 16557,
+  "top_reagents": [
+   [
+    "CCN=C=NCCCN(C)C.Cl",
+    3
+   ],
+   [
+    "N",
+    3
+   ],
+   [
+    "(none)",
+    2
+   ]
+  ],
+  "examples": [
+   "On1nnc2ccccc21",
+   "On1nnc2ccccc21"
+  ]
+ },
+ {
+  "slug": "n_halo_imide",
+  "name": "N-halo imide / amide (NBS, NCS, NIS, DBDMH, chloramine-T)",
+  "smarts": "[NX3]([CX3]=[OX1])[Cl,Br,I]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 392,
+  "reacted": 392,
+  "new": 0,
+  "reagent_reactions": 1233,
+  "top_reagents": [
+   [
+    "(none)",
+    184
+   ],
+   [
+    "ClC(Cl)(Cl)Cl.O=C(OOC(=O)c1ccccc1)c1ccccc1",
+    28
+   ],
+   [
+    "ClC(Cl)(Cl)Cl",
+    22
+   ]
+  ],
+  "examples": [
+   "O=C1CCC(=O)N1Br",
+   "O=C1CCC(=O)N1Cl"
+  ]
+ },
+ {
+  "slug": "dihalogen",
+  "name": "dihalogen / interhalogen (Br2, Cl2, I2, ICl, IBr)",
+  "smarts": "[Cl,Br,I]-[Cl,Br,I]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 10019,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "halide_anion",
+  "name": "halide anion (Cl⁻, Br⁻, I⁻: NaI, KBr, LiCl, Bu4NBr)",
+  "smarts": "[Cl-,Br-,I-]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 63960,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "fluoride_anion",
+  "name": "fluoride anion (F⁻: TBAF, CsF, KF)",
+  "smarts": "[F-]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 8895,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "azide_anion",
+  "name": "azide anion (N3⁻: NaN3)",
+  "smarts": "[N-]=[N+]=[N-]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 5081,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "carbonate_anion",
+  "name": "carbonate / bicarbonate (CO3²⁻, HCO3⁻: K2CO3, Cs2CO3, Na2CO3, NaHCO3)",
+  "smarts": "[$([CX3](=[OX1])([OX1-])[OX1-]),$([CX3](=[OX1])([OX1-])[OX2H1])]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 415,
+  "reacted": 415,
+  "new": 415,
+  "reagent_reactions": 135546,
+  "top_reagents": [
+   [
+    "CI.[K+]",
+    92
+   ],
+   [
+    "[K+]",
+    53
+   ],
+   [
+    "[Cl-].[NH3+]O.[Na+]",
+    20
+   ]
+  ],
+  "examples": [
+   "O=C([O-])O",
+   "O=C([O-])[O-]"
+  ]
+ },
+ {
+  "slug": "carbon_dioxide",
+  "name": "carbon dioxide (CO2, dry ice)",
+  "smarts": "O=C=O",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 43,
+  "reacted": 43,
+  "new": 43,
+  "reagent_reactions": 1457,
+  "top_reagents": [
+   [
+    "[Li][CH2]CCC",
+    13
+   ],
+   [
+    "Cl.[Li][CH2]CCC",
+    3
+   ],
+   [
+    "(none)",
+    3
+   ]
+  ],
+  "examples": [
+   "O=C=O",
+   "O=C=O"
+  ]
+ },
+ {
+  "slug": "formaldehyde",
+  "name": "formaldehyde (CH2=O: formalin, paraformaldehyde)",
+  "smarts": "[CH2]=[OX1]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 83,
+  "reacted": 83,
+  "new": 83,
+  "reagent_reactions": 3349,
+  "top_reagents": [
+   [
+    "(none)",
+    27
+   ],
+   [
+    "Cl",
+    9
+   ],
+   [
+    "Cl.[Na+].[OH-]",
+    5
+   ]
+  ],
+  "examples": [
+   "C=O",
+   "C=O"
+  ]
+ },
+ {
+  "slug": "cs2_cscl2",
+  "name": "carbon disulfide / thiophosgene (CS2, CSCl2)",
+  "smarts": "[SX1]=[$([CX2]=[SX1]),$([CX3](Cl)Cl)]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 209,
+  "reacted": 207,
+  "new": 50,
+  "reagent_reactions": 476,
+  "top_reagents": [
+   [
+    "(none)",
+    91
+   ],
+   [
+    "CCN(CC)CC",
+    13
+   ],
+   [
+    "[K+].[OH-]",
+    7
+   ]
+  ],
+  "examples": [
+   "Fc1cccc(Cl)c1N=C=S",
+   "S=C=S"
+  ]
+ },
+ {
+  "slug": "borate_ester",
+  "name": "trialkyl borate (B(OMe)3, B(OiPr)3)",
+  "smarts": "[BX3]([OX2][CX4])([OX2][CX4])[OX2][CX4]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 54,
+  "reacted": 54,
+  "new": 54,
+  "reagent_reactions": 177,
+  "top_reagents": [
+   [
+    "[Li][CH2]CCC",
+    12
+   ],
+   [
+    "Cl.[Li][CH2]CCC",
+    9
+   ],
+   [
+    "Cl.[Li][C](C)(C)C",
+    4
+   ]
+  ],
+  "examples": [
+   "COB(OC)OC",
+   "CC(C)OB(OC(C)C)OC(C)C"
+  ]
+ },
+ {
+  "slug": "dast",
+  "name": "deoxofluorinating agent (DAST, Deoxo-Fluor: R2N–SF3)",
+  "smarts": "[NX3]-[SX4](-F)(-F)-F",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 32,
+  "reacted": 32,
+  "new": 32,
+  "reagent_reactions": 89,
+  "top_reagents": [
+   [
+    "(none)",
+    23
+   ],
+   [
+    "O=C([O-])O.[Na+]",
+    5
+   ],
+   [
+    "O=C([O-])[O-].[Na+]",
+    2
+   ]
+  ],
+  "examples": [
+   "CCN(CC)S(F)(F)F",
+   "CCN(CC)S(F)(F)F"
+  ]
+ },
+ {
+  "slug": "hypervalent_iodine",
+  "name": "hypervalent iodine (Dess–Martin periodinane, IBX, PIDA, PIFA)",
+  "smarts": "[I;X3,X4,X5]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 6,
+  "reacted": 6,
+  "new": 6,
+  "reagent_reactions": 3830,
+  "top_reagents": [
+   [
+    "(none)",
+    2
+   ],
+   [
+    "O=C([O-])O.O=S([O-])([O-])=S.[Na+]",
+    1
+   ],
+   [
+    "NS(=O)(=O)O.[Na+].[O-][Cl+][O-]",
+    1
+   ]
+  ],
+  "examples": [
+   "CC(=O)OI1(OC(C)=O)(OC(C)=O)OC(=O)c2ccccc21",
+   "CC(=O)OI1(OC(C)=O)(OC(C)=O)OC(=O)c2ccccc21"
+  ]
+ },
+ {
+  "slug": "metal_oxo_oxidant",
+  "name": "metal-oxo oxidant (CrO3, PCC, PDC, KMnO4, OsO4, RuO4, SeO2)",
+  "smarts": "[Cr,Mn,Os,Ru,Se;$(*=O),$(*-[O-])]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 1,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 4844,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "pgm_catalyst",
+  "name": "platinum-group metal catalyst (Pd, Pt, Rh, Ru, Ir, Ni: Pd/C, Pd(PPh3)4, Pd(OAc)2, Raney Ni)",
+  "smarts": "[Pd,Pt,Rh,Ru,Ir,Ni]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 101490,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "copper",
+  "name": "copper species (CuI, CuBr, CuCl, Cu(OAc)2, Cu2O)",
+  "smarts": "[Cu]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 34,
+  "reacted": 34,
+  "new": 0,
+  "reagent_reactions": 15962,
+  "top_reagents": [
+   [
+    "(none)",
+    18
+   ],
+   [
+    "Cl",
+    3
+   ],
+   [
+    "NCCN",
+    2
+   ]
+  ],
+  "examples": [
+   "N#[C][Cu]",
+   "N#[C][Cu]"
+  ]
+ },
+ {
+  "slug": "reducing_metal",
+  "name": "metal in the zero oxidation state (Zn, Fe, Sn, Mg, Na, K, Li, Al, Sm, In dust, powder or turnings)",
+  "smarts": "[Zn,Fe,Sn,Mg,Na,K,Li,Al,Sm,In,Mn,Ca;+0;D0]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 19682,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "lewis_acid_halide",
+  "name": "metal / boron halide Lewis acid (BF3, BBr3, AlCl3, TiCl4, ZnCl2, SnCl4, FeCl3, MgBr2)",
+  "smarts": "[B,Al,Ti,Zn,Sn,Fe,Mg,Zr,In,Cu,Sc,Yb,Ce,Ga,Mn,Co,Cd,Sb;$(*~[F,Cl,Br,I]);!$(*-[#6])]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 0,
+  "reacted": 0,
+  "new": 0,
+  "reagent_reactions": 28313,
+  "top_reagents": [],
+  "examples": []
+ },
+ {
+  "slug": "quat_ammonium",
+  "name": "quaternary ammonium (R4N⁺: Bu4N⁺ phase-transfer catalysts and salts)",
+  "smarts": "[NX4+;H0]([#6])([#6])([#6])[#6]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 39,
+  "reacted": 21,
+  "new": 15,
+  "reagent_reactions": 12339,
+  "top_reagents": [
+   [
+    "O=C([O-])[O-].[I-].[K+]",
+    2
+   ],
+   [
+    "[F-]",
+    2
+   ],
+   [
+    "F[B-](F)(F)F",
+    2
+   ]
+  ],
+  "examples": [
+   "Cc1cccc2c1c(C[N+](C)(C)C)cn2C",
+   "CCCC[N+](CCCC)(CCCC)CCCC"
+  ]
+ },
+ {
+  "slug": "ammonium_salt",
+  "name": "ammonium salt (protonated amine R3NH⁺, RNH3⁺, NH4⁺: amine hydrochlorides)",
+  "smarts": "[NX4+;!H0]",
+  "kind": "reagent",
+  "check_problems": [],
+  "support": 51,
+  "reacted": 50,
+  "new": 41,
+  "reagent_reactions": 30527,
+  "top_reagents": [
+   [
+    "[Cl-]",
+    6
+   ],
+   [
+    "Cl",
+    2
+   ],
+   [
+    "CCN(CC)CC.[Cl-]",
+    2
+   ]
+  ],
+  "examples": [
+   "O[C@H]1CO[C@H]2[C@@H]1[NH2+]C[C@@H]2F",
+   "C[NH2+]C"
+  ]
+ }
+]

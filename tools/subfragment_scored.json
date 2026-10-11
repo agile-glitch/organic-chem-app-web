@@ -1,0 +1,796 @@
+[
+ {
+  "slug": "azine_azole_chloride",
+  "name": "aryl chloride next to a ring N (2-chloropyridine, 2-chlorothiazole, 2-chloropyrimidine)",
+  "parent": [
+   "F047"
+  ],
+  "smarts": "[Cl;X1]-c:[nX2;+0]",
+  "check_problems": [],
+  "support_train": 14052,
+  "without_train": 33675,
+  "support_held": 4339,
+  "rate_with": 0.732,
+  "rate_without": 0.129,
+  "gain_held_nats": 2251.6,
+  "gain_train_nats": 7487.3,
+  "overlap": {
+   "fragment": "F086",
+   "name": "2-/4-halo-azine (SNAr-activated heteroar",
+   "jaccard": 0.66
+  },
+  "share_of_parent": 0.301
+ },
+ {
+  "slug": "azine_azole_bromide",
+  "name": "aryl bromide next to a ring N (2-bromopyridine, 2-bromothiazole)",
+  "parent": [
+   "F013"
+  ],
+  "smarts": "[Br;X1]-c:[nX2;+0]",
+  "check_problems": [],
+  "support_train": 3112,
+  "without_train": 21508,
+  "support_held": 1083,
+  "rate_with": 0.731,
+  "rate_without": 0.502,
+  "gain_held_nats": 117.3,
+  "gain_train_nats": 429.6,
+  "overlap": {
+   "fragment": "F086",
+   "name": "2-/4-halo-azine (SNAr-activated heteroar",
+   "jaccard": 0.12
+  },
+  "share_of_parent": 0.131
+ },
+ {
+  "slug": "ewg_aryl_chloride",
+  "name": "aryl chloride with an ortho/para electron-withdrawing group (SNAr-activated)",
+  "parent": [
+   "F047"
+  ],
+  "smarts": "[Cl;X1]-[c;$(c:c-[$([N+](=[OX1])[O-]),$([CX2]#[NX1]),$([CX4](F)(F)F),$([CX3]=[OX1]),$([SX4](=[OX1])=[OX1])]),$(c:c:c:c-[$([N+](=[OX1])[O-]),$([CX2]#[NX1]),$([CX4](F)(F)F),$([CX3]=[OX1]),$([SX4](=[OX1])=[OX1])])]",
+  "check_problems": [],
+  "support_train": 10079,
+  "without_train": 37648,
+  "support_held": 3036,
+  "rate_with": 0.324,
+  "rate_without": 0.302,
+  "gain_held_nats": 60.8,
+  "gain_train_nats": 212.1,
+  "overlap": {
+   "fragment": "F086",
+   "name": "2-/4-halo-azine (SNAr-activated heteroar",
+   "jaccard": 0.12
+  },
+  "share_of_parent": 0.215
+ },
+ {
+  "slug": "edg_aryl_chloride",
+  "name": "aryl chloride with an ortho/para electron-donating group (deactivated)",
+  "parent": [
+   "F047"
+  ],
+  "smarts": "[Cl;X1]-[c;$(c:c-[$([OX2H1]),$([OX2][#6]),$([NX3;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])])]),$(c:c:c:c-[$([OX2H1]),$([OX2][#6]),$([NX3;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8])])])]",
+  "check_problems": [],
+  "support_train": 9182,
+  "without_train": 38545,
+  "support_held": 2308,
+  "rate_with": 0.203,
+  "rate_without": 0.331,
+  "gain_held_nats": 96.7,
+  "gain_train_nats": 393.7,
+  "overlap": {
+   "fragment": "F026",
+   "name": "arylamine (aniline NH2)",
+   "jaccard": 0.08
+  },
+  "share_of_parent": 0.188
+ },
+ {
+  "slug": "benzylic_chloride",
+  "name": "benzylic chloride (Ar–CH2–Cl)",
+  "parent": [
+   "F011"
+  ],
+  "smarts": "c-[CX4;H2]-[Cl;X1]",
+  "check_problems": [],
+  "support_train": 2301,
+  "without_train": 8832,
+  "support_held": 681,
+  "rate_with": 0.954,
+  "rate_without": 0.779,
+  "gain_held_nats": 78.5,
+  "gain_train_nats": 251.0,
+  "overlap": {
+   "fragment": "F044",
+   "name": "alkyl halide (1°)",
+   "jaccard": 0.12
+  },
+  "share_of_parent": 0.211
+ },
+ {
+  "slug": "azole_halide_5ring",
+  "name": "2-halo-azole (Cl/Br/I on a 5-ring carbon next to a ring N: thiazole, imidazole, oxazole)",
+  "parent": [
+   "F047",
+   "F013",
+   "F084"
+  ],
+  "smarts": "[Cl,Br,I;X1]-[c;r5]:[nX2;r5;+0]",
+  "check_problems": [],
+  "support_train": 2284,
+  "without_train": 69678,
+  "support_held": 451,
+  "rate_with": 0.658,
+  "rate_without": 0.422,
+  "gain_held_nats": 73.7,
+  "gain_train_nats": 313.0,
+  "overlap": {
+   "fragment": "F112",
+   "name": "imidazole-type ring N (sp2 N of imidazol",
+   "jaccard": 0.05
+  },
+  "share_of_parent": 0.03
+ },
+ {
+  "slug": "alkylamine_1",
+  "name": "primary alkylamine (R–NH2 on sp3 C; not an aniline)",
+  "parent": [
+   "F002"
+  ],
+  "smarts": "[NX3;H2;+0;!$(N~[!#6;!#1]);!$(N-[#6]=[!#6]);!$(N-[#6]#[!#6])]-[CX4]",
+  "check_problems": [],
+  "support_train": 19976,
+  "without_train": 26051,
+  "support_held": 5955,
+  "rate_with": 0.942,
+  "rate_without": 0.742,
+  "gain_held_nats": 305.1,
+  "gain_train_nats": 1522.0,
+  "overlap": {
+   "fragment": "F001",
+   "name": "carboxylic acid",
+   "jaccard": 0.17
+  },
+  "share_of_parent": 0.434
+ },
+ {
+  "slug": "cyclic_amine_2",
+  "name": "cyclic secondary amine (piperidine, pyrrolidine, morpholine, piperazine N–H)",
+  "parent": [
+   "F034"
+  ],
+  "smarts": "[NX3;H1;R;!$(NC=O);!$(N-c)]([CX4])[CX4]",
+  "check_problems": [],
+  "support_train": 16465,
+  "without_train": 4990,
+  "support_held": 4995,
+  "rate_with": 0.933,
+  "rate_without": 0.766,
+  "gain_held_nats": 177.9,
+  "gain_train_nats": 515.6,
+  "overlap": {
+   "fragment": "F093",
+   "name": "amine 3° (trialkylamine, N,N-dialkylanil",
+   "jaccard": 0.12
+  },
+  "share_of_parent": 0.778
+ },
+ {
+  "slug": "acyclic_amine_2",
+  "name": "acyclic secondary amine (R2NH: Et2NH, N-methylbenzylamine)",
+  "parent": [
+   "F034"
+  ],
+  "smarts": "[NX3;H1;!R;!$(NC=O);!$(N-c)]([CX4])[CX4]",
+  "check_problems": [],
+  "support_train": 5108,
+  "without_train": 16347,
+  "support_held": 1204,
+  "rate_with": 0.77,
+  "rate_without": 0.933,
+  "gain_held_nats": 159.9,
+  "gain_train_nats": 498.1,
+  "overlap": {
+   "fragment": "F129",
+   "name": "1,2-amino alcohol (free N–C–C–OH: ethano",
+   "jaccard": 0.06
+  },
+  "share_of_parent": 0.229
+ },
+ {
+  "slug": "trialkylamine_acyclic",
+  "name": "trialkylamine, all three substituents acyclic (Et3N, DIPEA, Me2NR): a base",
+  "parent": [
+   "F093"
+  ],
+  "smarts": "[NX3;H0;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-C#N);!$(N-[#7,#8,#16])]([CX4;!R])([CX4;!R])[CX4;!R]",
+  "check_problems": [],
+  "support_train": 4800,
+  "without_train": 27939,
+  "support_held": 1303,
+  "rate_with": 0.383,
+  "rate_without": 0.085,
+  "gain_held_nats": 272.3,
+  "gain_train_nats": 1124.0,
+  "overlap": {
+   "fragment": "F148",
+   "name": "carbodiimide (EDC, DCC, DIC: N=C=N)",
+   "jaccard": 0.05
+  },
+  "share_of_parent": 0.145
+ },
+ {
+  "slug": "dialkylaniline",
+  "name": "N,N-dialkylaniline (Ar–NR2: dimethylaniline, N-arylpiperazine/piperidine)",
+  "parent": [
+   "F093"
+  ],
+  "smarts": "[NX3;H0;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-C#N);!$(N-[#7,#8,#16])](-c)([CX4])[CX4]",
+  "check_problems": [],
+  "support_train": 14219,
+  "without_train": 18520,
+  "support_held": 3518,
+  "rate_with": 0.052,
+  "rate_without": 0.187,
+  "gain_held_nats": 160.7,
+  "gain_train_nats": 718.3,
+  "overlap": {
+   "fragment": "F091",
+   "name": "pyridine-type ring N (azine N)",
+   "jaccard": 0.12
+  },
+  "share_of_parent": 0.423
+ },
+ {
+  "slug": "azine_secondary_amine",
+  "name": "secondary amine on a ring N-heteroarene (2-alkylamino-pyridine / pyrimidine / thiazole: Ar(het)–NH–R)",
+  "parent": [
+   "F094"
+  ],
+  "smarts": "[NX3;H1;+0;!$(N-[C,S,P]=[O,S,N]);!$(N-[#7,#8,#16])](-c:[nX2;+0])-[#6]",
+  "check_problems": [],
+  "support_train": 8852,
+  "without_train": 6696,
+  "support_held": 2276,
+  "rate_with": 0.107,
+  "rate_without": 0.386,
+  "gain_held_nats": 259.3,
+  "gain_train_nats": 943.7,
+  "overlap": {
+   "fragment": "F091",
+   "name": "pyridine-type ring N (azine N)",
+   "jaccard": 0.11
+  },
+  "share_of_parent": 0.557
+ },
+ {
+  "slug": "aminoazole_nh2",
+  "name": "2-aminoazole NH2 (2-aminothiazole, 2-aminoimidazole, 2-aminooxazole: NH2 on a 5-ring carbon next to a ring N)",
+  "parent": [
+   "F115"
+  ],
+  "smarts": "[nX2;r5]:c-[NX3;H2;+0]",
+  "check_problems": [],
+  "support_train": 2362,
+  "without_train": 6257,
+  "support_held": 721,
+  "rate_with": 0.759,
+  "rate_without": 0.343,
+  "gain_held_nats": 164.2,
+  "gain_train_nats": 591.4,
+  "overlap": {
+   "fragment": "F026",
+   "name": "arylamine (aniline NH2)",
+   "jaccard": 0.09
+  },
+  "share_of_parent": 0.278
+ },
+ {
+  "slug": "aminoazine_nh2",
+  "name": "aminopyridine / aminopyrimidine NH2 (NH2 on a 6-ring carbon next to a ring N)",
+  "parent": [
+   "F115"
+  ],
+  "smarts": "[nX2;r6]:c-[NX3;H2;+0]",
+  "check_problems": [],
+  "support_train": 6270,
+  "without_train": 2349,
+  "support_held": 1754,
+  "rate_with": 0.344,
+  "rate_without": 0.76,
+  "gain_held_nats": 161.4,
+  "gain_train_nats": 592.2,
+  "overlap": {
+   "fragment": "F026",
+   "name": "arylamine (aniline NH2)",
+   "jaccard": 0.23
+  },
+  "share_of_parent": 0.724
+ },
+ {
+  "slug": "tertiary_amide",
+  "name": "tertiary amide (R–C(=O)–NR2: DMF, DMA, Weinreb amide, N-acylpiperidine, N-alkyl lactam)",
+  "parent": [
+   "F021"
+  ],
+  "smarts": "[CX3;!$(C(-[OX2,SX2,NX3])-[OX2,SX2,NX3])](=[OX1])[NX3;H0;+0]",
+  "check_problems": [],
+  "support_train": 22467,
+  "without_train": 48835,
+  "support_held": 6605,
+  "rate_with": 0.332,
+  "rate_without": 0.226,
+  "gain_held_nats": 254.9,
+  "gain_train_nats": 1256.8,
+  "overlap": {
+   "fragment": "F121",
+   "name": "imide (phthalimide, succinimide, glutari",
+   "jaccard": 0.19
+  },
+  "share_of_parent": 0.314
+ },
+ {
+  "slug": "secondary_amide",
+  "name": "secondary amide (R–C(=O)–NH–R)",
+  "parent": [
+   "F021"
+  ],
+  "smarts": "[#6][CX3](=[OX1])[NX3;H1;+0]-[#6]",
+  "check_problems": [],
+  "support_train": 24590,
+  "without_train": 46712,
+  "support_held": 8337,
+  "rate_with": 0.197,
+  "rate_without": 0.292,
+  "gain_held_nats": 341.5,
+  "gain_train_nats": 588.3,
+  "overlap": {
+   "fragment": "F095",
+   "name": "amide / lactam / carbamate / urea / imid",
+   "jaccard": 0.58
+  },
+  "share_of_parent": 0.356
+ },
+ {
+  "slug": "ring5_nh_amide",
+  "name": "5-membered ring N–H amide / carbamate / urea (γ-lactam, oxazolidinone, hydantoin, thiazolidinedione N–H)",
+  "parent": [
+   "F095"
+  ],
+  "smarts": "[NX3;H1;+0;r5;!a]-[CX3;!a]=[OX1]",
+  "check_problems": [],
+  "support_train": 3523,
+  "without_train": 39389,
+  "support_held": 907,
+  "rate_with": 0.44,
+  "rate_without": 0.239,
+  "gain_held_nats": 146.7,
+  "gain_train_nats": 628.8,
+  "overlap": {
+   "fragment": "F121",
+   "name": "imide (phthalimide, succinimide, glutari",
+   "jaccard": 0.11
+  },
+  "share_of_parent": 0.079
+ },
+ {
+  "slug": "imide_nh",
+  "name": "imide N–H (succinimide, glutarimide, thiazolidinedione, maleimide N–H): an acid",
+  "parent": [
+   "F121"
+  ],
+  "smarts": "[CX3](=[OX1])[NX3;+0;H1][CX3]=[OX1]",
+  "check_problems": [],
+  "support_train": 1172,
+  "without_train": 4612,
+  "support_held": 383,
+  "rate_with": 0.134,
+  "rate_without": 0.631,
+  "gain_held_nats": 114.0,
+  "gain_train_nats": 511.7,
+  "overlap": {
+   "fragment": "F074",
+   "name": "thioester (S-acyl: thioacetate R–SAc, S-",
+   "jaccard": 0.1
+  },
+  "share_of_parent": 0.211
+ },
+ {
+  "slug": "imide_nsub",
+  "name": "N-substituted imide (N-alkyl phthalimide, N-alkyl succinimide: masked amine)",
+  "parent": [
+   "F121"
+  ],
+  "smarts": "[CX3](=[OX1])[NX3;+0;H0]([#6,#7,#8])[CX3]=[OX1]",
+  "check_problems": [],
+  "support_train": 2882,
+  "without_train": 2902,
+  "support_held": 721,
+  "rate_with": 0.392,
+  "rate_without": 0.668,
+  "gain_held_nats": 75.7,
+  "gain_train_nats": 391.4,
+  "overlap": {
+   "fragment": "F123",
+   "name": "hydroxamic acid / hydroxamate (C(=O)–N–O",
+   "jaccard": 0.1
+  },
+  "share_of_parent": 0.49
+ },
+ {
+  "slug": "enone_acyclic",
+  "name": "acyclic enone (chalcone, methyl vinyl ketone: a strong Michael acceptor)",
+  "parent": [
+   "F040"
+  ],
+  "smarts": "[CX3;!R]=[CX3][CX3](=[OX1])[#6]",
+  "check_problems": [],
+  "support_train": 1270,
+  "without_train": 1290,
+  "support_held": 303,
+  "rate_with": 0.758,
+  "rate_without": 0.404,
+  "gain_held_nats": 137.1,
+  "gain_train_nats": 195.9,
+  "overlap": {
+   "fragment": "F127",
+   "name": "enamine / enaminone (C=C–N, not an enami",
+   "jaccard": 0.19
+  },
+  "share_of_parent": 0.454
+ },
+ {
+  "slug": "enone_cyclic",
+  "name": "cyclic enone (cyclohexenone, cyclopentenone, chromone: ring C=C–C=O)",
+  "parent": [
+   "F040"
+  ],
+  "smarts": "[CX3;R]=[CX3;R][CX3;R](=[OX1])[#6]",
+  "check_problems": [],
+  "support_train": 1231,
+  "without_train": 1329,
+  "support_held": 577,
+  "rate_with": 0.392,
+  "rate_without": 0.753,
+  "gain_held_nats": 128.9,
+  "gain_train_nats": 203.9,
+  "overlap": {
+   "fragment": "F126",
+   "name": "enol ether / vinyl ether (C=C–O–R; dihyd",
+   "jaccard": 0.14
+  },
+  "share_of_parent": 0.522
+ },
+ {
+  "slug": "aryl_nitrile",
+  "name": "aryl nitrile (Ar–C≡N: benzonitrile, cyanopyridine)",
+  "parent": [
+   "F022"
+  ],
+  "smarts": "c-[CX2]#[NX1]",
+  "check_problems": [],
+  "support_train": 11169,
+  "without_train": 6653,
+  "support_held": 2701,
+  "rate_with": 0.216,
+  "rate_without": 0.412,
+  "gain_held_nats": 169.4,
+  "gain_train_nats": 567.3,
+  "overlap": {
+   "fragment": "F085",
+   "name": "aryl fluoride, SNAr-activated (o/p-EWG o",
+   "jaccard": 0.06
+  },
+  "share_of_parent": 0.624
+ },
+ {
+  "slug": "ketone_alpha_ch",
+  "name": "α-C–H of a ketone (R–CO–CH: pKa ≈ 19–20; aldol, enolate alkylation, α-halogenation)",
+  "parent": [
+   "F101"
+  ],
+  "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-[CX3]=[OX1]);!$(C(-[CX3]=[OX1])-C#N);$(C-[CX3](=[OX1])-[#6])]",
+  "check_problems": [],
+  "support_train": 14443,
+  "without_train": 27041,
+  "support_held": 3993,
+  "rate_with": 0.629,
+  "rate_without": 0.478,
+  "gain_held_nats": 221.2,
+  "gain_train_nats": 770.8,
+  "overlap": {
+   "fragment": "F019",
+   "name": "ketone",
+   "jaccard": 0.67
+  },
+  "share_of_parent": 0.345
+ },
+ {
+  "slug": "ester_alpha_ch",
+  "name": "α-C–H of an ester or lactone (pKa ≈ 25; needs LDA/NaH-strength base)",
+  "parent": [
+   "F101"
+  ],
+  "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-[CX3]=[OX1]);!$(C(-[CX3]=[OX1])-C#N);$(C-[CX3](=[OX1])-[OX2;H0;+0][#6])]",
+  "check_problems": [],
+  "support_train": 20666,
+  "without_train": 20818,
+  "support_held": 6406,
+  "rate_with": 0.504,
+  "rate_without": 0.557,
+  "gain_held_nats": 216.7,
+  "gain_train_nats": 724.3,
+  "overlap": {
+   "fragment": "F004",
+   "name": "ester",
+   "jaccard": 0.4
+  },
+  "share_of_parent": 0.506
+ },
+ {
+  "slug": "nitrile_alpha_ch",
+  "name": "α-C–H of a nitrile (pKa ≈ 25; cyanomethyl anion)",
+  "parent": [
+   "F101"
+  ],
+  "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);!$(C(-[CX3]=[OX1])-C#N);!$(C(-C#N)-C#N);$(C-[CX2]#[NX1])]",
+  "check_problems": [],
+  "support_train": 2499,
+  "without_train": 38985,
+  "support_held": 682,
+  "rate_with": 0.567,
+  "rate_without": 0.528,
+  "gain_held_nats": 39.0,
+  "gain_train_nats": 166.1,
+  "overlap": {
+   "fragment": "F022",
+   "name": "nitrile",
+   "jaccard": 0.14
+  },
+  "share_of_parent": 0.059
+ },
+ {
+  "slug": "aldehyde_alpha_ch",
+  "name": "α-C–H of an aldehyde (pKa ≈ 17; enolises most easily)",
+  "parent": [
+   "F101"
+  ],
+  "smarts": "[CX4;!H0;!$(C-[F,Cl,Br,I]);$(C-[CX3H1]=[OX1])]",
+  "check_problems": [],
+  "support_train": 1957,
+  "without_train": 39527,
+  "support_held": 521,
+  "rate_with": 0.931,
+  "rate_without": 0.511,
+  "gain_held_nats": 151.9,
+  "gain_train_nats": 581.8,
+  "overlap": {
+   "fragment": "F018",
+   "name": "aldehyde",
+   "jaccard": 0.16
+  },
+  "share_of_parent": 0.046
+ },
+ {
+  "slug": "imine_aldimine",
+  "name": "aldimine / aldoxime (H–C=N: one substituent on carbon)",
+  "parent": [
+   "F031"
+  ],
+  "smarts": "[CX3;H1]=[NX2]",
+  "check_problems": [],
+  "support_train": 1490,
+  "without_train": 8096,
+  "support_held": 387,
+  "rate_with": 0.699,
+  "rate_without": 0.382,
+  "gain_held_nats": 107.1,
+  "gain_train_nats": 311.2,
+  "overlap": {
+   "fragment": "F128",
+   "name": "diazo compound (R2C=N2: diazomethane, TM",
+   "jaccard": 0.14
+  },
+  "share_of_parent": 0.155
+ },
+ {
+  "slug": "methanol",
+  "name": "methanol (CH3–OH): reagent and solvent",
+  "parent": [
+   "F014"
+  ],
+  "smarts": "[CH3]-[OX2H1]",
+  "check_problems": [],
+  "support_train": 1113,
+  "without_train": 28055,
+  "support_held": 326,
+  "rate_with": 0.94,
+  "rate_without": 0.573,
+  "gain_held_nats": 150.9,
+  "gain_train_nats": 461.2,
+  "overlap": {
+   "fragment": "F060",
+   "name": "hydroxide / alkoxide (HO⁻, MeO⁻, EtO⁻, t",
+   "jaccard": 0.01
+  },
+  "share_of_parent": 0.038
+ },
+ {
+  "slug": "ethanol",
+  "name": "ethanol (CH3CH2–OH): reagent and solvent",
+  "parent": [
+   "F003"
+  ],
+  "smarts": "[CH3]-[CH2]-[OX2H1]",
+  "check_problems": [],
+  "support_train": 866,
+  "without_train": 14113,
+  "support_held": 205,
+  "rate_with": 0.982,
+  "rate_without": 0.643,
+  "gain_held_nats": 94.8,
+  "gain_train_nats": 434.6,
+  "overlap": {
+   "fragment": "F014",
+   "name": "alcohol (on sp3 C)",
+   "jaccard": 0.03
+  },
+  "share_of_parent": 0.056
+ },
+ {
+  "slug": "benzyl_alcohol",
+  "name": "benzylic alcohol (Ar–CH2–OH)",
+  "parent": [
+   "F130"
+  ],
+  "smarts": "c-[CX4;H2]-[OX2H1]",
+  "check_problems": [],
+  "support_train": 3672,
+  "without_train": 28607,
+  "support_held": 1124,
+  "rate_with": 0.456,
+  "rate_without": 0.127,
+  "gain_held_nats": 384.6,
+  "gain_train_nats": 1080.8,
+  "overlap": {
+   "fragment": "F003",
+   "name": "alcohol (1°)",
+   "jaccard": 0.25
+  },
+  "share_of_parent": 0.113
+ },
+ {
+  "slug": "orthoester",
+  "name": "orthoester (R–C(OR)3: triethyl orthoformate, trimethyl orthoacetate)",
+  "parent": [
+   "F039"
+  ],
+  "smarts": "[CX4]([OX2][#6])([OX2][#6])[OX2][#6]",
+  "check_problems": [],
+  "support_train": 465,
+  "without_train": 6540,
+  "support_held": 135,
+  "rate_with": 0.946,
+  "rate_without": 0.336,
+  "gain_held_nats": 108.1,
+  "gain_train_nats": 310.3,
+  "overlap": {
+   "fragment": "F096",
+   "name": "hydrazine / hydrazide NH2 (α-effect N)",
+   "jaccard": 0.02
+  },
+  "share_of_parent": 0.066
+ },
+ {
+  "slug": "amide_acetal",
+  "name": "amide acetal / aminal ether (DMF-DMA: Me2N–CH(OMe)2)",
+  "parent": [
+   "F039"
+  ],
+  "smarts": "[CX4]([OX2][#6])([OX2][#6])[NX3]",
+  "check_problems": [],
+  "support_train": 337,
+  "without_train": 6668,
+  "support_held": 91,
+  "rate_with": 0.979,
+  "rate_without": 0.346,
+  "gain_held_nats": 74.6,
+  "gain_train_nats": 283.7,
+  "overlap": {
+   "fragment": "F102",
+   "name": "active methylene CH2 (1,3-dicarbonyl, ma",
+   "jaccard": 0.01
+  },
+  "share_of_parent": 0.047
+ },
+ {
+  "slug": "lactam",
+  "name": "lactam, 5- to 7-membered (pyrrolidinone, piperidinone, caprolactam, oxindole)",
+  "parent": [
+   "F021"
+  ],
+  "smarts": "[#6][CX3;r5,r6,r7](=[OX1])[NX3;r5,r6,r7;+0]",
+  "check_problems": [],
+  "support_train": 14911,
+  "without_train": 56391,
+  "support_held": 4432,
+  "rate_with": 0.299,
+  "rate_without": 0.249,
+  "gain_held_nats": 36.9,
+  "gain_train_nats": 861.0,
+  "overlap": {
+   "fragment": "F121",
+   "name": "imide (phthalimide, succinimide, glutari",
+   "jaccard": 0.33
+  },
+  "share_of_parent": 0.209
+ },
+ {
+  "slug": "enamine_acyclic",
+  "name": "acyclic enamine / enaminone (N–CH=C: Me2N–CH=CH–C(=O)R from DMF-DMA)",
+  "parent": [
+   "F127"
+  ],
+  "smarts": "[CX3]=[CX3;!R]-[NX3;+0;!$(N-C=O);!$(N-S(=O)=O);!$(N-c)]",
+  "check_problems": [],
+  "support_train": 847,
+  "without_train": 699,
+  "support_held": 218,
+  "rate_with": 0.766,
+  "rate_without": 0.459,
+  "gain_held_nats": 119.7,
+  "gain_train_nats": 113.7,
+  "overlap": {
+   "fragment": "F040",
+   "name": "enone (α,β-unsaturated carbonyl)",
+   "jaccard": 0.15
+  },
+  "share_of_parent": 0.501
+ },
+ {
+  "slug": "imine_acyclic",
+  "name": "acyclic imine / oxime / hydrazone (C=N not in a ring)",
+  "parent": [
+   "F031"
+  ],
+  "smarts": "[CX3]=[NX2;!R]",
+  "check_problems": [],
+  "support_train": 5891,
+  "without_train": 3695,
+  "support_held": 1364,
+  "rate_with": 0.575,
+  "rate_without": 0.202,
+  "gain_held_nats": 230.4,
+  "gain_train_nats": 772.7,
+  "overlap": {
+   "fragment": "F049",
+   "name": "oxime",
+   "jaccard": 0.18
+  },
+  "share_of_parent": 0.6
+ },
+ {
+  "slug": "azine_sulfone",
+  "name": "2-sulfonyl / 2-sulfinyl azine (SO2R on a ring carbon next to a ring N: an SNAr leaving group)",
+  "parent": [
+   "F071"
+  ],
+  "smarts": "[#6]-[S;$([SX3]=[OX1]),$([SX4](=[OX1])=[OX1])]-c:[nX2;+0]",
+  "check_problems": [],
+  "support_train": 990,
+  "without_train": 5014,
+  "support_held": 141,
+  "rate_with": 0.746,
+  "rate_without": 0.114,
+  "gain_held_nats": 120.2,
+  "gain_train_nats": 777.1,
+  "overlap": {
+   "fragment": "F101",
+   "name": "enolisable α-C–H (α to ketone, aldehyde,",
+   "jaccard": 0.01
+  },
+  "share_of_parent": 0.151
+ }
+]
