@@ -1,8 +1,8 @@
 // Checks of the newer features, in a headless browser: the Atlas, the reagent suggestions, the learned retrosynthesis, the equation balancer, the cross-app links.
-//   python tools/serve.py   (another terminal)        node tools/browser_features.js [http://localhost:8000/]
+//   python tools/serve.py   (another terminal)        node tools/browser_features.js [http://localhost:8000/app.html]
 // Each check states a chemical fact the program must get right; the exit status is 1 when one fails.
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const base = process.argv[2] || 'http://localhost:8000/';
+const base = process.argv[2] || 'http://localhost:8000/app.html';
 let fails = 0, n = 0;
 const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL', name, detail === undefined ? '' : '\n    ' + JSON.stringify(detail).slice(0, 400)); } else console.log('ok  ', name); };
 (async () => {

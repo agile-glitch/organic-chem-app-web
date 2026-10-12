@@ -5,7 +5,7 @@
 //   data/atlas/ through its own shard decoder and must reach the same probability as numpy (table lookups, backoff chain, combining model), for both questions: transformed, and also transformed when the reaction is elsewhere.
 const fs = require('fs'), path = require('path');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || '/opt/node22/lib/node_modules/playwright');
-const args = process.argv.slice(2), judge = args.includes('--judge'), base = args.find(a => !a.startsWith('--')) || 'http://localhost:8000/';
+const args = process.argv.slice(2), judge = args.includes('--judge'), base = args.find(a => !a.startsWith('--')) || 'http://localhost:8000/app.html';
 const cases = JSON.parse(fs.readFileSync(path.join(__dirname, 'atlas_parity_cases.json'), 'utf8')).cases;
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox'] });

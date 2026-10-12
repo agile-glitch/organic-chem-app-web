@@ -3,303 +3,98 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Organic Chemistry</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>AgileCHEM</title>
+  <link rel="stylesheet" href="css/shell.css">
 </head>
 <body>
-  <nav class="tabs">
-    <button class="tab" data-page="sketcher">Sketcher</button>
-    <button class="tab" data-page="draw">Draw</button>
-    <button class="tab" data-page="mol">Molecule</button>
-    <button class="tab" data-page="retro">Retrosynthesis</button>
-    <button class="tab" data-page="reactions">Reactions</button>
-    <button class="tab" data-page="simulate">Simulate</button>
-    <button class="tab" data-page="possib">Possibilities</button>
-    <button class="tab" data-page="valid">Validation</button>
-    <a class="tab" href="credits.html" target="_blank" rel="noopener">Credits</a>
+  <!-- the home screen: a tab bar (Home, then one tab per open app) and the app icons. Each app opens in a tab of its own
+       (app.html in a frame), so several can be open at once, two Draw tabs side by side included; see js/shell.js. -->
+  <header class="bar">
+    <span class="brand">AgileCHEM</span>
+    <button class="tab home-tab active" id="homeTab">Home</button>
+    <div class="strip" id="strip" aria-label="Open apps"></div>
     <span class="app-version" id="appVersion"></span>
-  </nav>
+  </header>
 
-  <main>
-    <section class="page" id="page-sketcher">
-      <div class="sketch-layout">
-        <!-- drawing tools; filled in by js/sketcher.js -->
-        <div class="tool-grid" id="toolGrid"></div>
-        <div class="sketch-main">
-          <div class="toolbar" id="sketchBar">
-            <button data-act="clear" title="New drawing (clears the canvas)">New</button>
-            <button data-act="undo" title="Undo (Ctrl+Z)">Undo</button>
-            <button data-act="redo" title="Redo (Ctrl+Y)">Redo</button>
-            <button data-act="clear" title="Clean the canvas: erase the whole drawing (Undo brings it back)">Clean</button>
-            <button data-act="autotidy" class="toggle" aria-pressed="true" title="Auto: Tidy. When on (grey), a ring you close snaps to the standard textbook layout, and switching it on tidies the drawing now. When off (white), nothing moves by itself. Undo takes back a snap.">Auto: Tidy</button>
-            <button data-act="mirrorx" title="Mirror on the x-axis (flip top to bottom)">Mirror ↕</button>
-            <button data-act="mirrory" title="Mirror on the y-axis (flip left to right)">Mirror ↔</button>
-            <span class="gap"></span>
-            <span class="lbl">Hydrogens</span>
-            <button data-act="addH" title="Draw every implicit hydrogen as an explicit atom">Add</button>
-            <button data-act="stripH" title="Remove explicit hydrogen atoms">Strip</button>
-            <span class="gap"></span>
-            <span class="import-wrap">
-              <input id="sketchImport" placeholder="Common name, IUPAC name, CAS or SMILES — e.g. aspirin, 2-methylpropan-1-ol, 50-78-2" spellcheck="false" autocomplete="off">
-              <div class="suggest" id="sketchSuggest" hidden></div>
-            </span>
-            <button data-act="import" title="Draw the structure typed on the left">Import</button>
-            <label class="filebtn" title="Import a MOL / SDF / SMILES file">File<input type="file" id="sketchFile" accept=".mol,.sdf,.smi,.smiles,.txt"></label>
-            <span class="gap"></span>
-            <select id="sketchFormat" title="Export format">
-              <option value="smiles">SMILES</option>
-              <option value="name">IUPAC name</option>
-              <option value="common">Common name</option>
-              <option value="cas">CAS number</option>
-              <option value="formula">Formula</option>
-              <option value="mol">MDL Molfile</option>
-              <option value="svg">SVG image</option>
-              <option value="png">PNG image</option>
-            </select>
-            <button data-act="export" title="Save the drawing in the chosen format">Export</button>
-            <button data-act="copy" title="Copy the SMILES to the clipboard">Copy SMILES</button>
-            <span class="gap"></span>
-            <span class="lbl">Send to</span>
-            <button data-act="toReactions" title="Add this molecule to the Reactions tab as a starting material">Reactions</button>
-            <button data-act="toRetro" title="Plan a synthesis of this molecule (Retrosynthesis tab)">Retrosynthesis</button>
-            <button data-act="toMolecule" title="Look at this molecule in 2D and 3D, with its properties (Molecule tab)">Molecule</button>
-          </div>
-          <!-- fragment tools (PubChem's fourth row); filled in by js/sketcher.js -->
-          <div class="toolbar frags" id="fragBar"></div>
-          <div class="canvas-box" id="sketchBox"><svg id="sketchSvg"></svg></div>
-          <div class="readout" id="sketchInfo"></div>
-        </div>
-      </div>
-    </section>
-    <section class="page" id="page-mol">
-      <!-- the Molecule tab: 2D / 3D viewer with hover statistics; filled in by js/molview.js -->
-      <div class="mv">
-        <div class="toolbar mv-top">
-          <span class="import-wrap">
-            <input id="molInput" placeholder="SMILES, common name or IUPAC name — e.g. CC(=O)O, caffeine, 2-methylpropan-1-ol" spellcheck="false" autocomplete="off" aria-label="Molecule to show">
-            <div class="suggest" id="molSuggest" hidden></div>
-          </span>
-          <button id="molShow" class="primary" title="Show the molecule typed on the left (Enter)">Show</button>
-          <label class="filebtn" title="Open a MOL or SDF file (the first record of an SDF). MOL text can also be pasted into the box.">File<input type="file" id="molFile" accept=".mol,.sdf,.sd,.mdl,.txt"></label>
-          <label class="mv-ctl" id="molCompWrap" hidden title="A salt or mixture: each component is analysed on its own"><span class="lbl">Component</span><select id="molComp"></select></label>
-          <span class="mv-seg" role="group" aria-label="View">
-            <button id="molView2d" aria-pressed="true" title="2D structure (publication style)">2D</button><button id="molView3d" aria-pressed="false" title="3D model (OpenChemLib, MMFF94)">3D</button>
-          </span>
-        </div>
-        <div id="molResolved" class="mv-resolved" aria-live="polite"></div>
-        <div class="mv-body">
-          <div class="mv-main">
-            <div class="toolbar mv-vbar" id="molVBar">
-              <label class="mv-ctl mv-3d-only"><span class="lbl">Style</span>
-                <select id="molStyle"><option value="ballstick">Ball and stick</option><option value="sticks">Sticks</option><option value="spacefill">Space-filling</option><option value="wireframe">Wireframe</option></select></label>
-              <button id="molShowH" class="mv-toggle" aria-pressed="false" title="Show every hydrogen as an atom">Show H</button>
-              <label class="mv-ctl mv-2d-only"><span class="lbl">Drawing</span>
-                <select id="molDraw" title="How the 2D structure is drawn"><option value="textbook">textbook (black)</option><option value="color">coloured atoms</option></select></label>
-              <label class="mv-ctl"><span class="lbl">Labels</span>
-                <select id="molLabels">
-                  <option value="none">none</option><option value="element">element</option><option value="index">atom number</option>
-                  <option value="cip">R/S and E/Z</option><option value="hybridization">hybridization</option><option value="formal">formal charge</option>
-                  <option value="partial">partial charge</option><option value="oxidation">oxidation state</option><option value="lonepairs">lone pairs</option><option value="angles">bond angles</option><option value="pka">pKa</option><option value="steric">steric</option><option value="electronic">electronic</option><option value="taft">Taft σ* / Es</option>
-                  <option value="electrons">electrons (lone pairs as dots)</option>
-                </select></label>
-              <button id="molSpin" class="mv-toggle mv-3d-only" aria-pressed="false" title="Turn the model slowly (Space while the model has focus)">Spin</button>
-              <label class="mv-ctl mv-3d-only"><span class="lbl">Surface</span>
-                <select id="molSurface"><option value="none">none</option><option value="plain">van der Waals</option><option value="potential">vdW + potential</option></select></label>
-              <label class="mv-ctl mv-3d-only"><span class="lbl">Measure</span>
-                <select id="molMeasure" title="Click atoms in the 3D model to measure"><option value="0">off</option><option value="2">distance (2 atoms)</option><option value="3">angle (3 atoms)</option><option value="4">dihedral (4 atoms)</option></select></label>
-              <button id="molReset" title="Fit the molecule into the view again">Reset view</button>
-              <span class="mv-sep mv-3d-only"></span>
-              <label class="mv-ctl mv-3d-only"><span class="lbl">Conformer</span><select id="molConf" disabled><option>—</option></select></label>
-              <button id="molMore" class="mv-3d-only" disabled title="Look for more conformers (another random start)">Search more conformers</button>
-              <button id="molPubchem" class="mv-3d-only" disabled>Load PubChem 3D</button>
-              <span class="mv-sep"></span>
-              <select id="molExportFmt" title="Export format" aria-label="Export format"></select>
-              <button id="molExport" title="Save in the chosen format">Export</button>
-            </div>
-            <div id="molBanners" class="mv-banners"></div>
-            <div class="mv-stage" id="molStage">
-              <div class="mv-view" id="mol2d"></div>
-              <div class="mv-view" id="mol3d" hidden></div>
-              <div class="mv-empty" id="molEmpty"></div>
-              <div class="mv-status" id="molStatus" hidden></div>
-            </div>
-            <!-- the potential legend sits under the model, never over it -->
-            <div class="mv-legend" id="molLegend" hidden></div>
-            <div class="mv-foot" id="molFoot"></div>
-          </div>
-          <aside class="mv-side" id="molSide" aria-label="Molecule details">
-            <div class="mv-head" id="molHead"></div>
-            <div id="molSel"></div>
-            <div id="molSections"></div>
-            <div id="molConfs"></div>
-            <div id="molMeas"></div>
-            <details class="mv-sec" id="molContextSec"><summary>Groups in context (surroundings and reagents)</summary><div id="molContext"></div></details>
-            <details class="mv-sec" id="molAtomsSec"><summary>Atoms</summary><div id="molAtoms"></div></details>
-            <details class="mv-sec" id="molBondsSec"><summary>Bonds</summary><div id="molBonds"></div></details>
-            <details class="mv-sec" id="molMethodsSec"><summary>Methods and sources</summary><div id="molMethods"></div></details>
-          </aside>
-        </div>
-      </div>
-      <div class="mv-card" id="molCard" hidden></div>
-      <!-- export choice: one of two, colour as shown or the same picture in black and white (images only) -->
-      <dialog class="mv-dialog" id="molExportDlg" aria-labelledby="molExportDlgTitle">
-        <form method="dialog">
-          <h3 id="molExportDlgTitle">Export</h3>
-          <fieldset class="mv-group"><legend>Colour</legend>
-            <label class="mv-choice"><input type="radio" name="molExportMode" value="bw"> Export as shown (black and white)</label>
-            <label class="mv-choice"><input type="radio" name="molExportMode" value="color" checked> Export as shown (color)</label>
-          </fieldset>
-          <fieldset class="mv-group"><legend>Background</legend>
-            <label class="mv-choice"><input type="radio" name="molExportBg" value="transparent"> Transparent background</label>
-            <label class="mv-choice"><input type="radio" name="molExportBg" value="white" checked> White background</label>
-          </fieldset>
-          <p class="mv-dialog-note" id="molExportDlgNote"></p>
-          <div class="mv-dialog-btns"><button type="button" id="molExportCancel">Cancel</button><button type="submit" class="primary" id="molExportGo">Export</button></div>
-        </form>
-      </dialog>
-    </section>
-    <section class="page" id="page-simulate">
-      <!-- Simulate: Literature (published experiments on a 3D bench) and Simulate; filled in by js/simulate.js -->
-    </section>
-    <section class="page" id="page-retrochimera">
-      <!-- RetroChimera: Microsoft Research's retrosynthesis model, run locally; filled in by js/retrochimera.js -->
-    </section>
-    <section class="page" id="page-retro">
-      <div class="retro">
-        <div class="toolbar retro-search">
-          <span class="import-wrap">
-            <input id="retroTarget" placeholder="Target molecule — a common name, IUPAC name, SMILES or CAS number, e.g. paracetamol" spellcheck="false" autocomplete="off">
-            <div class="suggest" id="retroSuggest" hidden></div>
-          </span>
-          <button id="retroGo">Plan synthesis</button>
-          <button id="retroFromSketch" title="Use the molecule drawn on the Sketcher tab">From sketcher</button>
-          <button id="retroRoutes" hidden title="Search for whole routes back to buyable starting materials, using RetroChimera's steps as well as the taught reactions, each step labelled with its evidence. Needs RetroChimera running on this computer; takes one to five minutes.">Find whole routes</button>
-        </div>
-        <div id="retroRouteOut" class="rc-routes"></div>
-        <div id="retroOut" class="retro-out">
-          <p class="hint">Type a target and press Enter. The plan works backwards from the target, one taught reaction at a time,
-            until every piece is something you can buy: a small, common chemical or an entry in the molecule catalogue.</p>
-        </div>
-      </div>
-    </section>
-    <section class="page" id="page-reactions"></section>
-    <section class="page" id="page-draw"></section>
-    <section class="page" id="page-possib">
-      <div class="poss">
-        <div class="poss-inv card">
-          <h2>What you have <small>chemicals and reagents on the shelf</small></h2>
-          <div class="toolbar">
-            <span class="import-wrap"><input id="possAdd" placeholder="add a chemical — name, SMILES or CAS; or a reagent such as NaBH4, HBr, mCPBA" spellcheck="false" autocomplete="off"><div class="suggest" id="possSuggest" hidden></div></span>
-            <button id="possAddBtn">Add</button>
-            <button id="possSample" title="Load a small example shelf">Example shelf</button>
-            <button id="possClear">Clear</button>
-          </div>
-          <div id="possChips" class="chips"></div>
-        </div>
-        <div class="toolbar poss-opts">
-          <span class="lbl">Show what you could make with up to</span>
-          <select id="possMax"><option value="0">nothing extra</option><option value="1">1 more molecule</option><option value="2" selected>2 more</option><option value="3">3 more</option><option value="4">4 or more</option></select>
-          <span class="gap"></span>
-          <input id="possFilter" placeholder="filter by name or group, e.g. ester, amine, aspirin" style="flex:1 1 200px">
-          <span class="gap"></span>
-          <span id="possStatus" class="hint"></span>
-        </div>
-        <div id="possOut" class="poss-out">
-          <p class="hint">Add the chemicals you have. The page then lists the reactions possible between them, the common molecules you
-            could make from them by the taught reactions, and what one, two, three or more extra purchases would unlock.</p>
-        </div>
-      </div>
-    </section>
-    <section class="page" id="page-valid">
-      <div class="valid">
-        <h2 style="margin-top:0">How accurate is the reaction engine? <small>measured against recorded reactions, not claimed</small></h2>
-        <p class="hint" style="max-width:900px">Every one of the 14,489 recorded reactions is offered to the engine in every sensible way — each ordered pair of
-          reactants through the molecule + molecule path, and the largest reactant with every taught reagent the recorded agents map to.
-          One strict question is asked, by canonical structure: <b>is the engine's major product the product that was actually isolated?</b>
-          Records whose recorded product is a solvent or a fragment of a much larger reactant are counted as data errors, not misses.
-          The run takes a few minutes in the browser and can be stopped and resumed; the result is kept.</p>
-        <h2>The learned-template predictor <small>what the Reactions page uses when no workbook rule applies; measured on patents it never saw</small></h2>
-        <div id="validLearned" class="card"><p class="hint">Reading the figures stored with the model…</p></div>
-        <h2>The Fragment Atlas <small>groups understood in their surroundings: what the interference and reagent suggestions rest on</small></h2>
-        <div id="validAtlas" class="card"><p class="hint">Reading the figures stored with the tables…</p></div>
-        <h2>How predictions are made, and what they are built from <small>the fragments, interferences and templates: how often each functional group appears</small></h2>
-        <div id="validCensus" class="card"><p class="hint">Reading the census…</p></div>
-        <h2>Data sources <small>public reaction sets; loading one adds it to precedent search everywhere and to the benchmark</small></h2>
-        <div id="validSources" class="card"></div>
-        <div class="toolbar">
-          <span class="lbl">Benchmark set</span>
-          <select id="validSet"><option value="db">built-in database (14,489)</option></select>
-          <span class="lbl">Predictor</span>
-          <select id="validMode" title="What is being graded">
-            <option value="rules">mechanistic model (rules)</option>
-            <option value="kb">precedent-based (nearest recorded reactions)</option>
-            <option value="combined">combined (precedents checked against the mechanistic model)</option>
-          </select>
-          <button id="validRun" class="primary">Run the benchmark</button>
-          <button id="validStop" disabled>Stop</button>
-          <button id="validReset">Discard result</button>
-          <button id="validExport">Export JSON</button>
-          <span class="gap"></span>
-          <span id="validStatus" class="hint"></span>
-        </div>
-        <div class="progress" id="validBar"><div></div></div>
-        <div id="validOut"></div>
-      </div>
-    </section>
+  <main class="home" id="home">
+    <div class="grid" id="grid">
+      <button class="app" data-app="draw" title="Draw: molecules, arrows and text on a page">
+        <span class="icon" style="--g1:#ff9f43;--g2:#ff5a5f">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <g transform="rotate(45 32 32)">
+              <rect x="25" y="8" width="14" height="10" rx="3" fill="#f7a1c4"/>
+              <rect x="25" y="16" width="14" height="4" fill="#e4e4e4"/>
+              <rect x="25" y="20" width="14" height="26" fill="#ffe066"/>
+              <rect x="32" y="20" width="7" height="26" fill="#fcc419"/>
+              <path d="M25 46h14l-7 12z" fill="#f4d6a8"/>
+              <path d="M29.7 54h4.6L32 58z" fill="#333"/>
+            </g>
+          </svg>
+        </span>
+        <span class="name">Draw</span>
+      </button>
+      <button class="app" data-app="sketcher" title="Sketcher: draw a structure, then name it, export it or send it on">
+        <span class="icon" style="--g1:#5aaeff;--g2:#2f5fe0">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 15l15 8.5v17L32 49l-15-8.5v-17z" fill="none" stroke="#fff" stroke-width="3.6" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="name">Sketcher</span>
+      </button>
+      <button class="app" data-app="mol" title="Molecule: a structure in 2D and 3D, with its properties">
+        <span class="icon" style="--g1:#b794ff;--g2:#7442e0">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 32L17 22M32 32L47 22M32 32L19 45M32 32L46 44" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+            <circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="16" cy="21" r="5" fill="#fff"/><circle cx="48" cy="21" r="5" fill="#fff"/>
+            <circle cx="18" cy="46" r="5" fill="#fff"/><circle cx="47" cy="45" r="5" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="name">Molecule</span>
+      </button>
+      <button class="app" data-app="retro" title="Retrosynthesis: plan a synthesis back to things you can buy">
+        <span class="icon" style="--g1:#3ee0c6;--g2:#109a85">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M14 33h22M22 25l-8 8 8 8M36 33l10-11M36 33l10 11" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="47" cy="20" r="4.5" fill="#fff"/><circle cx="47" cy="46" r="4.5" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="name">Retrosynthesis</span>
+      </button>
+      <button class="app" data-app="reactions" title="Reactions: starting materials and a reagent in, the product out">
+        <span class="icon" style="--g1:#74dd90;--g2:#22a24a">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M16 21v22" stroke="#fff" stroke-width="3" stroke-dasharray="3 4" stroke-linecap="round"/>
+            <circle cx="16" cy="19" r="5" fill="#fff"/><circle cx="16" cy="45" r="5" fill="#fff"/>
+            <path d="M24 32h13M32 26.5l5.5 5.5-5.5 5.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="47" cy="32" r="7.5" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="name">Reactions</span>
+      </button>
+      <button class="app" data-app="simulate" title="Simulate: published experiments on a 3D bench">
+        <span class="icon" style="--g1:#ff86a6;--g2:#e3245a">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="18" fill="none" stroke="#fff" stroke-width="3.6"/><path d="M27 23.5v17L41 32z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="name">Simulate</span>
+      </button>
+      <button class="app" data-app="possib" title="Possibilities: what the chemicals on your shelf can make">
+        <span class="icon" style="--g1:#fcd25e;--g2:#e8951c">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 18L19 45M32 18v27M32 18l13 27" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="32" cy="17" r="5.5" fill="#fff"/><circle cx="19" cy="46" r="4.5" fill="#fff"/><circle cx="32" cy="46" r="4.5" fill="#fff"/><circle cx="45" cy="46" r="4.5" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="name">Possibilities</span>
+      </button>
+    </div>
+    <footer class="foot">
+      <button class="link" data-app="valid" title="How accurate is the reaction engine? Measured against recorded reactions">Validation</button>
+      <span aria-hidden="true">·</span>
+      <a class="link" href="credits.html" target="_blank" rel="noopener">Credits</a>
+    </footer>
   </main>
 
-  <!-- data (generated by tools/extract.py): window.COURSE, window.REACTIONS, window.NAMES -->
-  <script src="data/names.js"></script>
-  <script src="data/reactions.js"></script>
-  <script src="js/chem.js"></script>
-  <script src="js/retro_ext.js"></script>
-  <script src="js/moldraw.js"></script>
-  <script src="js/sources.js"></script>
-  <script src="js/precedent.js"></script>
-  <script src="js/name_suggest.js"></script>
-  <script src="js/sketcher.js"></script>
-  <script src="js/retro.js"></script>
-  <script src="js/retro_learned.js"></script>
-  <script src="js/rxn_engine.js"></script>
-  <script src="js/rxn_ext.js"></script>
-  <script src="js/rdkit_load.js"></script>
-  <script src="js/rxnkb.js"></script>
-  <script src="js/reagents.js"></script>
-  <script src="js/rxn_equation.js"></script>
-  <script src="data/reaction_rules.js"></script>
-  <script src="data/pka.js"></script>
-  <script src="js/reagent_conc.js"></script>
-  <script src="js/rxn_code.js"></script>
-  <script src="js/stoich.js"></script>
-  <script src="js/atlas.js"></script>
-  <script src="js/mol_context.js"></script>
-  <script src="js/relevance.js"></script>
-  <script src="js/interference.js"></script>
-  <script src="js/reactions.js"></script>
-  <script src="js/advisor.js"></script>
-  <script src="js/possibilities.js"></script>
-  <script src="js/draw.js"></script>
-  <script src="js/validation.js"></script>
-  <script src="js/atlas_report.js"></script>
-  <script src="data/fragment_census.js"></script>
-  <script src="js/census.js"></script>
-  <!-- Molecule tab: element/bond tables, the per-atom and per-bond facts, the 2D and 3D views, the 3D engine, PubChem 3D.
-       three.js and OpenChemLib (vendor/) are loaded by molview.js only when the 3D view is first used. -->
-  <script src="js/mol_data.js"></script>
-  <script src="js/molinfo.js"></script>
-  <script src="js/mol2d_view.js"></script>
-  <script src="js/mol3d_view.js"></script>
-  <script src="js/mol3d_engine.js"></script>
-  <script src="js/pubchem3d.js"></script>
-  <script src="js/litref.js"></script>
-  <script src="js/pclib.js"></script>
-  <script src="js/rc_route.js"></script>
-  <script src="data/lab_experiments.js"></script>
-  <script src="js/lab3d.js"></script>
-  <script src="js/sim_lit.js"></script>
-  <script src="js/simulate.js"></script>
-  <script src="js/molview.js"></script>
+  <div class="frames" id="frames"></div>
+
   <script src="js/version.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/shell.js"></script>
 </body>
 </html>
