@@ -1,10 +1,10 @@
 // Run the Reactions page's own "Run all tests" in a headless browser and print the result.
 //   python tools/serve.py            (another terminal; serves http://localhost:8000)
-//   node tools/browser_tests.js [http://localhost:8000/] [results.json]
+//   node tools/browser_tests.js [http://localhost:8000/app.html] [results.json]
 // Needs Playwright (npm i playwright; npx playwright install chromium). PLAYWRIGHT_MODULE / CHROMIUM override where they are found.
 // Exit status 1 when any case fails. The cases: every reaction of reaction_rules.xlsx, tools/reaction_tests.json, tools/learned_tests.json.
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const base = process.argv[2] || 'http://localhost:8000/', out = process.argv[3] || '';
+const base = process.argv[2] || 'http://localhost:8000/app.html', out = process.argv[3] || '';
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--no-sandbox'] });
   const page = await browser.newPage({ viewport: { width: 1500, height: 900 } });

@@ -1,7 +1,7 @@
 // Draw tab checks, in a headless browser: molecule boxes, arrows, text, colour, resize, turn, captions, PNG export.
-//   python tools/serve.py   (another terminal)        node tools/browser_draw.js [http://localhost:8000/]
+//   python tools/serve.py   (another terminal)        node tools/browser_draw.js [http://localhost:8000/app.html]
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const base = process.argv[2] || 'http://localhost:8000/'; const out = require('os').tmpdir(); let fails = 0;
+const base = process.argv[2] || 'http://localhost:8000/app.html'; const out = require('os').tmpdir(); let fails = 0;
 const check = (n, ok, d) => { if (!ok) { fails++; console.log('FAIL', n, d === undefined ? '' : JSON.stringify(d).slice(0, 300)); } else console.log('ok  ', n); };
 (async () => {
   const b = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--no-sandbox'] });

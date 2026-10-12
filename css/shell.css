@@ -1,0 +1,57 @@
+/* The home screen (index.html): the tab bar, the app icons, and the frames the open apps run in. */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #fff; color: #111;
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+/* the bar is 44px tall: each app (app.html, embedded) keeps a hidden bar of the same height under it */
+.bar { position: fixed; top: 0; left: 0; right: 0; height: 44px; z-index: 10; display: flex; align-items: flex-end;
+  background: #fff; border-bottom: 1px solid #ddd; }
+.brand { align-self: center; padding: 0 14px 0 10px; font-size: 17px; color: #1d2a3a; white-space: nowrap; user-select: none; }
+.strip { margin-left: 2px; display: flex; align-items: flex-end; gap: 2px; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+.app-version { margin-left: auto; align-self: center; padding: 0 12px; font-size: 13px; color: #888; white-space: nowrap; cursor: default; }
+
+.tab { position: relative; display: flex; align-items: center; flex: none; height: 34px; margin-bottom: -1px;
+  border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; background: #f6f6f6; color: #333;
+  font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; }
+.tab:hover { background: #ececec; }
+.tab.active { background: #fff; border-color: #ddd; border-bottom: 1px solid #fff; }
+.tab.home-tab { padding: 0 16px; cursor: pointer; }
+.tab .label { font: inherit; color: inherit; background: none; border: none; height: 100%; padding: 0 10px 0 16px; cursor: pointer; white-space: nowrap; }
+.tab .close { display: grid; place-items: center; width: 22px; height: 22px; margin-right: 6px; padding: 0; border: none; border-radius: 4px;
+  background: none; color: #555; cursor: pointer; }
+.tab .close:hover { background: #dcdcdc; color: #111; }
+.tab .close svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.tab button:focus-visible, .app:focus-visible, .link:focus-visible { outline: 2px solid #2f5fe0; outline-offset: 2px; }
+
+/* home: the app icons, four to a row, spread across the window */
+.home { min-height: 100%; padding: 44px 0 0; display: flex; flex-direction: column; }
+.home[hidden] { display: none; }
+.grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); align-content: center; row-gap: 26px;
+  padding: 40px 4vw; }
+.app { justify-self: center; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 4px; border: none;
+  background: none; cursor: pointer; color: #222; font: 15px system-ui, -apple-system, "Segoe UI", sans-serif; border-radius: 26px; }
+.icon { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 24px;
+  background: linear-gradient(150deg, var(--g1), var(--g2));
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .14), 0 1px 3px rgba(0, 0, 0, .12); transition: transform .12s ease, box-shadow .12s ease; }
+.icon svg { width: 74px; height: 74px; }
+.app:hover .icon { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 0, 0, .16), 0 2px 4px rgba(0, 0, 0, .12); }
+.app:active .icon { transform: translateY(0); }
+
+.foot { display: flex; justify-content: center; gap: 8px; padding: 0 0 18px; color: #aaa; font-size: 13px; }
+.link { font: inherit; color: #888; background: none; border: none; padding: 0; cursor: pointer; text-decoration: none; }
+.link:hover { color: #333; text-decoration: underline; }
+
+/* each open app is a full-window frame under the bar; only the chosen one is shown. Hidden frames keep their size
+   (visibility, not display), so a 3D view or a laid-out reaction is still right when its tab comes back. */
+.frames iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+.frames iframe:not(.active) { visibility: hidden; pointer-events: none; }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  .brand { display: none; }
+  .grid { grid-template-columns: repeat(2, 1fr); row-gap: 20px; padding: 28px 16px; }
+  .icon { width: 88px; height: 88px; border-radius: 20px; }
+  .icon svg { width: 60px; height: 60px; }
+}
