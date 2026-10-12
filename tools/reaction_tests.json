@@ -1784,6 +1784,201 @@
    "hides": [
     "Interference ·"
    ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "cyclohexanol + 98 % H2SO4 at 160 C dehydrates (conc.)",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | conc=98%w/w | cond=160 C",
+   "expect": "R035",
+   "products": [
+    "C1=CCCCC1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "cyclohexanol + 10 % H2SO4 at 160 C does not (dilute)",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | conc=10%w/w | cond=160 C",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "concentrated",
+    "10 % w/w"
+   ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "cyclohexanol + 50 % H2SO4 is neither concentrated nor dilute",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | conc=50%w/w | cond=160 C",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "neither concentrated nor dilute"
+   ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "the word conc. typed in the conditions box counts",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | cond=160 C, conc.",
+   "expect": "R035",
+   "products": [
+    "C1=CCCCC1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "the word dilute typed in the conditions box stops it",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | cond=160 C, dilute",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "concentrated"
+   ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "isobutene + 10 % H2SO4 in water hydrates (dilute)",
+   "code": "CC(C)=C>O=S(=O)(O)O> | conc=10%w/w | cond=25 C, water",
+   "expect": "R006",
+   "products": [
+    "CC(C)(C)O"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "isobutene + 98 % H2SO4 in water does not hydrate (needs dilute)",
+   "code": "CC(C)=C>O=S(=O)(O)O> | conc=98%w/w | cond=25 C, water",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "dilute"
+   ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "ethyl acetate + 10 % H2SO4 at reflux in water hydrolyses",
+   "code": "CCOC(C)=O>O=S(=O)(O)O> | conc=10%w/w | cond=reflux in water",
+   "expect": "R097",
+   "products": [
+    "CC(=O)O",
+    "CCO"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "Clemmensen in 37 % HCl (Zn + HCl mixture line) works",
+   "code": "CC(=O)c1ccccc1>[Zn].Cl> | conc=37%w/w | cond=reflux in water",
+   "expect": "R065",
+   "products": [
+    "CCc1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "Clemmensen in 5 % HCl is refused",
+   "code": "CC(=O)c1ccccc1>[Zn].Cl> | conc=5%w/w | cond=reflux in water",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "concentrated",
+    "5 % w/w"
+   ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "Cannizzaro in 50 % NaOH",
+   "code": "O=Cc1ccccc1.O=Cc1ccccc1>[Na+].[OH-]> | conc=50%w/w | cond=water, 60 C",
+   "expect": "R080",
+   "products": [
+    "O=C(O)c1ccccc1",
+    "OCc1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "Cannizzaro in 4 % NaOH is refused",
+   "code": "O=Cc1ccccc1.O=Cc1ccccc1>[Na+].[OH-]> | conc=4%w/w | cond=water, 60 C",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "concentrated"
+   ]
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "no strength given: the textbook conditions are assumed (nitration)",
+   "code": "c1ccccc1>O=[N+]([O-])O.O=S(=O)(O)O> | cond=50 C",
+   "expect": "R018",
+   "products": [
+    "O=[N+]([O-])c1ccccc1"
+   ],
+   "absent": []
+  },
+  {
+   "feature": "reagent strength (right-click %)",
+   "name": "nitration with 5 % acids is refused",
+   "code": "c1ccccc1>O=[N+]([O-])O.O=S(=O)(O)O> | conc=5%w/w | cond=50 C",
+   "expect": "No reaction under these conditions",
+   "products": [],
+   "absent": [],
+   "shows": [
+    "concentrated"
+   ]
+  },
+  {
+   "feature": "reaction code v2",
+   "name": "the old ~ code is read and rewritten as v2",
+   "code": "CC(C)=O~[BH4-].[Na+]~methanol, 0 C~",
+   "expect": "R037",
+   "products": [
+    "CC(C)O"
+   ],
+   "absent": [],
+   "bar": "CC(C)=O>[BH4-].[Na+]>CC(C)O | cond=0 C, methanol"
+  },
+  {
+   "feature": "reaction code v2",
+   "name": "a v2 code keeps the strength and conditions",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | conc=98%w/w | cond=160 C",
+   "expect": "R035",
+   "products": [
+    "C1=CCCCC1"
+   ],
+   "absent": [],
+   "bar": "OC1CCCCC1>O=S(=O)(O)O>C1=CCCCC1.O | conc=98%w/w | cond=160 C"
+  },
+  {
+   "feature": "reaction code v2",
+   "name": "a v2 code with no extras",
+   "code": "CC(C)=O>[BH4-].[Na+]> | cond=methanol, 0 C",
+   "expect": "R037",
+   "products": [
+    "CC(C)O"
+   ],
+   "absent": [],
+   "bar": "CC(C)=O>[BH4-].[Na+]>CC(C)O | cond=0 C, methanol"
+  },
+  {
+   "feature": "reaction code v2",
+   "name": "conditions are written in one standard spelling",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | conc=98%w/w | cond=heated at 433 K",
+   "expect": "R035",
+   "products": [
+    "C1=CCCCC1"
+   ],
+   "absent": [],
+   "bar": "OC1CCCCC1>O=S(=O)(O)O>C1=CCCCC1.O | conc=98%w/w | cond=160 C, heat"
   }
  ]
 }

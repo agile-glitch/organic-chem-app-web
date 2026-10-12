@@ -559,6 +559,9 @@ window.REACTION_RULES = {
     [
      {
       "solvent": "water"
+     },
+     {
+      "cond": "dilute"
      }
     ]
    ],
@@ -1800,6 +1803,9 @@ window.REACTION_RULES = {
       "tmin": 0.0,
       "tmax": 60.0,
       "label": "0–60 °C"
+     },
+     {
+      "cond": "concentrated"
      }
     ]
    ],
@@ -3529,6 +3535,9 @@ window.REACTION_RULES = {
       "tmin": 120.0,
       "tmax": 180.0,
       "label": "120–180 °C"
+     },
+     {
+      "cond": "concentrated"
      }
     ]
    ],
@@ -5229,6 +5238,9 @@ window.REACTION_RULES = {
     [
      {
       "solvent": "water"
+     },
+     {
+      "cond": "dilute"
      }
     ]
    ],
@@ -5961,6 +5973,9 @@ window.REACTION_RULES = {
     [
      {
       "cond": "heat"
+     },
+     {
+      "cond": "concentrated"
      }
     ]
    ],
@@ -6587,6 +6602,9 @@ window.REACTION_RULES = {
     [
      {
       "cond": "heat"
+     },
+     {
+      "cond": "concentrated"
      }
     ]
    ],
@@ -6955,6 +6973,9 @@ window.REACTION_RULES = {
     [
      {
       "solvent": "water"
+     },
+     {
+      "cond": "dilute"
      }
     ]
    ],
@@ -7120,6 +7141,9 @@ window.REACTION_RULES = {
     [
      {
       "cond": "heat"
+     },
+     {
+      "cond": "concentrated"
      }
     ]
    ],
@@ -7282,6 +7306,9 @@ window.REACTION_RULES = {
      },
      {
       "cond": "heat"
+     },
+     {
+      "cond": "dilute"
      }
     ]
    ],
@@ -8340,6 +8367,28 @@ window.REACTION_RULES = {
     "catalytic",
     "cat.",
     "catalytic amount"
+   ],
+   "minC": null,
+   "maxC": null,
+   "implies": []
+  },
+  "concentrated": {
+   "words": [
+    "concentrated",
+    "conc",
+    "conc.",
+    "concd"
+   ],
+   "minC": null,
+   "maxC": null,
+   "implies": []
+  },
+  "dilute": {
+   "words": [
+    "dilute",
+    "diluted",
+    "dil",
+    "dil."
    ],
    "minC": null,
    "maxC": null,
