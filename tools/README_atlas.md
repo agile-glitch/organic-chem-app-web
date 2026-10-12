@@ -64,6 +64,9 @@ How much the surroundings that were *never seen* matter (log-loss on the part of
 | seen at radius 1, not 2 | 3.6 % | 0.428 | 0.352 | 0.352 |
 | radius 1 never seen | 0.8 % | 0.240 | 0.169 | 0.139 |
 
+The scaffold split (related molecules stay on one side; `tools/atlas_eval_scaffold.json`, measured on an earlier mining of the same reactions) gives the same picture for "transformed":
+log-loss 0.317 (reagent kind) to 0.207 (surroundings) to 0.194 (named reagents), site choice 71 % against 44 % by chance.
+
 Reading the numbers honestly:
 
 * The surroundings do most of the work (log-loss 0.298 to 0.185 for "transformed", 0.037 to 0.023 for "also transformed"). That is the point: a group is understood through where it sits.
