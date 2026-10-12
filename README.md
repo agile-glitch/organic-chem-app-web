@@ -1,6 +1,6 @@
 # Organic chemistry app (website)
 
-The pages AgileCHEM shows inside its window, and that run in any browser (no server): **Sketcher**, **Molecule**, **Retrosynthesis**, **Reactions**, **Simulate**, **Possibilities**, **Validation**.
+The pages AgileCHEM shows inside its window, and that run in any browser (no server): **Sketcher**, **Draw**, **Molecule**, **Retrosynthesis**, **Reactions**, **Simulate**, **Possibilities**, **Validation**.
 Open `index.html` (or `python tools/serve.py` and visit http://localhost:8000).
 
 What is where:

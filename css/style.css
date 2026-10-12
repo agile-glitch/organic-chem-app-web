@@ -642,3 +642,4 @@ html, body { margin: 0; height: 100%; background: #fff; color: #111;
 .atlas-note { margin-top: 5px; font-size: 12px; line-height: 1.35; }
 .atlas-risk { font-weight: 600; } .atlas-risk.high { color: #b3261e; } .atlas-risk.mid { color: #a15c00; } .atlas-risk.low { color: #1e7d32; }
 .atlas-src { color: #999; font-size: 11px; margin-top: 2px; }
+#page-draw { padding: 0; }
