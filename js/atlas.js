@@ -287,7 +287,8 @@
         const confB = confidenceOf(fb.chain);
         // how many recorded cases exist for THIS reagent (its kind, or the named part) with a group of this kind present while the reaction happened elsewhere:
         // few means the records are silent, and silence is not safety (nobody records the reaction they expected to fail)
-        const nReagentB = Math.max(fb.chain.R0[1], fb.chain.P0[1]);
+        // (the named reagent when there is one: the class "reductant" also holds NaBH4 and H2/Pd, which say nothing about LiAlH4)
+        const nReagentB = side.parts.length ? fb.chain.P0[1] : fb.chain.R0[1];
         out.push({ smiles: smi, fid: inst.fid, name: inst.name, atom: inst.atom, where: inst.where, p, pb, chain, evidence: conf, confidence: band(conf), evidenceB: confB, confidenceB: band(confB), nReagentB, cls: side.cls,
                    parts: side.parts.map(x => x.smiles), steric: inst.steric, charge: inst.charge, ring: inst.ring, strain: inst.strain, hyb: inst.hyb });
       }
