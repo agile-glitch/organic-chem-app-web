@@ -18,6 +18,8 @@
       #rxn-gear { position:absolute; top:8px; right:10px; box-sizing:border-box; padding:0; display:flex; align-items:center; justify-content:center;
                   background:#fff; border:1px solid #ddd; border-radius:4px; color:#555; cursor:pointer; }
       #rxn-gear:hover, #rxn-gear.on { border-color:#888; color:#222; }
+      #rxn-suggest { position:absolute; top:8px; box-sizing:border-box; padding:0 12px; background:#fff; border:1px solid #ddd; border-radius:4px; color:#1f4e78; font:13px Arial,sans-serif; cursor:pointer; white-space:nowrap; }
+      #rxn-suggest:hover, #rxn-suggest.on { border-color:#1f4e78; background:#f2f6ff; }
       #rxn-settings { position:absolute; top:calc(100% + 2px); right:10px; width:300px; background:#fff; border:1px solid #ccc; border-radius:6px;
                       box-shadow:0 4px 14px rgba(0,0,0,.12); padding:6px 0; font:13px Arial,sans-serif; color:#333; z-index:6; }
       .rxn-set-head { padding:4px 12px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:.04em; }
@@ -88,6 +90,17 @@
       .rxn-ctx-custom input { flex:1; min-width:0; font:13px Arial,sans-serif; padding:4px 6px; border:1px solid #888; border-radius:4px; }
       .rxn-ctx-custom input.bad { border-color:#b3261e; }
       .rxn-ctx-custom button { font:12px Arial,sans-serif; padding:4px 10px; border:1px solid #ccc; background:#fafafa; border-radius:4px; cursor:pointer; }
+      .rxn-atlas { margin-top:12px; }
+      .rxn-atlas-line { margin:3px 0; }
+      .rxn-atlas-line .rxn-risk { font-weight:bold; }
+      .rxn-risk.high { color:#b3261e; } .rxn-risk.mid { color:#a15c00; } .rxn-risk.low { color:#1e7d32; }
+      .rxn-conf { display:inline-block; font-size:11px; border-radius:3px; padding:0 5px; margin-left:4px; background:#f1f1f1; color:#666; }
+      .rxn-conf.high { background:#e8f5e9; color:#1e7d32; } .rxn-conf.medium { background:#fff4e0; color:#a15c00; }
+      .rxn-atlas details { margin-top:6px; } .rxn-atlas summary { cursor:pointer; color:#555; font-size:12px; }
+      .rxn-atlas table { border-collapse:collapse; margin-top:4px; font-size:12px; }
+      .rxn-atlas th { text-align:left; color:#888; font-weight:normal; padding:2px 10px 2px 0; border-bottom:1px solid #eee; }
+      .rxn-atlas td { padding:2px 10px 2px 0; border-bottom:1px solid #f4f4f4; vertical-align:top; }
+      .rxn-atlas code { font:11px monospace; color:#555; }
       .rxn-mech { margin-top:14px; }
       .rxn-mech-status { font-size:12px; margin:-2px 0 6px; }
       .rxn-mech-status.ok { color:#1e7d32; }
@@ -151,7 +164,7 @@
       .rxn-mol-smiles { margin-top:8px; font:13px monospace; color:#aaa; word-break:break-all; text-align:center; cursor:pointer; }
       .rxn-mol-smiles:hover { color:#666; }
     </style>
-    <div id="rxn-codebar"><input id="rxn-code" type="text" placeholder="Reaction code: reactants&gt;reagents&gt;products | conc=37%w/w | cond=reflux, ethanol" spellcheck="false" autocomplete="off"><button id="rxn-gear" type="button" title="Settings: Basic / Advanced" aria-label="Settings"><svg viewBox="0 0 24 24" width="62%" height="62%" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.03.63.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg></button>
+    <div id="rxn-codebar"><input id="rxn-code" type="text" placeholder="Reaction code: reactants&gt;reagents&gt;products | conc=37%w/w | cond=reflux, ethanol" spellcheck="false" autocomplete="off"><button id="rxn-suggest" type="button" title="Suggest reagents and conditions for these starting materials (from textbook rules and 1.1 million recorded reactions)">Suggest reagents ✦</button><button id="rxn-gear" type="button" title="Settings: Basic / Advanced" aria-label="Settings"><svg viewBox="0 0 24 24" width="62%" height="62%" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.03.63.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg></button>
       <div id="rxn-settings" hidden>
         <div class="rxn-set-head">Show</div>
         <label class="rxn-set-opt"><input type="radio" name="rxn-mode" value="basic"> <b>Basic</b><span>the products and a one-line verdict</span></label>
@@ -2507,6 +2520,77 @@
     wrap.innerHTML = html;
     ruleNote.appendChild(wrap);
   }
+
+  /* ---- Fragment Atlas (js/atlas.js): every group in its surroundings, and what this reagent does to it ----
+     For each group of each starting material: how likely it is that the reaction transforms it, judged from 478,000 recorded reactions at the most specific
+     surroundings that have evidence (radius 3, 2, 1, then the group alone) and backed off from there. Groups the reaction is meant to consume are the target;
+     the others are interferences when the chance is high, and spared when it is low. */
+  const stericWord = s => s <= 2 ? 'open' : s === 3 ? 'moderately hindered' : s === 4 ? 'hindered' : 'very hindered';
+  const pctText = p => (p >= 0.995 ? '>99' : p < 0.005 ? '<1' : String(Math.round(p * 100))) + ' %';
+  const shortName = n => String(n || '').split(' (')[0];
+  function reagentLabel(R, line) {                                              // "sodium borohydride" rather than [BH4-].[Na+]
+    if (!line) return '';
+    const RR = window.REACTION_RULES || {}, k = keyOf(R, line), m = k && (RR.molecules || {})[k];
+    if (m && m.name) return m.name;
+    const norm = x => [...new Set(String(x).split('.').filter(Boolean).map(p => canonPart(p)))].sort().join('.');
+    const ab = (RR.acidsBases || []).find(e => norm(e.smiles) === norm(line));      // sodium hydroxide, triethylamine, sulfuric acid ...
+    if (ab) return ab.name;
+    const RG = RR.reagents || {}, parts = [...new Set(line.split('.').filter(Boolean))];
+    const named = parts.filter(x => RG[x] && !['counter-ion / spectator ion', 'solvent', 'salt (work-up or additive)'].includes(RG[x].role)).map(x => RG[x].abbr || RG[x].name);
+    return named.length ? named.join(' + ') : line;
+  }
+  async function showAtlas(rd, products, run) {
+    const AT = window.Atlas;
+    if (!AT || !rd) return;
+    const meta = await AT.ready(); if (!meta) return;
+    const R = await loadRD(); if (!R) return;
+    const subs = rd.subs.map(x => x.smiles), reagent = rd.reagent ? rd.reagent.smiles : '';
+    let J = []; try { J = await AT.judge(R, subs, reagent); } catch (e) { J = []; }
+    if (!J.length) return;
+    const RR = window.REACTION_RULES || {};
+    // the groups the reaction is for: the rule's own, else the groups whose count drops (hydrogen-type groups such as an α-C–H go with their carbonyl: not listed)
+    let consumed = new Set();
+    if (rd.rule && (rd.rule.consumes || []).length) rd.rule.consumes.forEach(alt => alt.forEach(id => consumed.add(id)));
+    else try { const a = fragmentCounts(R, subs), b = fragmentCounts(R, products || []); Object.keys(a).forEach(id => { if ((a[id] || 0) > (b[id] || 0) && !/C–H/.test((RR.fragments[id] || {}).name || '')) consumed.add(id); }); } catch (e) { consumed = new Set(); }
+    const arene = new Set(['F009', 'F108']);                                    // every aromatic C-H: listed only when the reaction is likely to touch it
+    // one line per atom: overlapping fragment definitions (ester / methyl-ethyl ester) are the same place
+    const byAtom = new Map();
+    J.forEach(j => {
+      const k = j.smiles + '|' + j.atom, cur = byAtom.get(k);
+      if (!cur) byAtom.set(k, Object.assign({}, j, { names: [shortName(j.name)], fids: [j.fid] }));
+      else { if (!cur.names.includes(shortName(j.name))) cur.names.push(shortName(j.name)); cur.fids.push(j.fid); if (j.p > cur.p) { cur.p = j.p; cur.evidence = j.evidence; cur.confidence = j.confidence; } }
+    });
+    const all = [...byAtom.values()];
+    const isTarget = j => j.fids.some(id => consumed.has(id)) && !j.fids.every(id => arene.has(id));
+    const targets = all.filter(isTarget).sort((a, b) => b.p - a.p);
+    const others = all.filter(j => !isTarget(j)).sort((a, b) => b.p - a.p);
+    const risky = others.filter(j => j.p >= 0.15 && !(j.fids.every(id => arene.has(id)) && j.p < 0.3));
+    const spared = others.filter(j => !risky.includes(j) && !j.fids.every(id => arene.has(id)));
+    const conf = j => `<span class="rxn-conf ${j.confidence}" title="${esc(AT.explain(Object.assign({}, j, { name: j.names.join(' / ') })))}">${esc(j.confidence)} confidence</span>`;
+    const ev = j => j.evidence.level === 'none' ? 'no recorded reaction of this kind: estimated from what its parts are like' : `${j.evidence.n.toLocaleString()} recorded at ${esc(j.evidence.label)}`;
+    const label = j => `<b>${esc(j.names.join(' / '))}</b> <code>${esc(j.where || '')}</code>${subs.length > 1 ? ` <span class="rxn-step-k">in ${esc(j.smiles.length > 24 ? j.smiles.slice(0, 22) + '…' : j.smiles)}</span>` : ''}`;
+    const rname = esc(reagentLabel(R, reagent));
+    const side = reagent ? `with ${rname}` : 'with no reagent';
+    let html = `<div class="rxn-mech-head">Groups in their surroundings <span class="rxn-step-k">(Fragment Atlas: learned from ${meta.instances.toLocaleString()} group instances of recorded reactions; the records have no temperature or time, so these are rates over the conditions people used)</span></div>`;
+    if (targets.length) html += targets.slice(0, 4).map(j => `<div class="rxn-atlas-line"><span class="rxn-risk low">Target</span> · ${label(j)}: transformed in an estimated ${pctText(j.p)} of recorded cases like this ${side} — ${ev(j)} ${conf(j)}</div>`).join('');
+    if (risky.length) html += risky.slice(0, 6).map(j => `<div class="rxn-atlas-line"><span class="rxn-risk ${j.p >= 0.5 ? 'high' : 'mid'}">${j.p >= 0.5 ? '⚠ Likely also reacts' : 'May also react'}</span> · ${label(j)}: transformed in an estimated ${pctText(j.p)} of recorded cases ${side} — ${ev(j)} ${conf(j)}</div>`).join('');
+    else if (others.length) html += `<div class="rxn-atlas-line"><span class="rxn-risk low">No interference expected</span> · each of the other ${others.length} group${others.length > 1 ? 's is' : ' is'} estimated under 15 % ${side}${spared.length ? ` (highest: ${esc(spared[0].names[0])} ${pctText(spared[0].p)})` : ''}.</div>`;
+    const rows = all.filter(j => !j.fids.every(id => arene.has(id)) || j.p >= 0.1).sort((a, b) => b.p - a.p).slice(0, 40);
+    html += `<details><summary>Every group, with its surroundings (${rows.length}${all.length > rows.length ? ' of ' + all.length : ''})</summary><table><tr><th>group</th><th>where</th><th>crowding</th><th>partial charge</th><th>ring</th><th>pKa (typical)</th><th>transformed ${side}</th><th>evidence</th></tr>` +
+      rows.map(j => {
+        const f = (RR.fragments || {})[j.fids[0]] || {};
+        const pk = [f.pKa != null ? `acid ${f.pKa}` : '', f.pKaH != null ? `conj. acid ${f.pKaH}` : ''].filter(Boolean).join(', ');
+        const ring = j.ring ? `${j.ring}-ring${j.strain >= 5 ? `, angle strain ${j.strain.toFixed(0)}°` : ''}` : 'open chain';
+        return `<tr><td>${esc(j.names.join(' / '))}</td><td><code>${esc(j.where || '')}</code></td><td>${esc(stericWord(j.steric))} (${j.steric})</td><td>${j.charge == null ? '–' : (j.charge >= 0 ? '+' : '') + j.charge.toFixed(2)}</td><td>${esc(ring)}</td><td>${esc(pk || '–')}</td>` +
+          `<td>${pctText(j.p)} ${conf(j)}</td><td>${j.evidence.level === 'none' ? 'none' : esc(j.evidence.n.toLocaleString() + ' · ' + j.evidence.level)}</td></tr>`;
+      }).join('') + '</table></details>';
+    const wrap = document.createElement('div');
+    wrap.className = 'rxn-read rxn-atlas';
+    wrap.innerHTML = html;
+    if (run !== currentRun || !ruleNote.isConnected) return;               // a newer run (or a closed arrow) took over while the tables loaded
+    const mech = ruleNote.querySelector('.rxn-mech');
+    if (mech) ruleNote.insertBefore(wrap, mech); else ruleNote.appendChild(wrap);
+  }
   function showMechanism(steps, hasProducts, status, note) {
     if (!steps || !steps.length) {
       if (hasProducts) {
@@ -2603,6 +2687,7 @@
       verdict.textContent = res.note;
       ruleNote.appendChild(verdict);
       showReading(res.reading);
+      showAtlas(res.reading, res.products, myRun).catch(() => {});
       showMechanism(res.mechanism, !!(res.products && res.products.length), res.reading && res.reading.rule && res.reading.rule.mechStatus, res.mechNote);
       await pslots.setAll(res.products || []);           // no reaction: no products left over from an earlier run
     }
@@ -2765,7 +2850,9 @@
     const h = codeBar.getBoundingClientRect().height;       // exact (offsetHeight rounds to whole pixels)
     if (!h) return;
     gear.style.width = gear.style.height = h + 'px';
-    codeBar.style.right = (10 + h + 6) + 'px';
+    const sg = document.getElementById('rxn-suggest');
+    sg.style.height = h + 'px'; sg.style.right = (10 + h + 6) + 'px';
+    codeBar.style.right = (10 + h + 6 + sg.offsetWidth + 6) + 'px';
   }
   new ResizeObserver(sizeGear).observe(codeBar);
   sizeGear();
@@ -2930,5 +3017,64 @@
   document.getElementById('rxn-t-close').addEventListener('click', () => { if (testRun) testRun.stop = true; testsPanel.hidden = true; });
   window.ReactionsTests = { run: runTests, results: () => lastResults, running: () => !!testRun };
 
+
+  /* ---- what the suggestion panel (js/advisor.js) may ask of this page ---- */
+  function thumb(smiles, height) {                         // a small drawing of a molecule, `height` px tall
+    const svg = smallDrawing(smiles);
+    if (!svg) return null;
+    const tmp = document.createElement('div'); tmp.style.cssText = 'position:absolute;visibility:hidden;left:-9999px;top:0';
+    document.body.appendChild(tmp); tmp.appendChild(svg);
+    try {
+      const bb = svg.getBBox(), pad = 4;
+      svg.setAttribute('viewBox', `${bb.x - pad} ${bb.y - pad} ${bb.width + 2 * pad} ${bb.height + 2 * pad}`);
+      const k = height / (bb.height + 2 * pad);
+      svg.setAttribute('width', Math.min(240, (bb.width + 2 * pad) * k)); svg.setAttribute('height', height);
+    } catch (e) { /* not measurable */ }
+    tmp.removeChild(svg); tmp.remove();
+    return svg;
+  }
+  /* the textbook rules (reaction_rules.xlsx) that fit these starting materials: the reagents they use, what they make, the conditions they need */
+  function defaultConditions(rule) {
+    const alt = (rule.required || [])[0];
+    if (!alt) return '';
+    const parts = [];
+    for (const q of alt) {
+      if (q.label) { const lo = q.tmin, hi = q.tmax; parts.push(`${lo != null && hi != null ? Math.round((lo + hi) / 2 / 5) * 5 : lo != null ? lo + 30 : hi} °C`); }
+      else parts.push(q.cond || q.solvent);
+    }
+    return parts.join(', ');
+  }
+  function textbookIdeas(R, subs) {
+    const RR = window.REACTION_RULES || {}, out = [], present = new Set(subs.flatMap(x => fragmentsOf(R, x)));
+    for (const rule of RR.rules || []) {
+      if (!runRule(R, rule.smarts, subs)) continue;
+      if ((rule.consumes || []).length && !rule.consumes.every(alt => alt.some(id => present.has(id)))) continue;
+      let outcomes = []; try { outcomes = runRuleAll(R, rule.smarts, subs); } catch (e) { outcomes = []; }
+      if (!outcomes.length) continue;
+      let reagents;
+      if (rule.acidBase) reagents = (RR.acidsBases || []).filter(e => e.role === rule.acidBase.role && acidBaseCheck(rule.acidBase, e).ok).map(e => ({ name: e.name, smiles: e.smiles }));
+      else if (rule.reagents.length) reagents = rule.reagents.map(k => RR.molecules[k]).filter(Boolean).map(m => ({ name: m.name, smiles: m.smiles }));
+      else reagents = [];                                   // needs no reagent (Diels–Alder, heat)
+      out.push({ rule, reagents, products: outcomes[0].products, alternatives: outcomes.length, conditions: defaultConditions(rule) });
+    }
+    return out;
+  }
+  async function applySuggestion(o) {                       // put a reagent line and conditions on the page; run it
+    if (o.reagent) { await aboveApi.show(o.reagent, window.Chem.parseSmiles(o.reagent)); } else { aboveApi.clear(); setReagLine(''); }
+    reagentConc = o.conc && o.reagent ? o.conc : null; renderConcBadge();
+    belowApi.set(o.cond || '');
+    updateCode();
+    if (o.run === false) return;
+    const arrow = document.getElementById('rxn-arrow');
+    if (products.classList.contains('on')) arrow.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    arrow.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }
+  window.RxnPage = {
+    loadRD, thumb, esc, fragName, fragmentCounts, learnedPart, reagentLabel, textbookIdeas, apply: applySuggestion,
+    state: () => ({ subs: slots.filter(x => x.smiles).map(x => x.smiles), reagent: aboveApi.get() || '', cond: belowApi.get() || '', conc: reagentConc }),
+    relevance: (R, subs, reagent) => relevanceRun(R, subs, reagent || '', null, ''),
+    keyOf: smi => (RD ? keyOf(RD, smi) : ''),
+  };
+  document.getElementById('rxn-suggest').addEventListener('click', () => { if (window.Advisor) window.Advisor.toggle(); });
   window.Reactions = { set: () => {} };
 })();

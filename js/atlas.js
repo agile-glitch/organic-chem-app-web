@@ -147,6 +147,14 @@
     return Math.abs((n - 2) * 180 / n - ideal);
   }
 
+  /* the reacting atom and what it is bonded to, for people:  C(=O)(-O)(-c)  (lower case = aromatic) */
+  function whereText(rec, x) {
+    const A = rec.atoms, a = A[x], sym = i => (A[i].aromatic ? A[i].el.toLowerCase() : A[i].el);
+    const nb = a.neighbours.filter(e => e.atom < rec.n && !A[e.atom].isH).map(e => (e.aromatic ? ':' : e.order === 2 ? '=' : e.order === 3 ? '#' : '-') + sym(e.atom));
+    nb.sort((p, q) => (p[0] === '=' ? 0 : 1) - (q[0] === '=' ? 0 : 1) || p.localeCompare(q));
+    return sym(x) + (a.hCount ? 'H' + (a.hCount > 1 ? a.hCount : '') : '') + nb.map(t => `(${t})`).join('');
+  }
+
   const descCache = new Map();
   function describe(R, smiles) {
     if (descCache.has(smiles)) return descCache.get(smiles);
@@ -164,7 +172,7 @@
             const atoms = mt.atoms.filter(i => i < rec.n), x = reactiveAtom(rec, atoms);
             if (x == null) continue;
             const g = rec.atoms[x].gasteiger;
-            out.push({ F, fid: id, name: f.name, atom: x, atoms, e: [h[0][x], h[1][x], h[2][x], h[3][x]], steric: stericScore(rec, x),
+            out.push({ F, fid: id, name: f.name, atom: x, atoms, where: whereText(rec, x), e: [h[0][x], h[1][x], h[2][x], h[3][x]], steric: stericScore(rec, x),
               charge: g == null || !isFinite(g) ? null : g, ring: smallestRing(rec, x), strain: angleStrain(rec, x), hyb: hybridization(rec, x), nAtoms: atoms.length });
           }
         });

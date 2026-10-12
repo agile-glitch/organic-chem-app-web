@@ -11,6 +11,7 @@ a set of starting materials. This reads every record once and keeps, per templat
     yield      the median recorded yield (%), where recorded
     recipes    the reagent lines used, most common first: [reagent SMILES line, count, a patent that used it, its yield]
     solvents   the recorded solvent sets, most common first: [solvents as written in the conditions box, count]
+    consumed, formed   the groups the reaction type most often consumes and forms ("F004 + F095", Fragments sheet ids)
 
 so that "NaBH4 and methanol" can be offered for a ketone reduction because that is what 4,000 recorded reductions used, and shown with that number.
 Patent records have no temperature or time (the text-mining did not keep them), so none is offered from here. data/learned/c/NNN.js holds templates
@@ -35,6 +36,7 @@ def main():
     example = {}                                        # (template, recipe) -> (yield, source) of the best-yielding record
     solv = collections.defaultdict(collections.Counter)
     yields = collections.defaultdict(list)
+    cons, form = collections.defaultdict(collections.Counter), collections.defaultdict(collections.Counter)
     count = collections.Counter()
     total = 0
     for fn in files:
@@ -45,6 +47,7 @@ def main():
             parts = code.split('~')
             if len(parts) < 4: continue
             reagent, cond = parts[1], parts[2]
+            cons[t][r[3] or ''] += times; form[t][r[4] or ''] += times
             total += times
             count[t] += times
             recipes[t][reagent] += times
@@ -65,10 +68,9 @@ def main():
         for reagent, c in recipes[t].most_common(TOP_RECIPES):
             ex = example.get((t, reagent))
             rec.append([reagent, c, ex[1] if ex else '', ex[0] if ex else None])
-        sol = [[c, k] for c, k in solv[t].most_common(TOP_SOLVENTS)]
-        sol = [[a, b] for b, a in sol]
+        sol = [[k, c] for k, c in solv[t].most_common(TOP_SOLVENTS)]          # [solvents as written, count]
         ys = yields[t]
-        shards[t // PER_SHARD][str(t)] = [n, round(statistics.median(ys), 1) if ys else None, rec, sol]
+        shards[t // PER_SHARD][str(t)] = [n, round(statistics.median(ys), 1) if ys else None, rec, sol, cons[t].most_common(1)[0][0], form[t].most_common(1)[0][0]]
         kept += 1
     for k, d in shards.items():
         raw = json.dumps(d, separators=(',', ':'), ensure_ascii=False).encode('utf-8')
