@@ -2,7 +2,7 @@
 // For every molecule of tools/atlas_parity_cases.json (written by tools/atlas_parity_ref.py with RDKit) js/atlas.js runs in the page on the same SMILES
 // and must give the same instances: fragment, reacting atom, the four environment hashes, steric score, Gasteiger charge, ring, strain, hybridization.
 //   node tools/atlas_parity.js --judge   also checks the judgement: for 400 instances of tools/atlas_parity_judge.json (tools/atlas_parity_judge_ref.py) the page reads
-//   data/atlas/ through its own shard decoder and must reach the same probability as numpy (table lookups, backoff chain, combining model).
+//   data/atlas/ through its own shard decoder and must reach the same probability as numpy (table lookups, backoff chain, combining model), for both questions: transformed, and also transformed when the reaction is elsewhere.
 const fs = require('fs'), path = require('path');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || '/opt/node22/lib/node_modules/playwright');
 const args = process.argv.slice(2), judge = args.includes('--judge'), base = args.find(a => !a.startsWith('--')) || 'http://localhost:8000/';
@@ -51,13 +51,17 @@ const cases = JSON.parse(fs.readFileSync(path.join(__dirname, 'atlas_parity_case
         const sh = await window.Atlas.shard(c.F);
         const parts = c.parts.map(s => { const r = (RR.reagents || {})[s] || {}; return { smiles: s, role: r.role, pKaH: r.pKaH }; });
         const inst = { F: c.F, fid: c.fid, e: c.e, steric: c.steric, charge: c.charge, ring: c.ring, strain: c.strain, hyb: c.hyb, nAtoms: c.nAtoms };
-        const { v } = window.Atlas.features(R, inst, { cls: c.cls, parts }, sh);
-        out.push(window.Atlas.combine(v));
+        const side = { cls: c.cls, parts };
+        const a = window.Atlas.features(R, inst, side, sh, 'A'), b = window.Atlas.features(R, inst, side, sh, 'B');
+        out.push([window.Atlas.combine(a.v, 'A'), window.Atlas.combine(b.v, 'B')]);
       }
       return { out, entries: M ? M.entries : 0 };
     }, J);
     let worst = 0, bigs = 0; const wrong = [];
-    J.forEach((c, i) => { const d = Math.abs(c.p - res.out[i]); worst = Math.max(worst, d); if (d > 2e-3) { bigs++; if (wrong.length < 8) wrong.push(`F${c.F} ${c.fid} cls=${c.cls}: python ${c.p.toFixed(4)} page ${res.out[i].toFixed(4)}`); } });
+    J.forEach((c, i) => {
+      const d = Math.max(Math.abs(c.p - res.out[i][0]), Math.abs(c.pb - res.out[i][1])); worst = Math.max(worst, d);
+      if (d > 2e-3) { bigs++; if (wrong.length < 8) wrong.push(`F${c.F} ${c.fid} cls=${c.cls}: python ${c.p.toFixed(4)} / ${c.pb.toFixed(4)} page ${res.out[i][0].toFixed(4)} / ${res.out[i][1].toFixed(4)}`); }
+    });
     console.log(`judgement: ${J.length} instances, largest difference ${worst.toExponential(2)}, ${bigs} above 0.002 (atlas of ${res.entries.toLocaleString()} entries)`);
     wrong.forEach(w => console.log('  ', w));
     fine = fine && bigs === 0;

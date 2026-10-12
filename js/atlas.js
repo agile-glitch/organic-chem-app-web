@@ -73,10 +73,10 @@
     const dv = new DataView(buf), u8 = new Uint8Array(buf), count = dv.getUint32(0, true);
     let pos = 4;
     const rd = () => { let v = 0, m = 1, b; do { b = u8[pos++]; v += (b & 0x7f) * m; m *= 128; } while (b & 0x80); return v; };
-    const k = new Float64Array(count), n = new Uint32Array(count), h = new Uint32Array(count);
+    const k = new Float64Array(count), n = new Uint32Array(count), h = new Uint32Array(count), nb = new Uint32Array(count), hb = new Uint32Array(count);
     let prev = 0;
-    for (let i = 0; i < count; i++) { prev += rd(); k[i] = prev; n[i] = rd(); h[i] = rd(); }
-    return { k, n, h };
+    for (let i = 0; i < count; i++) { prev += rd(); k[i] = prev; n[i] = rd(); h[i] = rd(); nb[i] = rd(); hb[i] = rd(); }
+    return { k, n, h, nb, hb };
   }
   function shard(F) {
     const name = 'f/' + String(F).padStart(3, '0');
@@ -90,15 +90,15 @@
     })());
     return shards.get(name);
   }
-  function get(sh, k) {                                    // [met, transformed] or [0, 0]
-    if (!sh) return [0, 0];
+  function get(sh, k) {                                    // [met, transformed, met as a bystander, also transformed] or zeros
+    if (!sh) return [0, 0, 0, 0];
     let lo = 0, hi = sh.k.length - 1;
     while (lo <= hi) {
       const mid = (lo + hi) >> 1, v = sh.k[mid];
-      if (v === k) return [sh.n[mid], sh.h[mid]];
+      if (v === k) return [sh.n[mid], sh.h[mid], sh.nb[mid], sh.hb[mid]];
       if (v < k) lo = mid + 1; else hi = mid - 1;
     }
-    return [0, 0];
+    return [0, 0, 0, 0];
   }
 
   // ---------------------------------------------------------------- the instances of a molecule
@@ -208,11 +208,13 @@
   const logit = p => { p = Math.min(1 - 1e-4, Math.max(1e-4, p)); return Math.log(p / (1 - p)); };
   const sigmoid = z => 1 / (1 + Math.exp(-Math.max(-30, Math.min(30, z))));
 
-  function features(R, inst, side, sh) {
-    const M = META.m, minN = META.minN, F = inst.F, e = inst.e;
+  /* which = 'A': is the group transformed (every group of a reacting molecule); 'B': the reaction happens elsewhere in the molecule, is this group ALSO transformed
+     (tools/atlas_mine.py). Each has its own counts, prior and fitted model. */
+  function features(R, inst, side, sh, which) {
+    const M = META.m, minN = META.minN, F = inst.F, e = inst.e, B = which === 'B';
     const clsH = fnv32(side.cls);
-    const look = (fam, a, b) => { const [n, h] = get(sh, key(fam, F, a, b)); return n >= minN[fam] ? [n, h] : [0, 0]; };
-    const [nF, hF] = look('F'); const pF = shrink(META.base, nF, hF, 2.0);
+    const look = (fam, a, b) => { const g = get(sh, key(fam, F, a, b)), n = B ? g[2] : g[0], h = B ? g[3] : g[1]; return n >= minN[fam] ? [n, h] : [0, 0]; };
+    const [nF, hF] = look('F'); const pF = shrink(B ? META.baseB : META.base, nF, hF, 2.0);
     let [n, h] = look('R0', clsH); const pR0 = shrink(pF, n, h, M), nR0 = n;
     const chain = { F: [pF, nF], R0: [pR0, nR0] };
     let prev = pR0;
@@ -248,8 +250,8 @@
     Object.assign(v, { has_base: +!isNaN(pb), dpka_base: clip(dpb, -25, 35), has_acid: +!isNaN(pa), dpka_acid: clip(dpa, -25, 35) });
     return { v, chain };
   }
-  function combine(v) {
-    const M = META.model;
+  function combine(v, which) {
+    const M = which === 'B' ? META.modelB : META.model;
     let z = M.coef[0];
     M.names.forEach((nm, i) => { const x = v[nm]; if (x === undefined) throw new Error('atlas: the model wants ' + nm); z += (x - M.mean[i]) / M.std[i] * M.coef[i + 1]; });
     return sigmoid(z);
@@ -276,16 +278,49 @@
       const side = reagentSide(R, smi, subs, reagentLine);
       for (const inst of describe(R, smi)) {
         const sh = await shard(inst.F);
-        const { v, chain } = features(R, inst, side, sh);
-        let p; try { p = combine(v); } catch (e) { p = chain.R1[0]; }
+        const { v, chain } = features(R, inst, side, sh, 'A');
+        let p; try { p = combine(v, 'A'); } catch (e) { p = chain.R1[0]; }
         const conf = confidenceOf(chain);
-        out.push({ smiles: smi, fid: inst.fid, name: inst.name, atom: inst.atom, p, chain, evidence: conf, confidence: band(conf), cls: side.cls,
+        // the interference question: the reaction happens elsewhere; is THIS group also transformed?
+        const fb = features(R, inst, side, sh, 'B');
+        let pb; try { pb = combine(fb.v, 'B'); } catch (e) { pb = fb.chain.R1[0]; }
+        const confB = confidenceOf(fb.chain);
+        // how many recorded cases exist for THIS reagent (its kind, or the named part) with a group of this kind present while the reaction happened elsewhere:
+        // few means the records are silent, and silence is not safety (nobody records the reaction they expected to fail)
+        const nReagentB = Math.max(fb.chain.R0[1], fb.chain.P0[1]);
+        out.push({ smiles: smi, fid: inst.fid, name: inst.name, atom: inst.atom, where: inst.where, p, pb, chain, evidence: conf, confidence: band(conf), evidenceB: confB, confidenceB: band(confB), nReagentB, cls: side.cls,
                    parts: side.parts.map(x => x.smiles), steric: inst.steric, charge: inst.charge, ring: inst.ring, strain: inst.strain, hyb: inst.hyb });
       }
     }
     return out;
   }
+  /* which named reagents most often transform this group, here: for every reagent part of the Reagents sheet, how often recorded reactions that had it
+     transformed a group like this (the group alone, and with this group's surroundings at radius 1). Parts with fewer than `minN` records are left out. */
+  let partList = null;
+  async function reagentProfile(R, inst, opts = {}) {
+    await ready();
+    if (!META || !R) return [];
+    const RR = window.REACTION_RULES || {}, RG = RR.reagents || {}, M = META.m, minN = opts.minN || 30;
+    if (!partList) { partList = []; for (const [smi, r] of Object.entries(RG)) if (!SKIP_ROLES.has(r.role)) partList.push({ smiles: smi, name: r.abbr || r.name, role: r.role, h: partHash(R, smi) }); }
+    const sh = await shard(inst.F);
+    if (!sh) return [];
+    const [nF, hF] = get(sh, key('F', inst.F, 0, 0)), pF = shrink(META.base, nF, hF, 2.0), rows = [];
+    for (const p of partList) {
+      const g0 = get(sh, key('P0', inst.F, p.h, 0)), g1 = get(sh, key('P1', inst.F, p.h, inst.e[1]));
+      if (g0[0] < minN) continue;
+      const p0 = shrink(pF, g0[0], g0[1], M), p1 = g1[0] >= Math.max(10, META.minN.P1) ? shrink(p0, g1[0], g1[1], M) : null;      // a rate for this surrounding needs 10 records, else the group's own rate
+      rows.push({ name: p.name, role: p.role, smiles: p.smiles, n: g0[0], rate: p0, nCtx: g1[0], rateCtx: p1 });
+    }
+    rows.sort((a, b) => (b.rateCtx != null ? b.rateCtx : b.rate) - (a.rateCtx != null ? a.rateCtx : a.rate));
+    return rows.slice(0, opts.top || 8);
+  }
   const pct = x => (x >= 0.995 ? '>99' : x < 0.005 ? '<1' : String(Math.round(x * 100))) + ' %';
+  function explainAlso(j) {                               // the interference line: the reaction is elsewhere, this group might also react
+    const c = j.evidenceB;
+    const ev = c.level === 'none' ? 'no recorded case like this: estimated from what its parts are like'
+      : `${c.n.toLocaleString()} recorded cases at ${c.label} where the reaction took place elsewhere, ${c.h != null ? Math.round(100 * c.h / c.n) + ' %' : '?'} of them also transformed it`;
+    return `${j.name}: an estimated ${pct(j.pb)} chance it is also transformed (${ev}; ${j.confidenceB} confidence)`;
+  }
   function explain(j) {
     const c = j.evidence;
     const ev = c.level === 'none' ? 'no recorded reaction of this kind: estimated from what its parts are like'
@@ -293,5 +328,5 @@
     return `${j.name}: ${pct(j.p)} chance this reaction transforms it (${ev}; ${j.confidence} confidence)`;
   }
 
-  window.Atlas = { ready, describe, judge, explain, mix32, fnv32, wl, key, features: (...a) => features(...a), combine, shard, get meta() { return META; }, band, confidenceOf };
+  window.Atlas = { ready, describe, judge, explain, explainAlso, reagentProfile, mix32, fnv32, wl, key, features: (...a) => features(...a), combine, shard, get meta() { return META; }, band, confidenceOf };
 })();

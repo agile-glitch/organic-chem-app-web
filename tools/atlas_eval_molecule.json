@@ -1,4 +1,5 @@
 {
+ "target": "any",
  "split": "molecule",
  "instances": 8061104,
  "train": 6680737,

@@ -2068,7 +2068,15 @@
     box.innerHTML = h;
   }
   function renderAll() {
-    renderBanners(); renderFoot(); renderHead(); renderSelected(); renderSections(); renderConfs(); renderMeasures(); renderTables(); renderMethods(); renderControls();
+    renderBanners(); renderFoot(); renderHead(); renderSelected(); renderSections(); renderConfs(); renderMeasures(); renderTables(); renderMethods(); renderControls(); renderContext();
+  }
+  /* "Groups in context" (js/mol_context.js, the Fragment Atlas): drawn when the section is open, so the tables load only when someone looks */
+  function renderContext() {
+    const sec = $('molContextSec'), host = $('molContext');
+    if (!sec || !host || !sec.open) return;
+    const cs = S.cs;
+    if (!cs || !cs.record || !window.MolContext) { host.innerHTML = ''; return; }
+    window.MolContext.render(host, (cs.record.smiles && cs.record.smiles.isomeric) || '');
   }
 
   /* ================================================================ controls */
@@ -2306,6 +2314,7 @@
     }
   }
   $('molAtomsSec').addEventListener('toggle', renderTables);
+  if ($('molContextSec')) $('molContextSec').addEventListener('toggle', renderContext);
   $('molBondsSec').addEventListener('toggle', renderTables);
   // remember which molecule sections the user collapsed ('toggle' does not bubble: capture phase)
   $('molSections').addEventListener('toggle', e => {

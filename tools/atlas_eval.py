@@ -217,18 +217,27 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('npz'); ap.add_argument('--out', default=os.path.join(HERE, 'atlas_eval.json'))
     ap.add_argument('--m', type=float, default=5.0)
+    ap.add_argument('--target', choices=('any', 'bystander'), default='any',
+                    help="any: is the group transformed (all groups of reacting molecules); bystander: the reaction happens elsewhere in the molecule - is this group ALSO transformed "
+                         "(only groups that touch no site, or sit on one of two or more; tools/atlas_mine.py)")
     ap.add_argument('--split', choices=('scaffold', 'molecule'), default='scaffold', help='scaffold: related molecules stay on one side; molecule: a held-out molecule never occurs in a training reaction')
     a = ap.parse_args()
     t0 = time.time()
     d = dict(np.load(a.npz, allow_pickle=True))
-    y = d['y'].astype(np.float64); split = d['split_mol'] if a.split == 'molecule' else d['split']
+    split = d['split_mol'] if a.split == 'molecule' else d['split']
     d['split'] = split
-    print(f'{len(y):,} instances; train {int((split == 2).sum()):,}, validation {int((split == 1).sum()):,}, test {int((split == 0).sum()):,}', flush=True)
-    train = split == 2
-    res = {'split': a.split, 'instances': int(len(y)), 'train': int(train.sum()), 'validation': int((split == 1).sum()), 'test': int((split == 0).sum()), 'm': a.m}
+    el = np.ones(len(split), bool)
+    if a.target == 'bystander':
+        el = d['elig'] == 1
+        d['y'] = d['yb']
+    y = d['y'].astype(np.float64)
+    print(f'{len(y):,} instances ({a.target}: {int(el.sum()):,} used); train {int(((split == 2) & el).sum()):,}, validation {int(((split == 1) & el).sum()):,}, test {int(((split == 0) & el).sum()):,}', flush=True)
+    train = (split == 2) & el
+    vmask, tmask = (split == 1) & el, (split == 0) & el
+    res = {'target': a.target, 'split': a.split, 'instances': int(len(y)), 'train': int(train.sum()), 'validation': int(vmask.sum()), 'test': int(tmask.sum()), 'm': a.m}
     P = K.prepare(d)
-    names, grp, Xv, iv = build_features(d, P, train, split == 1, a.m)
-    _, _, Xt, it = build_features(d, P, train, split == 0, a.m)
+    names, grp, Xv, iv = build_features(d, P, train, vmask, a.m)
+    _, _, Xt, it = build_features(d, P, train, tmask, a.m)
     yv, yt = y[iv], y[it]
     ft = d['frag'][it]
     print(f'features built in {time.time() - t0:.0f}s: {len(names)} columns', flush=True)
@@ -277,7 +286,7 @@ def main():
     # SITE CHOICE: a molecule with several instances of the same group (two esters, four aromatic C-H ...) of which exactly one was transformed.
     # Which one does each model pick? (This is where steric hindrance, partial charge and ring angle are expected to matter: the group, the
     # reagent and the molecule are the same, only the surroundings differ.)
-    if 'rx' in d and 'mol' in d:
+    if 'rx' in d and 'mol' in d and a.target == 'any':
         g = (d['rx'][it].astype(np.uint64) * np.uint64(1000003)) ^ (d['mol'][it].astype(np.uint64) * np.uint64(7919)) ^ (ft.astype(np.uint64) * np.uint64(104729))
         _, gid = np.unique(g, return_inverse=True)
         size = np.bincount(gid); hits = np.bincount(gid, weights=yt)

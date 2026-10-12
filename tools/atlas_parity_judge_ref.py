@@ -1,6 +1,6 @@
 """Fragment Atlas: the reference side of the judgement parity test (table lookups, backoff chain, combining model).
 
-    python tools/atlas_parity_judge_ref.py <instances.npz> <atlas_eval.json>     writes tools/atlas_parity_judge.json   (then: node tools/atlas_parity.js --judge)
+    python tools/atlas_parity_judge_ref.py <instances.npz> <atlas_eval.json> <atlas_eval_bystander.json>     writes tools/atlas_parity_judge.json   (then: node tools/atlas_parity.js --judge)
 
 Picks random fragment instances, computes with numpy exactly what the page must compute from the shipped tables (counts from ALL instances, pruned at the
 minimum of each family) and writes the instance, its reagent side and the expected probability. tools/atlas_parity.js feeds the same instance to
@@ -17,6 +17,7 @@ import atlas_eval as E
 def main():
     d = dict(np.load(sys.argv[1], allow_pickle=True))
     ev = json.load(open(sys.argv[2], encoding='utf-8'))
+    evb = json.load(open(sys.argv[3], encoding='utf-8'))
     n = len(d['y'])
     split = d['split_mol'] if ev.get('split') == 'molecule' else d['split']
     P = K.prepare(d)
@@ -32,6 +33,15 @@ def main():
     assert names == M['names'], 'the model was fitted with other columns'
     w, mu, sd = np.array(M['coef']), np.array(M['mean']), np.array(M['std'])
     p = 1 / (1 + np.exp(-np.clip(w[0] + ((X - mu) / sd) @ w[1:], -30, 30)))
+    # the interference question: counts from every eligible instance, rows as above
+    db = dict(d); db['y'] = d['yb']
+    elig_all = d['elig'] == 1
+    base_b = float(d['yb'][(split == 2) & elig_all].mean())
+    namesB, _, XB, ridxB = E.build_features_with_base(db, P, elig_all, rows, base_b, K.M_CHAIN, K.MIN_N)
+    MB = evb['model']
+    assert namesB == MB['names'] and (ridxB == ridx).all()
+    wb, mub, sdb = np.array(MB['coef']), np.array(MB['mean']), np.array(MB['std'])
+    pbv = 1 / (1 + np.exp(-np.clip(wb[0] + ((XB - mub) / sdb) @ wb[1:], -30, 30)))
     cls_list, parts, roles = list(d['classes']), list(d['parts']), list(d['part_role'])
     cases = []
     for i, r in enumerate(ridx.tolist()):
@@ -39,7 +49,7 @@ def main():
         q = float(d['charge'][r])
         cases.append({'F': int(d['frag'][r]), 'e': [int(d['e0'][r]), int(d['e1'][r]), int(d['e2'][r]), int(d['e3'][r])], 'steric': int(d['steric'][r]),
                       'charge': None if q != q else q, 'ring': int(d['ring'][r]), 'strain': float(d['strain'][r]), 'hyb': int(d['hyb'][r]), 'nAtoms': int(d['natoms'][r]),
-                      'cls': cls_list[int(d['cls'][r])], 'parts': side_parts, 'p': float(p[i]), 'fid': str(d['frag_ids'][int(d['frag'][r])])})
+                      'cls': cls_list[int(d['cls'][r])], 'parts': side_parts, 'p': float(p[i]), 'pb': float(pbv[i]), 'fid': str(d['frag_ids'][int(d['frag'][r])])})
     out = os.path.join(HERE, 'atlas_parity_judge.json')
     json.dump({'about': 'expected probabilities computed by tools/atlas_eval.py build_features + the fitted model; checked by tools/atlas_parity.js --judge', 'cases': cases}, open(out, 'w'), separators=(',', ':'))
     print(len(cases), 'instances ->', out, f'(mean p {np.mean(p):.3f})')

@@ -101,6 +101,11 @@
       .rxn-atlas th { text-align:left; color:#888; font-weight:normal; padding:2px 10px 2px 0; border-bottom:1px solid #eee; }
       .rxn-atlas td { padding:2px 10px 2px 0; border-bottom:1px solid #f4f4f4; vertical-align:top; }
       .rxn-atlas code { font:11px monospace; color:#555; }
+      .rxn-eqn { margin-top:12px; }
+      .rxn-eqn .eq { font:15px Arial,sans-serif; margin:4px 0; } .rxn-eqn .eq b { font-weight:normal; color:#1f4e78; }
+      .rxn-eqn table { border-collapse:collapse; margin-top:6px; font-size:12px; } .rxn-eqn th { text-align:left; color:#888; font-weight:normal; padding:2px 12px 2px 0; border-bottom:1px solid #eee; }
+      .rxn-eqn td { padding:2px 12px 2px 0; border-bottom:1px solid #f4f4f4; } .rxn-eqn td.n { text-align:right; font-variant-numeric:tabular-nums; }
+      .rxn-eqn input { width:70px; font:12px Arial,sans-serif; padding:2px 4px; border:1px solid #bbb; border-radius:3px; }
       .rxn-mech { margin-top:14px; }
       .rxn-mech-status { font-size:12px; margin:-2px 0 6px; }
       .rxn-mech-status.ok { color:#1e7d32; }
@@ -169,6 +174,10 @@
         <div class="rxn-set-head">Show</div>
         <label class="rxn-set-opt"><input type="radio" name="rxn-mode" value="basic"> <b>Basic</b><span>the products and a one-line verdict</span></label>
         <label class="rxn-set-opt"><input type="radio" name="rxn-mode" value="advanced"> <b>Advanced</b><span>also how it was read (fragments), chemoselectivity, stereo, amounts, pKa and the mechanism with arrows</span></label>
+        <div class="rxn-set-sep"></div>
+        <div class="rxn-set-head">Share</div>
+        <button type="button" class="rxn-set-btn" id="rxn-copy-rsmi"><b>Copy reaction SMILES</b><span>the first word of the code (reactants&gt;reagents&gt;products), for ChemDraw, RDKit, Reaxys, an electronic notebook</span></button>
+        <button type="button" class="rxn-set-btn" id="rxn-copy-code"><b>Copy the whole code</b><span>with the reagent's strength and the conditions (the page reads it back)</span></button>
         <div class="rxn-set-sep"></div>
         <div class="rxn-set-head">Tests</div>
         <button type="button" class="rxn-set-btn" id="rxn-run-tests"><b>Run all tests</b><span>every reaction in the workbook (its stored reaction code) plus the feature cases in tools/reaction_tests.json, through this page</span></button>
@@ -2558,36 +2567,134 @@
     J.forEach(j => {
       const k = j.smiles + '|' + j.atom, cur = byAtom.get(k);
       if (!cur) byAtom.set(k, Object.assign({}, j, { names: [shortName(j.name)], fids: [j.fid] }));
-      else { if (!cur.names.includes(shortName(j.name))) cur.names.push(shortName(j.name)); cur.fids.push(j.fid); if (j.p > cur.p) { cur.p = j.p; cur.evidence = j.evidence; cur.confidence = j.confidence; } }
+      else { if (!cur.names.includes(shortName(j.name))) cur.names.push(shortName(j.name)); cur.fids.push(j.fid); if (j.p > cur.p) { cur.p = j.p; cur.evidence = j.evidence; cur.confidence = j.confidence; } if (j.pb > cur.pb) { cur.pb = j.pb; cur.evidenceB = j.evidenceB; cur.confidenceB = j.confidenceB; } cur.nReagentB = Math.max(cur.nReagentB || 0, j.nReagentB || 0); }
     });
     const all = [...byAtom.values()];
     const isTarget = j => j.fids.some(id => consumed.has(id)) && !j.fids.every(id => arene.has(id));
     const targets = all.filter(isTarget).sort((a, b) => b.p - a.p);
-    const others = all.filter(j => !isTarget(j)).sort((a, b) => b.p - a.p);
-    const risky = others.filter(j => j.p >= 0.15 && !(j.fids.every(id => arene.has(id)) && j.p < 0.3));
-    const spared = others.filter(j => !risky.includes(j) && !j.fids.every(id => arene.has(id)));
+    const others = all.filter(j => !isTarget(j)).sort((a, b) => b.pb - a.pb);                      // for a group the reaction is not for, the question is: is it ALSO transformed (pb)
+    const risky = others.filter(j => j.pb >= 0.10 && !(j.fids.every(id => arene.has(id)) && j.pb < 0.25));
+    const quiet = others.filter(j => !risky.includes(j) && !j.fids.every(id => arene.has(id)));
+    const unknown = quiet.filter(j => (j.nReagentB || 0) < 15), spared = quiet.filter(j => (j.nReagentB || 0) >= 15);      // few recorded cases: the records are silent, which is not safety
     const conf = j => `<span class="rxn-conf ${j.confidence}" title="${esc(AT.explain(Object.assign({}, j, { name: j.names.join(' / ') })))}">${esc(j.confidence)} confidence</span>`;
+    const confB = j => `<span class="rxn-conf ${j.confidenceB}" title="${esc(AT.explainAlso(Object.assign({}, j, { name: j.names.join(' / ') })))}">${esc(j.confidenceB)} confidence</span>`;
+    const evB = j => j.evidenceB.level === 'none' ? 'no recorded case like this: estimated from what its parts are like' : `${j.evidenceB.n.toLocaleString()} recorded cases at ${esc(j.evidenceB.label)}`;
     const ev = j => j.evidence.level === 'none' ? 'no recorded reaction of this kind: estimated from what its parts are like' : `${j.evidence.n.toLocaleString()} recorded at ${esc(j.evidence.label)}`;
     const label = j => `<b>${esc(j.names.join(' / '))}</b> <code>${esc(j.where || '')}</code>${subs.length > 1 ? ` <span class="rxn-step-k">in ${esc(j.smiles.length > 24 ? j.smiles.slice(0, 22) + '…' : j.smiles)}</span>` : ''}`;
     const rname = esc(reagentLabel(R, reagent));
     const side = reagent ? `with ${rname}` : 'with no reagent';
     let html = `<div class="rxn-mech-head">Groups in their surroundings <span class="rxn-step-k">(Fragment Atlas: learned from ${meta.instances.toLocaleString()} group instances of recorded reactions; the records have no temperature or time, so these are rates over the conditions people used)</span></div>`;
     if (targets.length) html += targets.slice(0, 4).map(j => `<div class="rxn-atlas-line"><span class="rxn-risk low">Target</span> · ${label(j)}: transformed in an estimated ${pctText(j.p)} of recorded cases like this ${side} — ${ev(j)} ${conf(j)}</div>`).join('');
-    if (risky.length) html += risky.slice(0, 6).map(j => `<div class="rxn-atlas-line"><span class="rxn-risk ${j.p >= 0.5 ? 'high' : 'mid'}">${j.p >= 0.5 ? '⚠ Likely also reacts' : 'May also react'}</span> · ${label(j)}: transformed in an estimated ${pctText(j.p)} of recorded cases ${side} — ${ev(j)} ${conf(j)}</div>`).join('');
-    else if (others.length) html += `<div class="rxn-atlas-line"><span class="rxn-risk low">No interference expected</span> · each of the other ${others.length} group${others.length > 1 ? 's is' : ' is'} estimated under 15 % ${side}${spared.length ? ` (highest: ${esc(spared[0].names[0])} ${pctText(spared[0].p)})` : ''}.</div>`;
-    const rows = all.filter(j => !j.fids.every(id => arene.has(id)) || j.p >= 0.1).sort((a, b) => b.p - a.p).slice(0, 40);
-    html += `<details><summary>Every group, with its surroundings (${rows.length}${all.length > rows.length ? ' of ' + all.length : ''})</summary><table><tr><th>group</th><th>where</th><th>crowding</th><th>partial charge</th><th>ring</th><th>pKa (typical)</th><th>transformed ${side}</th><th>evidence</th></tr>` +
+    if (risky.length) html += risky.slice(0, 6).map(j => `<div class="rxn-atlas-line"><span class="rxn-risk ${j.pb >= 0.3 ? 'high' : 'mid'}">${j.pb >= 0.3 ? '⚠ Likely also reacts' : 'May also react'}</span> · ${label(j)}: with the reaction happening elsewhere in the molecule, it was also transformed in an estimated ${pctText(j.pb)} of recorded cases ${side} — ${evB(j)} ${confB(j)}</div>`).join('');
+    if (spared.length) html += `<div class="rxn-atlas-line"><span class="rxn-risk low">Recorded as spared</span> · ${spared.slice(0, 5).map(j => esc(j.names[0])).join(', ')}${spared.length > 5 ? ' …' : ''}: each was transformed in under 10 % of at least ${Math.min(...spared.map(j => j.nReagentB))} recorded cases ${side} where the reaction took place elsewhere in the molecule.</div>`;
+    if (unknown.length) html += `<div class="rxn-atlas-line"><span class="rxn-risk mid">No precedent</span> · ${unknown.slice(0, 5).map(j => esc(j.names[0])).join(', ')}${unknown.length > 5 ? ' …' : ''}: fewer than 15 recorded cases ${side} with such a group present. The records only show what was tried and worked, so silence is not safety: check the advisories and the group's own chemistry.</div>`;
+    const rows = all.filter(j => !j.fids.every(id => arene.has(id)) || j.pb >= 0.05).sort((a, b) => (isTarget(b) - isTarget(a)) || b.pb - a.pb).slice(0, 40);
+    html += `<details><summary>Every group, with its surroundings (${rows.length}${all.length > rows.length ? ' of ' + all.length : ''})</summary><table><tr><th>group</th><th>where</th><th>crowding</th><th>partial charge</th><th>ring</th><th>pKa (typical)</th><th>transformed (any role)</th><th>also transformed, reaction elsewhere</th></tr>` +
       rows.map(j => {
         const f = (RR.fragments || {})[j.fids[0]] || {};
         const pk = [f.pKa != null ? `acid ${f.pKa}` : '', f.pKaH != null ? `conj. acid ${f.pKaH}` : ''].filter(Boolean).join(', ');
         const ring = j.ring ? `${j.ring}-ring${j.strain >= 5 ? `, angle strain ${j.strain.toFixed(0)}°` : ''}` : 'open chain';
         return `<tr><td>${esc(j.names.join(' / '))}</td><td><code>${esc(j.where || '')}</code></td><td>${esc(stericWord(j.steric))} (${j.steric})</td><td>${j.charge == null ? '–' : (j.charge >= 0 ? '+' : '') + j.charge.toFixed(2)}</td><td>${esc(ring)}</td><td>${esc(pk || '–')}</td>` +
-          `<td>${pctText(j.p)} ${conf(j)}</td><td>${j.evidence.level === 'none' ? 'none' : esc(j.evidence.n.toLocaleString() + ' · ' + j.evidence.level)}</td></tr>`;
+          `<td>${pctText(j.p)} ${conf(j)}</td><td>${pctText(j.pb)} ${confB(j)} <span class="rxn-step-k">${j.evidenceB.level === 'none' ? 'no case' : esc(j.evidenceB.n.toLocaleString() + ' · ' + j.evidenceB.level)}</span></td></tr>`;
       }).join('') + '</table></details>';
     const wrap = document.createElement('div');
     wrap.className = 'rxn-read rxn-atlas';
     wrap.innerHTML = html;
     if (run !== currentRun || !ruleNote.isConnected) return;               // a newer run (or a closed arrow) took over while the tables loaded
+    const mech = ruleNote.querySelector('.rxn-mech');
+    if (mech) ruleNote.insertBefore(wrap, mech); else ruleNote.appendChild(wrap);
+  }
+
+  /* ---- Equation and amounts (js/stoich.js): the balanced equation, solved exactly, and what to weigh out ----
+     The starting materials, and the reagent parts that are used up, are the left side; the predicted products (with the by-products the engine names) the right.
+     Atoms and charge must add up. Whatever is still missing is found as the smallest set of small molecules (H2O, H2, HCl, CO2 ...) that closes the equation, and
+     said so: nothing is assumed silently. */
+  const SUB = { 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉' };
+  const subscripts = f => String(f).replace(/\d/g, d => SUB[d]);
+  function speciesOf(R, smiles) {                          // {name, comp, charge, mw, formula} from the molecule record (atoms counted, not the display formula)
+    let m = null, out = null;
+    try {
+      m = R.get_mol(smiles);
+      if (m && window.MolInfo) {
+        const rec = window.MolInfo.analyse(R, m), comp = {};
+        for (let i = 0; i < rec.n; i++) { const a = rec.atoms[i]; if (a.isH) comp.H = (comp.H || 0) + 1; else { comp[a.el] = (comp[a.el] || 0) + 1; if (a.hCount) comp.H = (comp.H || 0) + a.hCount; } }
+        const hill = Object.keys(comp).sort((a, b) => (a === 'C' ? -1 : b === 'C' ? 1 : a === 'H' ? (b === 'C' ? 1 : -1) : b === 'H' ? 1 : a < b ? -1 : 1));
+        const f = (comp.C ? ['C', 'H', ...hill.filter(e => e !== 'C' && e !== 'H')] : hill).filter(e => comp[e]).map(e => e + (comp[e] > 1 ? comp[e] : '')).join('') + (rec.charge ? (Math.abs(rec.charge) > 1 ? Math.abs(rec.charge) : '') + (rec.charge > 0 ? '+' : '−') : '');
+        out = { smiles, comp, charge: rec.charge || 0, mw: rec.mw && rec.mw.value, formula: f };
+      }
+    } catch (e) { out = null; } finally { if (m) m.delete(); }
+    return out;
+  }
+  const NAME_OF = {};                                       // smiles -> a name for the table
+  function nameFor(R, smi) {
+    if (NAME_OF[smi]) return NAME_OF[smi];
+    const RR = window.REACTION_RULES || {}, k = keyOf(R, smi), mol = k && (RR.molecules || {})[k];
+    let n = mol && mol.name;
+    if (!n) { const r = (RR.reagents || {})[smi]; if (r) n = r.name; }
+    if (!n) try { const g = window.Chem.parseSmiles(smi); n = window.Chem.displayNameFor(g) || ''; } catch (e) { n = ''; }
+    return (NAME_OF[smi] = n || smi);
+  }
+  async function showEquation(rd, res, run) {
+    const ST = window.Stoich;
+    if (!ST || !rd || !res.products || !res.products.length) return;
+    const R = await loadRD(); if (!R) return;
+    const parts = list => list.flatMap(x => String(x).split('.')).filter(Boolean);
+    const subs = [...new Set(parts(rd.subs.map(x => x.smiles)))];
+    const reag = rd.reagent ? [...new Set(parts([rd.reagent.smiles]))] : [];
+    const canon = x => canonPart(x);
+    const subKeys = new Set(subs.map(canon));
+    // what was left unreacted is not part of the equation
+    const prods = [...new Set(parts(res.products).map(canon))].filter(x => !subKeys.has(x));
+    const mk = smi => { const sp = speciesOf(R, smi); return sp ? Object.assign(sp, { name: nameFor(R, smi) }) : null; };
+    const L0 = subs.map(mk), Rr = prods.map(mk);
+    if (L0.some(x => !x) || Rr.some(x => !x) || !L0.length || !Rr.length) return;
+    // reagent parts that could be used up: not a lone spectator ion
+    const ion = sp => sp.charge !== 0 && Object.keys(sp.comp).length === 1;
+    const rparts = reag.map(mk).filter(x => x && !ion(x));
+    let best = null, usedReagent = [];
+    const tryIt = (left, used) => { const b = ST.balance(left, Rr, { maxAdded: 2 }); if (b.ok) { const n = b.added.length; if (!best || n < best.b.added.length) { best = { b, left }; usedReagent = used; } return n === 0; } return false; };
+    if (!tryIt(L0, []) && rparts.length) {                  // the reagent is a catalyst unless the atoms need it
+      for (const r of rparts) { if (tryIt(L0.concat([r]), [r])) break; }
+      if (rparts.length > 1 && (!best || best.b.added.length)) tryIt(L0.concat(rparts), rparts);
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'rxn-read rxn-eqn';
+    if (!best) {
+      const why = ST.balance(L0, Rr, { maxAdded: 2 });
+      wrap.innerHTML = `<div class="rxn-mech-head">Equation and amounts</div><div class="rxn-step-line rxn-step-pka up">${esc(why.note)} (starting materials ${esc(L0.map(x => subscripts(x.formula)).join(' + '))}; products ${esc(Rr.map(x => subscripts(x.formula)).join(' + '))})</div>`;
+    } else {
+      const { b, left } = best, species = [];
+      left.forEach((sp, i) => species.push({ name: sp.name, formula: sp.formula, mw: sp.mw, side: 'left', coef: b.coefficients.left[i], role: i < L0.length ? 'starting material' : 'reagent (used up)', smiles: sp.smiles }));
+      b.added.filter(a => a.side === 'left').forEach(a => species.push({ name: a.name, formula: '', mw: 0, side: 'left', coef: a.coef, role: 'supplied (net)', added: a }));
+      Rr.forEach((sp, i) => species.push({ name: sp.name, formula: sp.formula, mw: sp.mw, side: 'right', coef: b.coefficients.right[i], role: i === 0 ? 'product' : 'product / by-product', smiles: sp.smiles }));
+      b.added.filter(a => a.side === 'right').forEach(a => species.push({ name: a.name, formula: '', mw: 0, side: 'right', coef: a.coef, role: 'by-product (inferred)', added: a }));
+      // masses of the added small molecules, from their formulas
+      const AW = { H: 1.008, C: 12.011, N: 14.007, O: 15.999, F: 18.998, Cl: 35.45, Br: 79.904, I: 126.904 };
+      species.forEach(sp => { if (sp.added) { sp.mw = Object.entries(sp.added.comp).reduce((t, [e, n]) => t + (AW[e] || 0) * n, 0); sp.formula = sp.added.name; } });
+      const term = sp => `${sp.coef > 1 ? sp.coef + ' ' : ''}<b title="${esc(sp.name)}">${esc(subscripts(sp.formula))}</b>`;
+      const side = s => species.filter(x => x.side === s).map(term).join(' + ');
+      const cat = rparts.filter(r => !usedReagent.includes(r));
+      const arrow = (reag.length ? `<span class="rxn-step-k"> ${esc(reagentLabel(R, reag.join('.')))} </span>` : '') + '→';
+      const supplied = b.added.filter(a => a.side === 'left').map(a => a.name);
+      let html = `<div class="rxn-mech-head">Equation and amounts <span class="rxn-step-k">(solved exactly: atoms and charge; js/stoich.js)</span></div>` +
+        `<div class="eq">${side('left')} ${arrow} ${side('right')}</div>` +
+        `<div class="rxn-step-line rxn-step-pka down">${esc(b.note)}${usedReagent.length ? ` The reagent part${usedReagent.length > 1 ? 's' : ''} ${esc(usedReagent.map(x => x.name).join(', '))} ${usedReagent.length > 1 ? 'are' : 'is'} used up.` : (supplied.length && reag.length ? ` The reagent supplies the ${esc(supplied.join(' and '))}.` : cat.length ? ' The reagent is not used up (a catalyst or a medium).' : '')}` +
+        `${b.added.some(a => a.name === 'H₂' && a.side === 'left') ? ' H₂ stands for the hydride (or electrons and protons) the reagent supplies.' : ''}</div>`;
+      const lim0 = species.findIndex(x => x.side === 'left');
+      html += `<div class="rxn-step-line">Scale: <input id="rxn-eq-mmol" type="number" min="0" step="any" value="1"> mmol of <b>${esc(species[lim0].name)}</b> (the limiting reagent)</div><div id="rxn-eq-table"></div>`;
+      wrap.innerHTML = html;
+      const fill = () => {
+        const mmol = Math.max(0, +wrap.querySelector('#rxn-eq-mmol').value || 0);
+        const rows = ST.table(species, { limiting: 0, mmol });
+        const eq = ST.atomEconomy(rows, null);
+        wrap.querySelector('#rxn-eq-table').innerHTML = `<table><tr><th>species</th><th>role</th><th class="n">M (g/mol)</th><th class="n">coefficient</th><th class="n">mmol</th><th class="n">mg</th><th class="n">equiv</th></tr>` +
+          rows.map(r => `<tr><td>${esc(r.name)} <span class="rxn-step-k">${esc(subscripts(r.formula))}</span></td><td>${esc(r.role)}</td><td class="n">${r.mw ? r.mw.toFixed(2) : '–'}</td><td class="n">${r.coef}</td><td class="n">${r.mmol.toFixed(3)}</td><td class="n">${r.mw ? r.mg.toFixed(1) : '–'}</td><td class="n">${r.side === 'left' ? r.equiv.toFixed(2) : ''}</td></tr>`).join('') +
+          `</table>` + (eq != null ? `<div class="rxn-step-line rxn-step-k">Atom economy of the main product: ${(eq * 100).toFixed(1)} % (mass of the product / mass of everything used).${rd.amounts && rd.amounts.length ? ' Your amount of reagent: see "Amounts" above.' : ''}</div>` : '');
+      };
+      wrap.querySelector('#rxn-eq-mmol').addEventListener('input', fill);
+      fill();
+    }
+    if (run !== currentRun || !ruleNote.isConnected) return;
     const mech = ruleNote.querySelector('.rxn-mech');
     if (mech) ruleNote.insertBefore(wrap, mech); else ruleNote.appendChild(wrap);
   }
@@ -2687,6 +2794,7 @@
       verdict.textContent = res.note;
       ruleNote.appendChild(verdict);
       showReading(res.reading);
+      showEquation(res.reading, res, myRun).catch(() => {});
       showAtlas(res.reading, res.products, myRun).catch(() => {});
       showMechanism(res.mechanism, !!(res.products && res.products.length), res.reading && res.reading.rule && res.reading.rule.mechStatus, res.mechNote);
       await pslots.setAll(res.products || []);           // no reaction: no products left over from an earlier run
@@ -3010,6 +3118,12 @@
     if (products.classList.contains('on')) document.getElementById('rxn-arrow').dispatchEvent(new MouseEvent('click', { bubbles: true }));
     if (saved) { codeBar.value = saved; codeBar.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await codeBarBusy; if (wasOn) document.getElementById('rxn-arrow').dispatchEvent(new MouseEvent('click', { bubbles: true })); }
   }
+  const copyText = (text, btn) => {
+    const label = btn.querySelector('b'), old = label.textContent, done = () => { label.textContent = 'Copied'; setTimeout(() => { label.textContent = old; }, 900); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done)); else fallbackCopy(text, done);
+  };
+  document.getElementById('rxn-copy-rsmi').addEventListener('click', e => { const t = window.RxnCode.reactionSmiles(codeBar.value); if (t) copyText(t, e.currentTarget); });
+  document.getElementById('rxn-copy-code').addEventListener('click', e => { if (codeBar.value) copyText(codeBar.value, e.currentTarget); });
   document.getElementById('rxn-run-tests').addEventListener('click', () => runTests(false));
   document.getElementById('rxn-t-again').addEventListener('click', () => runTests(false));
   document.getElementById('rxn-t-failed').addEventListener('click', () => runTests(true));
@@ -3076,5 +3190,32 @@
     keyOf: smi => (RD ? keyOf(RD, smi) : ''),
   };
   document.getElementById('rxn-suggest').addEventListener('click', () => { if (window.Advisor) window.Advisor.toggle(); });
-  window.Reactions = { set: () => {} };
+  /* Other pages open a reaction here: Reactions.load('reactants>reagents>products | conc=... | cond=...') (the old ~ code works too) switches to this tab
+     and fills the boxes exactly as typing the code and pressing Enter does; Reactions.addStart(smiles) adds one starting material. */
+  function showThisTab() { const t = document.querySelector('.tab[data-page="reactions"]'); if (t) t.click(); }
+  window.Reactions = {
+    load: async code => { showThisTab(); await loadRD(); codeBar.value = code; codeBarBusy = fillFromCode(); await codeBarBusy; return !codeBar.classList.contains('bad'); },
+    addStart: async smiles => {
+      showThisTab(); await loadRD();
+      const have = slots.filter(x => x.smiles).map(x => x.smiles);
+      let g = null; try { g = window.Chem.parseSmiles(smiles); } catch (e) { g = null; }
+      if (!g) return false;
+      await slots.setAll(have.concat([smiles])); return true;
+    },
+    /* Reactions.set([smiles...], reagentName): the starting materials, and (when the name is one the rules or the Reagents sheet know) the reagent */
+    set: async (list, reagentName) => {
+      showThisTab(); await loadRD();
+      const ok = (list || []).filter(x => { try { return !!window.Chem.parseSmiles(x); } catch (e) { return false; } });
+      await slots.setAll(ok);
+      if (reagentName) {
+        const RR = window.REACTION_RULES || {}, low = String(reagentName).toLowerCase();
+        const hit = Object.values(RR.molecules || {}).find(m => String(m.name).toLowerCase() === low)
+          || (RR.acidsBases || []).find(e => String(e.name).toLowerCase() === low)
+          || Object.entries(RR.reagents || {}).map(([smi, r]) => ({ smiles: smi, name: r.name, abbr: r.abbr })).find(r => String(r.name).toLowerCase() === low || String(r.abbr || '').toLowerCase() === low);
+        if (hit && hit.smiles) { try { await aboveApi.show(hit.smiles, window.Chem.parseSmiles(hit.smiles)); } catch (e) { /* not placed */ } }
+      }
+      updateCode();
+      return ok.length > 0;
+    },
+  };
 })();

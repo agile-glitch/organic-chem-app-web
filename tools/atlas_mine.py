@@ -120,11 +120,34 @@ def process(line):
         other = [p for p in parts if p[3] != k]
         cls = A.reagent_class([p[1] for p in other])
         chosen = sorted(other, key=lambda p: (p[1] in ('solvent',), p[0]))[:3]
+        # SITES of this molecule: connected pieces of changed atoms (a leaving group counts: its atoms are lost). A group is a BYSTANDER candidate when
+        # the reaction happens somewhere else: it touches no site (y_b = 0, spared), or it is on one of two or more sites (y_b = 1, also transformed).
+        # A group on or next to the only site is the reaction itself (or overlaps it, like the alpha C-H of a ketone that is reduced): not eligible.
+        chg = {i for i in range(m.GetNumAtoms()) if mapof.get(i, 0) in changed}
+        comp, ncomp = {}, 0
+        for i0 in sorted(chg):
+            if i0 in comp: continue
+            stack = [i0]; comp[i0] = ncomp
+            while stack:
+                u = stack.pop()
+                for nb in m.GetAtomWithIdx(u).GetNeighbors():
+                    j = nb.GetIdx()
+                    if j in chg and j not in comp: comp[j] = ncomp; stack.append(j)
+            ncomp += 1
         for fid, atoms, x in A.instances(mm, frags):
             y = int(any(mapof.get(i, 0) in changed for i in atoms))
+            near = set(atoms)
+            for i in atoms:
+                near.update(nb.GetIdx() for nb in mm.GetAtomWithIdx(i).GetNeighbors())
+            direct = {comp[i] for i in atoms if i in comp}
+            touch = {comp[i] for i in near if i in comp}
+            if ncomp == 0: elig, yb = 0, 0
+            elif direct: elig, yb = (1, 1) if ncomp >= 2 else (0, 0)
+            elif touch: elig, yb = 0, 0
+            else: elig, yb = 1, 0
             out.append((fidx[fid], x, wl[0][x], wl[1][x], wl[2][x], wl[3][x], y, A.steric_score(mm, x), q[x] if q[x] is not None else np.nan,
                         A.smallest_ring(mm, x), A.angle_strain(mm, x), A.hybridization(mm.GetAtomWithIdx(x)),
-                        cls, tuple((p[0], p[1], p[2]) for p in chosen), len(atoms), A.fnv32(smi), split_mol))
+                        cls, tuple((p[0], p[1], p[2]) for p in chosen), len(atoms), A.fnv32(smi), split_mol, elig, yb))
     if not out: return None
     return split, out
 
@@ -158,7 +181,7 @@ def main():
     t0 = time.time()
     chunk = 400
     jobs = [(lines[i:i + chunk],) for i in range(0, len(lines), chunk)]
-    cols = {k: [] for k in ('rx', 'frag', 'x', 'e0', 'e1', 'e2', 'e3', 'y', 'steric', 'charge', 'ring', 'strain', 'hyb', 'cls', 'p1', 'p2', 'p3', 'split', 'natoms', 'mol', 'split_mol')}
+    cols = {k: [] for k in ('rx', 'frag', 'x', 'e0', 'e1', 'e2', 'e3', 'y', 'steric', 'charge', 'ring', 'strain', 'hyb', 'cls', 'p1', 'p2', 'p3', 'split', 'natoms', 'mol', 'split_mol', 'elig', 'yb')}
     cls_voc, part_voc, part_info = {}, {}, {}
     rid = 0
     used = 0
@@ -169,7 +192,7 @@ def main():
                 if r is None: continue
                 used += 1
                 split, inst = r
-                for (fi, x, e0, e1, e2, e3, y, st, q, ring, strain, hyb, cls, pts, na, mh, sm) in inst:
+                for (fi, x, e0, e1, e2, e3, y, st, q, ring, strain, hyb, cls, pts, na, mh, sm, elig, yb) in inst:
                     cols['rx'].append(rid); cols['frag'].append(fi); cols['x'].append(x)
                     cols['e0'].append(e0); cols['e1'].append(e1); cols['e2'].append(e2); cols['e3'].append(e3)
                     cols['y'].append(y); cols['steric'].append(st); cols['charge'].append(q); cols['ring'].append(ring)
@@ -180,12 +203,12 @@ def main():
                         if s not in part_voc: part_voc[s] = len(part_voc) + 1; part_info[s] = (role, pka)
                         ids[j] = part_voc[s]
                     cols['p1'].append(ids[0]); cols['p2'].append(ids[1]); cols['p3'].append(ids[2])
-                    cols['split'].append(split); cols['mol'].append(mh); cols['split_mol'].append(sm)
+                    cols['split'].append(split); cols['mol'].append(mh); cols['split_mol'].append(sm); cols['elig'].append(elig); cols['yb'].append(yb)
             if ci % 50 == 0:
                 print(f'  {rid:,} reactions read, {used:,} usable, {len(cols["y"]):,} instances, {time.time() - t0:.0f}s', flush=True)
     dt = {'rx': np.uint32, 'frag': np.uint16, 'x': np.uint16, 'e0': np.uint32, 'e1': np.uint32, 'e2': np.uint32, 'e3': np.uint32, 'y': np.uint8,
           'steric': np.uint8, 'charge': np.float32, 'ring': np.uint8, 'strain': np.float32, 'hyb': np.uint8, 'cls': np.uint16,
-          'p1': np.uint32, 'p2': np.uint32, 'p3': np.uint32, 'split': np.uint8, 'natoms': np.uint8, 'mol': np.uint32, 'split_mol': np.uint8}
+          'p1': np.uint32, 'p2': np.uint32, 'p3': np.uint32, 'split': np.uint8, 'natoms': np.uint8, 'mol': np.uint32, 'split_mol': np.uint8, 'elig': np.uint8, 'yb': np.uint8}
     arrays = {k: np.asarray(v, dtype=dt[k]) for k, v in cols.items()}
     inv_parts = sorted(part_voc, key=part_voc.get)
     inv_cls = sorted(cls_voc, key=cls_voc.get)

@@ -45,15 +45,17 @@ window.Advisor = (() => {
     const byAtom = new Map();
     J.forEach(j => {
       const k = j.smiles + '|' + j.atom;
-      if (!byAtom.has(k)) byAtom.set(k, { names: [shortName(j.name)], fids: [j.fid], p: j.p, evidence: j.evidence, confidence: j.confidence });
-      else { const c = byAtom.get(k); if (!c.names.includes(shortName(j.name))) c.names.push(shortName(j.name)); c.fids.push(j.fid); if (j.p > c.p) { c.p = j.p; c.evidence = j.evidence; c.confidence = j.confidence; } }
+      if (!byAtom.has(k)) byAtom.set(k, { names: [shortName(j.name)], fids: [j.fid], p: j.p, pb: j.pb, nReagentB: j.nReagentB, evidence: j.evidence, confidence: j.confidence, confidenceB: j.confidenceB });
+      else { const c = byAtom.get(k); c.nReagentB = Math.max(c.nReagentB || 0, j.nReagentB || 0); if (!c.names.includes(shortName(j.name))) c.names.push(shortName(j.name)); c.fids.push(j.fid); if (j.p > c.p) { c.p = j.p; c.evidence = j.evidence; c.confidence = j.confidence; } if (j.pb > c.pb) { c.pb = j.pb; c.confidenceB = j.confidenceB; } }
     });
     const bystanders = [...byAtom.values()].filter(x => !x.fids.some(id => targets.has(id)) && !x.fids.every(id => arene.has(id)));
-    const risky = bystanders.filter(x => x.p >= 0.15).sort((a, b) => b.p - a.p);
-    let keep = 1; bystanders.forEach(x => { if (x.p >= 0.05) keep *= (1 - x.p); });
+    const risky = bystanders.filter(x => x.pb >= 0.10).sort((a, b) => b.pb - a.pb);                 // the reaction is elsewhere: is this group ALSO transformed (pb)
+    const unknown = bystanders.filter(x => x.pb < 0.10 && (x.nReagentB || 0) < 15);     // few recorded cases of this reagent with such a group present: the records are silent
+    let keep = 1; bystanders.forEach(x => { if (x.pb >= 0.03) keep *= (1 - x.pb); });
+    keep *= Math.pow(0.9, unknown.length);                                               // no precedent is not evidence of safety: a small penalty for each
     // how likely the reagent is to transform the group the reaction is for (the best such group), judged the same way
     const tg = [...byAtom.values()].filter(x => x.fids.some(id => targets.has(id)));
-    return { risk: 1 - keep, risky: risky.slice(0, 3), spared: bystanders.length - risky.length, targetP: tg.length ? Math.max(...tg.map(x => x.p)) : null };
+    return { risk: 1 - keep, risky: risky.slice(0, 3), unknown: unknown.slice(0, 3), spared: bystanders.length - risky.length - unknown.length, targetP: tg.length ? Math.max(...tg.map(x => x.p)) : null };
   }
 
   /* ---- gathering ---- */
@@ -95,7 +97,8 @@ window.Advisor = (() => {
       const row = tab && tab[String(best.t)];
       const targets = consumedGroups(R, state.subs, c.rep.products);
       const options = [];
-      for (const rc of (row ? row[2] : []).slice(0, 4)) {
+      const recipes = row ? row[2].slice().sort((a, b) => (a[0] === '' ? 1 : 0) - (b[0] === '' ? 1 : 0) || b[1] - a[1]) : [];   // a record with no reagent line: the reagents were not captured, list it last
+      for (const rc of recipes.slice(0, 4)) {
         const line = rc[0], col = await collateral(R, state.subs, line, targets);
         const sol = (row[3] || []).find(x => x[0]) || null;
         options.push({ label: P.reagentLabel(R, line) || 'no reagent', reagent: line, count: rc[1], share: rc[1] / row[0], source: rc[2], yield: rc[3], collateral: col,
@@ -171,8 +174,9 @@ window.Advisor = (() => {
   const optHtml = (o, i, kind) => {
     const col = o.collateral;
     let risk = '';
-    if (col && col.risky.length) risk = col.risky.map((x, k) => `<div class="${x.p >= 0.5 ? 'adv-warn' : 'adv-mid'}">${x.p >= 0.5 ? '⚠ likely also reacts' : 'may also react'}: ${esc(x.names.join(' / '))} (${pct(x.p)}, ${esc(x.confidence)} confidence)</div>`).join('');
-    else if (col) risk = `<div class="adv-ok">spares the other groups (each under 15 %)</div>`;
+    if (col && col.risky.length) risk = col.risky.map((x, k) => `<div class="${x.pb >= 0.3 ? 'adv-warn' : 'adv-mid'}">${x.pb >= 0.3 ? '⚠ likely also reacts' : 'may also react'}: ${esc(x.names[0])} (${pct(x.pb)}, ${esc(x.confidenceB)} confidence)</div>`).join('');
+    if (col && !col.risky.length && col.spared > 0) risk += `<div class="adv-ok">recorded as sparing the other groups it was tested against (each under 10 % in at least 15 recorded cases)</div>`;
+    if (col && col.unknown && col.unknown.length) risk += `<div class="adv-mid">no precedent for ${esc(col.unknown.map(x => x.names[0]).join(', '))} with this reagent: unknown, not safe (records only show what worked)</div>`;
     const bits = [];
     if (o.count) bits.push(`${o.count.toLocaleString()} recorded${o.share ? ` (${pct(o.share)} of this kind)` : ''}`);
     if (o.yield != null) bits.push(`best yield ${o.yield} %${o.source ? ' · ' + esc(o.source) : ''}`);
