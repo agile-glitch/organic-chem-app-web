@@ -134,6 +134,10 @@
     const r = renderPlan(out, g, tree);
     extras(g, tree);
     if (!r.basic) precedents(g, nameOf(g));
+    if (!r.basic && window.RetroLearned) {                  // disconnections from the recorded reactions (js/retro_learned.js), right after the verdict
+      const host = el('div'); out.insertBefore(host, out.querySelector('h2'));
+      window.RetroLearned.mount(host, smilesShown(g));
+    }
   }
 
   /* The verdict, the shopping list and the reactions in order, for any tree of the retroAnalyze shape

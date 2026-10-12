@@ -1069,6 +1069,15 @@
       case 'import': importText(importBox.value); break;
       case 'export': doExport(); break;
       case 'copy': { const s = currentSmiles(); if (s) navigator.clipboard.writeText(s).then(() => flash(b, 'Copied')); break; }
+      case 'toReactions': case 'toRetro': case 'toMolecule': {          // hand the drawing to another tab
+        const s = currentSmiles();
+        if (!s) { flash(b, 'Draw first'); break; }
+        const tab = id => { const t = document.querySelector(`.tab[data-page="${id}"]`); if (t) t.click(); };
+        if (b.dataset.act === 'toReactions') { if (window.Reactions) window.Reactions.addStart(s); }
+        else if (b.dataset.act === 'toRetro') { tab('retro'); const i = document.getElementById('retroTarget'); if (i) i.value = s; if (window.Retro) window.Retro.plan(s); }
+        else { tab('mol'); const i = document.getElementById('molInput'); if (i) i.value = s; if (window.MolView) window.MolView.show(s, { source: 'sketcher' }); }
+        break;
+      }
     }
   });
   fileBox.addEventListener('change', () => {

@@ -57,6 +57,11 @@
             </select>
             <button data-act="export" title="Save the drawing in the chosen format">Export</button>
             <button data-act="copy" title="Copy the SMILES to the clipboard">Copy SMILES</button>
+            <span class="gap"></span>
+            <span class="lbl">Send to</span>
+            <button data-act="toReactions" title="Add this molecule to the Reactions tab as a starting material">Reactions</button>
+            <button data-act="toRetro" title="Plan a synthesis of this molecule (Retrosynthesis tab)">Retrosynthesis</button>
+            <button data-act="toMolecule" title="Look at this molecule in 2D and 3D, with its properties (Molecule tab)">Molecule</button>
           </div>
           <!-- fragment tools (PubChem's fourth row); filled in by js/sketcher.js -->
           <div class="toolbar frags" id="fragBar"></div>
@@ -127,6 +132,7 @@
             <div id="molSections"></div>
             <div id="molConfs"></div>
             <div id="molMeas"></div>
+            <details class="mv-sec" id="molContextSec"><summary>Groups in context (surroundings and reagents)</summary><div id="molContext"></div></details>
             <details class="mv-sec" id="molAtomsSec"><summary>Atoms</summary><div id="molAtoms"></div></details>
             <details class="mv-sec" id="molBondsSec"><summary>Bonds</summary><div id="molBonds"></div></details>
             <details class="mv-sec" id="molMethodsSec"><summary>Methods and sources</summary><div id="molMethods"></div></details>
@@ -212,6 +218,8 @@
           The run takes a few minutes in the browser and can be stopped and resumed; the result is kept.</p>
         <h2>The learned-template predictor <small>what the Reactions page uses when no workbook rule applies; measured on patents it never saw</small></h2>
         <div id="validLearned" class="card"><p class="hint">Reading the figures stored with the model…</p></div>
+        <h2>The Fragment Atlas <small>groups understood in their surroundings: what the interference and reagent suggestions rest on</small></h2>
+        <div id="validAtlas" class="card"><p class="hint">Reading the figures stored with the tables…</p></div>
         <h2>How predictions are made, and what they are built from <small>the fragments, interferences and templates: how often each functional group appears</small></h2>
         <div id="validCensus" class="card"><p class="hint">Reading the census…</p></div>
         <h2>Data sources <small>public reaction sets; loading one adds it to precedent search everywhere and to the benchmark</small></h2>
@@ -249,6 +257,7 @@
   <script src="js/name_suggest.js"></script>
   <script src="js/sketcher.js"></script>
   <script src="js/retro.js"></script>
+  <script src="js/retro_learned.js"></script>
   <script src="js/rxn_engine.js"></script>
   <script src="js/rxn_ext.js"></script>
   <script src="js/rdkit_load.js"></script>
@@ -257,11 +266,18 @@
   <script src="js/rxn_equation.js"></script>
   <script src="data/reaction_rules.js"></script>
   <script src="data/pka.js"></script>
+  <script src="js/reagent_conc.js"></script>
+  <script src="js/rxn_code.js"></script>
+  <script src="js/stoich.js"></script>
+  <script src="js/atlas.js"></script>
+  <script src="js/mol_context.js"></script>
   <script src="js/relevance.js"></script>
   <script src="js/interference.js"></script>
   <script src="js/reactions.js"></script>
+  <script src="js/advisor.js"></script>
   <script src="js/possibilities.js"></script>
   <script src="js/validation.js"></script>
+  <script src="js/atlas_report.js"></script>
   <script src="data/fragment_census.js"></script>
   <script src="js/census.js"></script>
   <!-- Molecule tab: element/bond tables, the per-atom and per-bond facts, the 2D and 3D views, the 3D engine, PubChem 3D.
