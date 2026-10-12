@@ -143,7 +143,10 @@
         const txt = el('div', 'txt', `<b>${esc(res.major.name)}</b><div class="sub">${esc(sub.name)} + ${esc(p.label)}` +
           (res.outcomes.length > 1 ? ` · ${Math.round(res.major.share * 100)}% major` : '') + (res.major.stereo ? ' · ' + esc(res.major.stereo.kind) : '') + '</div>');
         const go = el('button', 'plan', 'Open in Reactions'); go.addEventListener('click', () => { document.querySelector('.tab[data-page="reactions"]').click(); window.Reactions?.set(p.g ? [sub.smiles, smilesOf(p.g)] : [sub.smiles], p.g ? '' : p.label); });
-        txt.appendChild(go); card.appendChild(txt); pairs.appendChild(card);
+        txt.appendChild(go);
+        const note = el('div', 'atlas-note', '<span class="hint">Fragment Atlas: judging…</span>'); txt.appendChild(note);
+        atlasNote(note, sub.smiles, p.g ? smilesOf(p.g) : reagentLine(p.id), smilesOf(res.major.graph));
+        card.appendChild(txt); pairs.appendChild(card);
       }
     }
     out.appendChild(nPairs ? pairs : el('p', 'hint', mols.length < 1 ? 'Add at least one molecule.' : 'None of the taught reactions runs between these ' + (mols.length + reagents.length) + ' items.'));
@@ -178,6 +181,47 @@
       });
     }
     if (mols.length && !rows.length) out.appendChild(el('p', 'hint', 'Nothing within that many purchases — allow more extra molecules above.'));
+  }
+  /* ================= the Fragment Atlas on a reaction between two things on the shelf =================
+     The reaction is the engine's; the Atlas says what else it would do to the molecule: every other group, in its own surroundings, judged against recorded
+     reactions with this reagent (js/atlas.js). Judged one at a time, so the shards load once and the page stays responsive. */
+  const atlasCache = new Map(); let atlasQueue = Promise.resolve();
+  const reagentLine = ruleId => {                         // a taught reagent's molecules, as one SMILES line ('' when the rule names none)
+    const RR = window.REACTION_RULES || {}, rule = (RR.rules || []).find(r => r.id === ruleId);
+    return rule ? (rule.reagents || []).map(k => (RR.molecules || {})[k]).filter(Boolean).map(m => m.smiles).join('.') : '';
+  };
+  const shortName = n => String(n || '').split(' (')[0];
+  async function atlasJudge(sub, line, prod) {
+    const AT = window.Atlas, RP = window.RxnPage;
+    if (!AT || !RP) return null;
+    const meta = await AT.ready(); if (!meta) return null;
+    const RD = await RP.loadRD(); if (!RD) return null;
+    const J = await AT.judge(RD, [sub], line); if (!J.length) return null;
+    const RR = window.REACTION_RULES || {}, consumed = new Set();
+    try { const a = RP.fragmentCounts(RD, [sub]), b = RP.fragmentCounts(RD, [prod]); Object.keys(a).forEach(id => { if ((a[id] || 0) > (b[id] || 0) && !/C–H/.test(((RR.fragments || {})[id] || {}).name || '')) consumed.add(id); }); } catch (e) {}
+    const arene = new Set(['F009', 'F108']), byAtom = new Map();
+    J.forEach(j => {
+      const k = j.atom, c = byAtom.get(k);
+      if (!c) byAtom.set(k, { names: [shortName(j.name)], fids: [j.fid], pb: j.pb, n: j.nReagentB || 0, conf: j.confidenceB });
+      else { if (!c.names.includes(shortName(j.name))) c.names.push(shortName(j.name)); c.fids.push(j.fid); c.n = Math.max(c.n, j.nReagentB || 0); if (j.pb > c.pb) { c.pb = j.pb; c.conf = j.confidenceB; } }
+    });
+    const others = [...byAtom.values()].filter(x => !x.fids.some(id => consumed.has(id)) && !x.fids.every(id => arene.has(id)));
+    const risky = others.filter(x => x.pb >= 0.10).sort((a, b) => b.pb - a.pb);
+    const unknown = others.filter(x => x.pb < 0.10 && x.n < 15), spared = others.length - risky.length - unknown.length;
+    return { risky, unknown, spared, total: others.length, reagent: !!line };
+  }
+  function atlasNote(node, sub, line, prod) {
+    const key = sub + '|' + line + '|' + prod;
+    if (!atlasCache.has(key)) atlasCache.set(key, new Promise(res => { atlasQueue = atlasQueue.then(() => atlasJudge(sub, line, prod)).then(res, () => res(null)); }));
+    atlasCache.get(key).then(r => {
+      if (!r) { node.innerHTML = ''; return; }
+      const pct = x => (x >= 0.995 ? '>99' : x < 0.01 ? '<1' : Math.round(x * 100)) + '%';
+      let h = '';
+      r.risky.slice(0, 3).forEach(x => { h += `<div><span class="atlas-risk ${x.pb >= 0.3 ? 'high' : 'mid'}">${x.pb >= 0.3 ? '⚠ likely also reacts' : 'may also react'}</span> ${esc(x.names.join(' / '))} (${pct(x.pb)}, ${esc(x.conf)} confidence)</div>`; });
+      if (r.unknown.length) h += `<div><span class="atlas-risk mid">no precedent</span> ${esc(r.unknown.slice(0, 3).map(x => x.names[0]).join(', '))}: records are silent, which is not safety</div>`;
+      if (!r.risky.length && !r.unknown.length) h = r.total ? `<div><span class="atlas-risk low">clean</span> the other ${r.total} group${r.total === 1 ? '' : 's'} recorded as spared with this reagent</div>` : '<div><span class="atlas-risk low">clean</span> no other reactive groups</div>';
+      node.innerHTML = h + '<div class="atlas-src">Fragment Atlas, from recorded reactions</div>';
+    });
   }
   const shopLinks = name => {
     const q = encodeURIComponent(name);
