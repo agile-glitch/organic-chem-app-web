@@ -97,7 +97,10 @@ reactants>reagents>products | conc=37%w/w | cond=reflux, ethanol, 2 equiv
 
 The first word is an ordinary reaction SMILES (RDKit's `ReactionFromSmarts(line.split()[0])`, USPTO and ORD exports, an electronic notebook can read it). What a reaction SMILES cannot say follows after a
 space as `key=value` items: `conc` (the reagent's strength: `37%w/w`, `5%v/v`, `3%w/v`, `2M`, `conc`, `dil`) and `cond` (the conditions box in its standard spelling). The old
-`starting materials~reagent~conditions~products` is still read everywhere (and inside the 1.09 million recorded reactions) and is no longer written. `js/rxn_code.js` is the whole definition.
+`starting materials~reagent~conditions~products` is still read (typed or pasted into the code bar, or passed to `Reactions.load`) and is no longer written or stored: every stored code (the workbook's
+102 reactions, the test cases and the 1.09 million recorded reactions) was rewritten as version 2 by `tools/convert_codes_v2.py`, which checks that each one reads back with the same molecules
+and conditions. A `>` inside a molecule's `->` (a dative bond, as in some palladium precatalysts) is not a field separator, as in RDKit. `js/rxn_code.js` is the whole definition;
+`tools/rxn_code.py` is the same in Python for the tools that build the data.
 
 ## 6. Research this follows, and where it differs
 

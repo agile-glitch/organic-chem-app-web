@@ -3,7 +3,7 @@
  "reactions": [
   {
    "id": "R001",
-   "code": "CC(=O)O.CCO~O=S(=O)(O)O~reflux in ethanol~",
+   "code": "CC(=O)O.CCO>O=S(=O)(O)O> | cond=reflux in ethanol",
    "substrates": [
     "CC(=O)O",
     "CCO"
@@ -15,7 +15,7 @@
   },
   {
    "id": "R002",
-   "code": "CC(C)=C~BrBr~water, rt~",
+   "code": "CC(C)=C>BrBr> | cond=water, rt",
    "substrates": [
     "CC(C)=C"
    ],
@@ -26,7 +26,7 @@
   },
   {
    "id": "R003",
-   "code": "C1=CCCCC1~BrBr~dichloromethane, rt~",
+   "code": "C1=CCCCC1>BrBr> | cond=dichloromethane, rt",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -37,7 +37,7 @@
   },
   {
    "id": "R004",
-   "code": "CC=C~Br~light~",
+   "code": "CC=C>Br> | cond=light",
    "substrates": [
     "CC=C"
    ],
@@ -48,7 +48,7 @@
   },
   {
    "id": "R005",
-   "code": "CC=C~Br~dichloromethane, 0 °C~",
+   "code": "CC=C>Br> | cond=dichloromethane, 0 °C",
    "substrates": [
     "CC=C"
    ],
@@ -59,7 +59,7 @@
   },
   {
    "id": "R006",
-   "code": "CC(C)=C~O=S(=O)(O)O~water, 25 °C~",
+   "code": "CC(C)=C>O=S(=O)(O)O> | cond=water, 25 °C",
    "substrates": [
     "CC(C)=C"
    ],
@@ -70,7 +70,7 @@
   },
   {
    "id": "R007",
-   "code": "CC=C~B~THF, 0 °C~",
+   "code": "CC=C>B> | cond=THF, 0 °C",
    "substrates": [
     "CC=C"
    ],
@@ -81,7 +81,7 @@
   },
   {
    "id": "R008",
-   "code": "C1=CCCCC1~[H][H]~ethanol, rt~",
+   "code": "C1=CCCCC1>[H][H]> | cond=ethanol, rt",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -92,7 +92,7 @@
   },
   {
    "id": "R009",
-   "code": "C1=CCCCC1~O=C(OO)c1cccc(Cl)c1~dichloromethane, rt~",
+   "code": "C1=CCCCC1>O=C(OO)c1cccc(Cl)c1> | cond=dichloromethane, rt",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -103,7 +103,7 @@
   },
   {
    "id": "R010",
-   "code": "C1=CCCCC1~O=[Os](=O)(=O)=O~acetone, water, rt~",
+   "code": "C1=CCCCC1>O=[Os](=O)(=O)=O> | cond=acetone, water, rt",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -114,7 +114,7 @@
   },
   {
    "id": "R011",
-   "code": "CC=C(C)C~[O-][O+]=O~-78 °C, dichloromethane~",
+   "code": "CC=C(C)C>[O-][O+]=O> | cond=-78 °C, dichloromethane",
    "substrates": [
     "CC=C(C)C"
    ],
@@ -126,7 +126,7 @@
   },
   {
    "id": "R012",
-   "code": "C1=CCCCC1~O=C1CCC(=O)N1Br~light~",
+   "code": "C1=CCCCC1>O=C1CCC(=O)N1Br> | cond=light",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -137,7 +137,7 @@
   },
   {
    "id": "R013",
-   "code": "CC#CC~[H][H]~ethanol, rt~",
+   "code": "CC#CC>[H][H]> | cond=ethanol, rt",
    "substrates": [
     "CC#CC"
    ],
@@ -148,7 +148,7 @@
   },
   {
    "id": "R014",
-   "code": "CC#CC~[H][H].[Pd].[Pb]~rt~",
+   "code": "CC#CC>[H][H].[Pd].[Pb]> | cond=rt",
    "substrates": [
     "CC#CC"
    ],
@@ -159,7 +159,7 @@
   },
   {
    "id": "R015",
-   "code": "CC#CC~[Na].N~-33 °C~",
+   "code": "CC#CC>[Na].N> | cond=-33 °C",
    "substrates": [
     "CC#CC"
    ],
@@ -170,7 +170,7 @@
   },
   {
    "id": "R016",
-   "code": "CC#C~O=S(=O)([O-])[O-].[Hg+2]~water, 60 °C~",
+   "code": "CC#C>O=S(=O)([O-])[O-].[Hg+2]> | cond=water, 60 °C",
    "substrates": [
     "CC#C"
    ],
@@ -181,7 +181,7 @@
   },
   {
    "id": "R017",
-   "code": "c1ccccc1~BrBr.Br[Fe](Br)Br~anhydrous, rt~",
+   "code": "c1ccccc1>BrBr.Br[Fe](Br)Br> | cond=anhydrous, rt",
    "substrates": [
     "c1ccccc1"
    ],
@@ -192,7 +192,7 @@
   },
   {
    "id": "R018",
-   "code": "c1ccccc1~O=[N+]([O-])O.O=S(=O)(O)O~50 °C~",
+   "code": "c1ccccc1>O=[N+]([O-])O.O=S(=O)(O)O> | cond=50 °C",
    "substrates": [
     "c1ccccc1"
    ],
@@ -203,7 +203,7 @@
   },
   {
    "id": "R019",
-   "code": "c1ccccc1.CC(=O)Cl~Cl[Al](Cl)Cl~anhydrous, dichloromethane~",
+   "code": "c1ccccc1.CC(=O)Cl>Cl[Al](Cl)Cl> | cond=anhydrous, dichloromethane",
    "substrates": [
     "c1ccccc1",
     "CC(=O)Cl"
@@ -215,7 +215,7 @@
   },
   {
    "id": "R020",
-   "code": "c1ccccc1.CC(C)(C)Cl~Cl[Al](Cl)Cl~anhydrous, dichloromethane~",
+   "code": "c1ccccc1.CC(C)(C)Cl>Cl[Al](Cl)Cl> | cond=anhydrous, dichloromethane",
    "substrates": [
     "c1ccccc1",
     "CC(C)(C)Cl"
@@ -227,7 +227,7 @@
   },
   {
    "id": "R021",
-   "code": "Cc1ccccc1~O=C1CCC(=O)N1Br~light~",
+   "code": "Cc1ccccc1>O=C1CCC(=O)N1Br> | cond=light",
    "substrates": [
     "Cc1ccccc1"
    ],
@@ -238,7 +238,7 @@
   },
   {
    "id": "R022",
-   "code": "Cc1ccccc1~[K+].[O-][Mn](=O)(=O)=O~reflux in water~",
+   "code": "Cc1ccccc1>[K+].[O-][Mn](=O)(=O)=O> | cond=reflux in water",
    "substrates": [
     "Cc1ccccc1"
    ],
@@ -249,7 +249,7 @@
   },
   {
    "id": "R023",
-   "code": "O=[N+]([O-])c1ccccc1~[Fe].Cl~reflux in ethanol~",
+   "code": "O=[N+]([O-])c1ccccc1>[Fe].Cl> | cond=reflux in ethanol",
    "substrates": [
     "O=[N+]([O-])c1ccccc1"
    ],
@@ -260,7 +260,7 @@
   },
   {
    "id": "R024",
-   "code": "Nc1ccccc1~O=N[O-].[Na+].Cl~0 °C, water~",
+   "code": "Nc1ccccc1>O=N[O-].[Na+].Cl> | cond=0 °C, water",
    "substrates": [
     "Nc1ccccc1"
    ],
@@ -271,7 +271,7 @@
   },
   {
    "id": "R025",
-   "code": "N#[N+]c1ccccc1~Br[Cu]~rt~",
+   "code": "N#[N+]c1ccccc1>Br[Cu]> | cond=rt",
    "substrates": [
     "N#[N+]c1ccccc1"
    ],
@@ -282,7 +282,7 @@
   },
   {
    "id": "R026",
-   "code": "CCCCBr~[C-]#N.[Na+]~DMSO~",
+   "code": "CCCCBr>[C-]#N.[Na+]> | cond=DMSO",
    "substrates": [
     "CCCCBr"
    ],
@@ -293,7 +293,7 @@
   },
   {
    "id": "R027",
-   "code": "CCBr~CC[O-].[Na+]~ethanol~",
+   "code": "CCBr>CC[O-].[Na+]> | cond=ethanol",
    "substrates": [
     "CCBr"
    ],
@@ -304,7 +304,7 @@
   },
   {
    "id": "R028",
-   "code": "CCCCCl~[I-].[Na+]~acetone, reflux~",
+   "code": "CCCCCl>[I-].[Na+]> | cond=acetone, reflux",
    "substrates": [
     "CCCCCl"
    ],
@@ -315,7 +315,7 @@
   },
   {
    "id": "R029",
-   "code": "CCC(C)(C)Br~CC(C)(C)[O-].[K+]~THF, rt~",
+   "code": "CCC(C)(C)Br>CC(C)(C)[O-].[K+]> | cond=THF, rt",
    "substrates": [
     "CCC(C)(C)Br"
    ],
@@ -326,7 +326,7 @@
   },
   {
    "id": "R030",
-   "code": "CCC(C)(C)Br~CC[O-].[Na+]~reflux in ethanol~",
+   "code": "CCC(C)(C)Br>CC[O-].[Na+]> | cond=reflux in ethanol",
    "substrates": [
     "CCC(C)(C)Br"
    ],
@@ -337,7 +337,7 @@
   },
   {
    "id": "R031",
-   "code": "CCCCO~BrP(Br)Br~diethyl ether, 0 °C~",
+   "code": "CCCCO>BrP(Br)Br> | cond=diethyl ether, 0 °C",
    "substrates": [
     "CCCCO"
    ],
@@ -348,7 +348,7 @@
   },
   {
    "id": "R032",
-   "code": "CCCCO~O=S(Cl)Cl~reflux~",
+   "code": "CCCCO>O=S(Cl)Cl> | cond=reflux",
    "substrates": [
     "CCCCO"
    ],
@@ -359,7 +359,7 @@
   },
   {
    "id": "R033",
-   "code": "CCCCO~O=[Cr](=O)(Cl)[O-].c1cc[nH+]cc1~anhydrous, dichloromethane~",
+   "code": "CCCCO>O=[Cr](=O)(Cl)[O-].c1cc[nH+]cc1> | cond=anhydrous, dichloromethane",
    "substrates": [
     "CCCCO"
    ],
@@ -370,7 +370,7 @@
   },
   {
    "id": "R034",
-   "code": "CCCCO~O=[Cr](=O)=O.O=S(=O)(O)O~acetone, 0 °C~",
+   "code": "CCCCO>O=[Cr](=O)=O.O=S(=O)(O)O> | cond=acetone, 0 °C",
    "substrates": [
     "CCCCO"
    ],
@@ -381,7 +381,7 @@
   },
   {
    "id": "R035",
-   "code": "OC1CCCCC1~O=S(=O)(O)O~160 °C~",
+   "code": "OC1CCCCC1>O=S(=O)(O)O> | cond=160 °C",
    "substrates": [
     "OC1CCCCC1"
    ],
@@ -392,7 +392,7 @@
   },
   {
    "id": "R036",
-   "code": "O=C(O)c1ccccc1~O=S(Cl)Cl~reflux~",
+   "code": "O=C(O)c1ccccc1>O=S(Cl)Cl> | cond=reflux",
    "substrates": [
     "O=C(O)c1ccccc1"
    ],
@@ -403,7 +403,7 @@
   },
   {
    "id": "R037",
-   "code": "O=C1CCCCC1~[BH4-].[Na+]~methanol, 0 °C~",
+   "code": "O=C1CCCCC1>[BH4-].[Na+]> | cond=methanol, 0 °C",
    "substrates": [
     "O=C1CCCCC1"
    ],
@@ -414,7 +414,7 @@
   },
   {
    "id": "R038",
-   "code": "COC(=O)c1ccccc1~[AlH4-].[Li+]~anhydrous, THF~",
+   "code": "COC(=O)c1ccccc1>[AlH4-].[Li+]> | cond=anhydrous, THF",
    "substrates": [
     "COC(=O)c1ccccc1"
    ],
@@ -426,7 +426,7 @@
   },
   {
    "id": "R039",
-   "code": "CC(C)=O~C[Mg]Br~anhydrous, diethyl ether~",
+   "code": "CC(C)=O>C[Mg]Br> | cond=anhydrous, diethyl ether",
    "substrates": [
     "CC(C)=O"
    ],
@@ -437,7 +437,7 @@
   },
   {
    "id": "R040",
-   "code": "Br[Mg]c1ccccc1~O=C=O~anhydrous, diethyl ether~",
+   "code": "Br[Mg]c1ccccc1>O=C=O> | cond=anhydrous, diethyl ether",
    "substrates": [
     "Br[Mg]c1ccccc1"
    ],
@@ -448,7 +448,7 @@
   },
   {
    "id": "R041",
-   "code": "O=C1CCCCC1~C=P(c1ccccc1)(c1ccccc1)c1ccccc1~THF, rt~",
+   "code": "O=C1CCCCC1>C=P(c1ccccc1)(c1ccccc1)c1ccccc1> | cond=THF, rt",
    "substrates": [
     "O=C1CCCCC1"
    ],
@@ -459,7 +459,7 @@
   },
   {
    "id": "R042",
-   "code": "O=C1CCCCC1.OCCO~Cc1ccc(S(=O)(=O)O)cc1~reflux in toluene~",
+   "code": "O=C1CCCCC1.OCCO>Cc1ccc(S(=O)(=O)O)cc1> | cond=reflux in toluene",
    "substrates": [
     "O=C1CCCCC1",
     "OCCO"
@@ -471,7 +471,7 @@
   },
   {
    "id": "R043",
-   "code": "O=Cc1ccccc1.Nc1ccccc1~Cc1ccc(S(=O)(=O)O)cc1~toluene, reflux~",
+   "code": "O=Cc1ccccc1.Nc1ccccc1>Cc1ccc(S(=O)(=O)O)cc1> | cond=toluene, reflux",
    "substrates": [
     "O=Cc1ccccc1",
     "Nc1ccccc1"
@@ -483,7 +483,7 @@
   },
   {
    "id": "R044",
-   "code": "O=C1CCCCC1.CN~[BH3-]C#N.[Na+]~methanol~",
+   "code": "O=C1CCCCC1.CN>[BH3-]C#N.[Na+]> | cond=methanol",
    "substrates": [
     "O=C1CCCCC1",
     "CN"
@@ -495,7 +495,7 @@
   },
   {
    "id": "R045",
-   "code": "CC(C)=O.O=Cc1ccccc1~[Na+].[OH-]~ethanol, water, rt~",
+   "code": "CC(C)=O.O=Cc1ccccc1>[Na+].[OH-]> | cond=ethanol, water, rt",
    "substrates": [
     "CC(C)=O",
     "O=Cc1ccccc1"
@@ -507,7 +507,7 @@
   },
   {
    "id": "R046",
-   "code": "O=C1CCCCC1~O=C(OO)c1cccc(Cl)c1~dichloromethane, rt~",
+   "code": "O=C1CCCCC1>O=C(OO)c1cccc(Cl)c1> | cond=dichloromethane, rt",
    "substrates": [
     "O=C1CCCCC1"
    ],
@@ -518,7 +518,7 @@
   },
   {
    "id": "R047",
-   "code": "CCOC(=O)c1ccccc1~[Na+].[OH-]~reflux in water~",
+   "code": "CCOC(=O)c1ccccc1>[Na+].[OH-]> | cond=reflux in water",
    "substrates": [
     "CCOC(=O)c1ccccc1"
    ],
@@ -530,7 +530,7 @@
   },
   {
    "id": "R048",
-   "code": "CC(=O)Cl.Nc1ccccc1~c1ccncc1~dichloromethane, 0 °C~",
+   "code": "CC(=O)Cl.Nc1ccccc1>c1ccncc1> | cond=dichloromethane, 0 °C",
    "substrates": [
     "CC(=O)Cl",
     "Nc1ccccc1"
@@ -542,7 +542,7 @@
   },
   {
    "id": "R049",
-   "code": "O=C(O)c1ccccc1O~CC(=O)OC(C)=O~85 °C~",
+   "code": "O=C(O)c1ccccc1O>CC(=O)OC(C)=O> | cond=85 °C",
    "substrates": [
     "O=C(O)c1ccccc1O"
    ],
@@ -553,7 +553,7 @@
   },
   {
    "id": "R050",
-   "code": "C1CCC2OC2C1~O=S(=O)(O)O~water, rt~",
+   "code": "C1CCC2OC2C1>O=S(=O)(O)O> | cond=water, rt",
    "substrates": [
     "C1CCC2OC2C1"
    ],
@@ -564,7 +564,7 @@
   },
   {
    "id": "R051",
-   "code": "C=CC=C.O=C1C=CC(=O)O1~~reflux in xylene~",
+   "code": "C=CC=C.O=C1C=CC(=O)O1>> | cond=reflux in xylene",
    "substrates": [
     "C=CC=C",
     "O=C1C=CC(=O)O1"
@@ -576,7 +576,7 @@
   },
   {
    "id": "R052",
-   "code": "COC(=O)c1ccccc1~C[Mg]Br~anhydrous, diethyl ether, 2 equiv~",
+   "code": "COC(=O)c1ccccc1>C[Mg]Br> | cond=anhydrous, diethyl ether, 2 equiv",
    "substrates": [
     "COC(=O)c1ccccc1"
    ],
@@ -588,7 +588,7 @@
   },
   {
    "id": "R053",
-   "code": "CC(C)=C~Cl~dichloromethane, 0 °C~",
+   "code": "CC(C)=C>Cl> | cond=dichloromethane, 0 °C",
    "substrates": [
     "CC(C)=C"
    ],
@@ -599,7 +599,7 @@
   },
   {
    "id": "R054",
-   "code": "CC=C~I~dichloromethane, 0 °C~",
+   "code": "CC=C>I> | cond=dichloromethane, 0 °C",
    "substrates": [
     "CC=C"
    ],
@@ -610,7 +610,7 @@
   },
   {
    "id": "R055",
-   "code": "C1=CCCCC1~ClCl~dichloromethane, rt~",
+   "code": "C1=CCCCC1>ClCl> | cond=dichloromethane, rt",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -621,7 +621,7 @@
   },
   {
    "id": "R056",
-   "code": "CC(C)=C~CC(=O)O[Hg]OC(C)=O~water, THF, rt~",
+   "code": "CC(C)=C>CC(=O)O[Hg]OC(C)=O> | cond=water, THF, rt",
    "substrates": [
     "CC(C)=C"
    ],
@@ -632,7 +632,7 @@
   },
   {
    "id": "R057",
-   "code": "C/C=C/C~[K+].[O-][Mn](=O)(=O)=O~reflux in water~",
+   "code": "C/C=C/C>[K+].[O-][Mn](=O)(=O)=O> | cond=reflux in water",
    "substrates": [
     "C/C=C/C"
    ],
@@ -644,7 +644,7 @@
   },
   {
    "id": "R058",
-   "code": "CC#CC~BrBr~dichloromethane, rt, 2 equiv~",
+   "code": "CC#CC>BrBr> | cond=dichloromethane, rt, 2 equiv",
    "substrates": [
     "CC#CC"
    ],
@@ -655,7 +655,7 @@
   },
   {
    "id": "R059",
-   "code": "CC#C~Br~dichloromethane, 2 equiv~",
+   "code": "CC#C>Br> | cond=dichloromethane, 2 equiv",
    "substrates": [
     "CC#C"
    ],
@@ -666,7 +666,7 @@
   },
   {
    "id": "R060",
-   "code": "CCCC#C~C1CC2CCCC(C1)B2~THF, rt~",
+   "code": "CCCC#C>C1CC2CCCC(C1)B2> | cond=THF, rt",
    "substrates": [
     "CCCC#C"
    ],
@@ -677,7 +677,7 @@
   },
   {
    "id": "R061",
-   "code": "C1=CCCCC1~ICI.[Zn]~diethyl ether, reflux~",
+   "code": "C1=CCCCC1>ICI.[Zn]> | cond=diethyl ether, reflux",
    "substrates": [
     "C1=CCCCC1"
    ],
@@ -688,7 +688,7 @@
   },
   {
    "id": "R062",
-   "code": "C1CCCCC1~BrBr~light~",
+   "code": "C1CCCCC1>BrBr> | cond=light",
    "substrates": [
     "C1CCCCC1"
    ],
@@ -699,7 +699,7 @@
   },
   {
    "id": "R063",
-   "code": "c1ccccc1~ClCl.Cl[Fe](Cl)Cl~anhydrous, rt~",
+   "code": "c1ccccc1>ClCl.Cl[Fe](Cl)Cl> | cond=anhydrous, rt",
    "substrates": [
     "c1ccccc1"
    ],
@@ -710,7 +710,7 @@
   },
   {
    "id": "R064",
-   "code": "c1ccccc1~O=S(=O)=O.O=S(=O)(O)O~40 °C~",
+   "code": "c1ccccc1>O=S(=O)=O.O=S(=O)(O)O> | cond=40 °C",
    "substrates": [
     "c1ccccc1"
    ],
@@ -721,7 +721,7 @@
   },
   {
    "id": "R065",
-   "code": "CC(=O)c1ccccc1~[Zn].Cl~reflux in water~",
+   "code": "CC(=O)c1ccccc1>[Zn].Cl> | cond=reflux in water",
    "substrates": [
     "CC(=O)c1ccccc1"
    ],
@@ -732,7 +732,7 @@
   },
   {
    "id": "R066",
-   "code": "O=C1CCCCC1~NN.[K+].[OH-]~200 °C~",
+   "code": "O=C1CCCCC1>NN.[K+].[OH-]> | cond=200 °C",
    "substrates": [
     "O=C1CCCCC1"
    ],
@@ -743,7 +743,7 @@
   },
   {
    "id": "R067",
-   "code": "c1ccccc1~[Na].N~-33 °C, ethanol~",
+   "code": "c1ccccc1>[Na].N> | cond=-33 °C, ethanol",
    "substrates": [
     "c1ccccc1"
    ],
@@ -754,7 +754,7 @@
   },
   {
    "id": "R068",
-   "code": "Oc1ccccc1~BrBr~water, rt, 3 equiv~",
+   "code": "Oc1ccccc1>BrBr> | cond=water, rt, 3 equiv",
    "substrates": [
     "Oc1ccccc1"
    ],
@@ -765,7 +765,7 @@
   },
   {
    "id": "R069",
-   "code": "NC(=O)c1ccccc1~O=S(Cl)Cl~reflux~",
+   "code": "NC(=O)c1ccccc1>O=S(Cl)Cl> | cond=reflux",
    "substrates": [
     "NC(=O)c1ccccc1"
    ],
@@ -776,7 +776,7 @@
   },
   {
    "id": "R070",
-   "code": "N#Cc1ccccc1~O=S(=O)(O)O~reflux in water~",
+   "code": "N#Cc1ccccc1>O=S(=O)(O)O> | cond=reflux in water",
    "substrates": [
     "N#Cc1ccccc1"
    ],
@@ -787,7 +787,7 @@
   },
   {
    "id": "R071",
-   "code": "N#Cc1ccccc1~[AlH4-].[Li+]~anhydrous, THF~",
+   "code": "N#Cc1ccccc1>[AlH4-].[Li+]> | cond=anhydrous, THF",
    "substrates": [
     "N#Cc1ccccc1"
    ],
@@ -798,7 +798,7 @@
   },
   {
    "id": "R072",
-   "code": "CC(=O)N(C)C~[AlH4-].[Li+]~anhydrous, THF~",
+   "code": "CC(=O)N(C)C>[AlH4-].[Li+]> | cond=anhydrous, THF",
    "substrates": [
     "CC(=O)N(C)C"
    ],
@@ -809,7 +809,7 @@
   },
   {
    "id": "R073",
-   "code": "CCCC(=O)O~[AlH4-].[Li+]~anhydrous, THF~",
+   "code": "CCCC(=O)O>[AlH4-].[Li+]> | cond=anhydrous, THF",
    "substrates": [
     "CCCC(=O)O"
    ],
@@ -820,7 +820,7 @@
   },
   {
    "id": "R074",
-   "code": "COC(=O)c1ccccc1~CC(C)C[AlH]CC(C)C~-78 °C, dichloromethane~",
+   "code": "COC(=O)c1ccccc1>CC(C)C[AlH]CC(C)C> | cond=-78 °C, dichloromethane",
    "substrates": [
     "COC(=O)c1ccccc1"
    ],
@@ -832,7 +832,7 @@
   },
   {
    "id": "R075",
-   "code": "C1CO1~Br[Mg]c1ccccc1~anhydrous, diethyl ether~",
+   "code": "C1CO1>Br[Mg]c1ccccc1> | cond=anhydrous, diethyl ether",
    "substrates": [
     "C1CO1"
    ],
@@ -843,7 +843,7 @@
   },
   {
    "id": "R076",
-   "code": "CC(C)=O~CCCC[Li]~anhydrous, THF, -78 °C~",
+   "code": "CC(C)=O>CCCC[Li]> | cond=anhydrous, THF, -78 °C",
    "substrates": [
     "CC(C)=O"
    ],
@@ -854,7 +854,7 @@
   },
   {
    "id": "R077",
-   "code": "CC(=O)C=Cc1ccccc1~C[Cu-]C.[Li+]~anhydrous, diethyl ether, 0 °C~",
+   "code": "CC(=O)C=Cc1ccccc1>C[Cu-]C.[Li+]> | cond=anhydrous, diethyl ether, 0 °C",
    "substrates": [
     "CC(=O)C=Cc1ccccc1"
    ],
@@ -865,7 +865,7 @@
   },
   {
    "id": "R078",
-   "code": "CCOC(=O)CC(=O)OCC.C=CC(C)=O~CC[O-].[Na+]~ethanol, rt~",
+   "code": "CCOC(=O)CC(=O)OCC.C=CC(C)=O>CC[O-].[Na+]> | cond=ethanol, rt",
    "substrates": [
     "CCOC(=O)CC(=O)OCC",
     "C=CC(C)=O"
@@ -877,7 +877,7 @@
   },
   {
    "id": "R079",
-   "code": "CCOC(C)=O.CCOC(C)=O~CC[O-].[Na+]~reflux in ethanol~",
+   "code": "CCOC(C)=O.CCOC(C)=O>CC[O-].[Na+]> | cond=reflux in ethanol",
    "substrates": [
     "CCOC(C)=O",
     "CCOC(C)=O"
@@ -890,7 +890,7 @@
   },
   {
    "id": "R080",
-   "code": "O=Cc1ccccc1.O=Cc1ccccc1~[Na+].[OH-]~water, 60 °C~",
+   "code": "O=Cc1ccccc1.O=Cc1ccccc1>[Na+].[OH-]> | cond=water, 60 °C",
    "substrates": [
     "O=Cc1ccccc1",
     "O=Cc1ccccc1"
@@ -903,7 +903,7 @@
   },
   {
    "id": "R081",
-   "code": "CC(=O)c1ccccc1~II.[Na+].[OH-]~water, rt, 3 equiv~",
+   "code": "CC(=O)c1ccccc1>II.[Na+].[OH-]> | cond=water, rt, 3 equiv",
    "substrates": [
     "CC(=O)c1ccccc1"
    ],
@@ -915,7 +915,7 @@
   },
   {
    "id": "R082",
-   "code": "O=C1CCCCC1~BrBr~acetic acid, rt~",
+   "code": "O=C1CCCCC1>BrBr> | cond=acetic acid, rt",
    "substrates": [
     "O=C1CCCCC1"
    ],
@@ -926,7 +926,7 @@
   },
   {
    "id": "R083",
-   "code": "CCCC(=O)O~BrBr.BrP(Br)Br~reflux~",
+   "code": "CCCC(=O)O>BrBr.BrP(Br)Br> | cond=reflux",
    "substrates": [
     "CCCC(=O)O"
    ],
@@ -937,7 +937,7 @@
   },
   {
    "id": "R084",
-   "code": "CC(=O)Nc1ccccc1~O=S(=O)(O)O~reflux in water~",
+   "code": "CC(=O)Nc1ccccc1>O=S(=O)(O)O> | cond=reflux in water",
    "substrates": [
     "CC(=O)Nc1ccccc1"
    ],
@@ -949,7 +949,7 @@
   },
   {
    "id": "R085",
-   "code": "CC(=O)Cl.CCO~c1ccncc1~dichloromethane, 0 °C~",
+   "code": "CC(=O)Cl.CCO>c1ccncc1> | cond=dichloromethane, 0 °C",
    "substrates": [
     "CC(=O)Cl",
     "CCO"
@@ -961,7 +961,7 @@
   },
   {
    "id": "R086",
-   "code": "CC(=O)Cl~O~rt~",
+   "code": "CC(=O)Cl>O> | cond=rt",
    "substrates": [
     "CC(=O)Cl"
    ],
@@ -972,7 +972,7 @@
   },
   {
    "id": "R087",
-   "code": "Nc1ccccc1~CC(=O)OC(C)=O~rt~",
+   "code": "Nc1ccccc1>CC(=O)OC(C)=O> | cond=rt",
    "substrates": [
     "Nc1ccccc1"
    ],
@@ -983,7 +983,7 @@
   },
   {
    "id": "R088",
-   "code": "NC(=O)c1ccccc1~BrBr.[Na+].[OH-]~water, 70 °C~",
+   "code": "NC(=O)c1ccccc1>BrBr.[Na+].[OH-]> | cond=water, 70 °C",
    "substrates": [
     "NC(=O)c1ccccc1"
    ],
@@ -995,7 +995,7 @@
   },
   {
    "id": "R089",
-   "code": "C1CCC2(CC1)OCCO2~O=S(=O)(O)O~water, rt~",
+   "code": "C1CCC2(CC1)OCCO2>O=S(=O)(O)O> | cond=water, rt",
    "substrates": [
     "C1CCC2(CC1)OCCO2"
    ],
@@ -1007,7 +1007,7 @@
   },
   {
    "id": "R090",
-   "code": "O=Cc1ccccc1~[Ag+].N.N~water, rt~",
+   "code": "O=Cc1ccccc1>[Ag+].N.N> | cond=water, rt",
    "substrates": [
     "O=Cc1ccccc1"
    ],
@@ -1018,7 +1018,7 @@
   },
   {
    "id": "R091",
-   "code": "CCCCO~CS(C)=O.O=C(Cl)C(=O)Cl~-78 °C, dichloromethane~",
+   "code": "CCCCO>CS(C)=O.O=C(Cl)C(=O)Cl> | cond=-78 °C, dichloromethane",
    "substrates": [
     "CCCCO"
    ],
@@ -1029,7 +1029,7 @@
   },
   {
    "id": "R092",
-   "code": "CC(C)(O)C(C)(C)O~O=S(=O)(O)O~100 °C~",
+   "code": "CC(C)(O)C(C)(C)O>O=S(=O)(O)O> | cond=100 °C",
    "substrates": [
     "CC(C)(O)C(C)(C)O"
    ],
@@ -1040,7 +1040,7 @@
   },
   {
    "id": "R093",
-   "code": "ON=C1CCCCC1~O=S(=O)(O)O~100 °C~",
+   "code": "ON=C1CCCCC1>O=S(=O)(O)O> | cond=100 °C",
    "substrates": [
     "ON=C1CCCCC1"
    ],
@@ -1051,7 +1051,7 @@
   },
   {
    "id": "R094",
-   "code": "O=C1CCCCC1~NO~ethanol, rt~",
+   "code": "O=C1CCCCC1>NO> | cond=ethanol, rt",
    "substrates": [
     "O=C1CCCCC1"
    ],
@@ -1062,7 +1062,7 @@
   },
   {
    "id": "R095",
-   "code": "CC(C)=O~C#N~water, rt~",
+   "code": "CC(C)=O>C#N> | cond=water, rt",
    "substrates": [
     "CC(C)=O"
    ],
@@ -1073,7 +1073,7 @@
   },
   {
    "id": "R096",
-   "code": "O=C(O)c1ccccc1.CN~C(=NC1CCCCC1)=NC1CCCCC1~dichloromethane, rt~",
+   "code": "O=C(O)c1ccccc1.CN>C(=NC1CCCCC1)=NC1CCCCC1> | cond=dichloromethane, rt",
    "substrates": [
     "O=C(O)c1ccccc1",
     "CN"
@@ -1085,7 +1085,7 @@
   },
   {
    "id": "R097",
-   "code": "CCOC(C)=O~O=S(=O)(O)O~reflux in water~",
+   "code": "CCOC(C)=O>O=S(=O)(O)O> | cond=reflux in water",
    "substrates": [
     "CCOC(C)=O"
    ],
@@ -1097,7 +1097,7 @@
   },
   {
    "id": "R098",
-   "code": "COC(=O)c1ccccc1.CCO~CC[O-].[Na+]~reflux in ethanol~",
+   "code": "COC(=O)c1ccccc1.CCO>CC[O-].[Na+]> | cond=reflux in ethanol",
    "substrates": [
     "COC(=O)c1ccccc1",
     "CCO"
@@ -1110,7 +1110,7 @@
   },
   {
    "id": "R099",
-   "code": "Oc1ccccc1.CI~[Na+].[OH-]~water, rt~",
+   "code": "Oc1ccccc1.CI>[Na+].[OH-]> | cond=water, rt",
    "substrates": [
     "Oc1ccccc1",
     "CI"
@@ -1122,7 +1122,7 @@
   },
   {
    "id": "R100",
-   "code": "CC1CO1~C[O-].[Na+]~methanol, rt~",
+   "code": "CC1CO1>C[O-].[Na+]> | cond=methanol, rt",
    "substrates": [
     "CC1CO1"
    ],
@@ -1133,7 +1133,7 @@
   },
   {
    "id": "R101",
-   "code": "C/C=C/C~[O-][O+]=O.OO~-78 °C, dichloromethane~",
+   "code": "C/C=C/C>[O-][O+]=O.OO> | cond=-78 °C, dichloromethane",
    "substrates": [
     "C/C=C/C"
    ],
@@ -1145,7 +1145,7 @@
   },
   {
    "id": "R102",
-   "code": "CC(Br)C(C)Br~[Na+].[NH2-]~NH3, 2 equiv~",
+   "code": "CC(Br)C(C)Br>[Na+].[NH2-]> | cond=NH3, 2 equiv",
    "substrates": [
     "CC(Br)C(C)Br"
    ],
@@ -1159,7 +1159,7 @@
   {
    "feature": "chemoselectivity",
    "name": "NaBH4 reduces the aldehyde, not the ketone",
-   "code": "CC(=O)CCC=O~[BH4-].[Na+]~methanol, 0 C~",
+   "code": "CC(=O)CCC=O>[BH4-].[Na+]> | cond=methanol, 0 C",
    "expect": "R037",
    "products": [
     "CC(=O)CCCO"
@@ -1171,7 +1171,7 @@
   {
    "feature": "chemoselectivity",
    "name": "excess NaBH4 reduces both",
-   "code": "CC(=O)CCC=O~[BH4-].[Na+]~methanol, 0 C, excess~",
+   "code": "CC(=O)CCC=O>[BH4-].[Na+]> | cond=methanol, 0 C, excess",
    "expect": "R037",
    "products": [
     "CC(O)CCCO"
@@ -1181,7 +1181,7 @@
   {
    "feature": "chemoselectivity",
    "name": "H2/Pd: alkyne before alkene",
-   "code": "C=CCC#C~[H][H]~ethanol, rt~",
+   "code": "C=CCC#C>[H][H]> | cond=ethanol, rt",
    "expect": "R013",
    "products": [
     "C=CCCC"
@@ -1191,7 +1191,7 @@
   {
    "feature": "chemoselectivity",
    "name": "mCPBA: epoxidation beats Baeyer–Villiger",
-   "code": "C=C1CCC(=O)CC1~O=C(OO)c1cccc(Cl)c1~dichloromethane, rt~",
+   "code": "C=C1CCC(=O)CC1>O=C(OO)c1cccc(Cl)c1> | cond=dichloromethane, rt",
    "expect": "R009",
    "products": [
     "O=C1CCC2(CC1)CO2"
@@ -1201,7 +1201,7 @@
   {
    "feature": "chemoselectivity",
    "name": "PCC: 1° alcohol before 2°",
-   "code": "CC(O)CCO~O=[Cr](=O)(Cl)[O-].c1cc[nH+]cc1~anhydrous, dichloromethane~",
+   "code": "CC(O)CCO>O=[Cr](=O)(Cl)[O-].c1cc[nH+]cc1> | cond=anhydrous, dichloromethane",
    "expect": "R033",
    "products": [
     "CC(O)CC=O"
@@ -1211,7 +1211,7 @@
   {
    "feature": "directing groups",
    "name": "toluene bromination → para",
-   "code": "Cc1ccccc1~BrBr.Br[Fe](Br)Br~anhydrous, rt~",
+   "code": "Cc1ccccc1>BrBr.Br[Fe](Br)Br> | cond=anhydrous, rt",
    "expect": "R017",
    "products": [
     "Cc1ccc(Br)cc1"
@@ -1221,7 +1221,7 @@
   {
    "feature": "directing groups",
    "name": "nitrobenzene bromination → meta",
-   "code": "O=[N+]([O-])c1ccccc1~BrBr.Br[Fe](Br)Br~anhydrous, rt~",
+   "code": "O=[N+]([O-])c1ccccc1>BrBr.Br[Fe](Br)Br> | cond=anhydrous, rt",
    "expect": "R017",
    "products": [
     "O=[N+]([O-])c1cccc(Br)c1"
@@ -1231,7 +1231,7 @@
   {
    "feature": "directing groups",
    "name": "anisole nitration → para",
-   "code": "COc1ccccc1~O=[N+]([O-])O.O=S(=O)(O)O~50 C~",
+   "code": "COc1ccccc1>O=[N+]([O-])O.O=S(=O)(O)O> | cond=50 C",
    "expect": "R018",
    "products": [
     "COc1ccc([N+](=O)[O-])cc1"
@@ -1241,7 +1241,7 @@
   {
    "feature": "directing groups",
    "name": "benzoic acid nitration → meta",
-   "code": "O=C(O)c1ccccc1~O=[N+]([O-])O.O=S(=O)(O)O~50 C~",
+   "code": "O=C(O)c1ccccc1>O=[N+]([O-])O.O=S(=O)(O)O> | cond=50 C",
    "expect": "R018",
    "products": [
     "O=C(O)c1cccc([N+](=O)[O-])c1"
@@ -1251,7 +1251,7 @@
   {
    "feature": "directing groups",
    "name": "4-methylanisole: OMe beats CH3",
-   "code": "COc1ccc(C)cc1~BrBr.Br[Fe](Br)Br~anhydrous, rt~",
+   "code": "COc1ccc(C)cc1>BrBr.Br[Fe](Br)Br> | cond=anhydrous, rt",
    "expect": "R017",
    "products": [
     "COc1ccc(C)cc1Br"
@@ -1261,7 +1261,7 @@
   {
    "feature": "directing groups",
    "name": "toluene acylation → para",
-   "code": "Cc1ccccc1.CC(=O)Cl~Cl[Al](Cl)Cl~anhydrous, dichloromethane~",
+   "code": "Cc1ccccc1.CC(=O)Cl>Cl[Al](Cl)Cl> | cond=anhydrous, dichloromethane",
    "expect": "R019",
    "products": [
     "CC(=O)c1ccc(C)cc1"
@@ -1271,7 +1271,7 @@
   {
    "feature": "directing groups",
    "name": "Friedel–Crafts fails on nitrobenzene",
-   "code": "O=[N+]([O-])c1ccccc1.CC(=O)Cl~Cl[Al](Cl)Cl~anhydrous, dichloromethane~",
+   "code": "O=[N+]([O-])c1ccccc1.CC(=O)Cl>Cl[Al](Cl)Cl> | cond=anhydrous, dichloromethane",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1279,7 +1279,7 @@
   {
    "feature": "directing groups",
    "name": "Friedel–Crafts fails on aniline",
-   "code": "Nc1ccccc1.CC(C)(C)Cl~Cl[Al](Cl)Cl~anhydrous, dichloromethane~",
+   "code": "Nc1ccccc1.CC(C)(C)Cl>Cl[Al](Cl)Cl> | cond=anhydrous, dichloromethane",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1287,7 +1287,7 @@
   {
    "feature": "halide pathways",
    "name": "2° bromide + NaOEt → E2 (Zaitsev)",
-   "code": "CCC(C)Br~CC[O-].[Na+]~ethanol~",
+   "code": "CCC(C)Br>CC[O-].[Na+]> | cond=ethanol",
    "expect": "E2",
    "products": [
     "C/C=C/C"
@@ -1297,7 +1297,7 @@
   {
    "feature": "halide pathways",
    "name": "1° bromide + t-BuOK → E2 (Hofmann)",
-   "code": "CCCCBr~CC(C)(C)[O-].[K+]~THF~",
+   "code": "CCCCBr>CC(C)(C)[O-].[K+]> | cond=THF",
    "expect": "E2",
    "products": [
     "C=CCC"
@@ -1307,7 +1307,7 @@
   {
    "feature": "halide pathways",
    "name": "2° bromide + NaCN/DMSO → SN2",
-   "code": "CCC(C)Br~[C-]#N.[Na+]~DMSO~",
+   "code": "CCC(C)Br>[C-]#N.[Na+]> | cond=DMSO",
    "expect": "SN2",
    "products": [
     "CCC(C)C#N"
@@ -1317,7 +1317,7 @@
   {
    "feature": "halide pathways",
    "name": "3° bromide in water → SN1",
-   "code": "CC(C)(C)Br~~water, rt~",
+   "code": "CC(C)(C)Br>> | cond=water, rt",
    "expect": "SN1",
    "products": [
     "CC(C)(C)O"
@@ -1327,7 +1327,7 @@
   {
    "feature": "halide pathways",
    "name": "3° bromide, hot ethanol → E1",
-   "code": "CC(C)(C)Br~~reflux in ethanol~",
+   "code": "CC(C)(C)Br>> | cond=reflux in ethanol",
    "expect": "E1",
    "products": [
     "C=C(C)C"
@@ -1337,7 +1337,7 @@
   {
    "feature": "halide pathways",
    "name": "1° bromide in water → no reaction",
-   "code": "CCCCBr~~water, rt~",
+   "code": "CCCCBr>> | cond=water, rt",
    "expect": "No reaction (known",
    "products": [],
    "absent": []
@@ -1345,7 +1345,7 @@
   {
    "feature": "rearrangements",
    "name": "HBr + 3-methyl-1-butene: hydride shift",
-   "code": "C=CC(C)C~Br~dichloromethane, 0 C~",
+   "code": "C=CC(C)C>Br> | cond=dichloromethane, 0 C",
    "expect": "R005",
    "products": [
     "CCC(C)(C)Br"
@@ -1355,7 +1355,7 @@
   {
    "feature": "rearrangements",
    "name": "hydration of 3,3-dimethyl-1-butene: methyl shift",
-   "code": "C=CC(C)(C)C~O=S(=O)(O)O~water, 25 C~",
+   "code": "C=CC(C)(C)C>O=S(=O)(O)O> | cond=water, 25 C",
    "expect": "R006",
    "products": [
     "CC(C)C(C)(C)O"
@@ -1365,7 +1365,7 @@
   {
    "feature": "rearrangements",
    "name": "1-cyclobutylethanol: ring expansion",
-   "code": "CC(O)C1CCC1~O=S(=O)(O)O~160 C~",
+   "code": "CC(O)C1CCC1>O=S(=O)(O)O> | cond=160 C",
    "expect": "R035",
    "products": [
     "CC1=CCCC1"
@@ -1375,7 +1375,7 @@
   {
    "feature": "rearrangements",
    "name": "benzene + 1-chloropropane → isopropylbenzene",
-   "code": "c1ccccc1.CCCCl~Cl[Al](Cl)Cl~anhydrous, dichloromethane~",
+   "code": "c1ccccc1.CCCCl>Cl[Al](Cl)Cl> | cond=anhydrous, dichloromethane",
    "expect": "R020",
    "products": [
     "CC(C)c1ccccc1"
@@ -1385,7 +1385,7 @@
   {
    "feature": "rearrangements",
    "name": "SN1 2-bromo-3-methylbutane: hydride shift",
-   "code": "CC(Br)C(C)C~~water, rt~",
+   "code": "CC(Br)C(C)C>> | cond=water, rt",
    "expect": "SN1",
    "products": [
     "CCC(C)(C)O"
@@ -1395,7 +1395,7 @@
   {
    "feature": "rearrangements",
    "name": "propene + HBr: no shift",
-   "code": "CC=C~Br~dichloromethane, 0 C~",
+   "code": "CC=C>Br> | cond=dichloromethane, 0 C",
    "expect": "R005",
    "products": [
     "CC(C)Br"
@@ -1405,7 +1405,7 @@
   {
    "feature": "stereochemistry",
    "name": "cyclohexene + Br2 → trans",
-   "code": "C1=CCCCC1~BrBr~dichloromethane, rt~",
+   "code": "C1=CCCCC1>BrBr> | cond=dichloromethane, rt",
    "expect": "R003",
    "products": [
     "Br[C@H]1CCCC[C@@H]1Br"
@@ -1415,7 +1415,7 @@
   {
    "feature": "stereochemistry",
    "name": "(E)-2-butene + Br2 → meso",
-   "code": "C/C=C/C~BrBr~dichloromethane, rt~",
+   "code": "C/C=C/C>BrBr> | cond=dichloromethane, rt",
    "expect": "R003",
    "products": [
     "C[C@H](Br)[C@@H](C)Br"
@@ -1425,7 +1425,7 @@
   {
    "feature": "stereochemistry",
    "name": "cyclohexene + OsO4 → cis diol",
-   "code": "C1=CCCCC1~O=[Os](=O)(=O)=O~acetone, water, rt~",
+   "code": "C1=CCCCC1>O=[Os](=O)(=O)=O> | cond=acetone, water, rt",
    "expect": "R010",
    "products": [
     "O[C@@H]1CCCC[C@@H]1O"
@@ -1435,7 +1435,7 @@
   {
    "feature": "stereochemistry",
    "name": "(R)-2-butanol + PBr3 → inversion",
-   "code": "C[C@@H](O)CC~BrP(Br)Br~diethyl ether, 0 C~",
+   "code": "C[C@@H](O)CC>BrP(Br)Br> | cond=diethyl ether, 0 C",
    "expect": "R031",
    "products": [
     "CC[C@H](C)Br"
@@ -1445,7 +1445,7 @@
   {
    "feature": "stereochemistry",
    "name": "(S)-2-bromobutane + NaCN → inversion",
-   "code": "C[C@H](Br)CC~[C-]#N.[Na+]~DMSO~",
+   "code": "C[C@H](Br)CC>[C-]#N.[Na+]> | cond=DMSO",
    "expect": "SN2",
    "products": [
     "CC[C@@H](C)C#N"
@@ -1455,7 +1455,7 @@
   {
    "feature": "amounts",
    "name": "methyl benzoate + 1 equiv MeMgBr → half reacts",
-   "code": "COC(=O)c1ccccc1~C[Mg]Br~anhydrous, diethyl ether, 1 equiv~",
+   "code": "COC(=O)c1ccccc1>C[Mg]Br> | cond=anhydrous, diethyl ether, 1 equiv",
    "expect": "R052",
    "products": [
     "CC(C)(O)c1ccccc1",
@@ -1466,7 +1466,7 @@
   {
    "feature": "amounts",
    "name": "keto-aldehyde + 0.25 equiv NaBH4 → aldehyde only",
-   "code": "CC(=O)CCC=O~[BH4-].[Na+]~methanol, 0 C, 0.25 equiv~",
+   "code": "CC(=O)CCC=O>[BH4-].[Na+]> | cond=methanol, 0 C, 0.25 equiv",
    "expect": "R037",
    "products": [
     "CC(=O)CCCO"
@@ -1478,7 +1478,7 @@
   {
    "feature": "amounts",
    "name": "keto-aldehyde + 0.5 equiv NaBH4 → both",
-   "code": "CC(=O)CCC=O~[BH4-].[Na+]~methanol, 0 C, 0.5 equiv~",
+   "code": "CC(=O)CCC=O>[BH4-].[Na+]> | cond=methanol, 0 C, 0.5 equiv",
    "expect": "R037",
    "products": [
     "CC(O)CCCO"
@@ -1488,7 +1488,7 @@
   {
    "feature": "amounts",
    "name": "catalytic NaBH4 is refused",
-   "code": "O=C1CCCCC1~[BH4-].[Na+]~methanol, 0 C, catalytic~",
+   "code": "O=C1CCCCC1>[BH4-].[Na+]> | cond=methanol, 0 C, catalytic",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1496,7 +1496,7 @@
   {
    "feature": "amounts",
    "name": "benzene + 2 equiv Br2 → p-dibromobenzene",
-   "code": "c1ccccc1~BrBr.Br[Fe](Br)Br~anhydrous, rt, 2 equiv~",
+   "code": "c1ccccc1>BrBr.Br[Fe](Br)Br> | cond=anhydrous, rt, 2 equiv",
    "expect": "R017",
    "products": [
     "Brc1ccc(Br)cc1"
@@ -1506,7 +1506,7 @@
   {
    "feature": "conditions",
    "name": "Grignard without 'anhydrous'",
-   "code": "CC(C)=O~C[Mg]Br~diethyl ether~",
+   "code": "CC(C)=O>C[Mg]Br> | cond=diethyl ether",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1514,7 +1514,7 @@
   {
    "feature": "conditions",
    "name": "Grignard in ethanol",
-   "code": "CC(C)=O~C[Mg]Br~anhydrous, ethanol~",
+   "code": "CC(C)=O>C[Mg]Br> | cond=anhydrous, ethanol",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1522,7 +1522,7 @@
   {
    "feature": "conditions",
    "name": "Fischer without enough heat (reflux in DCM, 40 C)",
-   "code": "CC(=O)O.CCO~O=S(=O)(O)O~reflux in DCM~",
+   "code": "CC(=O)O.CCO>O=S(=O)(O)O> | cond=reflux in DCM",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1530,7 +1530,7 @@
   {
    "feature": "acid/base (pKa)",
    "name": "aldol with pyridine: base too weak",
-   "code": "CC(C)=O.O=Cc1ccccc1~c1ccncc1~ethanol, rt~",
+   "code": "CC(C)=O.O=Cc1ccccc1>c1ccncc1> | cond=ethanol, rt",
    "expect": "No reaction under these conditions",
    "products": [],
    "absent": []
@@ -1538,7 +1538,7 @@
   {
    "feature": "acid/base (pKa)",
    "name": "Fischer with HCl instead of H2SO4",
-   "code": "CC(=O)O.CCO~Cl~reflux in ethanol~",
+   "code": "CC(=O)O.CCO>Cl> | cond=reflux in ethanol",
    "expect": "R001",
    "products": [
     "CCOC(C)=O"
@@ -1548,7 +1548,7 @@
   {
    "feature": "known / unknown",
    "name": "NaBH4 + ester → no reaction (known)",
-   "code": "CCOC(C)=O~[BH4-].[Na+]~methanol~",
+   "code": "CCOC(C)=O>[BH4-].[Na+]> | cond=methanol",
    "expect": "No reaction (known",
    "products": [],
    "absent": []
@@ -1556,7 +1556,7 @@
   {
    "feature": "known / unknown",
    "name": "benzene + Br2 without FeBr3 → no reaction (known)",
-   "code": "c1ccccc1~BrBr~dichloromethane~",
+   "code": "c1ccccc1>BrBr> | cond=dichloromethane",
    "expect": "No reaction (known",
    "products": [],
    "absent": []
@@ -1564,7 +1564,7 @@
   {
    "feature": "known / unknown",
    "name": "cyclohexanone + HBr → unknown",
-   "code": "O=C1CCCCC1~Br~dichloromethane~",
+   "code": "O=C1CCCCC1>Br> | cond=dichloromethane",
    "expect": "Unknown",
    "products": [],
    "absent": []
@@ -1572,7 +1572,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "N-benzylation of acetanilide (BnBr, NaH)",
-   "code": "CC(=O)Nc1ccccc1.BrCc1ccccc1~[H-].[Na+]~DMF~",
+   "code": "CC(=O)Nc1ccccc1.BrCc1ccccc1>[H-].[Na+]> | cond=DMF",
    "expect": "Predicted by the relevance model",
    "products": [
     "CC(=O)N(Cc1ccccc1)c1ccccc1"
@@ -1582,7 +1582,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "Suzuki coupling (aryl bromide + boronic acid, Pd, carbonate)",
-   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1~[Pd].[K+].[K+].O=C([O-])[O-]~toluene, water~",
+   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1>[Pd].[K+].[K+].O=C([O-])[O-]> | cond=toluene, water",
    "expect": "Predicted by the relevance model",
    "products": [
     "Cc1ccc(-c2ccccc2)cc1"
@@ -1592,7 +1592,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "Sonogashira coupling",
-   "code": "Ic1ccccc1.C#Cc1ccccc1~[Pd].[Cu]I.CCN(CC)CC~THF~",
+   "code": "Ic1ccccc1.C#Cc1ccccc1>[Pd].[Cu]I.CCN(CC)CC> | cond=THF",
    "expect": "Predicted by the relevance model",
    "products": [
     "C(#Cc1ccccc1)c1ccccc1"
@@ -1602,7 +1602,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "Boc removed by TFA",
-   "code": "CC(C)(C)OC(=O)NCCc1ccccc1~OC(=O)C(F)(F)F~dichloromethane~",
+   "code": "CC(C)(C)OC(=O)NCCc1ccccc1>OC(=O)C(F)(F)F> | cond=dichloromethane",
    "expect": "Predicted by the relevance model",
    "products": [
     "NCCc1ccccc1"
@@ -1612,7 +1612,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "Williamson ether (phenol + EtBr, carbonate)",
-   "code": "Oc1ccccc1.BrCC~[K+].[K+].O=C([O-])[O-]~DMF~",
+   "code": "Oc1ccccc1.BrCC>[K+].[K+].O=C([O-])[O-]> | cond=DMF",
    "expect": "Predicted by the relevance model",
    "products": [
     "CCOc1ccccc1"
@@ -1622,7 +1622,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "SNAr (4-fluoronitrobenzene + morpholine)",
-   "code": "O=[N+]([O-])c1ccc(F)cc1.C1COCCN1~[K+].[K+].O=C([O-])[O-]~DMSO~",
+   "code": "O=[N+]([O-])c1ccc(F)cc1.C1COCCN1>[K+].[K+].O=C([O-])[O-]> | cond=DMSO",
    "expect": "Predicted by the relevance model",
    "products": [
     "O=[N+]([O-])c1ccc(N2CCOCC2)cc1"
@@ -1632,7 +1632,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "amide coupling (acid + amine, HATU, DIPEA)",
-   "code": "O=C(O)c1ccccc1.NCc1ccccc1~CCN(C(C)C)C(C)C.F[P-](F)(F)(F)(F)F~DMF~",
+   "code": "O=C(O)c1ccccc1.NCc1ccccc1>CCN(C(C)C)C(C)C.F[P-](F)(F)(F)(F)F> | cond=DMF",
    "expect": "Predicted by the relevance model",
    "products": [
     "O=C(NCc1ccccc1)c1ccccc1"
@@ -1642,7 +1642,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "no reagent given: acid chloride + amine gives the amide",
-   "code": "CC(=O)Cl.NCc1ccccc1~~~",
+   "code": "CC(=O)Cl.NCc1ccccc1>>",
    "expect": "Predicted by the relevance model",
    "products": [
     "CC(=O)NCc1ccccc1"
@@ -1652,7 +1652,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "no reagent given: aryl bromide + boronic acid gives the biaryl",
-   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1~~~",
+   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1>>",
    "expect": "Predicted by the relevance model",
    "products": [
     "Cc1ccc(-c2ccccc2)cc1"
@@ -1662,7 +1662,7 @@
   {
    "feature": "relevance model (learned templates)",
    "name": "textbook-size molecule with a spectator salt: nothing is predicted (acetone + NaCl, 4 heavy atoms)",
-   "code": "CC(C)=O~[Na+].[Cl-]~water~",
+   "code": "CC(C)=O>[Na+].[Cl-]> | cond=water",
    "expect": "Unknown",
    "products": [],
    "absent": [
@@ -1672,7 +1672,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "2,4-dichloropyrimidine + morpholine reacts at C4 and the page says why",
-   "code": "Clc1ccnc(Cl)n1.C1COCCN1~[K+].[K+].O=C([O-])[O-]~DMSO~",
+   "code": "Clc1ccnc(Cl)n1.C1COCCN1>[K+].[K+].O=C([O-])[O-]> | cond=DMSO",
    "expect": "Predicted by the relevance model",
    "products": [
     "Clc1nccc(N2CCOCC2)n1"
@@ -1688,7 +1688,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "2,4-difluoronitrobenzene + morpholine reacts ortho to the nitro group",
-   "code": "O=[N+]([O-])c1ccc(F)cc1F.C1COCCN1~CCN(C(C)C)C(C)C~DMSO~",
+   "code": "O=[N+]([O-])c1ccc(F)cc1F.C1COCCN1>CCN(C(C)C)C(C)C> | cond=DMSO",
    "expect": "Predicted by the relevance model",
    "products": [
     "O=[N+]([O-])c1ccc(F)cc1N1CCOCC1"
@@ -1703,7 +1703,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "Boc removed by TFA, benzyl ester kept: the acid-lability advisory is shown",
-   "code": "CC(C)(C)OC(=O)NCC(=O)OCc1ccccc1~OC(=O)C(F)(F)F~dichloromethane~",
+   "code": "CC(C)(C)OC(=O)NCC(=O)OCc1ccccc1>OC(=O)C(F)(F)F> | cond=dichloromethane",
    "expect": "Predicted by the relevance model",
    "products": [
     "NCC(=O)OCc1ccccc1"
@@ -1717,7 +1717,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "H2 / Pd on a benzyl ether and an alkene: the other reducible group is named",
-   "code": "C=CCCOCc1ccccc1~[H][H].[Pd]~ethanol~",
+   "code": "C=CCCOCc1ccccc1>[H][H].[Pd]> | cond=ethanol",
    "expect": "Predicted by the relevance model",
    "products": [
     "CCCCOCc1ccccc1"
@@ -1730,7 +1730,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "amide coupling with a free alcohol: N- before O-acylation, the competing site is named",
-   "code": "O=C(O)c1ccccc1.NCCO~CCN=C=NCCCN(C)C.On1nnc2ccccc21~DMF~",
+   "code": "O=C(O)c1ccccc1.NCCO>CCN=C=NCCCN(C)C.On1nnc2ccccc21> | cond=DMF",
    "expect": "Predicted by the relevance model",
    "products": [
     "O=C(NCCO)c1ccccc1"
@@ -1745,7 +1745,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "Williamson ether: the phenol is alkylated before the primary alcohol",
-   "code": "Oc1ccc(CCO)cc1.BrCC~[K+].[K+].O=C([O-])[O-]~DMF~",
+   "code": "Oc1ccc(CCO)cc1.BrCC>[K+].[K+].O=C([O-])[O-]> | cond=DMF",
    "expect": "Predicted by the relevance model",
    "products": [
     "CCOc1ccc(CCO)cc1"
@@ -1760,7 +1760,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "epoxide opened by an amine at the less hindered carbon; no hindrance line for the released oxygen",
-   "code": "CC1CO1.NCc1ccccc1~~ethanol~",
+   "code": "CC1CO1.NCc1ccccc1>> | cond=ethanol",
    "expect": "Predicted by the relevance model",
    "products": [
     "CC(O)CNCc1ccccc1"
@@ -1775,7 +1775,7 @@
   {
    "feature": "interferences (site choice, groups present)",
    "name": "nothing to say about a plain Suzuki coupling",
-   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1~[Pd].[K+].[K+].O=C([O-])[O-]~toluene, water~",
+   "code": "Brc1ccc(C)cc1.OB(O)c1ccccc1>[Pd].[K+].[K+].O=C([O-])[O-]> | cond=toluene, water",
    "expect": "Predicted by the relevance model",
    "products": [
     "Cc1ccc(-c2ccccc2)cc1"

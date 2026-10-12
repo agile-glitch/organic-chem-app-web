@@ -32,7 +32,7 @@ window.REACTION_RULES = {
    },
    "group": "esterification",
    "cation": null,
-   "code": "CC(=O)O.CCO~O=S(=O)(O)O~ethanol, reflux~CCOC(C)=O.O",
+   "code": "CC(=O)O.CCO>O=S(=O)(O)O>CCOC(C)=O.O | cond=ethanol, reflux",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -178,7 +178,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C=C(C)C~BrBr~room temperature, water~CC(C)(O)CBr.Br",
+   "code": "C=C(C)C>BrBr>CC(C)(O)CBr.Br | cond=room temperature, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "anti addition",
@@ -280,7 +280,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1=CCCCC1~BrBr~dichloromethane, room temperature~Br[C@H]1CCCC[C@@H]1Br",
+   "code": "C1=CCCCC1>BrBr>Br[C@H]1CCCC[C@@H]1Br | cond=dichloromethane, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "anti addition",
@@ -356,7 +356,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C=CC~Br~light~CCCBr",
+   "code": "C=CC>Br>CCCBr | cond=light",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -464,7 +464,7 @@ window.REACTION_RULES = {
     "then": "add",
     "add": "Br"
    },
-   "code": "C=CC~Br~0 C, dichloromethane~CC(C)Br",
+   "code": "C=CC>Br>CC(C)Br | cond=0 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -546,7 +546,7 @@ window.REACTION_RULES = {
     "then": "add",
     "add": "O"
    },
-   "code": "C=C(C)C~O=S(=O)(O)O~25 C, water~CC(C)(C)O",
+   "code": "C=C(C)C>O=S(=O)(O)O>CC(C)(C)O | cond=25 C, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -651,7 +651,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C=CC~B~0 C, tetrahydrofuran~CCCO",
+   "code": "C=CC>B>CCCO | cond=0 C, tetrahydrofuran",
    "equiv": 0.34,
    "stereo": {
     "outcome": "",
@@ -783,7 +783,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "hydrogenation (H2, Pd)",
    "cation": null,
-   "code": "C1=CCCCC1~[H][H]~ethanol, room temperature~C1CCCCC1",
+   "code": "C1=CCCCC1>[H][H]>C1CCCCC1 | cond=ethanol, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "syn addition",
@@ -881,7 +881,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "peracid oxidation (mCPBA)",
    "cation": null,
-   "code": "C1=CCCCC1~O=C(OO)c1cccc(Cl)c1~dichloromethane, room temperature~O=C(O)c1cccc(Cl)c1.C1CC[C@H]2O[C@H]2C1",
+   "code": "C1=CCCCC1>O=C(OO)c1cccc(Cl)c1>O=C(O)c1cccc(Cl)c1.C1CC[C@H]2O[C@H]2C1 | cond=dichloromethane, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "syn addition (the epoxide keeps the alkene's geometry)",
@@ -937,7 +937,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1=CCCCC1~[O]=[Os](=[O])(=[O])=[O]~acetone, room temperature, water~O[C@@H]1CCCC[C@@H]1O",
+   "code": "C1=CCCCC1>[O]=[Os](=[O])(=[O])=[O]>O[C@@H]1CCCC[C@@H]1O | cond=acetone, room temperature, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "syn addition",
@@ -1016,7 +1016,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC=C(C)C~O=[O+][O-]~-78 C, dichloromethane~CC(C)=O.CC=O",
+   "code": "CC=C(C)C>O=[O+][O-]>CC(C)=O.CC=O | cond=-78 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -1142,7 +1142,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1=CCCCC1~O=C1CCC(=O)N1Br~light~BrC1C=CCCC1.O=C1CCC(=O)N1",
+   "code": "C1=CCCCC1>O=C1CCC(=O)N1Br>BrC1C=CCCC1.O=C1CCC(=O)N1 | cond=light",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -1260,7 +1260,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "hydrogenation (H2, Pd)",
    "cation": null,
-   "code": "CC#CC~[H][H]~ethanol, room temperature~CCCC",
+   "code": "CC#CC>[H][H]>CCCC | cond=ethanol, room temperature",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -1336,7 +1336,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC#CC~[H][H].[Pb].[Pd]~room temperature~C/C=C\\C",
+   "code": "CC#CC>[H][H].[Pb].[Pd]>C/C=C\\C | cond=room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "syn addition: Z (cis) alkene",
@@ -1412,7 +1412,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC#CC~N.[Na]~-33 C~C/C=C/C",
+   "code": "CC#CC>N.[Na]>C/C=C/C | cond=-33 C",
    "equiv": 2.0,
    "stereo": {
     "outcome": "anti addition: E (trans) alkene",
@@ -1536,7 +1536,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C#CC~O=S(=O)([O-])[O-].[Hg+2]~60 C, water~CC(C)=O",
+   "code": "C#CC>O=S(=O)([O-])[O-].[Hg+2]>CC(C)=O | cond=60 C, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -1680,7 +1680,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "c1ccccc1~BrBr.[Br][Fe]([Br])[Br]~anhydrous, room temperature~Brc1ccccc1.Br",
+   "code": "c1ccccc1>BrBr.[Br][Fe]([Br])[Br]>Brc1ccccc1.Br | cond=anhydrous, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -1786,7 +1786,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "c1ccccc1~O=S(=O)(O)O.O=[N+]([O-])O~50 C~O=[N+]([O-])c1ccccc1.O",
+   "code": "c1ccccc1>O=S(=O)(O)O.O=[N+]([O-])O>O=[N+]([O-])c1ccccc1.O | cond=50 C",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -1920,7 +1920,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "c1ccccc1.CC(=O)Cl~[Cl][Al]([Cl])[Cl]~anhydrous, dichloromethane~CC(=O)c1ccccc1.Cl",
+   "code": "c1ccccc1.CC(=O)Cl>[Cl][Al]([Cl])[Cl]>CC(=O)c1ccccc1.Cl | cond=anhydrous, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -2055,7 +2055,7 @@ window.REACTION_RULES = {
     "then": "rerun",
     "add": null
    },
-   "code": "c1ccccc1.CC(C)(C)Cl~[Cl][Al]([Cl])[Cl]~anhydrous, dichloromethane~CC(C)(C)c1ccccc1.Cl",
+   "code": "c1ccccc1.CC(C)(C)Cl>[Cl][Al]([Cl])[Cl]>CC(C)(C)c1ccccc1.Cl | cond=anhydrous, dichloromethane",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -2181,7 +2181,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "Cc1ccccc1~O=C1CCC(=O)N1Br~light~BrCc1ccccc1.O=C1CCC(=O)N1",
+   "code": "Cc1ccccc1>O=C1CCC(=O)N1Br>BrCc1ccccc1.O=C1CCC(=O)N1 | cond=light",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -2303,7 +2303,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "Cc1ccccc1~[K+].[O]=[Mn](=[O])(=[O])[O-]~reflux, water~O=C(O)c1ccccc1",
+   "code": "Cc1ccccc1>[K+].[O]=[Mn](=[O])(=[O])[O-]>O=C(O)c1ccccc1 | cond=reflux, water",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -2452,7 +2452,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=[N+]([O-])c1ccccc1~Cl.[Fe]~ethanol, reflux~Nc1ccccc1.O",
+   "code": "O=[N+]([O-])c1ccccc1>Cl.[Fe]>Nc1ccccc1.O | cond=ethanol, reflux",
    "equiv": 3.0,
    "stereo": {
     "outcome": "",
@@ -2570,7 +2570,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "Nc1ccccc1~Cl.O=N[O-].[Na+]~0 C, water~N#[N+]c1ccccc1.O",
+   "code": "Nc1ccccc1>Cl.O=N[O-].[Na+]>N#[N+]c1ccccc1.O | cond=0 C, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -2716,7 +2716,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "N#[N+]c1ccccc1~[Cu][Br]~room temperature~Brc1ccccc1.N#N",
+   "code": "N#[N+]c1ccccc1>[Cu][Br]>Brc1ccccc1.N#N | cond=room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -2794,7 +2794,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "SN2 at an alkyl halide",
    "cation": null,
-   "code": "CCCCBr~[C-]#N.[Na+]~DMSO~CCCCC#N.[Br-].[Na+]",
+   "code": "CCCCBr>[C-]#N.[Na+]>CCCCC#N.[Br-].[Na+] | cond=DMSO",
    "equiv": 1.0,
    "stereo": {
     "outcome": "inversion (SN2)",
@@ -2868,7 +2868,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "SN2 at an alkyl halide",
    "cation": null,
-   "code": "CCBr~CC[O-].[Na+]~ethanol~CCOCC.[Br-].[Na+]",
+   "code": "CCBr>CC[O-].[Na+]>CCOCC.[Br-].[Na+] | cond=ethanol",
    "equiv": 1.0,
    "stereo": {
     "outcome": "inversion (SN2)",
@@ -2926,7 +2926,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "SN2 at an alkyl halide",
    "cation": null,
-   "code": "CCCCCl~[I-].[Na+]~acetone, reflux~CCCCI.[Cl-].[Na+]",
+   "code": "CCCCCl>[I-].[Na+]>CCCCI.[Cl-].[Na+] | cond=acetone, reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "inversion (SN2)",
@@ -2991,7 +2991,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCC(C)(C)Br~CC(C)(C)[O-].[K+]~room temperature, tetrahydrofuran~C=C(C)CC.CC(C)(C)O.[Br-].[K+]",
+   "code": "CCC(C)(C)Br>CC(C)(C)[O-].[K+]>C=C(C)CC.CC(C)(C)O.[Br-].[K+] | cond=room temperature, tetrahydrofuran",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -3050,7 +3050,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCC(C)(C)Br~CC[O-].[Na+]~ethanol, reflux~CC=C(C)C.CCO.[Br-].[Na+]",
+   "code": "CCC(C)(C)Br>CC[O-].[Na+]>CC=C(C)C.CCO.[Br-].[Na+] | cond=ethanol, reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -3114,7 +3114,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "alcohol substitution",
    "cation": null,
-   "code": "CCCCO~BrP(Br)Br~0 C, diethyl ether~CCCCBr.OP(O)O",
+   "code": "CCCCO>BrP(Br)Br>CCCCBr.OP(O)O | cond=0 C, diethyl ether",
    "equiv": 0.34,
    "stereo": {
     "outcome": "inversion (SN2)",
@@ -3193,7 +3193,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "alcohol substitution",
    "cation": null,
-   "code": "CCCCO~O=S(Cl)Cl~reflux~CCCCCl.O=S=O.Cl",
+   "code": "CCCCO>O=S(Cl)Cl>CCCCCl.O=S=O.Cl | cond=reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "inversion (SN2, with pyridine)",
@@ -3290,7 +3290,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "alcohol oxidation",
    "cation": null,
-   "code": "CCCCO~[O]=[Cr](=[O])([O-])[Cl].c1cc[nH+]cc1~anhydrous, dichloromethane~CCCC=O",
+   "code": "CCCCO>[O]=[Cr](=[O])([O-])[Cl].c1cc[nH+]cc1>CCCC=O | cond=anhydrous, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -3372,7 +3372,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "alcohol oxidation",
    "cation": null,
-   "code": "CCCCO~O=S(=O)(O)O.[O]=[Cr](=[O])=[O]~0 C, acetone~CCCC(=O)O",
+   "code": "CCCCO>O=S(=O)(O)O.[O]=[Cr](=[O])=[O]>CCCC(=O)O | cond=0 C, acetone",
    "equiv": 0.67,
    "stereo": {
     "outcome": "",
@@ -3520,7 +3520,7 @@ window.REACTION_RULES = {
     "then": "eliminate",
     "add": null
    },
-   "code": "OC1CCCCC1~O=S(=O)(O)O~160 C~C1=CCCCC1.O",
+   "code": "OC1CCCCC1>O=S(=O)(O)O>C1=CCCCC1.O | cond=160 C",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -3630,7 +3630,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C(O)c1ccccc1~O=S(Cl)Cl~reflux~O=C(Cl)c1ccccc1.O=S=O.Cl",
+   "code": "O=C(O)c1ccccc1>O=S(Cl)Cl>O=C(Cl)c1ccccc1.O=S=O.Cl | cond=reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -3747,7 +3747,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "carbonyl addition",
    "cation": null,
-   "code": "O=C1CCCCC1~[BH4-].[Na+]~0 C, methanol~OC1CCCCC1",
+   "code": "O=C1CCCCC1>[BH4-].[Na+]>OC1CCCCC1 | cond=0 C, methanol",
    "equiv": 0.25,
    "stereo": {
     "outcome": "new stereocentre: racemic",
@@ -3823,7 +3823,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "COC(=O)c1ccccc1~[AlH4-].[Li+]~anhydrous, tetrahydrofuran~OCc1ccccc1.CO",
+   "code": "COC(=O)c1ccccc1>[AlH4-].[Li+]>OCc1ccccc1.CO | cond=anhydrous, tetrahydrofuran",
    "equiv": 0.5,
    "stereo": {
     "outcome": "",
@@ -3946,7 +3946,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "carbonyl addition",
    "cation": null,
-   "code": "CC(C)=O~[CH3][Mg][Br]~anhydrous, diethyl ether~CC(C)(C)O",
+   "code": "CC(C)=O>[CH3][Mg][Br]>CC(C)(C)O | cond=anhydrous, diethyl ether",
    "equiv": 1.0,
    "stereo": {
     "outcome": "new stereocentre: racemic",
@@ -4028,7 +4028,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "[Br][Mg][c]1ccccc1~O=C=O~anhydrous, diethyl ether~O=C(O)c1ccccc1",
+   "code": "[Br][Mg][c]1ccccc1>O=C=O>O=C(O)c1ccccc1 | cond=anhydrous, diethyl ether",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -4113,7 +4113,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "carbonyl addition",
    "cation": null,
-   "code": "O=C1CCCCC1~C=P(c1ccccc1)(c1ccccc1)c1ccccc1~room temperature, tetrahydrofuran~O=P(c1ccccc1)(c1ccccc1)c1ccccc1.C=C1CCCCC1",
+   "code": "O=C1CCCCC1>C=P(c1ccccc1)(c1ccccc1)c1ccccc1>O=P(c1ccccc1)(c1ccccc1)c1ccccc1.C=C1CCCCC1 | cond=room temperature, tetrahydrofuran",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -4219,7 +4219,7 @@ window.REACTION_RULES = {
    },
    "group": "carbonyl addition",
    "cation": null,
-   "code": "O=C1CCCCC1.OCCO~Cc1ccc(S(=O)(=O)O)cc1~reflux, toluene~C1CCC2(CC1)OCCO2.O",
+   "code": "O=C1CCCCC1.OCCO>Cc1ccc(S(=O)(=O)O)cc1>C1CCC2(CC1)OCCO2.O | cond=reflux, toluene",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -4390,7 +4390,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "carbonyl addition",
    "cation": null,
-   "code": "O=Cc1ccccc1.Nc1ccccc1~Cc1ccc(S(=O)(=O)O)cc1~reflux, toluene~C(=Nc1ccccc1)c1ccccc1.O",
+   "code": "O=Cc1ccccc1.Nc1ccccc1>Cc1ccc(S(=O)(=O)O)cc1>C(=Nc1ccccc1)c1ccccc1.O | cond=reflux, toluene",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -4533,7 +4533,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "carbonyl addition",
    "cation": null,
-   "code": "O=C1CCCCC1.CN~[BH3-]C#N.[Na+]~methanol~CNC1CCCCC1.O",
+   "code": "O=C1CCCCC1.CN>[BH3-]C#N.[Na+]>CNC1CCCCC1.O | cond=methanol",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -4658,7 +4658,7 @@ window.REACTION_RULES = {
    },
    "group": "",
    "cation": null,
-   "code": "O=Cc1ccccc1.CC(C)=O~[Na+].[OH-]~ethanol, room temperature, water~CC(=O)C=Cc1ccccc1.O",
+   "code": "O=Cc1ccccc1.CC(C)=O>[Na+].[OH-]>CC(=O)C=Cc1ccccc1.O | cond=ethanol, room temperature, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -4796,7 +4796,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "peracid oxidation (mCPBA)",
    "cation": null,
-   "code": "O=C1CCCCC1~O=C(OO)c1cccc(Cl)c1~dichloromethane, room temperature~O=C(O)c1cccc(Cl)c1.O=C1CCCCCO1",
+   "code": "O=C1CCCCC1>O=C(OO)c1cccc(Cl)c1>O=C(O)c1cccc(Cl)c1.O=C1CCCCCO1 | cond=dichloromethane, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "retention (the migrating carbon keeps its configuration)",
@@ -4895,7 +4895,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCOC(=O)c1ccccc1~[Na+].[OH-]~reflux, water~O=C(O)c1ccccc1.CCO",
+   "code": "CCOC(=O)c1ccccc1>[Na+].[OH-]>O=C(O)c1ccccc1.CCO | cond=reflux, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5023,7 +5023,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "acylation of a nucleophile",
    "cation": null,
-   "code": "Nc1ccccc1.CC(=O)Cl~c1ccncc1~0 C, dichloromethane~CC(=O)Nc1ccccc1.Cl",
+   "code": "Nc1ccccc1.CC(=O)Cl>c1ccncc1>CC(=O)Nc1ccccc1.Cl | cond=0 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5121,7 +5121,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C(O)c1ccccc1O~CC(=O)OC(C)=O~85 C~CC(=O)Oc1ccccc1C(=O)O.CC(=O)O",
+   "code": "O=C(O)c1ccccc1O>CC(=O)OC(C)=O>CC(=O)Oc1ccccc1C(=O)O.CC(=O)O | cond=85 C",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5225,7 +5225,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1CCC2OC2C1~O=S(=O)(O)O~room temperature, water~O[C@H]1CCCC[C@@H]1O",
+   "code": "C1CCC2OC2C1>O=S(=O)(O)O>O[C@H]1CCCC[C@@H]1O | cond=room temperature, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "anti opening (backside attack)",
@@ -5331,7 +5331,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C1C=CC(=O)O1.C=CC=C~~reflux, xylene~O=C1OC(=O)C2CC=CCC12",
+   "code": "O=C1C=CC(=O)O1.C=CC=C>>O=C1OC(=O)C2CC=CCC12 | cond=reflux, xylene",
    "equiv": null,
    "stereo": {
     "outcome": "",
@@ -5398,7 +5398,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "carbonyl addition",
    "cation": null,
-   "code": "COC(=O)c1ccccc1~[CH3][Mg][Br]~2 equiv, anhydrous, diethyl ether~CC(C)(O)c1ccccc1.CO",
+   "code": "COC(=O)c1ccccc1>[CH3][Mg][Br]>CC(C)(O)c1ccccc1.CO | cond=2 equiv, anhydrous, diethyl ether",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -5520,7 +5520,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C=C(C)C~Cl~0 C, dichloromethane~CC(C)(C)Cl",
+   "code": "C=C(C)C>Cl>CC(C)(C)Cl | cond=0 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5555,7 +5555,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C=CC~I~0 C, dichloromethane~CC(C)I",
+   "code": "C=CC>I>CC(C)I | cond=0 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5590,7 +5590,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1=CCCCC1~ClCl~dichloromethane, room temperature~ClC1CCCCC1Cl",
+   "code": "C1=CCCCC1>ClCl>ClC1CCCCC1Cl | cond=dichloromethane, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5625,7 +5625,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C=C(C)C~CC(=O)[O][Hg][O]C(C)=O~room temperature, tetrahydrofuran, water~CC(C)(C)O",
+   "code": "C=C(C)C>CC(=O)[O][Hg][O]C(C)=O>CC(C)(C)O | cond=room temperature, tetrahydrofuran, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5666,7 +5666,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C/C=C/C~[K+].[O]=[Mn](=[O])(=[O])[O-]~reflux, water~CC(=O)O.CC(=O)O",
+   "code": "C/C=C/C>[K+].[O]=[Mn](=[O])(=[O])[O-]>CC(=O)O.CC(=O)O | cond=reflux, water",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -5707,7 +5707,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC#CC~BrBr~2 equiv, dichloromethane, room temperature~CC(Br)(Br)C(C)(Br)Br",
+   "code": "CC#CC>BrBr>CC(Br)(Br)C(C)(Br)Br | cond=2 equiv, dichloromethane, room temperature",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -5742,7 +5742,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C#CC~Br~2 equiv, dichloromethane~CC(C)(Br)Br",
+   "code": "C#CC>Br>CC(C)(Br)Br | cond=2 equiv, dichloromethane",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -5777,7 +5777,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C#CCCC~B1C2CCCC1CCC2~room temperature, tetrahydrofuran~CCCCC=O",
+   "code": "C#CCCC>B1C2CCCC1CCC2>CCCCC=O | cond=room temperature, tetrahydrofuran",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5808,7 +5808,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1=CCCCC1~ICI.[Zn]~diethyl ether, reflux~C1CCC2CC2C1",
+   "code": "C1=CCCCC1>ICI.[Zn]>C1CCC2CC2C1 | cond=diethyl ether, reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5841,7 +5841,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1CCCCC1~BrBr~light~BrC1CCCCC1.Br",
+   "code": "C1CCCCC1>BrBr>BrC1CCCCC1.Br | cond=light",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5884,7 +5884,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "c1ccccc1~ClCl.[Cl][Fe]([Cl])[Cl]~anhydrous, room temperature~Clc1ccccc1.Cl",
+   "code": "c1ccccc1>ClCl.[Cl][Fe]([Cl])[Cl]>Clc1ccccc1.Cl | cond=anhydrous, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5925,7 +5925,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "c1ccccc1~O=S(=O)(O)O.O=S(=O)=O~40 C~O=S(=O)(O)c1ccccc1",
+   "code": "c1ccccc1>O=S(=O)(O)O.O=S(=O)=O>O=S(=O)(O)c1ccccc1 | cond=40 C",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -5960,7 +5960,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(=O)c1ccccc1~Cl.[Zn]~reflux, water~CCc1ccccc1",
+   "code": "CC(=O)c1ccccc1>Cl.[Zn]>CCc1ccccc1 | cond=reflux, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6003,7 +6003,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C1CCCCC1~NN.[K+].[OH-]~200 C~C1CCCCC1.N#N.O",
+   "code": "O=C1CCCCC1>NN.[K+].[OH-]>C1CCCCC1.N#N.O | cond=200 C",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6046,7 +6046,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "c1ccccc1~N.[Na]~-33 C, ethanol~C1=CCC=CC1",
+   "code": "c1ccccc1>N.[Na]>C1=CCC=CC1 | cond=-33 C, ethanol",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -6091,7 +6091,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "Oc1ccccc1~BrBr~3 equiv, room temperature, water~Oc1c(Br)cc(Br)cc1Br.Br",
+   "code": "Oc1ccccc1>BrBr>Oc1c(Br)cc(Br)cc1Br.Br | cond=3 equiv, room temperature, water",
    "equiv": 3.0,
    "stereo": {
     "outcome": "",
@@ -6135,7 +6135,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "NC(=O)c1ccccc1~O=S(Cl)Cl~reflux~N#Cc1ccccc1.O=S=O.Cl",
+   "code": "NC(=O)c1ccccc1>O=S(Cl)Cl>N#Cc1ccccc1.O=S=O.Cl | cond=reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6178,7 +6178,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "N#Cc1ccccc1~O=S(=O)(O)O~reflux, water~O=C(O)c1ccccc1.N",
+   "code": "N#Cc1ccccc1>O=S(=O)(O)O>O=C(O)c1ccccc1.N | cond=reflux, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -6222,7 +6222,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "N#Cc1ccccc1~[AlH4-].[Li+]~anhydrous, tetrahydrofuran~NCc1ccccc1",
+   "code": "N#Cc1ccccc1>[AlH4-].[Li+]>NCc1ccccc1 | cond=anhydrous, tetrahydrofuran",
    "equiv": 0.5,
    "stereo": {
     "outcome": "",
@@ -6259,7 +6259,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(=O)N(C)C~[AlH4-].[Li+]~anhydrous, tetrahydrofuran~CCN(C)C",
+   "code": "CC(=O)N(C)C>[AlH4-].[Li+]>CCN(C)C | cond=anhydrous, tetrahydrofuran",
    "equiv": 0.5,
    "stereo": {
     "outcome": "",
@@ -6300,7 +6300,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCCC(=O)O~[AlH4-].[Li+]~anhydrous, tetrahydrofuran~CCCCO",
+   "code": "CCCC(=O)O>[AlH4-].[Li+]>CCCCO | cond=anhydrous, tetrahydrofuran",
    "equiv": 0.75,
    "stereo": {
     "outcome": "",
@@ -6341,7 +6341,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "COC(=O)c1ccccc1~CC(C)[CH2][AlH][CH2]C(C)C~-78 C, dichloromethane~O=Cc1ccccc1.CO",
+   "code": "COC(=O)c1ccccc1>CC(C)[CH2][AlH][CH2]C(C)C>O=Cc1ccccc1.CO | cond=-78 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6384,7 +6384,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1CO1~[Br][Mg][c]1ccccc1~anhydrous, diethyl ether~OCCc1ccccc1",
+   "code": "C1CO1>[Br][Mg][c]1ccccc1>OCCc1ccccc1 | cond=anhydrous, diethyl ether",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6425,7 +6425,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(C)=O~[Li][CH2]CCC~-78 C, anhydrous, tetrahydrofuran~CCCCC(C)(C)O",
+   "code": "CC(C)=O>[Li][CH2]CCC>CCCCC(C)(C)O | cond=-78 C, anhydrous, tetrahydrofuran",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6466,7 +6466,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(=O)C=Cc1ccccc1~[CH3][Cu-][CH3].[Li+]~0 C, anhydrous, diethyl ether~CC(=O)CC(C)c1ccccc1",
+   "code": "CC(=O)C=Cc1ccccc1>[CH3][Cu-][CH3].[Li+]>CC(=O)CC(C)c1ccccc1 | cond=0 C, anhydrous, diethyl ether",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6513,7 +6513,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCOC(=O)CC(=O)OCC.C=CC(C)=O~CC[O-].[Na+]~ethanol, room temperature~CCOC(=O)C(CCC(C)=O)C(=O)OCC",
+   "code": "CCOC(=O)CC(=O)OCC.C=CC(C)=O>CC[O-].[Na+]>CCOC(=O)C(CCC(C)=O)C(=O)OCC | cond=ethanol, room temperature",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -6551,7 +6551,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCOC(C)=O.CCOC(C)=O~CC[O-].[Na+]~ethanol, reflux~CCOC(=O)CC(C)=O.CCO",
+   "code": "CCOC(C)=O.CCOC(C)=O>CC[O-].[Na+]>CCOC(=O)CC(C)=O.CCO | cond=ethanol, reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6589,7 +6589,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=Cc1ccccc1.O=Cc1ccccc1~[Na+].[OH-]~60 C, water~O=C(O)c1ccccc1.OCc1ccccc1",
+   "code": "O=Cc1ccccc1.O=Cc1ccccc1>[Na+].[OH-]>O=C(O)c1ccccc1.OCc1ccccc1 | cond=60 C, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6633,7 +6633,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(=O)c1ccccc1~II.[Na+].[OH-]~3 equiv, room temperature, water~O=C(O)c1ccccc1.IC(I)I",
+   "code": "CC(=O)c1ccccc1>II.[Na+].[OH-]>O=C(O)c1ccccc1.IC(I)I | cond=3 equiv, room temperature, water",
    "equiv": 3.0,
    "stereo": {
     "outcome": "",
@@ -6673,7 +6673,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C1CCCCC1~BrBr~acetic acid, room temperature~O=C1CCCCC1Br.Br",
+   "code": "O=C1CCCCC1>BrBr>O=C1CCCCC1Br.Br | cond=acetic acid, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6719,7 +6719,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCCC(=O)O~BrBr.BrP(Br)Br~reflux~CCC(Br)C(=O)O.Br",
+   "code": "CCCC(=O)O>BrBr.BrP(Br)Br>CCC(Br)C(=O)O.Br | cond=reflux",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6757,7 +6757,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(=O)Nc1ccccc1~O=S(=O)(O)O~reflux, water~Nc1ccccc1.CC(=O)O",
+   "code": "CC(=O)Nc1ccccc1>O=S(=O)(O)O>Nc1ccccc1.CC(=O)O | cond=reflux, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -6806,7 +6806,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "acylation of a nucleophile",
    "cation": null,
-   "code": "CC(=O)Cl.CCO~c1ccncc1~0 C, dichloromethane~CCOC(C)=O.Cl",
+   "code": "CC(=O)Cl.CCO>c1ccncc1>CCOC(C)=O.Cl | cond=0 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6843,7 +6843,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(=O)Cl~O~room temperature~CC(=O)O.Cl",
+   "code": "CC(=O)Cl>O>CC(=O)O.Cl | cond=room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6881,7 +6881,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "Nc1ccccc1~CC(=O)OC(C)=O~room temperature~CC(=O)Nc1ccccc1.CC(=O)O",
+   "code": "Nc1ccccc1>CC(=O)OC(C)=O>CC(=O)Nc1ccccc1.CC(=O)O | cond=room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6916,7 +6916,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "NC(=O)c1ccccc1~BrBr.[Na+].[OH-]~70 C, water~Nc1ccccc1.O=C=O",
+   "code": "NC(=O)c1ccccc1>BrBr.[Na+].[OH-]>Nc1ccccc1.O=C=O | cond=70 C, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -6960,7 +6960,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C1CCC2(CC1)OCCO2~O=S(=O)(O)O~room temperature, water~O=C1CCCCC1.OCCO",
+   "code": "C1CCC2(CC1)OCCO2>O=S(=O)(O)O>O=C1CCCCC1.OCCO | cond=room temperature, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -7004,7 +7004,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=Cc1ccccc1~N.N.[Ag+]~room temperature, water~O=C(O)c1ccccc1",
+   "code": "O=Cc1ccccc1>N.N.[Ag+]>O=C(O)c1ccccc1 | cond=room temperature, water",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",
@@ -7042,7 +7042,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "alcohol oxidation",
    "cation": null,
-   "code": "CCCCO~CS(C)=O.O=C(Cl)C(=O)Cl~-78 C, dichloromethane~CCCC=O.CSC",
+   "code": "CCCCO>CS(C)=O.O=C(Cl)C(=O)Cl>CCCC=O.CSC | cond=-78 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7087,7 +7087,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(C)(O)C(C)(C)O~O=S(=O)(O)O~100 C~CC(=O)C(C)(C)C.O",
+   "code": "CC(C)(O)C(C)(C)O>O=S(=O)(O)O>CC(=O)C(C)(C)C.O | cond=100 C",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -7128,7 +7128,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "ON=C1CCCCC1~O=S(=O)(O)O~100 C~O=C1CCCCCN1",
+   "code": "ON=C1CCCCC1>O=S(=O)(O)O>O=C1CCCCCN1 | cond=100 C",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -7174,7 +7174,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C1CCCCC1~NO~ethanol, room temperature~ON=C1CCCCC1.O",
+   "code": "O=C1CCCCC1>NO>ON=C1CCCCC1.O | cond=ethanol, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7212,7 +7212,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(C)=O~C#N~room temperature, water~CC(C)(O)C#N",
+   "code": "CC(C)=O>C#N>CC(C)(O)C#N | cond=room temperature, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7252,7 +7252,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "O=C(O)c1ccccc1.CN~C(=NC1CCCCC1)=NC1CCCCC1~dichloromethane, room temperature~O=C(NC1CCCCC1)NC1CCCCC1.CNC(=O)c1ccccc1",
+   "code": "O=C(O)c1ccccc1.CN>C(=NC1CCCCC1)=NC1CCCCC1>O=C(NC1CCCCC1)NC1CCCCC1.CNC(=O)c1ccccc1 | cond=dichloromethane, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7290,7 +7290,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CCOC(C)=O~O=S(=O)(O)O~reflux, water~CC(=O)O.CCO",
+   "code": "CCOC(C)=O>O=S(=O)(O)O>CC(=O)O.CCO | cond=reflux, water",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -7343,7 +7343,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "COC(=O)c1ccccc1.CCO~CC[O-].[Na+]~ethanol, reflux~CCOC(=O)c1ccccc1.CO",
+   "code": "COC(=O)c1ccccc1.CCO>CC[O-].[Na+]>CCOC(=O)c1ccccc1.CO | cond=ethanol, reflux",
    "equiv": "catalytic",
    "stereo": {
     "outcome": "",
@@ -7377,7 +7377,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "Oc1ccccc1.CI~[Na+].[OH-]~room temperature, water~COc1ccccc1",
+   "code": "Oc1ccccc1.CI>[Na+].[OH-]>COc1ccccc1 | cond=room temperature, water",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7415,7 +7415,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC1CO1~C[O-].[Na+]~methanol, room temperature~COCC(C)O",
+   "code": "CC1CO1>C[O-].[Na+]>COCC(C)O | cond=methanol, room temperature",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7450,7 +7450,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "C/C=C/C~O=[O+][O-].OO~-78 C, dichloromethane~CC(=O)O.CC(=O)O",
+   "code": "C/C=C/C>O=[O+][O-].OO>CC(=O)O.CC(=O)O | cond=-78 C, dichloromethane",
    "equiv": 1.0,
    "stereo": {
     "outcome": "",
@@ -7493,7 +7493,7 @@ window.REACTION_RULES = {
    "acidBase": null,
    "group": "",
    "cation": null,
-   "code": "CC(Br)C(C)Br~[NH2-].[Na+]~2 equiv, NH3~CC#CC",
+   "code": "CC(Br)C(C)Br>[NH2-].[Na+]>CC#CC | cond=2 equiv, NH3",
    "equiv": 2.0,
    "stereo": {
     "outcome": "",

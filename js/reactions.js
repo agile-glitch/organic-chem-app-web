@@ -877,7 +877,8 @@
   /* The reaction's identifying code (js/rxn_code.js, version 2):  reactants>reagents>products | conc=37%w/w | cond=reflux, ethanol
      The first word is a reaction SMILES; what a reaction SMILES cannot say (the reagent's strength, the conditions box) follows after a space. The molecule
      parts are RDKit canonical SMILES in the SMILES-line order, so the same reaction always gives the same text however its molecules were typed.
-     (The old form, starting materials~reagent~conditions~products, is still read by the code bar and by the recorded-reaction data; it is no longer written.) */
+     (The old form, starting materials~reagent~conditions~products, is still read by the code bar; every stored code, the workbook's and the recorded reactions',
+     is version 2 since tools/convert_codes_v2.py.) */
   /* Conditions are written in one standard form so the same conditions always give the same code: each item becomes
      its condition's name from the Conditions sheet (refluxing -> reflux, Δ or hot -> heat, rt -> room temperature), a
      solvent its name from the Solvents sheet (EtOH -> ethanol, CH2Cl2 -> dichloromethane); a temperature becomes "N C" (no degree sign)
@@ -1929,6 +1930,8 @@
     rows.sort((a, b) => b[6] - a[6]);
     return rows.length ? rows : null;
   }
+  const learnedFields = r => window.RxnCode.parse(r[1]);           // a recorded reaction's code (version 2; an old ~ code reads the same)
+  const learnedProducts = r => learnedFields(r).products || [];
   const learnedSource = r => [r[7], r[8], r[9] !== '' && r[9] != null ? `${r[9]}% yield` : ''].filter(Boolean).join(', ') + (r[6] > 1 ? ` (recorded ${r[6]}×)` : '');
   async function learnedTemplate(meta, t) {
     const c = Math.floor(t / meta.tmpl_chunk), part = await learnedPart('t/' + String(c).padStart(3, '0')), j = t - c * meta.tmpl_chunk;
@@ -2091,13 +2094,13 @@
     // looked up: recorded reactions with exactly these molecules (the most recorded one first)
     const rows = await learnedLookup(R, subs, reagent);
     if (rows) {
-      const r = rows[0], T = await tmpl(r[2]), products = r[1].split('~')[3].split('.').filter(Boolean);
-      const also = [...new Set(rows.slice(1).map(x => x[1].split('~')[3]))].filter(x => x !== r[1].split('~')[3]);
+      const r = rows[0], T = await tmpl(r[2]), products = learnedProducts(r), line = products.join('.');
+      const also = [...new Set(rows.slice(1).map(x => learnedProducts(x).join('.')))].filter(x => x !== line);
       return finish(products, subs, r[0],
         `looked up: these molecules are learned reaction ${r[0]} (recorded: ${learnedSource(r)}; its code: ${r[1]}); template ${T ? T.id : '?'}` +
           (T ? `, recorded ${T.recorded.toLocaleString()}× in all` : '') +
           (also.length ? `; the same molecules are also recorded giving: ${also.join('; ')}` : ''),
-        `${r[0]} · learned reaction (learned_reactions.xlsx), looked up: recorded in ${learnedSource(r)} · template ${T ? T.id : '?'} · conditions recorded: ${r[1].split('~')[2] || 'none'} · no mechanism`, r[5], false);
+        `${r[0]} · learned reaction (learned_reactions.xlsx), looked up: recorded in ${learnedSource(r)} · template ${T ? T.id : '?'} · conditions recorded: ${learnedFields(r).cond || 'none'} · no mechanism`, r[5], false);
     }
     // predicted: the relevance model first (it answers with or without a reagent, and says how far to trust the answer)
     const rel = await relevanceReaction(R, subs, reagent, condText, finish);
@@ -2233,7 +2236,7 @@
     const sameCompound = (a, b) => { const ka = fullKey(a), kb = fullKey(b); return ka && kb && ka.slice(0, 14) === kb.slice(0, 14); };
     const sameButStereo = (a, b) => sameCompound(a, b) && fullKey(a).slice(-1) === fullKey(b).slice(-1);
     const got = res.products || [];
-    const recProducts = rows.map(r => r[1].split('~')[3].split('.').filter(Boolean));
+    const recProducts = rows.map(learnedProducts);
     const hit = rows.find((r, i) => got.length && recProducts[i].every(x => got.includes(x)));
     if (hit) { res.note += ` · also recorded: ${hit[0]} (${learnedSource(hit)})`; return res; }
     const r = rows[0], want = recProducts[0];
@@ -3026,7 +3029,7 @@
   }
 
   /* ---- Run all tests (gear menu) ----
-     Every reaction in the workbook is run from its stored reaction code (starting materials~reagent~conditions~) and must
+     Every reaction in the workbook is run from its stored reaction code (reactants>reagents> | cond=..., the products left out) and must
      give the products recorded in that code, fire its own rule and (if it has a mechanism) show it as verified. The
      feature cases in tools/reaction_tests.json check each decision layer. Everything goes through this page exactly as a
      click would; whatever was on the page is put back afterwards. */
@@ -3035,10 +3038,11 @@
   async function loadTestCases() {
     const RR = window.REACTION_RULES || {}, cases = [];
     for (const r of RR.rules || []) {
-      const parts = String(r.code || '').split('~');
-      if (parts.length < 4 || !parts[0]) continue;
-      cases.push({ group: 'reactions (workbook)', name: `${r.id} ${r.name}`, code: parts.slice(0, 3).join('~') + '~',
-                   expect: r.id, products: parts[3].split('.').filter(Boolean), absent: [], mech: (r.mechanism || []).length > 0 });
+      const p = window.RxnCode.parse(r.code || '');
+      if (!p.ok || !p.reactants.length) continue;
+      const code = window.RxnCode.build({ reactants: p.reactants.join('.'), agents: p.agents.join('.'), products: '', cond: p.cond, conc: p.conc });
+      cases.push({ group: 'reactions (workbook)', name: `${r.id} ${r.name}`, code,
+                   expect: r.id, products: p.products, absent: [], mech: (r.mechanism || []).length > 0 });
     }
     try {
       const T = await (await fetch('tools/reaction_tests.json', { cache: 'no-store' })).json();
