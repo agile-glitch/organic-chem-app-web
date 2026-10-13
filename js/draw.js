@@ -361,7 +361,7 @@
       this.runs.forEach(r => {
         r.t.split('\n').forEach((part, k) => {
           if (k > 0) { line++; first = true; off = 0; }
-          if (part === '' && !first) return;
+          if (part === '') return;                      // nothing to draw; the next text starts this line (an empty tspan would not move it)
           const sp = h('tspan', { 'font-size': r.s ? TEXT_PX * 0.7 : TEXT_PX }, t);
           const want = r.s < 0 ? TEXT_PX * 0.25 : r.s > 0 ? -TEXT_PX * 0.4 : 0;
           if (first) { sp.setAttribute('x', 4); sp.setAttribute('y', 4 + TEXT_PX * 0.95 + line * lh + want); first = false; }
@@ -514,6 +514,11 @@
     .dr-dlg input[type=text]:focus { border-color:#7aa7ff; outline:none; }
     .dr-dlg .status { color:#666; margin:2px 0 8px; min-height:18px; }
     .dr-dlg .preview { border:1px solid #e3e3e3; border-radius:8px; height:300px; display:flex; align-items:center; justify-content:center; background:#fff; margin-bottom:10px; overflow:hidden; }
+    .dr-menu { position:absolute; z-index:40; min-width:150px; background:#fff; border:1px solid #d6d6dc; border-radius:8px; padding:4px; box-shadow:0 6px 24px rgba(0,0,0,.18); }
+    .dr-menu button { display:flex; justify-content:space-between; gap:16px; width:100%; border:0; background:none; padding:6px 10px; border-radius:5px; font:13px system-ui,sans-serif; color:#222; cursor:pointer; text-align:left; }
+    .dr-menu button:hover:not(:disabled) { background:#eef3ff; }
+    .dr-menu button:disabled { color:#aaa; cursor:default; }
+    .dr-menu kbd { font:12px system-ui,sans-serif; color:#888; }
     .dr-send { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:70; background:#1b3a6b; color:#fff; border-radius:10px; padding:10px 14px; font:13px system-ui,sans-serif; display:flex; gap:10px; align-items:center; box-shadow:0 6px 24px rgba(0,0,0,.3); }
     .dr-send button { border:0; border-radius:6px; padding:6px 12px; cursor:pointer; font:13px system-ui,sans-serif; }
   `;
@@ -534,7 +539,11 @@
   const gap = () => { const d = document.createElement('span'); d.className = 'dr-gap'; bar.appendChild(d); };
   MODES.forEach(([m, txt, tip]) => {
     modeButtons[m] = mk(txt, tip, () => setMode(m));
-    if (m === 'text') for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
+    if (m === 'text') {
+      for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
+      for (const [t2, tip2, sym] of [['☀', 'Light: put ☀ in the text box being edited, or a new text box (e.g. over a reaction arrow)', '☀'],
+                                     ['hν', 'hν (light, photon energy): put it in the text box being edited, or a new text box', 'hν']]) mk(t2, tip2, () => insertSymbol(sym));
+    }
     if (['text', 'arrow-resonance', 'lonepair'].includes(m)) gap();
   });
   gap();
@@ -594,7 +603,11 @@
     ed.style.left = (tb.x * zoom) + 'px'; ed.style.top = (tb.y * zoom) + 'px'; ed.style.transform = `scale(${zoom})`; ed.style.color = tb.color;
     ed.innerHTML = tb.html(); scroll.appendChild(ed);
     tb.editing = true; tb.render(); editing = { item: tb, el: ed };
-    ed.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); ed.blur(); } e.stopPropagation(); });
+    ed.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); ed.blur(); }
+      else if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ed.blur(); clearSelection(); }   // Enter finishes the text and deselects it; Shift+Enter is a new line
+      e.stopPropagation();
+    });
     ed.addEventListener('blur', () => { if (editing && editing.el === ed) stopEditing(); });
     ed.focus();
     const range = document.createRange(); range.selectNodeContents(ed); range.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(range);
@@ -604,6 +617,13 @@
     const { item, el } = editing; editing = null;
     item.setFromEditor(el); item.editing = false; el.remove();
     if (!item.plain().trim()) removeItem(item); else item.render();
+  }
+  /* a symbol (☀, hν) at the caret of the text box being edited, else in a new text box in the middle of what is in view */
+  function insertSymbol(sym) {
+    if (editing) { editing.el.focus(); document.execCommand('insertText', false, sym); return; }
+    const tb = new TextBox(sym);
+    tb.x = (scroll.scrollLeft + scroll.clientWidth / 2) / zoom - 12; tb.y = (scroll.scrollTop + scroll.clientHeight / 2) / zoom - 12;
+    addItem(tb); clearSelection(); select(tb); setMode('select');
   }
   function toggleScript(s) {
     if (editing) { document.execCommand(s < 0 ? 'subscript' : 'superscript'); return; }
@@ -656,10 +676,10 @@
       const tb = new TextBox(''); tb.x = p.x; tb.y = p.y; addItem(tb); setMode('select'); startEditing(tb); e.preventDefault();
     } else if (mode.startsWith('arrow-')) {
       const ar = addItem(new ArrowItem(mode.slice(6), p, p));
-      start({ move: (q, ev) => ar.setEnd(ar.snapped(ar.p1, q, ev)), up: () => { if (manhattan(ar.p1, ar.p2) < 12) ar.setEnd({ x: ar.p1.x + 140, y: ar.p1.y }); select(ar); setMode('select'); } });
+      start({ move: (q, ev) => ar.setEnd(ar.snapped(ar.p1, q, ev)), up: () => { if (manhattan(ar.p1, ar.p2) < 12) ar.setEnd({ x: ar.p1.x + 140, y: ar.p1.y }); } });   // the tool stays: Esc or Select to stop
     } else if (mode === 'electron' || mode === 'lonepair') {
       const el = addItem(new ElectronItem(mode === 'lonepair', p));
-      start({ move: q => { if (manhattan(q, p) >= 10) { el.angle = Math.atan2(q.y - p.y, q.x - p.x) + Math.PI / 2; el.render(); } }, up: () => { select(el); setMode('select'); } });
+      start({ move: q => { if (manhattan(q, p) >= 10) { el.angle = Math.atan2(q.y - p.y, q.x - p.x) + Math.PI / 2; el.render(); } }, up: () => {} });   // the tool stays: Esc or Select to stop
     }
   });
   function start(d) {
@@ -697,11 +717,65 @@
     zoom = Math.max(0.3, Math.min(3, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
     svg.setAttribute('width', SCENE_W * zoom); svg.setAttribute('height', SCENE_H * zoom);
   }, { passive: false });
+  /* ---- copy and paste (Ctrl+C / Ctrl+V, or right-click): whole items, kept on this page (molecules, text, arrows, electrons) */
+  const TRANSIENT = new Set(['g', 'scene', 'selected', 'hover', 'editing', 'rotating']);
+  function cloneItem(it) {
+    const c = Object.create(Object.getPrototypeOf(it));
+    for (const [k, v] of Object.entries(it)) {
+      if (TRANSIENT.has(k)) continue;
+      if (v instanceof StraightSnap) { c[k] = new StraightSnap(); continue; }
+      try { c[k] = structuredClone(v); } catch (e) { c[k] = v; }            // (nothing here holds a DOM node or a function; just in case)
+    }
+    c.g = h('g'); c.selected = false; c.scene = null; c.hover = null;
+    if ('editing' in it) c.editing = false;
+    if ('rotating' in it) c.rotating = false;
+    return c;
+  }
+  let clip = [], pasteN = 0;
+  function copySelected() { if (!sel.size) return false; clip = items.filter(i => sel.has(i)).map(cloneItem); pasteN = 0; return true; }
+  function paste(at) {                                             // at: where the copied group's top-left goes (else a step down-right of the original)
+    if (!clip.length) return;
+    const fresh = clip.map(cloneItem);
+    let dx, dy;
+    if (at) {
+      const bs = clip.map(i => i.bbox()), x0 = Math.min(...bs.map(b => b.x)), y0 = Math.min(...bs.map(b => b.y));
+      dx = at.x - x0; dy = at.y - y0;
+    } else { pasteN++; dx = dy = 24 * pasteN; }
+    clearSelection();
+    fresh.forEach(it => { addItem(it); it.translate(dx, dy); it.render(); select(it); });
+    setMode('select');
+  }
+
+  let menu = null;
+  const closeMenu = () => { if (menu) { menu.remove(); menu = null; } };
+  svg.addEventListener('contextmenu', e => {
+    e.preventDefault(); stopEditing(); closeMenu();
+    const p = pt(e), top = itemsAt(p).find(i => !(i instanceof MoleculeBox) || i.glyphHit(p));
+    if (top && !sel.has(top)) { clearSelection(); select(top); }
+    menu = document.createElement('div'); menu.className = 'dr-menu';
+    const r = scroll.getBoundingClientRect();
+    menu.style.left = (e.clientX - r.left + scroll.scrollLeft) + 'px'; menu.style.top = (e.clientY - r.top + scroll.scrollTop) + 'px';
+    for (const [label, key, on, fn] of [['Copy', 'Ctrl+C', sel.size > 0, () => copySelected()], ['Paste', 'Ctrl+V', clip.length > 0, () => paste(p)],
+                                        ['Delete', 'Del', sel.size > 0, () => deleteSelected()]]) {
+      const b = document.createElement('button'); b.type = 'button'; b.disabled = !on;
+      b.innerHTML = `<span>${label}</span><kbd>${key}</kbd>`;
+      b.addEventListener('click', () => { closeMenu(); fn(); });
+      menu.appendChild(b);
+    }
+    scroll.appendChild(menu);
+  });
+  document.addEventListener('pointerdown', e => { if (menu && !menu.contains(e.target)) closeMenu(); }, true);
+  scroll.addEventListener('scroll', closeMenu);
+
   document.addEventListener('keydown', e => {
     if (!page.classList.contains('active') || editing || document.querySelector('.dr-modal')) return;
     if (/^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName) || (e.target && e.target.isContentEditable)) return;
-    if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSelected(); }
-    else if (e.key === 'Escape') { setMode('select'); clearSelection(); }
+    const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+    if (mod && k === 'c') { if (copySelected()) e.preventDefault(); }
+    else if (mod && k === 'x') { if (copySelected()) { e.preventDefault(); deleteSelected(); } }
+    else if (mod && k === 'v') { if (clip.length) { e.preventDefault(); paste(); } }
+    else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSelected(); }
+    else if (e.key === 'Escape') { closeMenu(); setMode('select'); clearSelection(); }
   });
 
   /* ---- export */

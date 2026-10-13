@@ -14,10 +14,13 @@
    words (reflux in ethanol), not as molecules. The products field is empty until the arrow has been clicked.
 
    Version 1 (still read, never written):   starting materials~reagent~conditions~products   (at most three '~').
-   '~' never occurs in a SMILES and '>' only separates the three fields, so neither format needs quoting.
+   '~' never occurs in a SMILES, so neither format needs quoting. A '>' separates the three fields except in '->', a dative bond (a
+   SMILES never ends in a bond, so '->' is never a separator; RDKit reads 'CC>[NH3]->[Pd]>CC' the same way). tools/rxn_code.py is the
+   same definition in Python, for the tools that build the data.
 
    RxnCode.parse(text) -> { ok, version, reactants[], agents[], products[], cond, conc, extra{}, error }
    RxnCode.build({reactants, agents, products, cond, conc}) -> string   (the molecule fields are already-joined SMILES lines)
+   RxnCode.toV2(text) -> the same reaction written as version 2 (null if it cannot be read)
    RxnCode.reactionSmiles(text) -> the first word, for copying into another program                                                       */
 (function (root) {
   'use strict';
@@ -28,13 +31,13 @@
     if (!t) return { ok: false, error: 'empty' };
     // version 1: a '~' and no '>' in the first word
     const first = t.split(/\s+/)[0];
-    if (!first.includes('>') && t.includes('~')) {
+    if (!/(?<!-)>/.test(first) && t.includes('~')) {
       const parts = t.split('~').map(x => x.trim());
       if (parts.length > 4) return { ok: false, error: 'A reaction code is starting materials~reagent~conditions~products (at most three ~)' };
       while (parts.length < 4) parts.push('');
       return { ok: true, version: 1, reactants: split(parts[0]), agents: split(parts[1]), products: split(parts[3]), cond: parts[2], conc: null, extra: {} };
     }
-    const rxn = first.split('>');
+    const rxn = first.split(/(?<!-)>/);                 // not the '>' of a dative bond '->'
     if (rxn.length === 1) {                              // a bare molecule list: starting materials only
       return { ok: true, version: 2, reactants: split(first), agents: [], products: [], cond: '', conc: null, extra: parseTail(t.slice(first.length)).extra, ...tailFields(t.slice(first.length)) };
     }
@@ -72,6 +75,13 @@
 
   const reactionSmiles = text => String(text || '').trim().split(/\s+/)[0] || '';
 
-  const api = { parse, build, reactionSmiles };
+  /* a version 1 code (or any code) rewritten as version 2: the same molecules, conditions and strength */
+  function toV2(text) {
+    const p = parse(text);
+    if (!p.ok) return null;
+    return build({ reactants: p.reactants.join('.'), agents: p.agents.join('.'), products: p.products.join('.'), cond: p.cond, conc: p.conc });
+  }
+
+  const api = { parse, build, reactionSmiles, toV2 };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.RxnCode = api;
 })(typeof window !== 'undefined' ? window : globalThis);

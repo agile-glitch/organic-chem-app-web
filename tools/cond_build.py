@@ -3,7 +3,7 @@
     python tools/cond_build.py            writes data/learned/c/NNN.js  (and prints what it kept)
 
 data/learned/rx/ holds the 1.09 million recorded reactions the Reactions page learned from (US patents 1976-2016 text-mined by D. M. Lowe, CC0, and the
-Open Reaction Database, CC-BY-SA 4.0), each as  [id, "starting materials~reagent~solvents~product", template #, consumed, formed, leaving, times recorded,
+Open Reaction Database, CC-BY-SA 4.0), each as  [id, "starting materials>reagent>product | cond=solvents", template #, consumed, formed, leaving, times recorded,
 source, year, yield %]. A template is one KIND of reaction (the changed atoms and their neighbours); the page's relevance model proposes templates for
 a set of starting materials. This reads every record once and keeps, per template with at least MIN_N records:
 
@@ -18,6 +18,8 @@ Patent records have no temperature or time (the text-mining did not keep them), 
 NNN*2000 .. NNN*2000+1999 (gzip inside base64, like the other learned parts).
 """
 import base64, collections, gzip, json, os, re, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rxn_code  # noqa: E402
 import statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -44,9 +46,9 @@ def main():
         body = json.loads(gzip.decompress(base64.b64decode(re.search(r'\{"gz":"([^"]+)"', s).group(1))))
         for r in body:
             code, t, times, source, yl = r[1], r[2], int(r[6] or 1), r[7], r[9]
-            parts = code.split('~')
-            if len(parts) < 4: continue
-            reagent, cond = parts[1], parts[2]
+            p = rxn_code.parse(code)                       # version 2 (an old ~ code reads the same)
+            if not p['ok']: continue
+            reagent, cond = '.'.join(p['agents']), p['cond']
             cons[t][r[3] or ''] += times; form[t][r[4] or ''] += times
             total += times
             count[t] += times

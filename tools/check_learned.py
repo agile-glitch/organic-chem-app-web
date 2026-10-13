@@ -17,6 +17,7 @@ from multiprocessing import Pool
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import rxn_code  # noqa: E402
 SRC = os.path.join(os.path.dirname(HERE), 'learned_reactions.xlsx')
 
 _S = {}
@@ -40,7 +41,7 @@ def check(row):
     import learn_reactions as L
     lid, code, subs, reagent, conds, prod, t, consumed, formed, skey, rkey = row
     bad = []
-    if code != '~'.join([subs, reagent, conds, prod]): bad.append('code differs from its columns')
+    if rxn_code.fields(code) != (subs, reagent, conds, prod): bad.append('code differs from its columns')
     sl = subs.split('.')
     extras = L.pool_extras(reagent, L._W['roles'])
     outs, _ = L.run_template(_S['smarts'][t], sl, extras)
@@ -70,7 +71,7 @@ def main():
             if head is None: head = {h: k for k, h in enumerate(r)}; continue
             if not r or not r[0]: continue
             g = lambda col: r[head[col]] or ''
-            rows.append((g('Learned ID'), g('Reaction code (starting materials~reagent~conditions~product)'), g('Starting materials'), g('Reagent'),
+            rows.append((g('Learned ID'), g(rxn_code.code_column(head)), g('Starting materials'), g('Reagent'),
                          g('Conditions (recorded solvents)'), g('Product'), tindex[r[head['Template ID']]], g('Fragments consumed'), g('Fragments formed'),
                          g('Look-up key (InChIKey of starting materials + reagent parts)'), g('Reagent key (InChIKey of its distinct parts)')))
     pick = rows if args.all else rows[::max(1, len(rows) // args.sample)][:args.sample]

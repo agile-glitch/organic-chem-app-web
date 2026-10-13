@@ -1,0 +1,617 @@
+{
+ "about": "1000 recorded reactions, one from each of 1000 randomly chosen held-out US patents (seed 1; 4,956 held-out US patents, 49,913 of their reactions among the 1,090,843 learned). Made by tools/patent_bench.js sample.",
+ "total": {
+  "n": 1000,
+  "answered": 573,
+  "declined": 422,
+  "error": 5,
+  "exact": 443,
+  "flat": 453,
+  "compound": 460
+ },
+ "by_tier": {
+  "error": {
+   "n": 5,
+   "answered": 0,
+   "declined": 0,
+   "error": 5,
+   "exact": 0,
+   "flat": 0,
+   "compound": 0
+  },
+  "no reaction (workbook)": {
+   "n": 42,
+   "answered": 0,
+   "declined": 42,
+   "error": 0,
+   "exact": 0,
+   "flat": 0,
+   "compound": 0
+  },
+  "relevance model (learned)": {
+   "n": 546,
+   "answered": 546,
+   "declined": 0,
+   "error": 0,
+   "exact": 430,
+   "flat": 439,
+   "compound": 445
+  },
+  "unknown": {
+   "n": 380,
+   "answered": 0,
+   "declined": 380,
+   "error": 0,
+   "exact": 0,
+   "flat": 0,
+   "compound": 0
+  },
+  "workbook rule": {
+   "n": 27,
+   "answered": 27,
+   "declined": 0,
+   "error": 0,
+   "exact": 13,
+   "flat": 14,
+   "compound": 15
+  }
+ },
+ "by_size": {
+  "< 8": {
+   "n": 4,
+   "answered": 0,
+   "declined": 4,
+   "error": 0,
+   "exact": 0,
+   "flat": 0,
+   "compound": 0
+  },
+  "8-11": {
+   "n": 47,
+   "answered": 24,
+   "declined": 23,
+   "error": 0,
+   "exact": 15,
+   "flat": 15,
+   "compound": 16
+  },
+  "12-19": {
+   "n": 277,
+   "answered": 155,
+   "declined": 121,
+   "error": 1,
+   "exact": 110,
+   "flat": 118,
+   "compound": 122
+  },
+  "20-29": {
+   "n": 369,
+   "answered": 216,
+   "declined": 153,
+   "error": 0,
+   "exact": 168,
+   "flat": 170,
+   "compound": 171
+  },
+  "30 or more": {
+   "n": 303,
+   "answered": 178,
+   "declined": 121,
+   "error": 4,
+   "exact": 150,
+   "flat": 150,
+   "compound": 151
+  }
+ },
+ "by_reagent": {
+  "reagent given": {
+   "n": 813,
+   "answered": 492,
+   "declined": 316,
+   "error": 5,
+   "exact": 374,
+   "flat": 384,
+   "compound": 391
+  },
+  "no reagent": {
+   "n": 187,
+   "answered": 81,
+   "declined": 106,
+   "error": 0,
+   "exact": 69,
+   "flat": 69,
+   "compound": 69
+  }
+ },
+ "calibration": [
+  {
+   "stated": "0.50-0.70",
+   "n": 55,
+   "mean_stated": 0.598,
+   "right_exact": 0.418,
+   "right_compound": 0.527
+  },
+  {
+   "stated": "0.70-0.80",
+   "n": 49,
+   "mean_stated": 0.753,
+   "right_exact": 0.571,
+   "right_compound": 0.612
+  },
+  {
+   "stated": "0.80-0.90",
+   "n": 114,
+   "mean_stated": 0.858,
+   "right_exact": 0.763,
+   "right_compound": 0.781
+  },
+  {
+   "stated": "0.90-0.95",
+   "n": 100,
+   "mean_stated": 0.927,
+   "right_exact": 0.83,
+   "right_compound": 0.85
+  },
+  {
+   "stated": "0.95-1.00",
+   "n": 228,
+   "mean_stated": 0.97,
+   "right_exact": 0.917,
+   "right_compound": 0.93
+  }
+ ],
+ "withheld": {
+  "declined_with_a_guess": 371,
+  "guess_right_exact": 78,
+  "guess_right_compound": 83,
+  "by_stated": [
+   {
+    "stated": "0.00-0.30",
+    "n": 195,
+    "right_exact": 18
+   },
+   {
+    "stated": "0.30-0.50",
+    "n": 134,
+    "right_exact": 39
+   },
+   {
+    "stated": "0.50-0.70",
+    "n": 30,
+    "right_exact": 14
+   },
+   {
+    "stated": "0.70-0.85",
+    "n": 12,
+    "right_exact": 7
+   }
+  ]
+ },
+ "median_ms": 729,
+ "wrong_examples": [
+  {
+   "id": "L0145831",
+   "patent": "US06982266B2",
+   "code": "COc1cc2c(N3CCN(C(=O)OC(C)(C)C)CC3)ncnc2cc1O.Cc1ccc(S(=O)(=O)OC(C)Cl)cc1>O=C([O-])[O-].[Cs+]> | cond=DMF",
+   "recorded": "COc1cc2c(N3CCN(C(=O)OC(C)(C)C)CC3)ncnc2cc1OCCCl",
+   "page": "COc1cc2c(N3CCN(C(=O)OC(C)(C)C)CC3)ncnc2cc1OC(C)Cl.Cc1ccc(S(=O)(=O)O)cc1",
+   "note": "Predicted by the relevance model (T001523, 85% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0145136",
+   "patent": "US06951867B2",
+   "code": "CC(C)(C)OC(=O)N1CCC(CN)CC1.Cc1nc2c(C(=O)O)cc(Cl)c(N)n2c1C>>",
+   "recorded": "Cc1cn2c(N)c(Cl)cc(C(=O)NCC3CCN(C(=O)OC(C)(C)C)CC3)c2n1",
+   "page": "Cc1nc2c(C(=O)NCC3CCN(C(=O)OC(C)(C)C)CC3)cc(Cl)c(N)n2c1C",
+   "note": "Predicted by the relevance model (T000009, 88% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0205555",
+   "patent": "US08653269B2",
+   "code": "Cc1ccccc1.Nc1cccc(CCl)n1.O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl>[Na+].[OH-]> | cond=tert-butanol, water",
+   "recorded": "CC(C)(C)OC(=O)Nc1cccc(CCl)n1",
+   "page": "Nc1cccc(CO)n1.[Cl-]",
+   "note": "SN2 · alkyl halide pathway from the Halide_Pathways sheet (reaction_rules.xlsx)",
+   "tier": "workbook rule"
+  },
+  {
+   "id": "L0460860",
+   "patent": "US20140194430A1",
+   "code": "Clc1ccc2ncc(-c3cc4ccccc4o3)n2n1.CNCC(O)c1cccnc1>Cl.[H-].[Na+]> | cond=DMF",
+   "recorded": "CN(CC(O)c1cccnc1)c1ccc2ncc(-c3cc4ccccc4o3)n2n1",
+   "page": "CNCC(Oc1ccc2ncc(-c3cc4ccccc4o3)n2n1)c1cccnc1.Cl",
+   "note": "Predicted by the relevance model (T000394, 98% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0078247",
+   "patent": "US04092474",
+   "code": "CC(=O)OC(C1=CS[C@@H]2C(NC(=O)Cc3cccs3)C(=O)N2C1C(=O)OC(c1ccccc1)c1ccccc1)c1ccccc1>O=C(OO)c1cccc(Cl)c1> | cond=dichloromethane, isopropanol",
+   "recorded": "CC(=O)OC(C1=C(C(=O)OC(c2ccccc2)c2ccccc2)N2C(=O)C(NC(=O)Cc3cccs3)[C@H]2SC1)c1ccccc1",
+   "page": "CC(=O)OC(c1ccccc1)C12OC1S[C@@H]1C(NC(=O)Cc3cccs3)C(=O)N1C2C(=O)OC(c1ccccc1)c1ccccc1.O=C(O)c1cccc(Cl)c1",
+   "note": "R009 · Epoxidation (reaction_rules.xlsx) · conditions: mCPBA, CH2Cl2, rt",
+   "tier": "workbook rule"
+  },
+  {
+   "id": "L0150891",
+   "patent": "US07157408B2",
+   "code": "OCCc1c(Br)cc(Br)c2cccnc12.O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl>> | cond=1,4-dioxane",
+   "recorded": "COC(=O)OCCc1c(Br)cc(Br)c2cccnc12",
+   "page": "O=C(Cl)OCCc1c(Br)cc(Br)c2cccnc12.O=C=O.Cl",
+   "note": "Predicted by the relevance model (T003365, 82% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0192785",
+   "patent": "US08313923B2",
+   "code": "CC(C)=CCCC(C)CC=O>OC[C@H]1O[C@@H]2O[C@H]3[C@H](O)[C@@H](O)[C@@H](O[C@H]4[C@H](O)[C@@H](O)[C@@H](O[C@H]5[C@H](O)[C@@H](O)[C@@H](O[C@H]6[C@H](O)[C@@H](O)[C@@H](O[C@H]7[C@H](O)[C@@H](O)[C@@H](O[C@H]8[C@H](O)[C@@H](O)[C@@H](O[C@H]1[C@H](O)[C@H]2O)O[C@@H]8CO)O[C@@H]7CO)O[C@@H]6CO)O[C@@H]5CO)O[C@@H]4CO)O[C@@H]3CO>",
+   "recorded": "CC(C)=CCCC(C)=CC=O",
+   "page": "CC(C)=CCCC(C)CCO",
+   "note": "Predicted by the relevance model (T000247, 87% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0109729",
+   "patent": "US05312840",
+   "code": "Cc1ccccc1NCCNc1ccccc1C.N#CBr>[Na+].[OH-]> | cond=ethanol",
+   "recorded": "Cc1ccccc1N1CCN(c2ccccc2C)C1=N",
+   "page": "Cc1ccccc1NCCN(C#N)c1ccccc1C.Br",
+   "note": "Predicted by the relevance model (T002544, 78% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0057368",
+   "patent": "US07585876B2",
+   "code": "CC(C)(C)OC(=O)CC#N.O=[N+]([O-])c1cccnc1Cl>O=C([O-])[O-].[K+]> | cond=tetrahydrofuran",
+   "recorded": "N#CCc1ncccc1[N+](=O)[O-]",
+   "page": "CC(C)(C)OC(=O)C(C#N)c1ncccc1[N+](=O)[O-].Cl",
+   "note": "Predicted by the relevance model (T013783, 92% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0144750",
+   "patent": "US06930124B2",
+   "code": "O=Cc1cccn1-c1cc(Cl)cc(Cl)c1.CC(=O)Nc1ccc2c(c1)CC(=O)N2>C1CCNCC1> | cond=ethanol",
+   "recorded": "CC(=O)Nc1ccc2c(c1)C(c1cccn1-c1cc(Cl)cc(Cl)c1)C(=O)N2",
+   "page": "CC(=O)Nc1ccc2c(c1)C(=Cc1cccn1-c1cc(Cl)cc(Cl)c1)C(=O)N2",
+   "note": "Predicted by the relevance model (T000147, 97% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0147944",
+   "patent": "US07071198B1",
+   "code": "CC(=O)Cc1ccncc1.COc1ccc(C=O)cc1F>C1CCNCC1> | cond=toluene",
+   "recorded": "C=CC(=O)Cc1cccnc1",
+   "page": "COc1ccc(C=C(C(C)=O)c2ccncc2)cc1F",
+   "note": "Predicted by the relevance model (T012126, 93% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0253728",
+   "patent": "US20090232907A1",
+   "code": "CCOC(=O)NC(=O)Nc1cc2c3c(cccc3c1)C(=O)N(CCN(C)C)C2=O>NC(N)=O.[Na+].[OH-]>",
+   "recorded": "CN(C)CCN1C(=O)c2cccc3cc(NC(N)=O)cc(c23)C1=O",
+   "page": "CN(C)CCN1C(=O)c2cccc3cc(NC(=O)NC(=O)O)cc(c23)C1=O.CCO",
+   "note": "Predicted by the relevance model (T000003, 72% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0175950",
+   "patent": "US07863305B2",
+   "code": "CS(=O)(=O)OC(CCCl)c1ccccc1.N#Cc1cccc2[nH]ncc12>[H-].[Na+]> | cond=NMP",
+   "recorded": "N#Cc1cccc2c1cnn2C(CCCl)c1ccccc1",
+   "page": "CS(=O)(=O)OC(CCn1ncc2c(C#N)cccc21)c1ccccc1.Cl",
+   "note": "Predicted by the relevance model (T000821, 72% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0096243",
+   "patent": "US04806625",
+   "code": "Cc1cc(C)c(O)c(C)c1>Br.BrBr.ClC(Cl)(Cl)Cl.[Br-]>",
+   "recorded": "Cc1c(O)c(C)c(Br)c(C)c1Br",
+   "page": "Cc1cc(C)c(Br)c(C)c1O.Br",
+   "note": "Predicted by the relevance model (T000086, 84% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0127804",
+   "patent": "US06159971",
+   "code": "COc1ccc([N+](=O)[O-])c2c1CCC(C(=O)O)C2.Nc1ccc(C(=O)N2CCOCC2)cc1.CCN(CC)CC>O=S(Cl)Cl> | cond=dichloromethane, DMF, toluene, water",
+   "recorded": "COc1ccc([N+](=O)[O-])c2c1CCC(C(=O)Nc1ccc(C(=O)N3CCOCC3)cc1)C2",
+   "page": "COc1ccc([N+](=O)[O-])c2c1CCC(C(=O)Cl)C2.O=S=O.Cl",
+   "note": "R036 · Carboxylic acid to acyl chloride (SOCl2) (reaction_rules.xlsx) · conditions: SOCl2, reflux",
+   "tier": "workbook rule"
+  },
+  {
+   "id": "L0206759",
+   "patent": "US08691782B2",
+   "code": "COc1ccc(C(Cl)(c2ccccc2)c2ccc(OC)cc2)cc1.O=C(OCC1c2ccccc2-c2ccccc21)N1CCC[C@H]1CO>c1ccncc1> | cond=chloroform, methanol",
+   "recorded": "COc1ccc(C(C(=O)OCC2c3ccccc3-c3ccccc32)(c2ccccc2)c2ccc(OC)cc2)cc1",
+   "page": "COc1ccc(C(OC[C@@H]2CCCN2C(=O)OCC2c3ccccc3-c3ccccc32)(c2ccccc2)c2ccc(OC)cc2)cc1.Cl",
+   "note": "Predicted by the relevance model (T000436, 98% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0116232",
+   "patent": "US05599833",
+   "code": "CCCCS(=O)(=O)c1ccc(-c2sc3cc(S(=O)(=O)CCCC)ccc3c2C(=O)c2ccc(OCCN3CCCCC3)cc2)cc1>Cl> | cond=diethyl ether, ethyl acetate",
+   "recorded": "CCCCSc1ccc2c(C(=O)c3ccc(OCCN4CCCCC4)cc3)c(-c3ccc(S(=O)(=O)CCCC)cc3)sc2c1",
+   "page": "CCCCS(=O)(=O)c1ccc(-c2sc3cc(S(=O)(=O)CCCC)ccc3c2Cc2ccc(OCCN3CCCCC3)cc2)cc1",
+   "note": "Predicted by the relevance model (T000659, 71% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0792639",
+   "patent": "US04247550",
+   "code": "NCC=CCc1cc(N)c(Oc2ccccc2)c(S(N)(=O)=O)c1.O=Cc1ccccc1>[BH4-].[Na+]> | cond=acetic acid, methanol, water",
+   "recorded": "NCC=CCc1cc(NCc2ccccc2)c(Oc2ccccc2)c(S(N)(=O)=O)c1",
+   "page": "OCc1ccccc1",
+   "note": "R037 · Ketone reduction (NaBH4) (reaction_rules.xlsx) · conditions: NaBH4, MeOH, 0 °C",
+   "tier": "workbook rule"
+  },
+  {
+   "id": "L0191960",
+   "patent": "US08288552B2",
+   "code": "COC(=O)c1c(Cl)ccc(N)c1Br.O=C([O-])[O-]>CB1OB(C)OB(C)O1.[Cl][Pd][Cl].[Fe+2].[K+].c1ccc(P(c2ccccc2)[c-]2cccc2)cc1> | cond=1,4-dioxane, water",
+   "recorded": "COC(=O)c1cc(N)c(C)cc1Cl",
+   "page": "COC(=O)c1c(Cl)ccc(N)c1C",
+   "note": "Predicted by the relevance model (T002573, 94% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0067765",
+   "patent": "US20030108892A1",
+   "code": "ClCCc1cc2ccccc2c2ccccc12.O=C1NC(=O)c2ccccc21>CCCCCCCCCCCCCCCC[P+](CCCC)(CCCC)CCCC.[Br-].[K]> | cond=toluene, water",
+   "recorded": "O=C1NC(=O)c2c(CCc3cc4ccccc4c4ccccc34)cccc21",
+   "page": "O=C1c2ccccc2C(=O)N1CCc1cc2ccccc2c2ccccc12.Cl",
+   "note": "Predicted by the relevance model (T001970, 93% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L1011933",
+   "patent": "US04954600",
+   "code": "Oc1ccc(-c2ccc(O)cc2)cc1.C=CCOCCCCCCCCBr>[K+].[OH-]> | cond=methanol",
+   "recorded": "C=CCOCCCCCCCCOc1ccc(-c2ccc(O)cc2)cc1",
+   "page": "C=CCOCCCCCCCCO.[Br-]",
+   "note": "SN2 · alkyl halide pathway from the Halide_Pathways sheet (reaction_rules.xlsx)",
+   "tier": "workbook rule"
+  },
+  {
+   "id": "L0006841",
+   "patent": "US07074789B2",
+   "code": "Nc1nc2ccccc2[nH]1.Clc1ncnc(Cl)n1>CCN(C(C)C)C(C)C> | cond=DMF, water",
+   "recorded": "Nc1nc2ccccc2n1-c1ncnc(Cl)n1",
+   "page": "Clc1ncnc(Nc2nc3ccccc3[nH]2)n1.Cl",
+   "note": "Predicted by the relevance model (T000672, 83% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L1031793",
+   "patent": "US06465444B2",
+   "code": "O=Cc1ccc2ccc(CO)cc2c1.CS(=O)(=O)Cl>CCN(CC)CC.[Cl-].[NH4+]> | cond=dichloromethane",
+   "recorded": "CS(=O)(=O)OCc1ccc2ccc(C=O)cc2c1",
+   "page": "O=Cc1ccc2ccc(CCl)cc2c1.CS(=O)(=O)O",
+   "note": "Predicted by the relevance model (T000834, 58% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0115809",
+   "patent": "US05583149",
+   "code": "CNS(=O)(=O)Cc1ccc(N)c(I)c1.C[Si](C)(C)C#C[Si](C)(C)C>O=C([O-])[O-].[Na+]> | cond=1,2-dimethoxyethane",
+   "recorded": "CNS(=O)(=O)Cc1ccc2[nH]c([Si](C)(C)C)cc2c1",
+   "page": "CNS(=O)(=O)Cc1ccc2[nH]c([Si](C)(C)C)c([Si](C)(C)C)c2c1.I",
+   "note": "Predicted by the relevance model (T017809, 57% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0225175",
+   "patent": "US09181514B2",
+   "code": "C=C(C)CC1(C)CCCC(C)C1=O>COCC[O][AlH2-][O]CCOC.[Na+]> | cond=toluene",
+   "recorded": "CC1CCCC2(C)CC(C)(C)OC12",
+   "page": "C=C(C)CC1(C)CCCC(C)[C@@H]1O",
+   "note": "Predicted by the relevance model (T000490, 84% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0129871",
+   "patent": "US06251927B1",
+   "code": "CC(=O)N1C(C(=O)O)CSC1c1cc(O)ccc1O.C1CSCN1>>",
+   "recorded": "COC(=O)C1CSC(c2cc(O)ccc2O)N1C(C)=O",
+   "page": "CC(=O)N1C(C(=O)N2CCSC2)CSC1c1cc(O)ccc1O",
+   "note": "Predicted by the relevance model (T000688, 74% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0104135",
+   "patent": "US05103036",
+   "code": "Cc1cccc[c]1[Mg][Br].Brc1ccc(I)cc1>c1ccc([P](c2ccccc2)(c2ccccc2)[Pd]([P](c2ccccc2)(c2ccccc2)c2ccccc2)([P](c2ccccc2)(c2ccccc2)c2ccccc2)[P](c2ccccc2)(c2ccccc2)c2ccccc2)cc1> | cond=tetrahydrofuran",
+   "recorded": "Cc1ccccc1-c1ccc(Br)cc1",
+   "page": "Cc1ccccc1-c1ccc(I)cc1.[Br-].[Mg+2]",
+   "note": "Predicted by the relevance model (T009214, 74% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0318904",
+   "patent": "US20150166505A1",
+   "code": "COc1cc([N+](=O)[O-])ncc1Br.OC1CC1>[H-].[Na+]> | cond=diethyl ether, NMP",
+   "recorded": "COc1cc(OC2CC2)ncc1Br",
+   "page": "COc1cc([N+](=O)[O-])ncc1OC1CC1.Br",
+   "note": "Predicted by the relevance model (T002547, 88% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0124049",
+   "patent": "US05977131",
+   "code": "O=Cc1c[nH]c2ncccc12.COC(=O)CCC[N+](=O)[O-]>CC(=O)[O-].[NH4+]> | cond=tetrahydrofuran",
+   "recorded": "COC(=O)CCC(=Cc1c[nH]c2ncccc12)[N+](=O)[O-]",
+   "page": "O=C1CC[C@@H]([N+](=O)[O-])[C@H](c2c[nH]c3ncccc23)N1",
+   "note": "Predicted by the relevance model (T015550, 51% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0077287",
+   "patent": "US04061746",
+   "code": "N[C@@H]1CCC[C@@H]1c1ccccc1.N[C@@H]1CCC[C@H]1c1ccccc1>Cl.Cl>",
+   "recorded": "c1ccc([C@@H]2CCC[C@H]2N=C2CCCCCN2)cc1",
+   "page": "N[C@@H]1CCC[C@@H]1C1CCCCC1",
+   "note": "Predicted by the relevance model (T001348, 54% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0060733",
+   "patent": "US08143252B2",
+   "code": "O=C1OC(=O)c2c(F)c(F)c(F)c(F)c21.CN1C(=O)NC(=O)C(C)(N)C1=O>CCN(CC)CC.Cl> | cond=DMSO, water",
+   "recorded": "CN1C(=O)NC(=O)C(C)(NC(=O)c2cc(F)c(F)c(F)c2F)C1=O",
+   "page": "CN1C(=O)NC(=O)C(C)(N2C(=O)c3c(F)c(F)c(F)c(F)c3C2=O)C1=O",
+   "note": "Predicted by the relevance model (T000749, 82% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0175403",
+   "patent": "US07850742B2",
+   "code": "CCCn1nc(Br)c([N+](=O)[O-])c1NCc1ccccc1.Oc1ccccc1>O=C([O-])[O-].[Cu][I]> | cond=NMP",
+   "recorded": "Cn1nc(Oc2ccccc2)c([N+](=O)[O-])c1NCc1ccccc1",
+   "page": "CCCn1nc(Oc2ccccc2)c([N+](=O)[O-])c1NCc1ccccc1.Br",
+   "note": "Predicted by the relevance model (T000896, 70% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0428046",
+   "patent": "US07968538B2",
+   "code": "COc1ccc(Cl)cc1C(C)=O.NC=O>O=CO> | cond=water",
+   "recorded": "COc1ccc(Cl)cc1C(C)N",
+   "page": "COc1ccc(Cl)cc1C(C)NC=O",
+   "note": "Predicted by the relevance model (T025220, 75% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0081970",
+   "patent": "US04239702",
+   "code": "O=C([O-])OCCC(=O)c1ccc(Cl)cc1>[Pd]> | cond=acetic acid",
+   "recorded": "OCc1ccc(Cl)cc1",
+   "page": "O=C([O-])OCCCc1ccc(Cl)cc1",
+   "note": "Predicted by the relevance model (T000269, 74% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0093556",
+   "patent": "US04704387",
+   "code": "O=c1c2ccccc2c(Cc2ccc(Cl)cc2)nn1C1CCCNCC1.COCCCl>Br.O=C([O-])[O-].[K+]> | cond=DMA",
+   "recorded": "COC(C)N1CCCC(n2nc(Cc3ccc(Cl)cc3)c3ccccc3c2=O)CC1",
+   "page": "COCCN1CCCC(n2nc(Cc3ccc(Cl)cc3)c3ccccc3c2=O)CC1.Cl",
+   "note": "Predicted by the relevance model (T000042, 98% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0271771",
+   "patent": "US20140349997A1",
+   "code": "CC(C)N(C[C@@H](C(=O)O)c1ccc(Cl)cc1)C(=O)OC(C)(C)C.C[C@@H]1C[C@@H](O)c2ncnc(N3CCNCC3)c21>CCN(C(C)C)C(C)C.CN(C)C(On1nnc2ccccc21)=[N+](C)C.Cl.F[P-](F)(F)(F)(F)F> | cond=dichloromethane",
+   "recorded": "CC(C)NC(=O)OCCC=O",
+   "page": "CC(C)N(C[C@@H](C(=O)N1CCN(c2ncnc3c2[C@H](C)C[C@H]3O)CC1)c1ccc(Cl)cc1)C(=O)OC(C)(C)C",
+   "note": "Predicted by the relevance model (T000034, 90% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0164145",
+   "patent": "US07560455B2",
+   "code": "CC(C)(C)OC(=O)N[C@@H](CC(=O)O)Cc1cc(F)c(F)cc1F.CC1NCCCn2c1nnc2C(F)(F)F.ClCCCl>CCN(CC)CC.Cl.O=C([O-])O.On1nnc2ccccc21.[Na+]> | cond=DMF",
+   "recorded": "CC1c2nnc(C(F)(F)F)n2CCCN1C(=O)C[C@H](N)Cc1cc(F)c(F)cc1F",
+   "page": "CC1c2nnc(C(F)(F)F)n2CCCN1C(=O)C[C@@H](Cc1cc(F)c(F)cc1F)NC(=O)OC(C)(C)C",
+   "note": "Predicted by the relevance model (T000034, 63% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0013390",
+   "patent": "US07956216B2",
+   "code": "CCCNC(=O)c1ccc(Br)cc1.C#Cc1ccccc1>C1CCNCC1.[Cl][Pd]([Cl])([P](c1ccccc1)(c1ccccc1)c1ccccc1)[P](c1ccccc1)(c1ccccc1)c1ccccc1> | cond=dichloromethane, water",
+   "recorded": "CCCNC(=O)c1cccc(C#Cc2ccccc2)c1",
+   "page": "CCCNC(=O)c1ccc(C#Cc2ccccc2)cc1.Br",
+   "note": "Predicted by the relevance model (T000044, 97% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  },
+  {
+   "id": "L0106745",
+   "patent": "US05198556",
+   "code": "FC(F)(F)C1(C(F)(F)F)OC(F)(CCI)C(F)(CCI)O1>[K+].[OH-]>",
+   "recorded": "C=CC1(F)OC(C(F)(F)F)(C(F)(F)F)OC1(F)C=C",
+   "page": "OCCC1(F)OC(C(F)(F)F)(C(F)(F)F)OC1(F)CCI.[I-]",
+   "note": "SN2 · alkyl halide pathway from the Halide_Pathways sheet (reaction_rules.xlsx)",
+   "tier": "workbook rule"
+  },
+  {
+   "id": "L0743647",
+   "patent": "US08778970B2",
+   "code": "COCCOc1cc(CC2CCNCC2)ccc1Br>BrB(Br)Br.Cl> | cond=dichloromethane, methanol",
+   "recorded": "OCCOc1cc(CC2CCNCC2)ccc1Br",
+   "page": "Oc1cc(CC2CCNCC2)ccc1Br.CO",
+   "note": "Predicted by the relevance model (T000005, 91% estimated chance of being right) · no mechanism",
+   "tier": "relevance model (learned)"
+  }
+ ],
+ "declined_reasons": [
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F001 carboxylic acid, F",
+   37
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F002 amine (1°), F026 a",
+   15
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F004 ester, F005 alkene",
+   14
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F014 alcohol (on sp3 C)",
+   14
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F035 aryl methyl (benzy",
+   14
+  ],
+  [
+   "No reaction under these conditions: R035 · Acid-catalysed dehydration ",
+   10
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F003 alcohol (1°), F014",
+   9
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F038 alkyl arene (aryl–",
+   9
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F011 alkyl chloride, F0",
+   8
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F005 alkene (C=C), F019",
+   8
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F021 amide, F038 alkyl ",
+   7
+  ],
+  [
+   "Unknown: nothing in reaction_rules.xlsx covers F019 ketone, F038 alkyl",
+   7
+  ]
+ ],
+ "errors": [
+  [
+   "timed out",
+   3
+  ],
+  [
+   "Not a valid SMILES: [O]=[Ag]",
+   1
+  ],
+  [
+   "hung (no answer in 120 s)",
+   1
+  ]
+ ]
+}

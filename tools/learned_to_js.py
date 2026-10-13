@@ -21,7 +21,9 @@ read them too):
 Keys are RDKit InChIKeys, exactly what the page's keyOf gives. Also writes tools/learned_tests.json (a sample of
 learned reactions for the page's "Run all tests" button).
 """
-import base64, collections, gzip, json, os, shutil, time
+import base64, collections, gzip, json, os, shutil, sys, time
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rxn_code  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.dirname(HERE)
@@ -84,7 +86,7 @@ def main():
             if not r or not r[0]: continue
             g = lambda col: r[head[col]]
             k = len(rows)
-            code = g('Reaction code (starting materials~reagent~conditions~product)')
+            code = rxn_code.to_v2(g(rxn_code.code_column(head)))    # version 2 (a workbook written before it holds ~ codes)
             t = tindex[g('Template ID')]
             yl = g('Best recorded yield (%)')
             rows.append([g('Learned ID'), code, t, g('Fragments consumed') or '', g('Fragments formed') or '',
@@ -96,7 +98,7 @@ def main():
             if not rkey.startswith('?'):                       # a reagent RDKit cannot key is never filed as 'no reagent'
                 by_reagent[rkey][t] += 1
                 example.setdefault((rkey, t), k)
-            reagent = code.split('~')[1]
+            reagent = rxn_code.fields(code)[1]
             if reagent:
                 if reagent not in ess_key:
                     ks = sorted(L.inchikey(x) for x in L.essential_parts(reagent))
@@ -148,7 +150,7 @@ def main():
     # a sample for the page's "Run all tests" button: evenly spread learned reactions the page can read, looked up from their codes
     step = max(1, len(rows) // 50)
     tests = [{'feature': 'learned reactions (looked up)', 'name': f'{r[0]} (template {trows[r[2]][0]})',
-              'code': '~'.join(r[1].split('~')[:3]) + '~', 'expect': r[0], 'products': [r[1].split('~')[3]]}
+              'code': (lambda f: rxn_code.build(f[0], f[1], '', cond=f[2]))(rxn_code.fields(r[1])), 'expect': r[0], 'products': [rxn_code.fields(r[1])[3]]}
              for k, r in enumerate(rows) if k % step == 0 and readable[k]][:50]
     json.dump({'learned': tests}, open(os.path.join(HERE, 'learned_tests.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(f'wrote tools/learned_tests.json: {len(tests)} learned reactions for the Run all tests button')

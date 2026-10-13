@@ -19,7 +19,7 @@ reactions as possible before repeats; within a template, a different reagent fir
 several times (same code) is learned once and counted.
 
 What each learned reaction gets (one row of a "Learned n" sheet), in the same form as reaction_rules.xlsx:
-  * the four-part reaction code: starting materials~reagent~conditions~product, molecules in the SMILES-line order;
+  * the reaction code (version 2, tools/rxn_code.py): starting materials>reagent>product | cond=conditions, molecules in the SMILES-line order;
     carbon-free reactants (Br2, HNO3, OH-, H2O ...) and the non-solvent agents are the reagent; the recorded solvents
     are the conditions (names from the Solvents sheet of reaction_rules.xlsx); recorded reactions have no temperature;
   * fragments consumed / formed, read with the Fragments sheet of molecule_data.xlsx (a fragment consumed = its count
@@ -34,12 +34,15 @@ Then: python tools/learned_to_js.py (the page's data) and python tools/check_lea
 """
 import argparse, base64, collections, gzip, itertools, json, os, re, sys, time
 from multiprocessing import Pool
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rxn_code  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.dirname(HERE)
 KB = os.path.join(APP, 'data', 'rxnkb')
 OUT = os.path.join(APP, 'learned_reactions.xlsx')
 ROWS_PER_SHEET = 250000
+CODE_COL = rxn_code.LEARNED_CODE_COL
 SAVED = os.path.join(__import__('tempfile').gettempdir(), 'organic_chem_learned_last_run.pkl')
 
 
@@ -502,7 +505,7 @@ def main():
             for i in batch:                                # keep the round-robin order
                 x = res[i]
                 if x[1] != 'ok': why_not[x[1]] += 1; continue
-                code = '~'.join(['.'.join(x[2]), x[3], x[4], x[5]])
+                code = rxn_code.build('.'.join(x[2]), x[3], x[5], cond=x[4])
                 if code in by_code: chosen[by_code[code]][1].append(i); why_not['same reaction recorded again (counted)'] += 1; continue
                 if len(chosen) >= want: continue
                 by_code[code] = len(chosen); chosen.append([x, [i]])
@@ -545,11 +548,11 @@ def write_workbook(K, chosen, why_not):
         t = tid[i]; lid = f'L{n:07d}' if len(chosen) >= 1000000 else f'L{n:06d}'
         per_t[t].append((lid, consumed, formed, leaving or ''))
         yields = [num(K['yl'][j]) for j in idxs if num(K['yl'][j]) is not None]
-        rows.append([lid, '~'.join(['.'.join(subs), reagent, conds, prod]), '.'.join(subs), reagent, conds, prod, f'T{t + 1:06d}', tn[t],
+        rows.append([lid, rxn_code.build('.'.join(subs), reagent, prod, cond=conds), '.'.join(subs), reagent, conds, prod, f'T{t + 1:06d}', tn[t],
                      ' + '.join(consumed), ' + '.join(formed), reacted_col, leaving, nout, len(idxs), K['c'][i],
                      int(K['y'][i]) if str(K['y'][i]).isdigit() else K['y'][i], max(yields) if yields else None,
                      'yes', 'yes' if readable else 'no', skey, rkey, pkeys])
-    head = ['Learned ID', 'Reaction code (starting materials~reagent~conditions~product)', 'Starting materials', 'Reagent',
+    head = ['Learned ID', CODE_COL, 'Starting materials', 'Reagent',
             'Conditions (recorded solvents)', 'Product', 'Template ID', 'Times this template is recorded', 'Fragments consumed',
             'Fragments formed', 'Fragments that reacted, per starting material (in code order, | between molecules)', 'Leaving pieces (starting-material atoms not in the product)', 'Outcomes of the template on these molecules',
             'Times this reaction is recorded', 'Source (patent / ORD id)', 'Year', 'Best recorded yield (%)',

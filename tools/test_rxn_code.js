@@ -1,4 +1,4 @@
-// Unit tests for js/rxn_code.js (reaction code v2 + the old '~' form) and js/reagent_conc.js.   node tools/test_rxn_code.js
+// Unit tests for js/rxn_code.js (reaction code v2, the old '~' form it still reads, toV2) and js/reagent_conc.js.   node tools/test_rxn_code.js
 const path = require('path');
 const RxnCode = require(path.join(__dirname, '..', 'js', 'rxn_code.js'));
 const RC = require(path.join(__dirname, '..', 'js', 'reagent_conc.js'));
@@ -35,6 +35,18 @@ eq('v1 three parts', [p.reactants, p.agents, p.cond, p.products], [['CC=C'], ['B
 eq('v1 five parts', RxnCode.parse('a~b~c~d~e').ok, false);
 p = RxnCode.parse('CC(C)=O~[BH4-].[Na+]~methanol, 0 C~CC(C)O');
 eq('v1 with products', [p.reactants, p.agents, p.cond, p.products], [['CC(C)=O'], ['[BH4-]', '[Na+]'], 'methanol, 0 C', ['CC(C)O']]);
+// ---- a dative bond '->' inside a molecule is not a field separator (RDKit reads it the same way)
+p = RxnCode.parse('Cc1ccccc1Br>[NH2]->[Pd]<-[NH2]>Cc1ccccc1N | cond=DMSO');
+eq('dative v2', [p.ok, p.reactants, p.agents, p.products, p.cond], [true, ['Cc1ccccc1Br'], ['[NH2]->[Pd]<-[NH2]'], ['Cc1ccccc1N'], 'DMSO']);
+p = RxnCode.parse('Cc1ccccc1Br~[NH2]->[Pd]~DMSO~Cc1ccccc1N');
+eq('dative v1', [p.version, p.agents, p.cond], [1, ['[NH2]->[Pd]'], 'DMSO']);
+// ---- toV2: an old code rewritten with the same fields
+eq('toV2', RxnCode.toV2('CC(C)=O~[BH4-].[Na+]~methanol, 0 C~CC(C)O'), 'CC(C)=O>[BH4-].[Na+]>CC(C)O | cond=methanol, 0 C');
+eq('toV2 no products', RxnCode.toV2('CC=C~Br~light'), 'CC=C>Br> | cond=light');
+eq('toV2 no conditions', RxnCode.toV2('CC=C~Br~~BrCC(C)Br'), 'CC=C>Br>BrCC(C)Br');
+eq('toV2 dative', RxnCode.toV2('A~X->[Pd]~DMSO~P'), 'A>X->[Pd]>P | cond=DMSO');
+eq('toV2 keeps a v2 code', RxnCode.toV2('C=C>Br>BrCCBr | conc=2M | cond=rt'), 'C=C>Br>BrCCBr | conc=2M | cond=rt');
+eq('toV2 unreadable', RxnCode.toV2('a~b~c~d~e'), null);
 
 // ---- concentrations
 for (const [t, want] of [['37%', { v: 37, unit: 'ww' }], ['5%v/v', { v: 5, unit: 'vv' }], ['3 % w/v', { v: 3, unit: 'wv' }], ['2M', { v: 2, unit: 'M' }], ['1.5 M', { v: 1.5, unit: 'M' }],
