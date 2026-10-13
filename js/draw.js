@@ -481,13 +481,13 @@
   /* ================= the page ================= */
   const MODES = [
     ['select', 'Select', 'Select and move things (Esc)'],
-    ['molecule', 'Molecule box', 'Drag out a box, then import or draw a molecule in it'],
-    ['text', 'Text', 'Click to add a text box'],
-    ['arrow-forward', '→', 'Reaction arrow (clicks to straight near horizontal; Shift = 15° steps, Alt = no snapping)'],
+    ['molecule', 'Molecule box', 'Drag out a box, then import or draw a molecule in it (W)'],
+    ['text', 'Text', 'Click to add a text box (D)'],
+    ['arrow-forward', '→', 'Reaction arrow (A). Clicks to straight near horizontal; Shift = 15° steps, Alt = no snapping'],
     ['arrow-equilibrium', '⇌', 'Equilibrium arrow'],
     ['arrow-resonance', '↔', 'Resonance arrow'],
-    ['electron', '•', 'Electron: click to place a single electron dot'],
-    ['lonepair', '••', 'Lone pair: click to place two dots; drag away from the atom to turn them'],
+    ['electron', '•', 'Electron (Q): click to place a single electron dot'],
+    ['lonepair', '••', 'Lone pair (E): click to place two dots; drag away from the atom to turn them'],
   ];
   const SWATCHES = ['#000000', '#e03131', '#f08c00', '#2f9e44', '#0c8599', '#1971c2', '#6741d9', '#c2255c', '#862e9c', '#7f5539', '#868e96', '#ffffff'];
 
@@ -716,6 +716,9 @@
     zoom = Math.max(0.3, Math.min(3, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
     svg.setAttribute('width', SCENE_W * zoom); svg.setAttribute('height', SCENE_H * zoom);
   }, { passive: false });
+  /* ---- tool keys (not while typing in a text box or any other field) */
+  const TOOL_KEYS = { w: 'molecule', a: 'arrow-forward', d: 'text', e: 'lonepair', q: 'electron' };
+
   /* ---- copy and paste (Ctrl+C / Ctrl+V, or right-click): whole items, kept on this page (molecules, text, arrows, electrons) */
   const TRANSIENT = new Set(['g', 'scene', 'selected', 'hover', 'editing', 'rotating']);
   function cloneItem(it) {
@@ -775,6 +778,7 @@
     else if (mod && k === 'v') { if (clip.length) { e.preventDefault(); paste(); } }
     else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSelected(); }
     else if (e.key === 'Escape') { closeMenu(); setMode('select'); clearSelection(); }
+    else if (!mod && !e.altKey && TOOL_KEYS[k]) { e.preventDefault(); closeMenu(); setMode(TOOL_KEYS[k]); }
   });
 
   /* ---- export */
