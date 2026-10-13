@@ -1,5 +1,5 @@
 /* Usage — a random username for each visitor and a count of the visits and of each app opened, sent to Supabase
-   (supabase/usage.sql makes the table; usage.html shows the counts). The username (e.g. BlueFalcon42) is made up in the
+   (supabase/usage.sql makes the table; the counts are read in the Supabase dashboard, see supabase/README.md). The username (e.g. BlueFalcon42) is made up in the
    browser and kept in localStorage, so the same browser keeps the same name; nothing else about the visitor is sent:
    only the username, what happened ('visit' or 'open') and which app. With no project set in js/usage_config.js,
    nothing leaves the browser.

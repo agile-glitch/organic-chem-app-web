@@ -1,10 +1,8 @@
 -- AgileCHEM usage counts: one row per visit to the home screen and per app opened, under the visitor's random username.
 -- Run this once in your Supabase project: Dashboard > SQL Editor > New query > paste > Run.
--- Before running, change the dashboard password on the line marked  <-- CHANGE THIS  (usage.html asks for it).
 --
--- What the public (anon) key can do with this setup:
---   * add a row to usage_events (nothing else: it cannot read, change or delete rows);
---   * call usage_summary(password), which returns the counts only when the password is right.
+-- The public (anon) key in js/usage_config.js can only ADD a row to usage_events: it cannot read, change or delete anything.
+-- You read the counts in the Supabase dashboard, signed in to your own account (Table Editor > usage_counts, or the SQL Editor).
 
 create table if not exists public.usage_events (
   id         bigint generated always as identity primary key,
@@ -21,27 +19,12 @@ drop policy if exists "anyone can add a usage event" on public.usage_events;
 create policy "anyone can add a usage event" on public.usage_events for insert to anon, authenticated with check (true);
 -- no select / update / delete policy: the public key cannot read or change the events
 
--- the dashboard password, kept where the public key cannot read it
-create table if not exists public.usage_secret (id int primary key default 1 check (id = 1), password_hash text not null);
-alter table public.usage_secret enable row level security;
-create extension if not exists pgcrypto;
-insert into public.usage_secret (id, password_hash)
-values (1, crypt('change-me', gen_salt('bf')))                                   -- <-- CHANGE THIS
-on conflict (id) do update set password_hash = excluded.password_hash;
+-- counts per username and app, for reading in the dashboard (not reachable with the public key)
+create or replace view public.usage_counts with (security_invoker = true) as
+  select username, coalesce(app, 'home') as app, count(*) as times, min(created_at) as first_seen, max(created_at) as last_seen
+  from public.usage_events group by username, coalesce(app, 'home');
+revoke all on public.usage_counts from anon, authenticated;
 
--- counts per username and app, for usage.html; only with the right password
-create or replace function public.usage_summary(p_password text)
-returns table (username text, app text, opens bigint, first_seen timestamptz, last_seen timestamptz)
-language plpgsql security definer set search_path = public, extensions as $$
-begin
-  if not exists (select 1 from public.usage_secret s where s.password_hash = crypt(p_password, s.password_hash)) then
-    raise exception 'wrong password' using errcode = '28P01';
-  end if;
-  return query
-    select e.username, coalesce(e.app, 'home'), count(*), min(e.created_at), max(e.created_at)
-    from public.usage_events e
-    group by e.username, coalesce(e.app, 'home')
-    order by e.username, 2;
-end $$;
-revoke all on function public.usage_summary(text) from public;
-grant execute on function public.usage_summary(text) to anon, authenticated;
+-- (a project set up with the earlier version of this file also had a password-protected summary function; it is no longer used)
+drop function if exists public.usage_summary(text);
+drop table if exists public.usage_secret;
