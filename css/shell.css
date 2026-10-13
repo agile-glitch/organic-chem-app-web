@@ -16,7 +16,8 @@ html, body { margin: 0; height: 100%; background: #fff; color: #111;
 .tab:hover { background: #ececec; }
 .tab.active { background: #fff; border-color: #ddd; border-bottom: 1px solid #fff; }
 .tab.home-tab { padding: 0 16px; cursor: pointer; }
-.tab .label { font: inherit; color: inherit; background: none; border: none; height: 100%; padding: 0 10px 0 16px; cursor: pointer; white-space: nowrap; }
+.tab .label { font: inherit; color: inherit; background: none; border: none; height: 100%; padding: 0 10px 0 16px; cursor: pointer; white-space: nowrap;
+  max-width: 280px; overflow: hidden; text-overflow: ellipsis; }   /* a long name ("Mechanism for ...") is cut; its title shows it whole */
 .tab .close { display: grid; place-items: center; width: 22px; height: 22px; margin-right: 6px; padding: 0; border: none; border-radius: 4px;
   background: none; color: #555; cursor: pointer; }
 .tab .close:hover { background: #dcdcdc; color: #111; }
