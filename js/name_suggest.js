@@ -294,12 +294,32 @@
     } catch (e) { return null; }
   }
 
+  /* The list is the same every time (it depends only on the namer), so it is built once by tools/build_iupac_names.js into
+     data/iupac_names.js and loaded from there: naming ~10,000 molecules took about 3 s of every tab's time. When that file
+     is missing (or IupacGen.generate() is called, which is what the tool does) the names are built here, in slices. */
+  function useList(list) {
+    const seen = new Set();
+    for (const [label, smiles] of list) { const k = label.toLowerCase(); if (!seen.has(k)) { seen.add(k); GEN.names.push({ label, smiles }); GEN.map.set(k, smiles); } }
+    GEN.ready = true;
+  }
   function start() {
     if (GEN.started) return; GEN.started = true;
+    if (window.IUPAC_NAMES) { useList(window.IUPAC_NAMES); window.IUPAC_NAMES = null; return; }
+    const sc = document.createElement('script');
+    sc.src = 'data/iupac_names.js';
+    sc.onload = () => { if (window.IUPAC_NAMES) { useList(window.IUPAC_NAMES); window.IUPAC_NAMES = null; } else generate(); };
+    sc.onerror = () => generate();
+    document.head.appendChild(sc);
+  }
+  let run = 0;
+  function generate() {
+    const me = ++run;                                   // a newer run replaces one still going
+    GEN.started = true; GEN.ready = false; GEN.names = []; GEN.map = new Map();
     let todo; try { todo = enumerate(); } catch (e) { return; }
     let i = 0;
     const seen = new Set();
     const slice = () => {
+      if (me !== run) return;
       const t0 = performance.now();
       while (i < todo.length && performance.now() - t0 < 12) {
         const smi = todo[i++];
@@ -308,13 +328,13 @@
       }
       if (i < todo.length) setTimeout(slice, 8); else { GEN.ready = true; todo.length = 0; }
     };
-    setTimeout(slice, 300);
+    setTimeout(slice, 0);
   }
 
   // add the extra common names (never overriding one the app already has)
   if (C.COMMON_NAMES) for (const k of Object.keys(EXTRA_COMMON)) if (!(k in C.COMMON_NAMES)) C.COMMON_NAMES[k] = EXTRA_COMMON[k];
 
-  window.IupacGen = { start, get names() { return GEN.names; }, smilesFor: k => GEN.map.get(k.toLowerCase()), get ready() { return GEN.ready; } };
+  window.IupacGen = { start, generate, get names() { return GEN.names; }, smilesFor: k => GEN.map.get(k.toLowerCase()), get ready() { return GEN.ready; } };
   // begin once the page is idle
   (window.requestIdleCallback || (f => setTimeout(f, 1500)))(start);
 })();

@@ -15,20 +15,6 @@ html.embedded .tabs { visibility: hidden; height: 44px; overflow: hidden; }
 /* pages: only the active one is shown */
 .page { display: none; padding: 16px; }
 .page.active { display: block; }
-.page.gated > :not(.gate) { display: none !important; }   /* js/gate.js: a page behind a password */
-.gate { display: flex; justify-content: center; padding: 12vh 0 24px; }
-.gate-card { width: min(340px, 100%); padding: 22px 22px 14px; border: 1px solid #ddd; border-radius: 12px; background: #fafafa; text-align: center;
-  box-shadow: 0 6px 24px rgba(0,0,0,.06); }
-.gate-icon { color: #666; }
-.gate-status { display: inline-block; margin: 8px 0 0; padding: 3px 12px; border-radius: 999px; background: #fff3cd; color: #7a5b00;
-  font-size: 13px; font-weight: 600; letter-spacing: .3px; }
-.gate-card h2 { margin: 8px 0 14px; font-size: 17px; font-weight: 600; }
-.gate-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.gate-row { display: flex; gap: 8px; }
-.gate-input { flex: 1; min-width: 0; font: 18px/1.2 ui-monospace, Menlo, monospace; letter-spacing: 3px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 6px; }
-.gate-input:focus { outline: 2px solid #4a7dff; outline-offset: 1px; border-color: #4a7dff; }
-.gate-row button { font: 14px system-ui, sans-serif; padding: 8px 16px; border: 1px solid #3a6be0; border-radius: 6px; background: #4a7dff; color: #fff; cursor: pointer; }
-.gate-msg { min-height: 1.4em; margin: 10px 0 0; font-size: 13px; color: #b3261e; }
 
 /* sketcher: a box centred in the page */
 #page-sketcher.active { display: flex; justify-content: center; align-items: flex-start;

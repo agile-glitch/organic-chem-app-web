@@ -89,8 +89,12 @@
     return steps;
   }
 
-  function plan(text) {
+  async function plan(text) {
     text = (text || '').trim(); if (!text) return;
+    if (window.Precedent && !window.Precedent.loaded) {        // the recorded-reaction database (6.5 MB) is fetched on first need
+      out.innerHTML = '<p class="hint">Loading the reaction database…</p>';
+      await window.Precedent.load();
+    }
     const rh = document.getElementById('retroRouteOut'), RC0 = window.RetroChimeraPage;
     if (rh && !(RC0 && RC0.searching())) rh.innerHTML = '';     // routes belong to the target they were searched for
     let g;

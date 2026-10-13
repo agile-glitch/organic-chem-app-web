@@ -38,7 +38,6 @@ html, body { margin: 0; height: 100%; background: #fff; color: #111;
 .app:active .icon { transform: translateY(0); }
 
 .foot { display: flex; justify-content: center; gap: 8px; padding: 0 0 18px; color: #aaa; font-size: 13px; }
-.foot .user { color: #999; cursor: default; }
 .link { font: inherit; color: #888; background: none; border: none; padding: 0; cursor: pointer; text-decoration: none; }
 .link:hover { color: #333; text-decoration: underline; }
 

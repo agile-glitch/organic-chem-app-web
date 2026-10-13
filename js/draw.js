@@ -481,13 +481,13 @@
   /* ================= the page ================= */
   const MODES = [
     ['select', 'Select', 'Select and move things (Esc)'],
-    ['molecule', 'Molecule box', 'Drag out a box, then import or draw a molecule in it'],
-    ['text', 'Text', 'Click to add a text box'],
-    ['arrow-forward', '→', 'Reaction arrow (clicks to straight near horizontal; Shift = 15° steps, Alt = no snapping)'],
+    ['molecule', 'Molecule box', 'Drag out a box, then import or draw a molecule in it (W)'],
+    ['text', 'Text', 'Click to add a text box (D)'],
+    ['arrow-forward', '→', 'Reaction arrow (A). Clicks to straight near horizontal; Shift = 15° steps, Alt = no snapping'],
     ['arrow-equilibrium', '⇌', 'Equilibrium arrow'],
     ['arrow-resonance', '↔', 'Resonance arrow'],
-    ['electron', '•', 'Electron: click to place a single electron dot'],
-    ['lonepair', '••', 'Lone pair: click to place two dots; drag away from the atom to turn them'],
+    ['electron', '•', 'Electron (Q): click to place a single electron dot'],
+    ['lonepair', '••', 'Lone pair (E): click to place two dots; drag away from the atom to turn them'],
   ];
   const SWATCHES = ['#000000', '#e03131', '#f08c00', '#2f9e44', '#0c8599', '#1971c2', '#6741d9', '#c2255c', '#862e9c', '#7f5539', '#868e96', '#ffffff'];
 
@@ -541,8 +541,7 @@
     modeButtons[m] = mk(txt, tip, () => setMode(m));
     if (m === 'text') {
       for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
-      for (const [t2, tip2, sym] of [['☀', 'Light: put ☀ in the text box being edited, or a new text box (e.g. over a reaction arrow)', '☀'],
-                                     ['hν', 'hν (light, photon energy): put it in the text box being edited, or a new text box', 'hν']]) mk(t2, tip2, () => insertSymbol(sym));
+      mk('Δ', 'Heat: put Δ in the text box being edited, or a new text box (e.g. over a reaction arrow)', () => insertSymbol('Δ'));
     }
     if (['text', 'arrow-resonance', 'lonepair'].includes(m)) gap();
   });
@@ -618,7 +617,7 @@
     item.setFromEditor(el); item.editing = false; el.remove();
     if (!item.plain().trim()) removeItem(item); else item.render();
   }
-  /* a symbol (☀, hν) at the caret of the text box being edited, else in a new text box in the middle of what is in view */
+  /* a symbol (Δ, heat) at the caret of the text box being edited, else in a new text box in the middle of what is in view */
   function insertSymbol(sym) {
     if (editing) { editing.el.focus(); document.execCommand('insertText', false, sym); return; }
     const tb = new TextBox(sym);
@@ -717,6 +716,9 @@
     zoom = Math.max(0.3, Math.min(3, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
     svg.setAttribute('width', SCENE_W * zoom); svg.setAttribute('height', SCENE_H * zoom);
   }, { passive: false });
+  /* ---- tool keys (not while typing in a text box or any other field) */
+  const TOOL_KEYS = { w: 'molecule', a: 'arrow-forward', d: 'text', e: 'lonepair', q: 'electron' };
+
   /* ---- copy and paste (Ctrl+C / Ctrl+V, or right-click): whole items, kept on this page (molecules, text, arrows, electrons) */
   const TRANSIENT = new Set(['g', 'scene', 'selected', 'hover', 'editing', 'rotating']);
   function cloneItem(it) {
@@ -776,6 +778,7 @@
     else if (mod && k === 'v') { if (clip.length) { e.preventDefault(); paste(); } }
     else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSelected(); }
     else if (e.key === 'Escape') { closeMenu(); setMode('select'); clearSelection(); }
+    else if (!mod && !e.altKey && TOOL_KEYS[k]) { e.preventDefault(); closeMenu(); setMode(TOOL_KEYS[k]); }
   });
 
   /* ---- export */

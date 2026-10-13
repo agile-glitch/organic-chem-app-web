@@ -43,6 +43,28 @@
     return H.map(v => (v >>> 0).toString(16).padStart(8, '0')).join('');
   }
 
+  /* the gate's own look, here rather than in css/style.css: a browser holding an older cached stylesheet still hides the page */
+  const CSS = `
+.page.gated > :not(.gate) { display: none !important; }
+.gate { display: flex; justify-content: center; padding: 12vh 0 24px; }
+.gate-card { width: min(340px, 100%); padding: 22px 22px 14px; border: 1px solid #ddd; border-radius: 12px; background: #fafafa; text-align: center;
+  box-shadow: 0 6px 24px rgba(0,0,0,.06); }
+.gate-icon { color: #666; }
+.gate-status { display: inline-block; margin: 8px 0 0; padding: 3px 12px; border-radius: 999px; background: #fff3cd; color: #7a5b00;
+  font-size: 13px; font-weight: 600; letter-spacing: .3px; }
+.gate-card h2 { margin: 8px 0 14px; font-size: 17px; font-weight: 600; }
+.gate-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.gate-row { display: flex; gap: 8px; }
+.gate-input { flex: 1; min-width: 0; font: 18px/1.2 ui-monospace, Menlo, monospace; letter-spacing: 3px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 6px; }
+.gate-input:focus { outline: 2px solid #4a7dff; outline-offset: 1px; border-color: #4a7dff; }
+.gate-row button { font: 14px system-ui, sans-serif; padding: 8px 16px; border: 1px solid #3a6be0; border-radius: 6px; background: #4a7dff; color: #fff; cursor: pointer; }
+.gate-msg { min-height: 1.4em; margin: 10px 0 0; font-size: 13px; color: #b3261e; }
+`;
+  function addStyle() {
+    if (document.getElementById('gate-css')) return;
+    const st = document.createElement('style'); st.id = 'gate-css'; st.textContent = CSS; document.head.appendChild(st);
+  }
+
   const unlocked = () => { try { return sessionStorage.getItem(KEY) === HASH; } catch (e) { return false; } };
   const remember = () => { try { sessionStorage.setItem(KEY, HASH); } catch (e) { /* storage blocked: asked again next time */ } };
   const boxes = [];
@@ -74,7 +96,11 @@
   }
 
   function lock(section) {
-    section.classList.add('gated');                     // css/style.css hides everything else in the page, also what its script adds later
+    section.classList.add('gated');                     // the style above hides everything else in the page; inline as well, and whatever its script adds later
+    const hide = n => { if (n.nodeType === 1 && !n.classList.contains('gate') && !n.dataset.gateHidden) { n.dataset.gateHidden = n.style.display || '-'; n.style.setProperty('display', 'none', 'important'); } };
+    [...section.children].forEach(hide);
+    const watch = new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(hide)));
+    watch.observe(section, { childList: true });
     const box = document.createElement('div');
     box.className = 'gate';
     box.innerHTML = `<form class="gate-card" autocomplete="off">
@@ -96,16 +122,20 @@
       msg.textContent = pw.value ? 'That password is not right. Try again.' : 'Type the password, then press Enter.';
       pw.clear(); input.focus();
     }
-    boxes.push({ section, box, input });
+    boxes.push({ section, box, input, watch });
   }
 
   function unlockAll() {
-    boxes.splice(0).forEach(({ section, box }) => { box.remove(); section.classList.remove('gated'); });
+    boxes.splice(0).forEach(({ section, box, watch }) => {
+      watch.disconnect(); box.remove(); section.classList.remove('gated');
+      [...section.children].forEach(n => { if (n.dataset.gateHidden) { const d = n.dataset.gateHidden; delete n.dataset.gateHidden; if (d === '-') n.style.removeProperty('display'); else n.style.display = d; } });
+    });
     window.dispatchEvent(new Event('resize'));          // pages that size a canvas while hidden (the 3D bench) measure again
   }
 
   function start() {
     if (unlocked()) return;
+    addStyle();
     PAGES.forEach(p => { const s = document.getElementById('page-' + p); if (s) lock(s); });
     // focus the box when its page is shown
     const focus = () => { const b = boxes.find(x => x.section.classList.contains('active')); if (b) setTimeout(() => b.input.focus(), 0); };

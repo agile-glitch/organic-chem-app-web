@@ -29,7 +29,8 @@
   const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
 
   /* ---- the set under test ---- */
-  const DATA = { db: window.REACTIONS };
+  const EMPTY = { molecules: [], reactions: [], sources: [], classes: [] };
+  const DATA = { db: window.REACTIONS || EMPTY };              // the built-in set arrives with Precedent.load() (see the end)
   let D = DATA.db, M = D.molecules, RX = D.reactions, setId = 'db';
   const modeSel = document.getElementById('validMode');
   const mode = () => (modeSel ? modeSel.value : 'rules');
@@ -339,6 +340,14 @@
   });
   renderSources();
   chooseSet('db');
+  if (!window.REACTIONS) {                                     // fetched when this page (or Retrosynthesis) is first opened
+    document.getElementById('validRun').disabled = true; status.textContent = 'The reaction database loads when this page is opened…';
+    const ready = () => P.load().then(ok => {
+      if (!ok) { status.textContent = 'The reaction database (data/reactions.js) could not be loaded.'; return; }
+      DATA.db = window.REACTIONS; if (setId === 'db') chooseSet('db');
+    });
+    if (location.hash === '#valid') ready(); else window.addEventListener('hashchange', function once() { if (location.hash === '#valid') { window.removeEventListener('hashchange', once); ready(); } });
+  }
   window.Validation = { run, stop, grade, summarise, chooseSet };
 })();
 
