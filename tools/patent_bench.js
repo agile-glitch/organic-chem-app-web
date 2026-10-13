@@ -14,6 +14,7 @@
 const fs = require('fs'), path = require('path'), zlib = require('zlib'), crypto = require('crypto');
 const RxnCode = require(path.join(__dirname, '..', 'js', 'rxn_code.js'));
 const HERE = __dirname, APP = path.join(HERE, '..');
+const LIMIT_S = 120;                                     // a reaction the page has not answered in this long counts as an error
 const CASES = path.join(HERE, 'patent_bench_cases.json'), RESULTS = path.join(HERE, 'patent_bench_results.json');
 
 const patentOf = source => String(source || '').trim().split(/\s+/)[0] || '?';
@@ -69,8 +70,12 @@ async function run(base, casesPath, outPath) {
     if (seen.has(c.id)) continue;
     const t1 = Date.now();
     let r;
-    try { r = await page.evaluate(code => window.ReactionsTests.predict(code), c.code); }
-    catch (e) { r = { error: 'page: ' + String(e.message || e).slice(0, 200) }; await open(); }     // a crashed or hung page: a fresh one for the next case
+    let timer;                                           // the page's own 90 s limit cannot fire while its main thread is busy: a hard limit here
+    const hung = new Promise(res => { timer = setTimeout(() => res({ error: `hung (no answer in ${LIMIT_S} s)`, hung: true }), LIMIT_S * 1000); });
+    try { r = await Promise.race([page.evaluate(code => window.ReactionsTests.predict(code), c.code), hung]); }
+    catch (e) { r = { error: 'page: ' + String(e.message || e).slice(0, 200), hung: true }; }
+    clearTimeout(timer);
+    if (r.hung) { delete r.hung; await open(); }        // a crashed or hung page: a fresh one for the next case
     done.push({ id: c.id, ms: Date.now() - t1, ...r });
     if (++k % 10 === 0 || done.length === cases.length) {
       fs.writeFileSync(outPath, JSON.stringify(done));

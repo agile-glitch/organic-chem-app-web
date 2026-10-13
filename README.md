@@ -22,4 +22,5 @@ node tools/browser_features.js http://localhost:8000/app.html  # Atlas, reagent 
 node tools/atlas_parity.js     http://localhost:8000/app.html --judge   # the page against Python: keys of 3,606 fragment instances, 400 probabilities
 node tools/test_rxn_code.js && node tools/test_stoich.js   # reaction code, reagent strengths; exact equation balancing
 python tools/run_all_checks.py                             # the workbook reactions through RDKit (needs rdkit, openpyxl)
+node tools/patent_bench.js run && python tools/patent_bench_grade.py   # 1,000 held-out US patent reactions through the page (tools/patent_bench_report.md)
 ```
