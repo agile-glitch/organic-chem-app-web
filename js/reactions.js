@@ -23,11 +23,6 @@
       #rxn-settings { position:absolute; top:calc(100% + 2px); right:10px; width:300px; background:#fff; border:1px solid #ccc; border-radius:6px;
                       box-shadow:0 4px 14px rgba(0,0,0,.12); padding:6px 0; font:13px Arial,sans-serif; color:#333; z-index:6; }
       .rxn-set-head { padding:4px 12px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:.04em; }
-      .rxn-set-opt { display:block; padding:6px 12px 6px 34px; position:relative; cursor:pointer; }
-      .rxn-set-opt:hover { background:#f2f6ff; }
-      .rxn-set-opt input { position:absolute; left:12px; top:8px; margin:0; }
-      .rxn-set-opt span { display:block; color:#777; font-size:12px; margin-top:2px; }
-      #page-reactions.mode-basic .rxn-read, #page-reactions.mode-basic .rxn-mech { display:none; }
       .rxn-set-sep { border-top:1px solid #eee; margin:6px 0; }
       .rxn-set-btn { display:block; width:100%; text-align:left; background:none; border:0; padding:6px 12px; font:13px Arial,sans-serif; color:#333; cursor:pointer; }
       .rxn-set-btn:hover { background:#f2f6ff; }
@@ -112,6 +107,10 @@
       .rxn-mech-status.bad { color:#a15c00; }
       .rxn-verdict.kind-unknown { color:#a15c00; }
       .rxn-verdict.kind-none, .rxn-verdict.kind-blocked { color:#b3261e; }
+      /* under the verdict: opens the mechanism (arrows, lone pairs) on a Draw tab of its own. Looks like #rxn-suggest */
+      .rxn-mech-open { display:block; margin-top:8px; box-sizing:border-box; padding:5px 12px; background:#fff; border:1px solid #ddd; border-radius:4px; color:#1f4e78; font:13px Arial,sans-serif; cursor:pointer; white-space:nowrap; }
+      .rxn-mech-open:hover:not(:disabled) { border-color:#1f4e78; background:#f2f6ff; }
+      .rxn-mech-open:disabled { color:#aaa; background:#fafafa; cursor:default; }
       .rxn-read { margin-top:12px; }
       .rxn-read-smi { font:12px monospace; color:#555; margin-right:6px; }
       .rxn-frag { display:inline-block; font-size:11px; color:#1f4e78; background:#eef3fa; border-radius:3px; padding:0 4px; margin:1px 2px 1px 0; }
@@ -169,12 +168,8 @@
       .rxn-mol-smiles { margin-top:8px; font:13px monospace; color:#aaa; word-break:break-all; text-align:center; cursor:pointer; }
       .rxn-mol-smiles:hover { color:#666; }
     </style>
-    <div id="rxn-codebar"><input id="rxn-code" type="text" placeholder="Reaction code: reactants&gt;reagents&gt;products | conc=37%w/w | cond=reflux, ethanol" spellcheck="false" autocomplete="off"><button id="rxn-suggest" type="button" title="Suggest reagents and conditions for these starting materials (from textbook rules and 1.1 million recorded reactions)">Suggest reagents ✦</button><button id="rxn-gear" type="button" title="Settings: Basic / Advanced" aria-label="Settings"><svg viewBox="0 0 24 24" width="62%" height="62%" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.03.63.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg></button>
+    <div id="rxn-codebar"><input id="rxn-code" type="text" placeholder="Reaction code: reactants&gt;reagents&gt;products | conc=37%w/w | cond=reflux, ethanol" spellcheck="false" autocomplete="off"><button id="rxn-suggest" type="button" title="Suggest reagents and conditions for these starting materials (from textbook rules and 1.1 million recorded reactions)">Suggest reagents ✦</button><button id="rxn-gear" type="button" title="Settings: share the reaction code, run the tests" aria-label="Settings"><svg viewBox="0 0 24 24" width="62%" height="62%" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.03.63.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.05.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg></button>
       <div id="rxn-settings" hidden>
-        <div class="rxn-set-head">Show</div>
-        <label class="rxn-set-opt"><input type="radio" name="rxn-mode" value="basic"> <b>Basic</b><span>the products and a one-line verdict</span></label>
-        <label class="rxn-set-opt"><input type="radio" name="rxn-mode" value="advanced"> <b>Advanced</b><span>also how it was read (fragments), chemoselectivity, stereo, amounts, pKa and the mechanism with arrows</span></label>
-        <div class="rxn-set-sep"></div>
         <div class="rxn-set-head">Share</div>
         <button type="button" class="rxn-set-btn" id="rxn-copy-rsmi"><b>Copy reaction SMILES</b><span>the first word of the code (reactants&gt;reagents&gt;products), for ChemDraw, RDKit, Reaxys, an electronic notebook</span></button>
         <button type="button" class="rxn-set-btn" id="rxn-copy-code"><b>Copy the whole code</b><span>with the reagent's strength and the conditions (the page reads it back)</span></button>
@@ -1341,35 +1336,38 @@
     let cId = bd.a === lg.id ? bd.b : bd.a;
     const rk = window.Chem.resolveReagent(nuc.smiles);
     if (!rk || !rk.key) return null;
-    let mech = null, rearr = [], shiftSteps = [], firstStep = null;
+    let mech = null, m1 = null, rearr = [], shiftSteps = [];
+    // the protic solvent's molecule is what takes a proton in the SN1 / E1 steps (EtOH₂⁺ in ethanol, H₃O⁺ in water)
+    const solvKey = (row.major === 'SN1' || row.major === 'E1') ? P.solvents.filter(k => (RR.solvents[k] || {}).type === 'protic')
+      .map(k => { try { return window.Chem.resolveReagent(k); } catch (e) { return null; } }).map(r => r && r.key).find(k => k && k !== '__custom') || null : null;
     if (row.major === 'SN1' || row.major === 'E1') {
       const cr = carbocationRoute(R, sub.smiles, { smarts: '[CX4][Cl,Br,I]', cation: 1, leaving: 2, then: 'rerun' });
       if (cr) {
         // step 1 (ionisation) from the real starting material, then the shift(s), then the rest on the rearranged skeleton
-        try { const m1 = window.Chem.buildMechanism(g0, cId, lg.id, rk.key, { heat, force: row.major }); firstStep = m1 && m1.steps[0]; } catch (e) { firstStep = null; }
+        try { m1 = window.Chem.buildMechanism(g0, cId, lg.id, rk.key, { heat, force: row.major, solvent: solvKey }); } catch (e) { m1 = null; }
         let g1 = null; try { g1 = window.Chem.parseSmiles(cr.smiles); } catch (e) { g1 = null; }
         const lg1 = g1 && g1.atoms.find(a => ['Cl', 'Br', 'I'].includes(a.element));
         const bd1 = lg1 && g1.bonds.find(b => b.a === lg1.id || b.b === lg1.id);
         if (bd1) { g0 = g1; rearr = cr.shifts; shiftSteps = cr.steps; cId = bd1.a === lg1.id ? bd1.b : bd1.a; lg.id = lg1.id; }
       }
     }
-    try { mech = window.Chem.buildMechanism(g0, cId, lg.id, rk.key, { heat, force: row.major, forceMinor: row.minor || null }); } catch (e) { mech = null; }
+    try { mech = window.Chem.buildMechanism(g0, cId, lg.id, rk.key, { heat, force: row.major, forceMinor: row.minor || null, solvent: solvKey }); } catch (e) { mech = null; }
     if (!mech || !mech.steps || !mech.steps.length) return { reading, note: `No reaction drawn: the mechanism engine could not build ${row.major} here.` };
     const smi = g => { try { return window.Chem.toSmiles(g); } catch (e) { return ''; } };
     const canon = x => { const m = R.get_mol(x); const c = m ? m.get_smiles() : x; if (m) m.delete(); return c; };
     const last = mech.steps[mech.steps.length - 1];
-    const nucCanon = canon(nuc.smiles);
-    const products = smi(last.graph).split('.').filter(Boolean).map(canon).filter(x => x !== nucCanon);
-    const engineSteps = mech.steps.slice(0, -1).map((st, i) => ({
-      step: i + 1, type: st.title.replace(/^(Step \d+|One step) — /, ''), note: st.note,
-      graph: st.graph, gArrows: st.arrows || [], arrowLabels: (st.arrows || []).map(a => a.label).filter(Boolean),
-      smiles: smi(mech.steps[i + 1].graph).split('.').filter(Boolean).map(canon).filter(x => x !== nucCanon).join('.'),
-    }));
-    // with a rearrangement: the original ionisation, the shift(s), then the rearranged route after its own ionisation
+    // left out of what a step makes: the unreacted nucleophile and the solvent molecule parked for the next step's proton
+    const spectators = new Set([canon(nuc.smiles)].concat(mech.protonTaker ? [canon(mech.protonTaker)] : []));
+    const made = g => smi(g).split('.').filter(Boolean).map(canon).filter(x => !spectators.has(x));
+    const products = made(last.graph);
+    const engineStep = (m, i, n) => ({ step: n, type: m.steps[i].title.replace(/^(Step \d+|One step) — /, ''), note: m.steps[i].note,
+      graph: m.steps[i].graph, gArrows: m.steps[i].arrows || [], arrowLabels: (m.steps[i].arrows || []).map(a => a.label).filter(Boolean),
+      smiles: made(m.steps[i + 1].graph).join('.') });
+    const engineSteps = mech.steps.slice(0, -1).map((st, i) => engineStep(mech, i, i + 1));
+    /* with a rearrangement: the original ionisation (it makes the unrearranged cation + X⁻, from the original starting
+       material's own mechanism), the shift(s), then the rearranged route after its own ionisation */
     const steps = shiftSteps.length
-      ? [].concat(firstStep ? [{ step: 1, type: firstStep.title.replace(/^(Step \d+|One step) — /, ''), note: firstStep.note, graph: firstStep.graph, gArrows: firstStep.arrows || [],
-                                arrowLabels: (firstStep.arrows || []).map(a => a.label).filter(Boolean), smiles: shiftSteps[0].smiles }] : [],
-                 shiftSteps, engineSteps.slice(1).map((st, i) => Object.assign({}, st, { step: i + 2 })))
+      ? [].concat(m1 && m1.steps.length > 1 ? [engineStep(m1, 0, 1)] : [], shiftSteps, engineSteps.slice(1).map((st, i) => Object.assign({}, st, { step: i + 2 })))
       : engineSteps;
     reading.rearr = rearr;
     const stereo = [];
@@ -1704,7 +1702,7 @@
     cat0.charge = 1;
     const smi = () => { try { const x = window.Chem.toSmiles(g); const mm = R.get_mol(x); const c = mm ? mm.get_smiles() : x; if (mm) mm.delete(); return c; } catch (e) { return ''; } };
     const snapshot = () => JSON.parse(JSON.stringify({ atoms: g.atoms, bonds: g.bonds, nextId: g.nextId }));
-    let c = cat0; const shifts = [], steps = [];
+    let c = cat0, stale = false; const shifts = [], steps = [];
     for (let iter = 0; iter < 4; iter++) {
       const cur = score(c), cands = [];
       for (const n of carbonNb(c)) {
@@ -1732,6 +1730,9 @@
       const best = better[0], before = cls(c);
       // drawing of this step: the cation with the moving H (made explicit) or group, and its arrow
       const pic = snapshot();
+      // an alkyl shift or ring expansion only moved a bond's end, so the old coordinates now draw a crossed, distorted
+      // skeleton: the next shift's picture gets a fresh layout (on a copy: g's own coordinates still decide E/Z at the end)
+      if (stale) { try { window.Chem.layoutGraph(pic); } catch (e) { /* keep the old coordinates */ } }
       const arrows = [];
       if (best.kind === '1,2-hydride shift') {
         const nn = pic.atoms.find(x => x.id === best.n.id), cc = pic.atoms.find(x => x.id === c.id);
@@ -1744,7 +1745,7 @@
       }
       // make the shift for real
       if (best.kind === '1,2-hydride shift') { c.charge = 0; best.n.charge = 1; }
-      else { const bd = bondBetweenAtoms(best.n, best.mv); if (bd.a === best.n.id) bd.a = c.id; else bd.b = c.id; c.charge = 0; best.n.charge = 1; }
+      else { const bd = bondBetweenAtoms(best.n, best.mv); if (bd.a === best.n.id) bd.a = c.id; else bd.b = c.id; c.charge = 0; best.n.charge = 1; stale = true; }
       const after = cls(best.n);
       const text = `${best.kind}: ${before} cation → ${after} cation` + (best.ringFrom ? ` (a ${best.ringFrom}-membered ring becomes ${best.ringFrom + 1}-membered, releasing ring strain)` : '');
       shifts.push(text);
@@ -2357,7 +2358,11 @@
       const reading = { subs: read, reagent: reagent ? { smiles: reagent, frags: reagentFrags } : null, fragChecks: fcheck.passed,
         acidBase: abCheck ? abCheck.text + ' ✓' : '', selection, stereo, rearr, amounts, rule, prods: prodRead,
         formsOk: (rule.forms || []).every(alt => alt.some(id => made.has(id))) };
-      return { products, reading, mechanism: shiftSteps.concat(rule.mechanism || []), code: reactionCode(R, subs, reagent, products, condText),
+      /* a shift happens to the cation, so it goes right after the workbook step that first makes one (its product has a C⁺)
+         and before the step that captures it (in front of all of them only if no step shows the cation) */
+      const wb = rule.mechanism || [], cat = shiftSteps.length ? wb.findIndex(st => /\[[Cc](?![a-z])[^\]]*\+/.test(st.smiles || '')) : -1;
+      const mechanism = cat >= 0 ? wb.slice(0, cat + 1).concat(shiftSteps, wb.slice(cat + 1)) : shiftSteps.concat(wb);
+      return { products, reading, mechanism, code: reactionCode(R, subs, reagent, products, condText),
         note: `${rule.id} · ${rule.name} (reaction_rules.xlsx)` + (steps.length > 1 ? ` · applied ${steps.length}×: ${steps.join(' → ')}` : '') + (leftover ? ' · partial (limiting reagent)' : '') +
           (rule.conditions ? ` · conditions: ${rule.conditions}` : '') + ranAt };
     }
@@ -2781,6 +2786,76 @@
   products.style.setProperty('--rxn-gap', GAP + 'px');
   const updateProdLine = () => { prodInput.value = products.classList.contains('on') ? orderedSmiles(pslots) : ''; fitProduct(); updateCode(); };
   const pslots = makeList(products, 'Products come from the reaction rules: click the arrow', updateProdLine, true);
+  /* ---- "Open Mechanism in Draw" ----
+     Under the verdict sits one button; the mechanism itself (structures with lone pairs, red curved arrows, what each
+     step makes) is laid out on a Draw tab of its own named "Mechanism for <name>". The page hands Draw one plain-JSON
+     payload (it crosses to the home screen by postMessage, so no functions, DOM or Map/Set):
+       {title, name, ruleId, status, onExample, reaction: {reactants, reagent, products, conditions}, steps}
+     Each step keeps its words (type, from, to, made, broken, note), what it makes (smiles), and its drawing as either the
+     workbook's atom-mapped 'before' SMILES with the Mechanism sheet's arrow notation ('5>1', '1-2>3', '~' = one electron),
+     or, for the SN1/SN2/E1/E2 engine and the carbocation shifts (built on the user's own molecules), a laid-out graph
+     with gArrows. onExample: the workbook steps are drawn on the workbook's example molecules, not necessarily these. */
+  const PATHWAY_NAMES = { SN1: 'SN1 substitution', SN2: 'SN2 substitution', E1: 'E1 elimination', E2: 'E2 elimination' };
+  function mechanismName(res) {
+    const id = res.reading && res.reading.rule && res.reading.rule.id;
+    const rule = id && ((window.REACTION_RULES || {}).rules || []).find(r => r.id === id);
+    if (rule) return { id, name: rule.name, status: rule.mechStatus || '' };
+    if (id && PATHWAY_NAMES[id]) return { id, name: PATHWAY_NAMES[id], status: '' };
+    return { id: id || '', name: String(res.note || 'this reaction').split(' · ')[0], status: '' };
+  }
+  const plainGraph = g => ({                              // the engine's graph without its working fields (stereo, ring caches, ...)
+    atoms: (g.atoms || []).map(a => Object.assign({ id: a.id, element: a.element, charge: a.charge || 0, radical: a.radical === true ? 1 : (+a.radical || 0),
+      x: +a.x || 0, y: +a.y || 0 }, a.mapNum ? { mapNum: a.mapNum } : {})),
+    bonds: (g.bonds || []).map(b => ({ a: b.a, b: b.b, order: b.order })),
+  });
+  const plainEnd = e => (e && e.kind === 'bond' ? { kind: 'bond', a: e.a, b: e.b } : { kind: (e && e.kind) || 'atom', atom: e && e.atom });
+  function mechanismPayload(res, at) {
+    const nm = mechanismName(res), txt = x => (x == null ? '' : String(x));
+    const steps = (res.mechanism || []).map((st, i) => {
+      // renumbered 1..n: a carbocation shift put among the workbook's steps (after the one that makes the cation) is numbered 'shift' on this page
+      const out = { step: i + 1, type: txt(st.type), from: txt(st.from), to: txt(st.to), made: txt(st.made), broken: txt(st.broken), note: txt(st.note), smiles: txt(st.smiles) };
+      if (st.graph) {
+        out.graph = plainGraph(st.graph);
+        out.gArrows = (st.gArrows || []).map(ar => Object.assign({ from: plainEnd(ar.from), to: plainEnd(ar.to), half: !!ar.half }, ar.label ? { label: String(ar.label) } : {}));
+      } else if (st.before) { out.before = String(st.before); out.arrows = txt(st.arrows); }   // a few workbook steps draw the structure with no arrows
+      return out;
+    });
+    return { title: 'Mechanism for ' + nm.name, name: nm.name, ruleId: nm.id, status: nm.status,
+      onExample: steps.some(s => s.before != null),
+      reaction: { reactants: at.reactants.slice(), reagent: at.reagent || '', products: (res.products || []).slice(), conditions: at.conditions || '' }, steps };
+  }
+  function openInDraw(payload) {
+    const D = window.Draw;
+    if (!D || typeof D.showMechanism !== 'function') return false;
+    /* standalone app.html: show the Draw tab, then draw there. Inside the home screen js/app.js has replaced
+       Draw.showMechanism in this frame with a message that opens a new Draw tab named payload.title */
+    const embedded = /[?&]embed=/.test(location.search) && window.parent !== window;
+    if (!embedded) { const t = document.querySelector('.tab[data-page="draw"]'); if (t) t.click(); }
+    try { D.showMechanism(payload); return true; } catch (e) { console.warn('Draw could not show the mechanism', e); return false; }
+  }
+  function mechanismButton(res, at) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'rxn-mech-open'; b.textContent = 'Open Mechanism in Draw';
+    const n = (res.mechanism || []).length;
+    if (n) b.title = `Open the ${n}-step mechanism (lone pairs and curved arrows) on a new Draw tab`;
+    else {
+      b.disabled = true;
+      const hasProducts = !!(res.products && res.products.length);
+      b.title = res.mechNote || (!hasProducts ? 'There is no mechanism to show: no reaction was predicted here.'
+        : 'There is no mechanism for this reaction: ' + (res.kind === 'learned' ? 'a predicted or recorded reaction gives only the starting materials and the product, never the arrows.'
+          : 'it is not in the workbook yet (Mechanism sheet of reaction_rules.xlsx). The product is still predicted from the Reactions row.'));
+    }
+    b.addEventListener('click', () => {
+      if (b.disabled) return;
+      if (!openInDraw(mechanismPayload(res, at))) { b.title = 'The Draw page could not be opened here.'; b.textContent = 'Draw is not available'; setTimeout(() => { b.textContent = 'Open Mechanism in Draw'; }, 1500); }
+    });
+    return b;
+  }
+  /* Test-only: the blocks the page used to show under the verdict (how it was read, the equation with amounts, the Atlas,
+     the mechanism on this page). Off in normal use, so the arrow does less work. Run all tests and the benchmark
+     (ReactionsTests.predict) turn it on for their run, tools/browser_features.js with ReactionsTests.detail(true): their
+     checks read what those blocks say. */
+  let detail = false;
   document.getElementById('rxn-arrow').addEventListener('click', async () => {
     const on = !products.classList.contains('on');
     if (!on) currentRun++;                               // closing the arrow cancels a run still going
@@ -2788,6 +2863,8 @@
     ruleNote.style.display = on ? '' : 'none';
     if (on) {
       const myRun = ++currentRun;
+      // what the reaction was run on (the boxes can be edited while the arrow stays open; the mechanism belongs to this run)
+      const at = { reactants: slots.filter(x => x.smiles).map(x => x.smiles), reagent: aboveApi.get() || '', conditions: belowApi.get() || '' };
       ruleNote.textContent = 'Running the reaction rules…';
       let res;
       try { res = await predict(); } catch (e) { res = { note: 'Something went wrong while running the rules: ' + e.message }; }
@@ -2797,10 +2874,13 @@
       verdict.className = 'rxn-verdict' + (res.kind ? ' kind-' + res.kind : '');
       verdict.textContent = res.note;
       ruleNote.appendChild(verdict);
-      showReading(res.reading);
-      showEquation(res.reading, res, myRun).catch(() => {});
-      showAtlas(res.reading, res.products, myRun).catch(() => {});
-      showMechanism(res.mechanism, !!(res.products && res.products.length), res.reading && res.reading.rule && res.reading.rule.mechStatus, res.mechNote);
+      ruleNote.appendChild(mechanismButton(res, at));
+      if (detail) {
+        showReading(res.reading);
+        showEquation(res.reading, res, myRun).catch(() => {});
+        showAtlas(res.reading, res.products, myRun).catch(() => {});
+        showMechanism(res.mechanism, !!(res.products && res.products.length), res.reading && res.reading.rule && res.reading.rule.mechStatus, res.mechNote);
+      }
       await pslots.setAll(res.products || []);           // no reaction: no products left over from an earlier run
     }
     updateProdLine(); relayout();
@@ -2955,8 +3035,8 @@
      Enter sets the boxes on the left, the reagent above the arrow and the conditions under it (an empty part clears
      that part). The products part is ignored: products are only drawn by clicking the arrow, which runs the rules. */
   const codeBar = document.getElementById('rxn-code');
-  /* Settings: Basic shows the products and a one-line verdict; Advanced also shows how it was read, the checks and
-     the mechanism. Both use the same workbook data. The gear is a square as tall as the code bar. */
+  /* Settings (share the code, run the tests). The page shows the products and a one-line verdict only; the mechanism opens
+     on the Draw page (the button under the verdict). The gear is a square as tall as the code bar. */
   const gear = document.getElementById('rxn-gear'), settings = document.getElementById('rxn-settings');
   function sizeGear() {
     const h = codeBar.getBoundingClientRect().height;       // exact (offsetHeight rounds to whole pixels)
@@ -2972,19 +3052,7 @@
   [0, 150, 600].forEach(ms => setTimeout(sizeGear, ms));
   window.addEventListener('load', sizeGear);
   window.addEventListener('hashchange', () => setTimeout(sizeGear, 50));
-  let mode = 'advanced';
-  try { mode = localStorage.getItem('rxn-mode') || 'advanced'; } catch (e) { mode = 'advanced'; }
-  function setMode(v) {
-    mode = v === 'basic' ? 'basic' : 'advanced';
-    page.classList.toggle('mode-basic', mode === 'basic');
-    settings.querySelectorAll('input[name="rxn-mode"]').forEach(r => { r.checked = r.value === mode; });
-    gear.title = 'Settings: ' + (mode === 'basic' ? 'Basic' : 'Advanced') + ' mode';
-    try { localStorage.setItem('rxn-mode', mode); } catch (e) { /* not stored */ }
-    relayout();
-  }
-  setMode(mode);
   gear.addEventListener('click', e => { e.stopPropagation(); settings.hidden = !settings.hidden; gear.classList.toggle('on', !settings.hidden); });
-  settings.addEventListener('change', e => { if (e.target.name === 'rxn-mode') setMode(e.target.value); });
   document.addEventListener('mousedown', e => { if (!settings.hidden && !settings.contains(e.target) && !gear.contains(e.target)) { settings.hidden = true; gear.classList.remove('on'); } }, true);
   let codeSeq = 0;
   async function updateCode() {
@@ -3093,8 +3161,9 @@
     const list = document.getElementById('rxn-t-list');
     list.innerHTML = fails.length ? fails.map((x, i) => `<div class="rxn-t-f" data-i="${i}"><div class="n">✗ ${esc(x.t.name)}</div><div class="d"><code>${esc(x.t.code)}</code></div>${x.why.map(w => `<div class="d">${esc(w)}</div>`).join('')}</div>`).join('')
       : (running ? '' : '<div class="rxn-t-done">All passed ✓</div>');
-    list.querySelectorAll('.rxn-t-f').forEach(el => el.addEventListener('click', async () => {      // load that case on the page
-      const x = fails[+el.dataset.i]; await runOneCase(await loadRD(), x.t);
+    list.querySelectorAll('.rxn-t-f').forEach(el => el.addEventListener('click', async () => {      // load that case on the page, with the detail that shows why
+      const x = fails[+el.dataset.i], was = detail; detail = true;
+      try { await runOneCase(await loadRD(), x.t); } finally { detail = was; }
     }));
     document.getElementById('rxn-t-again').disabled = document.getElementById('rxn-t-failed').disabled = !!running;
     document.getElementById('rxn-t-failed').disabled = !!running || !fails.length;
@@ -3107,15 +3176,18 @@
     settings.hidden = true; gear.classList.remove('on'); testsPanel.hidden = false;
     let cases = await loadTestCases();
     if (onlyFailed) { const names = new Set(lastResults.filter(x => !x.ok).map(x => x.t.name)); cases = cases.filter(c => names.has(c.name)); }
-    const saved = codeBar.value, wasOn = products.classList.contains('on');
+    const saved = codeBar.value, wasOn = products.classList.contains('on'), wasDetail = detail;
     testRun = { stop: false };
+    detail = true;                                       // the checks read the reading, the mechanism status, the interference lines
     const results = [];
     renderTests(results, cases.length, true);
-    for (const t of cases) {
-      if (testRun.stop) break;
-      let r; try { r = await runOneCase(R, t); } catch (e) { r = { t, ok: false, why: ['error: ' + e.message] }; }
-      results.push(r); renderTests(results, cases.length, true);
-    }
+    try {
+      for (const t of cases) {
+        if (testRun.stop) break;
+        let r; try { r = await runOneCase(R, t); } catch (e) { r = { t, ok: false, why: ['error: ' + e.message] }; }
+        results.push(r); renderTests(results, cases.length, true);
+      }
+    } finally { detail = wasDetail; }
     testRun = null;
     lastResults = onlyFailed ? lastResults.map(x => results.find(y => y.t.name === x.t.name) || x) : results;
     renderTests(onlyFailed ? lastResults : results, onlyFailed ? lastResults.length : cases.length, false);
@@ -3136,6 +3208,10 @@
   document.getElementById('rxn-t-close').addEventListener('click', () => { if (testRun) testRun.stop = true; testsPanel.hidden = true; });
   /* One reaction code through the page exactly as a click would, for a benchmark (tools/patent_bench.js): what the page shows, not graded here */
   async function benchPredict(code) {
+    const was = detail; detail = true;                  // the benchmark keeps the page's reading (the detail blocks)
+    try { return await benchRun(code); } finally { detail = was; }
+  }
+  async function benchRun(code) {
     const R = await loadRD();
     if (!R) return { error: 'RDKit did not load' };
     if (products.classList.contains('on')) { document.getElementById('rxn-arrow').dispatchEvent(new MouseEvent('click', { bubbles: true })); await new Promise(r => setTimeout(r, 50)); }
@@ -3151,7 +3227,8 @@
     return { products: prodInput.value.split('.').filter(Boolean), note: (ruleNote.firstChild && ruleNote.firstChild.textContent) || '',
              reading: (ruleNote.innerText || '').slice(0, 4000), bar: codeBar.value };
   }
-  window.ReactionsTests = { run: runTests, results: () => lastResults, running: () => !!testRun, predict: benchPredict, lookup: on => { lookupOff = !on; } };
+  window.ReactionsTests = { run: runTests, results: () => lastResults, running: () => !!testRun, predict: benchPredict, lookup: on => { lookupOff = !on; },
+    detail: on => { detail = !!on; return detail; } };     // on: the arrow also shows the reading, equation, Atlas and mechanism blocks
 
 
   /* ---- what the suggestion panel (js/advisor.js) may ask of this page ---- */

@@ -173,7 +173,9 @@
     const common = nameOf(g), sys = iupacOf(g);
     const txt = el('div');
     txt.appendChild(el('div', 'big', opts.heading || 'How to make ' + esc(common)));
-    txt.appendChild(el('div', 'sub', esc([sys !== common ? sys : '', formulaOf(g), smilesOf(g)].filter(Boolean).join(' · '))));
+    const sub = el('div', 'sub'), shownSmi = () => { const s = smilesOf(g); return s && window.RDKitLoad ? window.RDKitLoad.display(s, fillSub) : s; };   // RDKit's canonical SMILES when ready
+    function fillSub() { sub.textContent = [sys !== common ? sys : '', formulaOf(g), shownSmi()].filter(Boolean).join(' · '); }
+    fillSub(); txt.appendChild(sub);
     if (tree.basic) txt.appendChild(el('div', 'stat', 'This is itself a <b>starting material</b>: small and common enough to buy rather than make.'));
     else txt.appendChild(el('div', 'stat', `<b>${steps.length}</b> reaction${steps.length === 1 ? '' : 's'} · <b>${buyList.length}</b> thing${buyList.length === 1 ? '' : 's'} to buy` +
       (dead.length ? ` · <b style="color:#b3261e">${dead.length}</b> piece${dead.length === 1 ? '' : 's'} with no taught route` : '')));

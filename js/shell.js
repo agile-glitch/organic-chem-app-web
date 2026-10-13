@@ -14,13 +14,18 @@
 
   const CLOSE_ICON = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg>';
 
-  function openApp(app) {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  /* opts.name: a tab named for what it holds ("Mechanism for Fischer esterification") instead of Draw1, Draw2 ...;
+     a second tab of the same name gets " (2)" */
+  function openApp(app, opts) {
     if (!APPS[app]) return null;
     let n = 1; while (open.some(t => t.app === app && t.n === n)) n++;
-    const t = { app, n, name: APPS[app] + n, ready: false, queue: [], used: 0 };
+    let name = APPS[app] + n;
+    if (opts && opts.name) { name = String(opts.name); for (let k = 2; open.some(t => t.name === name); k++) name = `${opts.name} (${k})`; }
+    const t = { app, n, name, ready: false, queue: [], used: 0 };
     t.tab = document.createElement('div');
     t.tab.className = 'tab';
-    t.tab.innerHTML = `<button class="label">${t.name}</button><button class="close" title="Close ${t.name}" aria-label="Close ${t.name}">${CLOSE_ICON}</button>`;
+    t.tab.innerHTML = `<button class="label" title="${esc(t.name)}">${esc(t.name)}</button><button class="close" title="Close ${esc(t.name)}" aria-label="Close ${esc(t.name)}">${CLOSE_ICON}</button>`;
     t.tab.querySelector('.label').addEventListener('click', () => show(t));
     t.tab.querySelector('.close').addEventListener('click', () => close(t));
     t.tab.addEventListener('auxclick', e => { if (e.button === 1) { e.preventDefault(); close(t); } });
@@ -70,7 +75,9 @@
     if (!from) return;
     if (d.type === 'ready') { from.ready = true; deliver(from); }
     else if (d.type === 'open' && APPS[d.app]) {
-      const to = open.filter(t => t.app === d.app).sort((a, b) => b.used - a.used)[0] || openApp(d.app);
+      // a hand-off that asks for a tab of its own (Reactions' "Open Mechanism in Draw") always gets a new, named one
+      const to = d.newTab ? openApp(d.app, { name: d.title })
+        : open.filter(t => t.app === d.app).sort((a, b) => b.used - a.used)[0] || openApp(d.app);
       show(to);
       to.queue.push({ api: d.api, fn: d.fn, args: d.args });
       deliver(to);

@@ -3,6 +3,8 @@
 //   node tools/browser_tests.js [http://localhost:8000/app.html] [results.json]
 // Needs Playwright (npm i playwright; npx playwright install chromium). PLAYWRIGHT_MODULE / CHROMIUM override where they are found.
 // Exit status 1 when any case fails. The cases: every reaction of reaction_rules.xlsx, tools/reaction_tests.json, tools/learned_tests.json.
+// The page itself shows only the verdict and the "Open Mechanism in Draw" button; its run turns on the test-only detail blocks
+// (how it was read, the mechanism status, the interference lines) that the cases check, and turns them off again afterwards.
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.argv[2] || 'http://localhost:8000/app.html', out = process.argv[3] || '';
 (async () => {

@@ -1,4 +1,5 @@
-// Checks of the newer features, in a headless browser: the Atlas, the reagent suggestions, the learned retrosynthesis, the equation balancer, the cross-app links.
+// Checks of the newer features, in a headless browser: the Atlas, the reagent suggestions, the learned retrosynthesis, the equation balancer,
+// the Reactions page's one-line verdict and its "Open Mechanism in Draw" button, the cross-app links.
 //   python tools/serve.py   (another terminal)        node tools/browser_features.js [http://localhost:8000/app.html]
 // Each check states a chemical fact the program must get right; the exit status is 1 when one fails.
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
@@ -42,6 +43,8 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
   check('keto-aldehyde: n-BuLi / hydroxylamine are flagged as also hitting the aldehyde', kald.filter(t => t.id === 'R076' || t.id === 'R094').every(t => t.opts.some(o => (o.risky || []).some(x => /aldehyde/i.test(x)))), kald.filter(t => t.id === 'R076' || t.id === 'R094'));
 
   // ---- the panel and the Use button
+  // the equation block is test-only detail now (the page shows the verdict and the mechanism button): ask for it
+  await page.evaluate(() => window.ReactionsTests.detail(true));
   await page.locator('#rxn-code').click(); await page.locator('#rxn-code').fill('CC(=O)CCC=O'); await page.locator('#rxn-code').press('Enter');
   await page.waitForTimeout(1200);
   await page.locator('#rxn-suggest').click();
@@ -60,6 +63,35 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
   // ---- equation balancer in the page (esterification needs water)
   const esterEq = await page.evaluate(() => { const S = window.Stoich; const sp = (n, f) => Object.assign({ name: n }, S.formula(f)); const r = S.balance([sp('a', 'C2H4O2'), sp('b', 'C2H6O')], [sp('c', 'C4H8O2')]); return r.ok ? r.added.map(a => a.name + ' ' + a.side) : 'fail'; });
   check('Stoich: esterification closes with water on the right', JSON.stringify(esterEq) === JSON.stringify(['H₂O right']), esterEq);
+
+  // ---- the one-line verdict and "Open Mechanism in Draw" (Draw.showMechanism is watched; the real one, when loaded, still draws)
+  await page.evaluate(() => window.ReactionsTests.detail(false));
+  const mechRun = async code => {
+    await page.evaluate(c => window.Reactions.load(c), code);
+    await page.evaluate(() => document.getElementById('rxn-arrow').dispatchEvent(new MouseEvent('click', { bubbles: true })));
+    await page.waitForFunction(() => { const v = document.querySelector('#rxn-rule .rxn-verdict'); return v && v.textContent && !v.textContent.startsWith('Running'); }, null, { timeout: 120000 });
+    await page.waitForTimeout(500);
+    return page.evaluate(() => { const n = document.getElementById('rxn-rule'), b = n.querySelector('.rxn-mech-open');
+      return { kids: [...n.children].map(c => c.className), verdict: n.querySelector('.rxn-verdict').textContent, enabled: !!b && !b.disabled, title: b ? b.title : '', text: b ? b.textContent : '' }; });
+  };
+  await page.evaluate(() => { window.Draw = window.Draw || {}; const own = window.Draw.showMechanism;
+    window.Draw.showMechanism = p => { window.__mechPayload = p; return typeof own === 'function' ? own.call(window.Draw, p) : true; }; });
+  const m4 = await mechRun('C=CC>Br> | cond=light');
+  check('Reactions shows only the verdict and the Open Mechanism in Draw button', JSON.stringify(m4.kids) === JSON.stringify(['rxn-verdict', 'rxn-mech-open']) && m4.text === 'Open Mechanism in Draw' && m4.enabled, m4);
+  await page.locator('#rxn-rule .rxn-mech-open').click(); await page.waitForTimeout(300);
+  const p4 = await page.evaluate(() => { const p = window.__mechPayload; let clone = false; try { clone = JSON.stringify(structuredClone(p)) === JSON.stringify(p); } catch (e) { clone = false; }
+    return p && { title: p.title, ruleId: p.ruleId, onExample: p.onExample, steps: p.steps.map(s => [s.step, !!s.before, !!s.arrows, !!s.graph]), clone, tab: (document.querySelector('.tab.active') || {}).dataset.page }; });
+  check('R004 mechanism goes to Draw: 4 workbook steps with arrows (initiation is two steps), on the Draw tab', p4 && p4.title === 'Mechanism for Radical hydrobromination (anti-Markovnikov)' && p4.ruleId === 'R004' && p4.onExample === true &&
+    p4.steps.length === 4 && p4.steps.every(s => s[1] && s[2] && !s[3]) && p4.clone && p4.tab === 'draw', p4);
+  await page.evaluate(() => { window.__mechPayload = null; });
+  const mSN2 = await mechRun('CCC(C)Br>[C-]#N.[Na+]> | cond=DMSO');
+  await page.locator('#rxn-rule .rxn-mech-open').click(); await page.waitForTimeout(300);
+  const pSN2 = await page.evaluate(() => { const p = window.__mechPayload; let clone = false; try { clone = JSON.stringify(structuredClone(p)) === JSON.stringify(p); } catch (e) { clone = false; }
+    return p && { title: p.title, onExample: p.onExample, graphs: p.steps.every(s => s.graph && s.graph.atoms.length && s.gArrows.length), clone, reaction: p.reaction }; });
+  check('SN2 (engine) mechanism goes to Draw on the user\'s molecules: graph steps with arrows', /^SN2 /.test(mSN2.verdict) && pSN2 && pSN2.title === 'Mechanism for SN2 substitution' && pSN2.onExample === false && pSN2.graphs && pSN2.clone &&
+    pSN2.reaction.reactants[0] === 'CCC(C)Br' && pSN2.reaction.conditions === 'DMSO', pSN2);
+  const mL = await mechRun('NCCc1ccccc1[N+](=O)[O-]>[Pd]> | cond=ethanol');
+  check('a learned answer has no mechanism: the button is disabled and says why', /L0000001/.test(mL.verdict) && !mL.enabled && /no mechanism/i.test(mL.title), mL);
 
   // ---- retrosynthesis from recorded reactions
   await page.locator('.tab[data-page="retro"]').click();

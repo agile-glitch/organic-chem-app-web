@@ -35,14 +35,16 @@
 
   /* ---------- inside a home-screen tab ---------- */
   const post = msg => window.parent.postMessage(Object.assign({ agilechem: true }, msg), '*');
-  // the calls one app makes into another, the page that owns each, and what the page's own button would also fill in
+  // the calls one app makes into another, the page that owns each, what the page's own button would also fill in, and
+  // (for a call that wants a tab of its own) the new tab's name from the call's arguments
   const HANDOFFS = [
     ['Reactions', 'addStart', 'reactions'], ['Reactions', 'set', 'reactions'], ['Reactions', 'load', 'reactions'],
     ['Retro', 'plan', 'retro', 'retroTarget'],
     ['MolView', 'show', 'mol', 'molInput'],
+    ['Draw', 'showMechanism', 'draw', null, args => ({ newTab: true, title: (args[0] && args[0].title) || 'Mechanism' })],
   ];
   const original = {};
-  HANDOFFS.forEach(([api, fn, page, input]) => {
+  HANDOFFS.forEach(([api, fn, page, input, tabFor]) => {
     const obj = window[api];
     if (!obj || typeof obj[fn] !== 'function') return;
     const own = obj[fn].bind(obj);
@@ -54,7 +56,7 @@
     if (page === home) return;
     obj[fn] = (...args) => {
       showPage(home);              // the caller may already have switched this frame to the other page
-      try { post({ type: 'open', app: page, api, fn, args }); } catch (e) { return Promise.resolve(false); }
+      try { post(Object.assign({ type: 'open', app: page, api, fn, args }, tabFor ? tabFor(args) : {})); } catch (e) { return Promise.resolve(false); }
       return Promise.resolve(true);
     };
   });

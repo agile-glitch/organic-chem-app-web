@@ -461,11 +461,11 @@ function makeChem() {
     'KOH':    { smiles: '[OH-]', text: 'HO⁻',    nuc: 'strong', base: 'strong', bulky: false, charge: -1, head: 'O', tail: [] },
     'NaOEt':  { smiles: 'CC[O-]', text: 'CH₃CH₂O⁻', nuc: 'strong', base: 'strong', bulky: false, charge: -1, head: 'O', tail: ['C', 'C'] },
     'NaOMe':  { smiles: 'C[O-]', text: 'CH₃O⁻',  nuc: 'strong', base: 'strong', bulky: false, charge: -1, head: 'O', tail: ['C'] },
-    'tBuOK':  { smiles: 'CC(C)(C)[O-]', text: '(CH₃)₃CO⁻', nuc: 'weak', base: 'strong', bulky: true, charge: -1, head: 'O', tail: ['C'] },
+    'tBuOK':  { smiles: 'CC(C)(C)[O-]', text: '(CH₃)₃CO⁻', nuc: 'weak', base: 'strong', bulky: true, charge: -1, head: 'O', tail: [{ el: 'C', sub: ['C', 'C', 'C'] }] },
     'NaCN':   { smiles: '[C-]#N', text: 'N≡C⁻',   nuc: 'strong', base: 'weak',   bulky: false, charge: -1, head: 'C', tail: ['N'] },
     'NaI':    { smiles: '[I-]', text: 'I⁻',     nuc: 'strong', base: 'weak',   bulky: false, charge: -1, head: 'I', tail: [] },
     'NaBr':   { smiles: '[Br-]', text: 'Br⁻',    nuc: 'strong', base: 'weak',   bulky: false, charge: -1, head: 'Br', tail: [] },
-    'NaN3':   { smiles: '[N-]=[N+]=[N-]', text: 'N₃⁻',    nuc: 'strong', base: 'weak',   bulky: false, charge: -1, head: 'N', tail: ['N', 'N'] },
+    'NaN3':   { smiles: '[N-]=[N+]=[N-]', text: 'N₃⁻',    nuc: 'strong', base: 'weak',   bulky: false, charge: -1, head: 'N', tail: [{ el: 'N', order: 2, charge: 1 }, { el: 'N', order: 2, charge: -1 }] },
     'NaSH':   { smiles: '[SH-]', text: 'HS⁻',    nuc: 'strong', base: 'weak',   bulky: false, charge: -1, head: 'S', tail: [] },
     'NH3':    { smiles: 'N', text: 'NH₃',    nuc: 'strong', base: 'moderate', bulky: false, charge: 0, head: 'N', tail: [] },
     'H2O':    { smiles: 'O', text: 'H₂O',    nuc: 'weak',   base: 'weak',   bulky: false, charge: 0, head: 'O', tail: [] },
@@ -564,12 +564,23 @@ function makeChem() {
     const g = { atoms: [], bonds: [], nextId: 1 };
     const head = { id: g.nextId++, element: spec.head, charge: spec.charge || 0, x, y };
     g.atoms.push(head);
-    let prev = head, k = 1;
-    (spec.tail || []).forEach(el => {
-      const a = { id: g.nextId++, element: el, charge: 0, x: x + 42 * k, y: y + (k % 2 ? 24 : -24) };
+    /* the tail is a zigzag chain to the right; an entry is an element, or {el, order, charge, sub} when a plain
+       single-bonded neutral chain would be the wrong molecule: azide N⁻=N⁺=N⁻ (cumulated, so drawn straight on) and
+       tert-butoxide's C(CH₃)₃ (sub: the atoms hanging off that carbon). As bare chains they were HN–NH–NH₂ and CH₃O⁻. */
+    let prev = head, k = 1, lastOrder = 1, dx = 42, dy = 24;
+    (spec.tail || []).forEach(t => {
+      const e = typeof t === 'string' ? { el: t } : t;
+      const order = e.order || ((spec.head === 'C' && e.el === 'N') ? 3 : 1);
+      if (!(order > 1 && lastOrder > 1)) { dx = 42; dy = k % 2 ? 24 : -24; }      // two double bonds in a row: straight on
+      const a = { id: g.nextId++, element: e.el, charge: e.charge || 0, x: prev.x + dx, y: prev.y + dy };
       g.atoms.push(a);
-      g.bonds.push({ a: prev.id, b: a.id, order: (spec.head === 'C' && el === 'N') ? 3 : 1 });
-      prev = a; k++;
+      g.bonds.push({ a: prev.id, b: a.id, order });
+      (e.sub || []).forEach((el, i, all) => {              // spread round the atom, away from the bond it came in on
+        const th = Math.atan2(dy, dx) + (all.length === 1 ? 0 : (i / (all.length - 1) - 0.5) * Math.PI);
+        const sb = { id: g.nextId++, element: el, charge: 0, x: a.x + 42 * Math.cos(th), y: a.y + 42 * Math.sin(th) };
+        g.atoms.push(sb); g.bonds.push({ a: a.id, b: sb.id, order: 1 });
+      });
+      prev = a; k++; lastOrder = order;
     });
     return { graph: g, headId: head.id };
   }
@@ -632,6 +643,28 @@ function makeChem() {
     g.atoms.push(h);
     g.bonds.push({ a: atomId, b: h.id, order: 1 });
     return h.id;
+  }
+  /* An explicit H that a drawn base is about to take: moved into the widest free gap round its atom (with one other
+     bond, 120° from it on the roomier side), never in line with a bond, where H–C–C reads as one straight bond; that is
+     also where the Draw page's layout would put it, so the base parked beyond it stays beside it. Returns the unit vector
+     atom → H, or null. */
+  function placeFreeH(g, hId) {
+    const h = g.atoms.find(a => a.id === hId), hb = h && g.bonds.find(b => b.a === hId || b.b === hId);
+    const host = hb && g.atoms.find(a => a.id === (hb.a === hId ? hb.b : hb.a));
+    if (!host) return null;
+    const dirs = neighbors(g, host.id).filter(n => n.atom && n.atom !== h).map(n => Math.atan2(n.atom.y - host.y, n.atom.x - host.x)).sort((a, b) => a - b);
+    const L = Math.hypot(h.x - host.x, h.y - host.y) || 40;
+    let cands = [Math.atan2(h.y - host.y, h.x - host.x)];
+    if (dirs.length === 1) cands = [dirs[0] + 2 * Math.PI / 3, dirs[0] - 2 * Math.PI / 3];
+    else if (dirs.length > 1) {
+      let best = -1;
+      dirs.forEach((d, i) => { const nx = i + 1 < dirs.length ? dirs[i + 1] : dirs[0] + 2 * Math.PI, gap = nx - d;
+        if (gap > best + 1e-6) { best = gap; cands = [d + gap / 2]; } else if (Math.abs(gap - best) <= 1e-6) cands.push(d + gap / 2); });
+    }
+    const room = t => Math.min(...g.atoms.filter(a => a !== h && a !== host).map(a => Math.hypot(a.x - host.x - L * Math.cos(t), a.y - host.y - L * Math.sin(t))), 1e9);
+    const t = cands.reduce((b, c) => (room(c) > room(b) + 1e-6 ? c : b), cands[0]);
+    h.x = host.x + L * Math.cos(t); h.y = host.y + L * Math.sin(t);
+    return { x: Math.cos(t), y: Math.sin(t) };
   }
 
   /* How substituted is the carbon carrying the leaving group, and is it
@@ -761,6 +794,20 @@ function makeChem() {
     const ux = cAt.x - lgAt.x, uy = cAt.y - lgAt.y;
     const un = Math.hypot(ux, uy) || 1;
     const parkX = cAt.x + (ux / un) * 120, parkY = cAt.y + (uy / un) * 120;
+    /* What takes a proton in the SN1 / E1 steps: a molecule of the protic solvent (the Reactions page passes its key as
+       opts.solvent), else a second molecule of a neutral nucleophile (solvolysis), else water. In ethanol that is
+       ethanol, giving EtOH₂⁺ (not H₃O⁺). */
+    const solvSpec = NUCLEOPHILES[(opts || {}).solvent];
+    const taker = solvSpec && solvSpec.charge === 0 ? solvSpec : (spec.charge === 0 && !spec.fragGraph ? spec : NUCLEOPHILES.H2O);
+    // a base with its head at (x, y) and its tail (the CH₂CH₃ of ethanol) turned to run along (ux, uy), away from the H it faces
+    const parked = (sp, x, y, ux, uy) => {
+      const f = nucleophileFragment(sp, x, y), c = Math.cos(Math.atan2(uy || 0, ux || 1)), s = Math.sin(Math.atan2(uy || 0, ux || 1));
+      f.graph.atoms.forEach(a => { const dx = a.x - x, dy = a.y - y; a.x = x + dx * c - dy * s; a.y = y + dx * s + dy * c; });
+      return f;
+    };
+    /* the base after it took the proton, one charge up (EtO⁻ → EtOH, H₂O → H₃O⁺; its H count follows from the valence),
+       so a step's products keep the H the base removed */
+    const protonated = (sp, x, y, ux, uy) => { const f = parked(sp, x, y, ux, uy); f.graph.atoms.find(a => a.id === f.headId).charge = (sp.charge || 0) + 1; return f; };
 
     if (type === 'SN2') {
       const s1 = clone(g0);
@@ -836,20 +883,22 @@ function makeChem() {
         nu3.charge = spec.charge === 0 ? 1 : 0;
         s3.bonds.push({ a: cId, b: nu3.id, order: 1 });
         mergeFragment(s3, { atoms: [{ id: 1, element: lgEl, charge: -1, x: parkX, y: parkY }], bonds: [], nextId: 2 }, 0, 0);
-        if (spec.charge === 0) {
+        if (spec.charge === 0 && implicitH(s3, nu3) > 0) {      // (a sulfonium from R2S has no H to lose: it stays the product)
           /* Draw the proton actually leaving: one O–H made explicit, a solvent
              molecule brought in beside it, and the two arrows of any proton
              transfer. */
           const hOn = explicitH(s3, nu3.id);
-          const solv = nucleophileFragment({ head: 'O', tail: [], charge: 0 }, nu3.x + 100, nu3.y + 70);
+          // the solvent molecule sits beyond that H (the free side of the O), so its arrow to the H is short and direct
+          const hOnAt = s3.atoms.find(a => a.id === hOn), uo = hOn ? placeFreeH(s3, hOn) : null;
+          const solv = uo ? parked(taker, hOnAt.x + uo.x * 60, hOnAt.y + uo.y * 60, uo.x, uo.y) : parked(taker, nu3.x + 100, nu3.y + 70, 1, 0);
           const ms = mergeFragment(s3, solv.graph, 0, 0);
           steps.push({ title: 'Step 3 — a solvent molecule takes the extra proton (fast)',
             kind: 'intermediate', graph: s3,
             arrows: hOn ? [
               { from: { kind: 'lp', atom: ms.get(solv.headId) }, to: { kind: 'atom', atom: hOn },
-                label: 'a second solvent molecule takes the proton' },
+                label: (taker === spec ? 'a second ' : 'a solvent ') + taker.text + ' molecule takes the proton' },
               { from: { kind: 'bond', a: nu3.id, b: hOn }, to: { kind: 'atom', atom: nu3.id },
-                label: 'those electrons stay on the oxygen, neutralising it' },
+                label: 'those electrons stay on the ' + (spec.head === 'O' ? 'oxygen' : spec.head) + ', neutralising it' },
             ] : [],
             note: 'A neutral nucleophile arrives with its hydrogens still attached, so the product is positively charged until another solvent molecule removes one. Only then is it neutral.' });
           const s4 = clone(s3);
@@ -874,11 +923,19 @@ function makeChem() {
         const beta = call.betas.slice().sort((a, b) => b.substitution - a.substitution)[0];
         const s2 = clone(cat);
         const hId = explicitH(s2, beta.carbon.id, cId);
+        /* the base is drawn: a solvent molecule parked beyond that H (on the side away from the C⁺), its lone pair taking
+           the H, so the H does not just vanish and the products carry it (H₃O⁺ / EtOH₂⁺) */
+        const hAt = s2.atoms.find(a => a.id === hId), ub = hId ? placeFreeH(s2, hId) : null;
+        const baseX = ub ? hAt.x + ub.x * 60 : parkX, baseY = ub ? hAt.y + ub.y * 60 : parkY, bx = ub ? ub.x : 1, by = ub ? ub.y : 0;
+        const bf = parked(taker, baseX, baseY, bx, by);
+        const mb = mergeFragment(s2, bf.graph, 0, 0);
         steps.push({
           title: 'Step 2 — a base takes a hydrogen next door (fast)',
           kind: 'intermediate', graph: s2,
           note: 'Anything weakly basic in the flask — the solvent will do — removes a hydrogen from a carbon beside the positive one, and those electrons become the second bond of the alkene.',
-          arrows: hId ? [{ from: { kind: 'bond', a: beta.carbon.id, b: hId }, to: { kind: 'bond', a: beta.carbon.id, b: cId },
+          arrows: hId ? [{ from: { kind: 'lp', atom: mb.get(bf.headId) }, to: { kind: 'atom', atom: hId },
+                           label: 'a solvent ' + taker.text + ' molecule takes the β hydrogen' },
+                         { from: { kind: 'bond', a: beta.carbon.id, b: hId }, to: { kind: 'bond', a: beta.carbon.id, b: cId },
                            label: 'C–H electrons become the π bond' }] : [],
         });
         const s3 = clone(g0);
@@ -886,6 +943,7 @@ function makeChem() {
         const bd = bondBetween(s3, cId, beta.carbon.id);
         if (bd) bd.order = 2;
         mergeFragment(s3, { atoms: [{ id: 1, element: lgEl, charge: -1, x: lgAt.x, y: lgAt.y }], bonds: [], nextId: 2 }, 0, 0);
+        if (hId) mergeFragment(s3, protonated(taker, baseX, baseY, bx, by).graph, 0, 0);
         steps.push({ title: 'Product', kind: 'product', graph: s3, arrows: [],
           note: 'The more substituted alkene (Zaitsev) is the major product, because a carbocation lets the reaction pick whichever hydrogen gives the more stable alkene.' });
       }
@@ -901,7 +959,10 @@ function makeChem() {
       const beta = sorted[0];
       const s1 = clone(g0);
       const hId = explicitH(s1, beta.carbon.id, cId);
-      const frag = nucleophileFragment(spec, beta.carbon.x + 90, beta.carbon.y - 90);
+      // the base waits just beyond the H it takes (the H in the free gap of its carbon), so the first arrow is short
+      const hAt = s1.atoms.find(a => a.id === hId), ub = hId ? placeFreeH(s1, hId) : null;
+      const baseX = ub ? hAt.x + ub.x * 60 : beta.carbon.x + 90, baseY = ub ? hAt.y + ub.y * 60 : beta.carbon.y - 90, bx = ub ? ub.x : 1, by = ub ? ub.y : 0;
+      const frag = parked(spec, baseX, baseY, bx, by);
       const map = mergeFragment(s1, frag.graph, 0, 0);
       steps.push({
         title: 'One step — base, hydrogen, double bond and leaving group all at once',
@@ -924,6 +985,7 @@ function makeChem() {
       const bd = bondBetween(s2, cId, beta.carbon.id);
       if (bd) bd.order = 2;
       mergeFragment(s2, { atoms: [{ id: 1, element: lgEl, charge: -1, x: lgAt.x, y: lgAt.y }], bonds: [], nextId: 2 }, 0, 0);
+      if (hId) mergeFragment(s2, protonated(spec, baseX, baseY, bx, by).graph, 0, 0);   // the base with the H it took (EtOH)
       steps.push({ title: 'Product', kind: 'product', graph: s2, arrows: [],
         note: (spec.bulky ? 'Hofmann' : 'Zaitsev') + ' alkene, plus ' + lgEl +
               '⁻ and the protonated base.' });
@@ -975,7 +1037,8 @@ function makeChem() {
 
     return { ...call, type, steps, thermo,
              rate: MECH_RATE[type], stereo: MECH_STEREO[type],
-             label: MECH_LABEL[type] };
+             label: MECH_LABEL[type],
+             protonTaker: type === 'SN1' || type === 'E1' ? taker.smiles : null };   // the solvent molecule drawn to take a proton (a spectator until then)
   }
 
   const MECH_LABEL = {
@@ -4763,6 +4826,7 @@ function makeChem() {
         if (m[4]) bracketAtom.__brH = m[4] === 'H' ? 1 : parseInt(m[4].slice(1), 10);
         bracketAtom.__bracket = m[4] ? (m[4] === 'H' ? 1 : parseInt(m[4].slice(1), 10)) : 0;   // its H count is exactly what is written
         if (m[6]) bracketAtom.mapNum = parseInt(m[6], 10);            // atom-map number [CH3:1] (mechanism arrows use it)
+        if (m[1]) bracketAtom.isotope = parseInt(m[1], 10);            // [2H], [13CH3]: kept so the SMILES writer can write it back
         attach(bracketAtom);
         if (m[3]) bracketAtom.__chiralSymbol = m[3];                 // @ or @@
         // a hydrogen written inside the brackets takes its place in the
@@ -4792,6 +4856,8 @@ function makeChem() {
     g.atoms.forEach(a => {
       const brH = a.__bracket, wasBracket = a.__bracket !== undefined;
       delete a.__bracket;
+      // the hydrogens written in the brackets ([AlH4-], [NH4+]), for the writer; valid while the atom keeps these bonds
+      if (wasBracket) { a.hWritten = brH; a.hWrittenFor = usedValence(g, a.id); }
       if (!wasBracket || NO_IMPLICIT_H.includes(a.element) || a.element === 'H') return;
       const open = effectiveValence(a) - usedValence(g, a.id) - brH;
       if (open > 0) a.radical = open;
@@ -5449,7 +5515,7 @@ function makeChem() {
             ringOn.set(k, d);
             [id, nb.id].forEach(x => {
               if (!ringOn.has('atom' + x)) ringOn.set('atom' + x, []);
-              ringOn.get('atom' + x).push(bsym(nb.order) + d);
+              ringOn.get('atom' + x).push(bsym(nb.order) + (d < 10 ? d : '%' + d));   // ring numbers from 10 are written %10, %11 ...
               if (!ringPartners.has('atom' + x)) ringPartners.set('atom' + x, []);
               ringPartners.get('atom' + x).push(x === id ? nb.id : id);   // who this digit links to
             });
@@ -5459,13 +5525,16 @@ function makeChem() {
     });
 
     const token = (a, stereoTok) => {
-      const h = implicitH(g, a);
+      /* hydrogens: what was written in brackets when the atom still has the bonds it was read with ([AlH4-]), else what its valence leaves */
+      const h = a.hWritten != null && a.hWrittenFor === usedValence(g, a.id) ? a.hWritten : implicitH(g, a);
       const chargePart = a.charge
         ? (a.charge > 0 ? '+' : '-') + (Math.abs(a.charge) > 1 ? Math.abs(a.charge) : '') : '';
-      if (stereoTok || a.charge) {
-        return '[' + a.element + (stereoTok || '') + (h ? 'H' + (h > 1 ? h : '') : '') + chargePart + ']';
+      /* brackets for: stereo, charge, an isotope ([2H]), an unpaired electron ([N]=O, [CH3]), an element outside the organic subset,
+         or hydrogens the valence rules would not give */
+      if (stereoTok || a.charge || a.isotope || a.radical || !ORGANIC.includes(a.element) || h !== implicitH(g, a)) {
+        return '[' + (a.isotope || '') + a.element + (stereoTok || '') + (h ? 'H' + (h > 1 ? h : '') : '') + chargePart + ']';
       }
-      return ORGANIC.includes(a.element) ? a.element : '[' + a.element + ']';
+      return a.element;
     };
 
     /* cis/trans marks: for every acyclic C=C whose geometry is drawn, one
@@ -12934,6 +13003,8 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
     // alcohols
     'methanol': 'CO', 'wood alcohol': 'CO', 'ethanol': 'CCO', 'ethyl alcohol': 'CCO',
     'grain alcohol': 'CCO', 'isopropanol': 'CC(O)C', 'rubbing alcohol': 'CC(O)C',
+    // the alcohol solvent after it took a proton (SN1 / E1 in an alcohol: a mechanism's products name it)
+    'protonated ethanol': 'CC[OH2+]', 'ethyloxonium': 'CC[OH2+]', 'protonated methanol': 'C[OH2+]', 'methyloxonium': 'C[OH2+]',
     'isopropyl alcohol': 'CC(O)C', 'propanol': 'CCCO', 'n-propanol': 'CCCO',
     'tert-butanol': 'CC(C)(C)O', 't-butanol': 'CC(C)(C)O', 'butanol': 'CCCCO',
     'ethylene glycol': 'OCCO', 'glycerol': 'OCC(O)CO', 'glycerin': 'OCC(O)CO',
@@ -14382,8 +14453,8 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
                         bonds: g.bonds.filter(b => set.has(b.a) && set.has(b.b)).map(b => Object.assign({}, b)),
                         nextId: g.nextId };
           let n = null;
-          try { const x = IU2.name(sub); if (x) n = x; } catch (e) {}
-          if (!n) { const x = iupacNameLegacy(sub); if (!nameFailed(x)) n = x; }
+          if (!netCharge(sub)) { try { const x = IU2.name(sub); if (x) n = x; } catch (e) {} }
+          if (!n && !netCharge(sub)) { const x = iupacNameLegacy(sub); if (!nameFailed(x)) n = x; }
           if (!n) { try { n = commonNameFor(sub); } catch (e) {} }
           return n || formula(sub);
         });
@@ -14392,9 +14463,13 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
         return order.map(o => names[o.i]).join(' + ');
       }
     } catch (e) {}
+    /* an ion: both namers read the skeleton and drop the charge, so CH3CH2OH2+ came out as "ethanol" and the
+       tert-butyl cation as "2-methylpropane" (a mechanism's header named the protonated solvent as the solvent) */
+    if (netCharge(g)) return 'ions (charged species) are not named yet';
     try { const n = IU2.name(g); if (n) return n; } catch (e) {}
     return iupacNameLegacy(g);
   }
+  const netCharge = g => g.atoms.reduce((t, a) => t + (a.charge || 0), 0);
   function iupacNameLegacy(g) {
     try {
       if (!g || !g.atoms.length) return '—';

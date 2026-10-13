@@ -3,7 +3,10 @@
    behaviour, and one tab (it is not numbered Draw1, Draw2: there is only one canvas).
 
    Tools     Select (rectangle over empty space, or over the blank part of a molecule box; Ctrl/Shift adds), Molecule box,
-             Text (x₂ / x² for subscripts and superscripts), → ⇌ ↔ arrows, • electron, •• lone pair.
+             Text (x₂ / x² for subscripts and superscripts), → ⇌ ↔ arrows, ↷ ⇀ mechanism arrows (curved: an electron pair
+             moves; fishhook: one electron), • electron, •• lone pair.
+   Mechanism Draw.showMechanism(payload) (js/draw_mech.js) lays a reaction's mechanism out here: the Reactions page's
+             "Open Mechanism in Draw" button.
    Molecule  double-click a box: type a name, IUPAC name, CAS number or SMILES (suggestions as you type), or draw it in
              the Sketcher and send it back. Display options: hydrogens, common name, IUPAC name, SMILES, CAS.
              Selected box: drag a border to resize, drag just outside the molecule to turn it (Shift = 15° steps).
@@ -22,6 +25,9 @@
   const SCENE_W = 3200, SCENE_H = 2200;
   const BLUE = '#4a86e8', FONT = 'Arial, Helvetica, sans-serif';
   const EDGE = 7, MOVE_BOND = 16, MOVE_ATOM = 20, ROT_NEAR = 34, MIN_W = 90, MIN_H = 70, PAD = 30, CAPTION_PX = 14, TEXT_PX = 16;
+  const BOND_LEN = 46;                                             // Chem.layoutGraph's bond length: setGraph scales a given graph to it
+  const MECH_KINDS = new Set(['curved', 'fishhook']);              // mechanism arrows: one head (a pair) or one barb (one electron)
+  let sceneH = SCENE_H;                                            // grows (never shrinks) when a laid-out mechanism needs more room
   const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private window */ } } };
   const SHOW = Object.assign({ hydrogens: false, common: false, iupac: false, smiles: false, cas: false }, store.get('draw.show') || {});
 
@@ -43,7 +49,90 @@
   const rectsMeet = (a, b) => a.x <= b.x + b.w && b.x <= a.x + a.w && a.y <= b.y + b.h && b.y <= a.y + a.h;
   const normRect = (a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), w: Math.abs(a.x - b.x), h: Math.abs(a.y - b.y) });
   let measureCtx = null;
-  const textWidth = (s, px) => { if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d'); measureCtx.font = px + 'px ' + FONT; return measureCtx.measureText(s).width; };
+  const textWidth = (s, px, bold) => { if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d'); measureCtx.font = (bold ? 'bold ' : '') + px + 'px ' + FONT; return measureCtx.measureText(s).width; };
+  const rectDist = (x, y, r) => Math.hypot(Math.max(r.x0 - x, 0, x - r.x1), Math.max(r.y0 - y, 0, y - r.y1));
+  const rayExit = (rects, ux, uy) => {                             // how far a ray from (0, 0) runs before it has left every rect it enters
+    let best = 0;
+    for (const r of rects) {
+      let t0 = -Infinity, t1 = Infinity, hit = true;
+      for (const [o0, o1, u] of [[r.x0, r.x1, ux], [r.y0, r.y1, uy]]) {
+        if (Math.abs(u) < 1e-9) { if (o0 > 0 || o1 < 0) { hit = false; break; } continue; }
+        let a = o0 / u, b = o1 / u; if (a > b) [a, b] = [b, a];
+        t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+      }
+      if (hit && t1 >= Math.max(t0, 0)) best = Math.max(best, t1);
+    }
+    return best;
+  };
+
+  /* ---- atom labels: the element, its hydrogens and its charge written as one group (OH, H2O+, NH3+, BH3-) ---- */
+  const LABEL_PX = 17, SUB_DY = 0.22, SUP_Y = -0.52, MID_Y = 0.12, LOW_Y = 0.3, STACK = 1.15, LABEL_PAD = 14;
+  const inkCache = new Map();
+  /* the ink of s in the label font drawn from x = 0 on a 'central' baseline, as the SVG draws it: {x0, x1, y0, y1} and the
+     advance w. Canvas measures from its 'middle' baseline, which sits lower than SVG's 'central' one by half the difference
+     of a capital's ascent and descent ('central' centres the capitals) */
+  function ink(s, size) {
+    const k = s + '@' + size; let r = inkCache.get(k); if (r) return r;
+    if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d');
+    measureCtx.font = size + 'px ' + FONT; measureCtx.textBaseline = 'middle';
+    const H = measureCtx.measureText('H'), m = measureCtx.measureText(s), sh = (H.actualBoundingBoxAscent - H.actualBoundingBoxDescent) / 2;
+    measureCtx.textBaseline = 'alphabetic';
+    r = m.actualBoundingBoxAscent >= 0 ? { x0: -m.actualBoundingBoxLeft, x1: m.actualBoundingBoxRight, y0: sh - m.actualBoundingBoxAscent, y1: sh + m.actualBoundingBoxDescent, w: m.width }
+      : { x0: 0, x1: m.width, y0: -0.36 * size, y1: 0.36 * size, w: m.width };   // a browser without ink metrics: the capital height
+    inkCache.set(k, r); return r;
+  }
+  /* an atom's label: the element with its hydrogens written after it (OH2+), before it (H2O+), above or below it, and the
+     charge a superscript after the whole group, or (no H's beside it) at a free corner. Each way of writing it is scored
+     against the atom's bonds (dirs: [{ux, uy, len, order}] out of the atom) and the clearest one wins, so every bond starts
+     at the element and none leaves from under an H or the charge. An atom with no bonds is written the usual way round:
+     HBr, H2O, H3O+, HO- (H first for halogens, O and S), NH3, NH4+, BH4- (after the rest).
+     Returns positions about the atom: {parts: [{s, n (H count as a subscript), x (text start), y (central baseline), size}],
+     rects: the ink [element, charge?, H's?], hSide (-1 west, 1 east, 0 none or above/below), hAngle (where the H's are, or
+     null), trim(ux, uy): how far out a bond in that direction starts} */
+  function atomLabel(el, nH, charge, dirs) {
+    const px = LABEL_PX, E = ink(el, px), eL = -E.w / 2, right = E.w / 2 + 0.5, left = -E.w / 2 - 0.5;
+    const eRect = { x0: eL + E.x0, x1: eL + E.x1, y0: E.y0, y1: E.y1 }, tBox = { x0: eRect.x0 - 2, x1: eRect.x1 + 2, y0: eRect.y0 - 3.5, y1: eRect.y1 + 3.5 };
+    const H = ink('H', px), D = nH > 1 ? ink(String(nH), px * 0.7) : null, hW = H.w + (D ? D.w : 0), sub = px * SUB_DY;
+    const hPart = (x, y) => ({ part: { s: 'H', n: D ? nH : 0, x, y, size: px }, rect: { x0: x + H.x0, x1: x + (D ? H.w + D.x1 : H.x1), y0: y + H.y0, y1: y + (D ? Math.max(H.y1, sub + D.y1) : H.y1) } });
+    const cs = charge ? (Math.abs(charge) > 1 ? Math.abs(charge) : '') + (charge > 0 ? '+' : '−') : '', Q = cs ? ink(cs, px * 0.66) : null;
+    const qPart = (x, yc) => { const y = yc - (Q.y0 + Q.y1) / 2; return { part: { s: cs, x, y, size: px * 0.66 }, rect: { x0: x + Q.x0, x1: x + Q.x1, y0: y + Q.y0, y1: y + Q.y1 } }; };
+    // the charge at a corner of the element, upper right first; the superscript sits high enough for a lone pair beside the label
+    const meet = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+    const corners = (hr, sup = SUP_Y) => [[1, sup, 0], [-1, sup, 0.8], [1, MID_Y, 1], [1, LOW_Y, 1.4], [-1, MID_Y, 1.6], [-1, LOW_Y, 2]].map(([sd, y, c]) => {
+      let q = qPart(sd > 0 ? right : left - Q.w, px * y);
+      if (hr && meet(q.rect, hr)) { q = qPart(sd > 0 ? hr.x1 + 0.8 - Q.x0 : hr.x0 - 0.8 - Q.x1, px * y); c += 0.3; }   // out past H's stacked above or below
+      return [q, c];
+    });
+    const cands = [];
+    if (nH) {
+      const hFirst = !dirs.length && /^(F|Cl|Br|I|O|S|Se|Te)$/.test(el);
+      // in a row: OH2+ or H2O+, the charge after the group (a bond up that side: lower, or before the group)
+      for (const [h, after, before, cost, side, ang] of [[hPart(right, 0), right + hW + 0.5, left, hFirst ? 1 : 0, 1, 0], [hPart(left - hW, 0), right, left - hW - 0.5, hFirst ? 0 : 0.4, -1, Math.PI]])
+        for (const [q, qc] of Q ? [[after, SUP_Y, 0], [after, MID_Y, 1], [after, LOW_Y, 1.4], [before - Q.w, SUP_Y, 1.5]].map(([x, y, c]) => [qPart(x, px * y), c]) : [[null, 0]]) cands.push({ h, q, cost: cost + qc, side, ang });
+      if (dirs.length) for (const [dy, cost, ang] of [[px * STACK, 2.5, Math.PI / 2], [-px * STACK, 3, -Math.PI / 2]])   // below, above: when both sides are taken
+        for (const [q, qc] of Q ? corners(hPart(-hW / 2, dy).rect, dy < 0 ? SUP_Y * 0.6 : SUP_Y) : [[null, 0]]) cands.push({ h: hPart(-hW / 2, dy), q, cost: cost + qc, side: 0, ang });   // under H's above, the charge sits lower, clear of their subscript
+    } else if (Q) for (const [q, qc] of corners()) cands.push({ h: null, q, cost: qc, side: 0, ang: null });
+    else cands.push({ h: null, q: null, cost: 0, side: 0, ang: null });
+    if (cands.length > 1) for (const c of cands) {
+      const near = [c.h && c.h.rect, c.q && c.q.rect].filter(Boolean);
+      if (near.length === 2 && meet(near[0], near[1])) c.cost += 100;   // the charge on the H's
+      for (const d of dirs) {                                      // each bond as drawn (from the element to near the far atom) against the H's and the charge
+        if (c.ang != null) { const off = Math.acos(Math.max(-1, Math.min(1, d.ux * Math.cos(c.ang) + d.uy * Math.sin(c.ang)))); if (off < Math.PI / 2) c.cost += 1.2 * (Math.PI / 2 - off) / (Math.PI / 6); }   // and H's out in the open, not in the V between two bonds
+        const t0 = rayExit([tBox], d.ux, d.uy) + 1, t1 = Math.max(t0, d.len - 10), half = d.order >= 2 ? 4.5 : 1;
+        for (const r of near) {
+          let m = Infinity; for (let k = 0; k <= 10; k++) { const t = t0 + (t1 - t0) * k / 10; m = Math.min(m, rectDist(t * d.ux, t * d.uy, r)); }
+          m -= half;
+          if (m < 1) c.cost += 50 + (1 - m) * 5; else if (m < 5) c.cost += (5 - m) ** 2 * 1.5;
+        }
+      }
+    }
+    const best = cands.reduce((b, c) => (c.cost < b.cost - 1e-9 ? c : b));
+    const rects = [eRect], parts = [{ s: el, n: 0, x: eL, y: 0, size: px }];
+    if (best.q) { rects.push(best.q.rect); parts.push(best.q.part); }          // the charge stays rects[1]: js/draw_mech.js reads it there
+    if (best.h) { rects.push(best.h.rect); parts.push(best.h.part); }
+    const extra = rects.slice(1).map(r => ({ x0: r.x0 - 1.5, x1: r.x1 + 1.5, y0: r.y0 - 1.5, y1: r.y1 + 1.5 }));
+    return { parts, rects, hSide: best.side, hAngle: best.ang, trim: (ux, uy) => Math.max(rayExit([tBox], ux, uy), rayExit(extra, ux, uy)) + 0.5 };
+  }
 
   /* ================= items ================= */
   class Item {
@@ -76,7 +165,30 @@
       } else this.graph = null;
       this.refreshDisplay();
     }
-    get canonical() { try { return this.graph ? C.toSmiles(this.graph) : this.smiles; } catch (e) { return this.smiles; } }
+    /* a graph that is already laid out (a mechanism step from Chem.buildMechanism parks its reagent deliberately, and a
+       new layout would move it): its atom ids and coordinates are kept, only scaled to the usual bond length, so a caller
+       can find each atom by id after the render (atomPoint). `smiles`, when the caller has it, saves writing one (Chem's
+       writer works out stereo descriptors, which takes a while for a big molecule) */
+    setGraph(graph, smiles) {
+      this.angle = 0; this.autoFit = true; this.atomColors = new Map(); this.bondColors = new Map(); this.clearLasso();
+      this.graph = null; this.lay = null; this.smiles = '';
+      if (graph && graph.atoms && graph.atoms.length) {
+        const g = { atoms: graph.atoms.map(a => ({ ...a })), bonds: (graph.bonds || []).map(b => ({ ...b })), nextId: graph.nextId || Math.max(...graph.atoms.map(a => +a.id || 0)) + 1 };
+        const at = new Map(g.atoms.map(a => [a.id, a]));
+        const lens = g.bonds.map(b => { const p = at.get(b.a), q = at.get(b.b); return p && q ? Math.hypot(p.x - q.x, p.y - q.y) : 0; }).filter(x => x > 1e-6);
+        const k = lens.length ? BOND_LEN / (lens.reduce((s, x) => s + x, 0) / lens.length) : 1;
+        this.graph = g;
+        this.lay = { atoms: g.atoms.map(a => ({ ...a, x: (+a.x || 0) * k, y: (+a.y || 0) * k })), bonds: g.bonds.map(b => ({ ...b })), nextId: g.nextId };
+        if (smiles != null) this.smiles = String(smiles); else { try { this.smiles = C.toSmiles(g); } catch (e) { this.smiles = ''; } }
+      }
+      this.refreshDisplay();
+    }
+    atomIndex(id) { return this.lay ? this.lay.atoms.findIndex(a => a.id === id) : -1; }
+    atomPoint(id) { const p = this.atomXY[this.atomIndex(id)]; return p ? { x: this.x + p.x, y: this.y + p.y } : null; }   // scene coordinates, as drawn
+    get canonical() {                                             // shown and copied: RDKit's canonical SMILES once RDKit has started (the boxes redraw then)
+      let s; try { s = this.graph ? C.toSmiles(this.graph) : this.smiles; } catch (e) { s = this.smiles; }
+      return window.RDKitLoad && SHOW.smiles ? window.RDKitLoad.display(s, refreshBoxes) : s;
+    }
     info() {
       const g = this.graph, out = {};
       if (!g) return out;
@@ -85,38 +197,60 @@
       if (SHOW.cas) { try { out.cas = C.casFor ? C.casFor(g) : null; } catch (e) { out.cas = null; } }
       return out;
     }
-    captionLines() {
+    captionItems() {                                               // [{text shown, copy: what a click copies (null: nothing to copy), kind}]
       if (!this.graph) return [];
-      const inf = this.info(), lines = [];
-      if (SHOW.common && inf.common) lines.push(inf.common);
-      if (SHOW.iupac) lines.push(inf.iupac || 'IUPAC name not found');
-      if (SHOW.smiles) lines.push(this.canonical);
-      if (SHOW.cas) lines.push('CAS ' + (inf.cas || 'not found'));
-      return lines;
+      const inf = this.info(), items = [];
+      if (SHOW.common && inf.common) items.push({ kind: 'common name', text: inf.common, copy: inf.common });
+      if (SHOW.iupac) items.push({ kind: 'IUPAC name', text: inf.iupac || 'IUPAC name not found', copy: inf.iupac || null });
+      if (SHOW.smiles) items.push({ kind: 'SMILES', text: this.canonical, copy: this.canonical });
+      if (SHOW.cas) items.push({ kind: 'CAS number', text: 'CAS ' + (inf.cas || 'not found'), copy: inf.cas || null });
+      return items;
     }
-    wrapped(width) {                                               // caption lines broken anywhere to fit the width
-      const out = [];
-      for (const t of this.captionLines()) {
-        let cur = '';
-        for (const ch of t) { if (cur && textWidth(cur + ch, CAPTION_PX) > width) { out.push(cur); cur = ch; } else cur += ch; }
-        out.push(cur);
-      }
-      return out;
+    captionLines() { return this.captionItems().map(x => x.text); }
+    wrappedItems(width) {                                          // each caption item's text broken anywhere to fit the width: [{item, lines}]
+      return this.captionItems().map(item => {
+        const lines = []; let cur = '';
+        for (const ch of item.text) { if (cur && textWidth(cur + ch, CAPTION_PX) > width) { lines.push(cur); cur = ch; } else cur += ch; }
+        lines.push(cur);
+        return { item, lines };
+      });
     }
+    wrapped(width) { return this.wrappedItems(width).flatMap(x => x.lines); }
     captionHeight(width) { const n = this.wrapped(Math.max((width ?? this.w) - 16, 40)).length; return n ? 8 + n * (CAPTION_PX + 3) : 0; }
-    /* the laid-out atoms, turned and centred: [{x, y}] in box coordinates, for a box of this size */
-    place(width, height) {
+    /* the laid-out atoms, turned: {pts: [{x, y}]} about the layout's origin (render centres them, labels and all, in the box) */
+    place() {
       const lay = this.lay; if (!lay) return null;
       const a = this.angle * Math.PI / 180, cos = Math.cos(a), sin = Math.sin(a);
-      const pts = lay.atoms.map(at => ({ x: at.x * cos - at.y * sin, y: at.x * sin + at.y * cos }));
-      const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
-      const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
-      return { pts, w: maxx - minx, h: maxy - miny, cx: (minx + maxx) / 2, cy: (miny + maxy) / 2, to: (cx, cy) => pts.map(p => ({ x: cx + p.x - (minx + maxx) / 2, y: cy + p.y - (miny + maxy) / 2 })) };
+      return { pts: lay.atoms.map(at => ({ x: at.x * cos - at.y * sin, y: at.x * sin + at.y * cos })) };
+    }
+    /* every atom's label (null: a bare carbon), for the atoms placed at pts: see atomLabel */
+    labelsFor(pts) {
+      const lay = this.lay, atoms = lay.atoms, idx = new Map(atoms.map((a, i) => [a.id, i])), mine = atoms.map(() => []);
+      lay.bonds.forEach(b => { const i = idx.get(b.a), j = idx.get(b.b); if (i != null && j != null) { mine[i].push([j, b]); mine[j].push([i, b]); } });
+      return atoms.map((a, i) => {
+        const bs = mine[i], used = bs.reduce((s, [, b]) => s + b.order, 0);
+        // the hydrogens written in the SMILES brackets ([AlH3-], which Chem.implicitH leaves out for a metal) while the atom has the bonds it was read with
+        const nH = a.element === 'H' ? 0 : a.hWritten != null && a.hWrittenFor === used ? a.hWritten : C.implicitH(lay, a);
+        const dirs = bs.map(([j, b]) => { const dx = pts[j].x - pts[i].x, dy = pts[j].y - pts[i].y, len = Math.hypot(dx, dy) || 1; return { ux: dx / len, uy: dy / len, len, order: b.order }; });
+        const straightSp = a.element === 'C' && dirs.length === 2 && dirs.every(d => d.order === 2) && dirs[0].ux * dirs[1].ux + dirs[0].uy * dirs[1].uy < -0.87;   // O=C=O, C=C=C drawn straight: the vertex would vanish
+        if (a.element === 'C' && !a.charge && !a.radical && bs.length && !(SHOW.hydrogens && nH > 0) && !straightSp) return null;
+        return atomLabel(a.element, a.element !== 'C' || SHOW.hydrogens || !bs.length ? nH : 0, a.charge || 0, dirs);
+      });
+    }
+    /* what the drawing covers, about the placed atoms: PAD round each atom, and LABEL_PAD round the ink of its label (a long
+       label such as BH3- reaches past PAD, and the box, and what is laid out beside it, must not cut it) */
+    extent(pts, labs) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      pts.forEach((p, i) => {
+        x0 = Math.min(x0, p.x - PAD); x1 = Math.max(x1, p.x + PAD); y0 = Math.min(y0, p.y - PAD); y1 = Math.max(y1, p.y + PAD);
+        for (const r of labs[i] ? labs[i].rects : []) { x0 = Math.min(x0, p.x + r.x0 - LABEL_PAD); x1 = Math.max(x1, p.x + r.x1 + LABEL_PAD); y0 = Math.min(y0, p.y + r.y0 - LABEL_PAD); y1 = Math.max(y1, p.y + r.y1 + LABEL_PAD); }
+      });
+      return { x0, y0, x1, y1 };
     }
     neededSize() {
       const pl = this.place(); if (!pl) return [this.w, this.h];
-      const w = Math.max(MIN_W, pl.w + 2 * PAD);
-      return [w, Math.max(MIN_H, pl.h + 2 * PAD + this.captionHeight(w))];
+      const ext = this.extent(pl.pts, this.labelsFor(pl.pts)), w = Math.max(MIN_W, ext.x1 - ext.x0);
+      return [w, Math.max(MIN_H, ext.y1 - ext.y0 + this.captionHeight(w))];
     }
     resizeAboutCentre(w, hgt) {
       if (Math.abs(w - this.w) < 0.5 && Math.abs(hgt - this.h) < 0.5) return;
@@ -225,13 +359,14 @@
     render() {
       const g = this.g; g.textContent = ''; g.setAttribute('transform', `translate(${this.x},${this.y})`);
       const capH = this.captionHeight(), hasMol = !!this.lay, turning = this.rotating && Math.abs(this.rotDelta) > 1e-6;
-      this.atomXY = []; this.bondPairs = [];
+      this.atomXY = []; this.bondPairs = []; this.atomLabels = [];
       if (!hasMol) {
         h('rect', { x: 0, y: 0, width: this.w, height: this.h, rx: 4, fill: 'none', stroke: '#b4b4bc', 'stroke-width': 1.5, 'stroke-dasharray': '6 4' }, g);
         const t = h('text', { x: this.w / 2, y: this.h / 2, 'text-anchor': 'middle', 'dominant-baseline': 'middle', fill: '#9a9aa2', 'font-size': 13, 'font-family': FONT }, g);
         t.textContent = 'Double-click to add a molecule';
       } else {
-        const pl = this.place(), cx = this.w / 2, cy = (this.h - capH) / 2, pts = pl.to(cx, cy);
+        const pl = this.place(), cx = this.w / 2, cy = (this.h - capH) / 2, labs = this.labelsFor(pl.pts), ext = this.extent(pl.pts, labs);
+        const pts = pl.pts.map(p => ({ x: p.x + cx - (ext.x0 + ext.x1) / 2, y: p.y + cy - (ext.y0 + ext.y1) / 2 }));   // the drawing, labels and all, centred
         this.atomXY = pts; this.bondPairs = this.lay.bonds.map(b => [this.lay.atoms.findIndex(a => a.id === b.a), this.lay.atoms.findIndex(a => a.id === b.b)]);
         if (this.selected && ((this.hover && this.hover.rotate) || this.rotating)) {   // the band that turns the molecule when dragged: one even shape
           const band = h('g', { fill: BLUE, stroke: BLUE, 'stroke-linecap': 'round', opacity: 0.15 }, g);
@@ -243,32 +378,30 @@
         const halo = h('g', { fill: 'rgba(74,134,232,.35)', stroke: 'rgba(74,134,232,.35)', 'stroke-linecap': 'round' }, mol);
         this.selBonds.forEach(k => { const [i, j] = this.bondPairs[k] || []; if (i != null) h('line', { x1: pts[i].x, y1: pts[i].y, x2: pts[j].x, y2: pts[j].y, 'stroke-width': 11 }, halo); });
         this.selAtoms.forEach(i => { if (pts[i]) h('circle', { cx: pts[i].x, cy: pts[i].y, r: 11, stroke: 'none' }, halo); });
-        this.drawStructure(mol, pts);
+        this.drawStructure(mol, pts, labs);
         if (capH) {
-          const t = h('text', { 'text-anchor': 'middle', fill: '#333', 'font-size': CAPTION_PX, 'font-family': FONT }, g), lines = this.wrapped(Math.max(this.w - 16, 40));
-          lines.forEach((ln, k) => { const s = h('tspan', { x: this.w / 2, y: this.h - capH + 8 + (k + 1) * (CAPTION_PX + 3) - 4 }, t); s.textContent = ln; });
+          // one group per name: hovering highlights it, a click copies it (see "copy a caption" below)
+          let k = 0;
+          for (const { item, lines } of this.wrappedItems(Math.max(this.w - 16, 40))) {
+            const cg = h('g', { class: item.copy ? 'dr-cap' : 'dr-cap-none' }, g);
+            if (item.copy) { cg.dataset.copy = item.copy; cg.dataset.kind = item.kind; h('title', {}, cg).textContent = 'Click to copy the ' + item.kind; }
+            const y0 = this.h - capH + 8 + k * (CAPTION_PX + 3) - 2;
+            if (item.copy) h('rect', { x: 6, y: y0, width: Math.max(this.w - 12, 0), height: lines.length * (CAPTION_PX + 3), fill: 'transparent' }, cg);   // the whole block answers the pointer, gaps too
+            const t = h('text', { 'text-anchor': 'middle', fill: '#333', 'font-size': CAPTION_PX, 'font-family': FONT }, cg);
+            lines.forEach(ln => { const s = h('tspan', { x: this.w / 2, y: this.h - capH + 8 + (++k) * (CAPTION_PX + 3) - 4 }, t); s.textContent = ln; });
+          }
         }
       }
       if (this.selected) this.drawSelection(g);
     }
-    drawStructure(parent, pts) {
+    drawStructure(parent, pts, labs) {
       const lay = this.lay, atoms = lay.atoms, bonds = lay.bonds, idx = new Map(atoms.map((a, i) => [a.id, i]));
-      const bondsOf = id => bonds.filter(b => b.a === id || b.b === id);
-      const nbrs = id => bondsOf(id).map(b => atoms[idx.get(b.a === id ? b.b : b.a)]);
-      const px = 17, LW = 2, hCount = a => (a.element === 'H' ? 0 : C.implicitH(lay, a));
-      const labelled = a => a.element !== 'C' || a.charge || a.radical || bondsOf(a.id).length === 0 || (SHOW.hydrogens && hCount(a) > 0);
-      const hWest = (a, i) => { const ns = nbrs(a.id); return ns.filter(o => pts[idx.get(o.id)].x > pts[i].x + 1).length > ns.filter(o => pts[idx.get(o.id)].x < pts[i].x - 1).length; };   // neighbours mostly to the east: the hydrogens go west
-      const hasH = a => hCount(a) > 0 && (a.element !== 'C' || SHOW.hydrogens || bondsOf(a.id).length === 0);
-      const box = (a, i) => {                                      // half-extents of the label, from the atom: the bond stops at its outline
-        const ew = a.element.length * px * 0.62 / 2 + 2, hw = hasH(a) ? px * 0.62 + (hCount(a) > 1 ? px * 0.45 : 0) : 0, cw = a.charge ? px * 0.7 : 0;
-        const west = hWest(a, i);
-        return { l: ew + (west ? hw : 0), r: ew + (west ? 0 : hw) + cw, v: px * 0.58 };
-      };
-      const trimAlong = (a, i, ux, uy) => { const bx = box(a, i), ex = ux >= 0 ? bx.r : bx.l; return Math.min(Math.abs(ux) < 1e-6 ? 1e9 : ex / Math.abs(ux), Math.abs(uy) < 1e-6 ? 1e9 : bx.v / Math.abs(uy)) + 1; };
+      const nbrs = id => bonds.filter(b => b.a === id || b.b === id).map(b => atoms[idx.get(b.a === id ? b.b : b.a)]);
+      const LW = 2;
       bonds.forEach((b, k) => {
         const ia = idx.get(b.a), ib = idx.get(b.b), P = pts[ia], Q = pts[ib], A = atoms[ia], B = atoms[ib];
         const dx = Q.x - P.x, dy = Q.y - P.y, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
-        const tp = labelled(A) ? trimAlong(A, ia, ux, uy) : 0, tq = labelled(B) ? trimAlong(B, ib, -ux, -uy) : 0;
+        const tp = labs[ia] ? labs[ia].trim(ux, uy) : 0, tq = labs[ib] ? labs[ib].trim(-ux, -uy) : 0;   // a bond stops at the label's element
         const x1 = P.x + ux * tp, y1 = P.y + uy * tp, x2 = Q.x - ux * tq, y2 = Q.y - uy * tq, col = this.bondColors.get(k) || '#000';
         const grp = h('g', { stroke: col, fill: col, 'stroke-width': LW, 'stroke-linecap': 'round' }, parent);
         if (b.stereo && b.order === 1) {
@@ -278,27 +411,27 @@
           return;
         }
         const off = 5;
-        let offsets = { 1: [0], 2: [0, off * 1.7], 3: [-off * 1.7, 0, off * 1.7] }[b.order] || [0];
+        let offsets = { 1: [0], 2: [0, off * 1.7], 3: [-off * 1.7, 0, off * 1.7] }[b.order] || [0], sh = 4;
         if (b.order === 2) {
           const others = [...nbrs(A.id), ...nbrs(B.id)].filter(o => o !== A && o !== B);
+          const sides = others.map(o => { const q = pts[idx.get(o.id)]; return Math.sign(Math.round((q.x - P.x) * nx + (q.y - P.y) * ny)); }), side = sides.reduce((t, v) => t + v, 0);
           if (!others.length) offsets = [-off, off];
-          else { const side = others.reduce((t, o) => { const q = pts[idx.get(o.id)]; return t + Math.sign((q.x - P.x) * nx + (q.y - P.y) * ny); }, 0); offsets = [0, side < 0 ? -off * 1.7 : off * 1.7]; }   // the second line goes on the side the ring is on
+          else if (sides.every(v => !v)) { offsets = [-off, off]; sh = 0; }   // the neighbours in line (O=C=O drawn straight): the two lines straddle the axis
+          else offsets = [0, side < 0 ? -off * 1.7 : off * 1.7];   // the second line goes on the side the ring is on
         }
-        for (const o of offsets) { const sh = b.order === 2 && o !== 0 ? 4 : 0; h('line', { x1: x1 + nx * o + ux * sh, y1: y1 + ny * o + uy * sh, x2: x2 + nx * o - ux * sh, y2: y2 + ny * o - uy * sh }, grp); }
+        for (const o of offsets) { const s = b.order === 2 && o !== 0 ? sh : 0; h('line', { x1: x1 + nx * o + ux * s, y1: y1 + ny * o + uy * s, x2: x2 + nx * o - ux * s, y2: y2 + ny * o - uy * s }, grp); }
       });
+      /* where each label's ink is, as rectangles about its atom ({x0, y0, x1, y1}: the element, then the charge, then the H's;
+         null for a bare carbon), which side its H's are on (hSide: -1 west, 1 east, 0 none or above/below) and the direction
+         they are in (hAngle, radians, y down; null: no H's): lone-pair dots and mechanism arrows (js/draw_mech.js) keep clear */
+      this.atomLabels = labs.map(l => l && { rects: l.rects, hSide: l.hSide, hAngle: l.hAngle });
       atoms.forEach((a, i) => {
-        if (!labelled(a)) return;
+        const l = labs[i]; if (!l) return;
         const P = pts[i], col = this.atomColors.get(i) || '#000';
-        const hN = hCount(a), showHs = hasH(a), west = hWest(a, i);
-        const ew = a.element.length * px * 0.62;
-        h('circle', { cx: P.x, cy: P.y, r: px * 0.55, fill: '#fff' }, parent);
-        const t = h('text', { x: P.x, y: P.y, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': px, 'font-family': FONT, fill: col }, parent);
-        t.textContent = a.element;
-        if (a.charge) { const c = h('text', { x: P.x + ew / 2 + 1, y: P.y - px * 0.35, 'font-size': px * 0.66, 'font-family': FONT, fill: col, 'dominant-baseline': 'central' }, parent); c.textContent = (Math.abs(a.charge) > 1 ? Math.abs(a.charge) : '') + (a.charge > 0 ? '+' : '−'); }
-        if (showHs) {
-          const hx = west ? P.x - ew / 2 - 1 : P.x + ew / 2 + 1 + (a.charge ? px * 0.7 : 0);
-          const ht = h('text', { x: hx, y: P.y, 'text-anchor': west ? 'end' : 'start', 'dominant-baseline': 'central', 'font-size': px, 'font-family': FONT, fill: col }, parent);
-          ht.textContent = 'H'; if (hN > 1) { const s = h('tspan', { 'font-size': px * 0.7, dy: px * 0.22 }, ht); s.textContent = String(hN); }
+        h('circle', { cx: P.x, cy: P.y, r: LABEL_PX * 0.55, fill: '#fff' }, parent);
+        for (const q of l.parts) {
+          const t = h('text', { x: P.x + q.x, y: P.y + q.y, 'dominant-baseline': 'central', 'font-size': q.size, 'font-family': FONT, fill: col }, parent);
+          t.textContent = q.s; if (q.n) { const s = h('tspan', { 'font-size': LABEL_PX * 0.7, dy: LABEL_PX * SUB_DY }, t); s.textContent = String(q.n); }
         }
       });
     }
@@ -323,7 +456,7 @@
     constructor(text = '') {
       super();
       this.x = 0; this.y = 0; this.runs = text ? [{ t: text, s: 0 }] : [];   // [{t, s: 0 normal | -1 sub | 1 super}], "\n" between lines
-      this.color = '#000'; this.editing = false;
+      this.color = '#000'; this.editing = false; this.size = TEXT_PX; this.bold = false;   // size/bold: a mechanism's heading and notes
     }
     plain() { return this.runs.map(r => r.t).join(''); }
     html() {
@@ -354,17 +487,19 @@
     }
     render() {
       const g = this.g; g.textContent = ''; g.setAttribute('transform', `translate(${this.x},${this.y})`);
-      const t = h('text', { x: 4, y: 4, 'font-size': TEXT_PX, 'font-family': FONT, fill: this.color, 'xml:space': 'preserve', style: 'white-space:pre' }, g);
+      const px = this.size || TEXT_PX;
+      const t = h('text', { x: 4, y: 4, 'font-size': px, 'font-family': FONT, fill: this.color, 'xml:space': 'preserve', style: 'white-space:pre' }, g);
+      if (this.bold) t.setAttribute('font-weight', 'bold');
       if (this.editing) t.setAttribute('visibility', 'hidden');
       let line = 0, off = 0, first = true;
-      const lh = TEXT_PX * 1.25;
+      const lh = px * 1.25;
       this.runs.forEach(r => {
         r.t.split('\n').forEach((part, k) => {
           if (k > 0) { line++; first = true; off = 0; }
           if (part === '') return;                      // nothing to draw; the next text starts this line (an empty tspan would not move it)
-          const sp = h('tspan', { 'font-size': r.s ? TEXT_PX * 0.7 : TEXT_PX }, t);
-          const want = r.s < 0 ? TEXT_PX * 0.25 : r.s > 0 ? -TEXT_PX * 0.4 : 0;
-          if (first) { sp.setAttribute('x', 4); sp.setAttribute('y', 4 + TEXT_PX * 0.95 + line * lh + want); first = false; }
+          const sp = h('tspan', { 'font-size': r.s ? px * 0.7 : px }, t);
+          const want = r.s < 0 ? px * 0.25 : r.s > 0 ? -px * 0.4 : 0;
+          if (first) { sp.setAttribute('x', 4); sp.setAttribute('y', 4 + px * 0.95 + line * lh + want); first = false; }
           else if (want !== off) sp.setAttribute('dy', want - off);
           off = want; sp.textContent = part;
         });
@@ -372,8 +507,8 @@
       if (this.selected && !this.editing) { const b = this.localBox(); h('rect', { x: b.x - 1, y: b.y - 1, width: b.w + 2, height: b.h + 2, fill: 'none', stroke: BLUE, 'stroke-width': 1.5, 'stroke-dasharray': '6 4' }, g); }
     }
     localBox() {
-      const lines = this.plain().split('\n'), px = TEXT_PX;
-      const w = Math.max(...lines.map(l => textWidth(l, px)), 16) + 8;
+      const lines = this.plain().split('\n'), px = this.size || TEXT_PX;
+      const w = Math.max(...lines.map(l => textWidth(l, px, this.bold)), 16) + 8;
       return { x: 0, y: 0, w, h: Math.max(lines.length, 1) * px * 1.25 + 8 };
     }
     bbox() { const b = this.localBox(); return { x: this.x, y: this.y, w: b.w, h: b.h }; }
@@ -406,8 +541,12 @@
     bent() { return Math.abs(this.bend.x) + Math.abs(this.bend.y) > 0; }
     lines() {                                                      // [start, end, headAtEnd, headAtStart, barbSide]
       const len = dist(this.p1, this.p2); if (len < 1) return [];
-      if (this.kind === 'forward') return [[this.p1, this.p2, true, false, 0]];
+      if (this.kind === 'forward' || this.kind === 'curved') return [[this.p1, this.p2, true, false, 0]];
       if (this.kind === 'resonance') return [[this.p1, this.p2, true, true, 0]];
+      if (this.kind === 'fishhook') {                              // the one barb goes on the outside of the curve (away from the chord)
+        const t = this.tailFor(this.p1, this.p2, true), tx = t.x - this.p2.x, ty = t.y - this.p2.y, qx = this.p1.x - this.p2.x, qy = this.p1.y - this.p2.y;
+        return [[this.p1, this.p2, true, false, tx * qy - ty * qx > 0 ? -1 : 1]];
+      }
       const nx = -(this.p2.y - this.p1.y) / len * 4, ny = (this.p2.x - this.p1.x) / len * 4;
       return [[{ x: this.p1.x - nx, y: this.p1.y - ny }, { x: this.p2.x - nx, y: this.p2.y - ny }, true, false, 1], [{ x: this.p1.x + nx, y: this.p1.y + ny }, { x: this.p2.x + nx, y: this.p2.y + ny }, false, true, 1]];
     }
@@ -423,7 +562,7 @@
     allSamples() { return this.lines().flatMap(([s, e]) => this.samples(s, e)); }
     head(parent, tip, tail, side) {
       const L = dist(tail, tip); if (L < 1) return;
-      const ux = (tip.x - tail.x) / L, uy = (tip.y - tail.y) / L, base = Math.atan2(uy, ux) + Math.PI, size = 11, spread = 0.45;
+      const ux = (tip.x - tail.x) / L, uy = (tip.y - tail.y) / L, base = Math.atan2(uy, ux) + Math.PI, size = MECH_KINDS.has(this.kind) ? 9.5 : 11, spread = 0.45;
       const pts = (side === 0 ? [1, -1] : [side]).map(s => ({ x: tip.x + size * Math.cos(base + s * spread), y: tip.y + size * Math.sin(base + s * spread) }));
       if (side === 0) h('polygon', { points: `${tip.x},${tip.y} ${pts[0].x},${pts[0].y} ${pts[1].x},${pts[1].y}`, fill: this.color, stroke: this.color, 'stroke-width': 1, 'stroke-linejoin': 'round' }, parent);
       else h('line', { x1: tip.x, y1: tip.y, x2: pts[0].x, y2: pts[0].y }, parent);
@@ -439,7 +578,18 @@
       }
       if (this.selected) for (const q of [this.p1, this.p2, this.handle()]) h('circle', { cx: q.x, cy: q.y, r: 5, fill: '#fff', stroke: BLUE, 'stroke-width': 1.5 }, g);
     }
-    bbox() { const pts = [this.p1, this.p2, this.control()]; const xs = pts.map(q => q.x), ys = pts.map(q => q.y); return { x: Math.min(...xs) - 12, y: Math.min(...ys) - 12, w: Math.max(...xs) - Math.min(...xs) + 24, h: Math.max(...ys) - Math.min(...ys) + 24 }; }
+    bbox() {
+      // a mechanism arrow is boxed by the curve as drawn (its control point lies twice as far out as the curve goes)
+      const pts = MECH_KINDS.has(this.kind) && this.lines().length ? this.allSamples() : [this.p1, this.p2, this.control()];
+      const xs = pts.map(q => q.x), ys = pts.map(q => q.y);
+      return { x: Math.min(...xs) - 12, y: Math.min(...ys) - 12, w: Math.max(...xs) - Math.min(...xs) + 24, h: Math.max(...ys) - Math.min(...ys) + 24 };
+    }
+    autoBend() {                                                   // a new curved / fishhook arrow drawn by hand: bulge to its left by 30 % of its length
+      if (!MECH_KINDS.has(this.kind)) return;
+      const dx = this.p2.x - this.p1.x, dy = this.p2.y - this.p1.y;
+      this.bend = Math.hypot(dx, dy) < 8 ? { x: 0, y: 0 } : { x: dy * 0.3, y: -dx * 0.3 };
+      this.render();
+    }
     hit(p) {
       if (this.selected && dist(p, this.handle()) <= 8) return true;
       for (const [s, e] of this.lines()) { const pts = this.samples(s, e); for (let i = 1; i < pts.length; i++) if (segDist(p, pts[i - 1], pts[i]) <= 7) return true; }
@@ -486,6 +636,8 @@
     ['arrow-forward', '→', 'Reaction arrow (A). Clicks to straight near horizontal; Shift = 15° steps, Alt = no snapping'],
     ['arrow-equilibrium', '⇌', 'Equilibrium arrow'],
     ['arrow-resonance', '↔', 'Resonance arrow'],
+    ['arrow-curved', '↷', 'Curved arrow (mechanism): an electron pair moves from its tail to its head. Drag the middle to bend it'],
+    ['arrow-fishhook', '⇀', 'Fishhook arrow (mechanism): ONE electron moves (radical steps). Drag the middle to bend it'],
     ['electron', '•', 'Electron (Q): click to place a single electron dot'],
     ['lonepair', '••', 'Lone pair (E): click to place two dots; drag away from the atom to turn them'],
   ];
@@ -514,6 +666,9 @@
     .dr-dlg input[type=text]:focus { border-color:#7aa7ff; outline:none; }
     .dr-dlg .status { color:#666; margin:2px 0 8px; min-height:18px; }
     .dr-dlg .preview { border:1px solid #e3e3e3; border-radius:8px; height:300px; display:flex; align-items:center; justify-content:center; background:#fff; margin-bottom:10px; overflow:hidden; }
+    .dr-cap { cursor:pointer; }
+    .dr-cap:hover text { fill:${BLUE}; text-decoration:underline; }
+    .dr-copied { position:absolute; z-index:45; transform:translate(-50%,-130%); background:#1b3a6b; color:#fff; font:12px system-ui,sans-serif; padding:3px 8px; border-radius:5px; pointer-events:none; white-space:nowrap; }
     .dr-menu { position:absolute; z-index:40; min-width:150px; background:#fff; border:1px solid #d6d6dc; border-radius:8px; padding:4px; box-shadow:0 6px 24px rgba(0,0,0,.18); }
     .dr-menu button { display:flex; justify-content:space-between; gap:16px; width:100%; border:0; background:none; padding:6px 10px; border-radius:5px; font:13px system-ui,sans-serif; color:#222; cursor:pointer; text-align:left; }
     .dr-menu button:hover:not(:disabled) { background:#eef3ff; }
@@ -529,8 +684,10 @@
   const scroll = document.createElement('div'); scroll.className = 'dr-scroll'; page.appendChild(scroll);
   const svg = h('svg', { width: SCENE_W, height: SCENE_H, viewBox: `0 0 ${SCENE_W} ${SCENE_H}` });
   scroll.appendChild(svg);
-  h('rect', { x: 0, y: 0, width: SCENE_W, height: SCENE_H, fill: '#fff' }, svg);
+  const sceneBg = h('rect', { x: 0, y: 0, width: SCENE_W, height: SCENE_H, fill: '#fff' }, svg);
   const world = h('g', {}, svg), overlay = h('g', {}, svg);
+  function fitScene() { svg.setAttribute('width', SCENE_W * zoom); svg.setAttribute('height', sceneH * zoom); svg.setAttribute('viewBox', `0 0 ${SCENE_W} ${sceneH}`); sceneBg.setAttribute('height', sceneH); }
+  function ensureSceneHeight(bottom) { if (bottom > sceneH) { sceneH = Math.ceil(bottom / 100) * 100; fitScene(); } return sceneH; }
 
   const items = [], sel = new Set();
   let mode = 'select', zoom = 1, drag = null, lassoRect = null, lassoEl = null, rubberEl = null;
@@ -543,7 +700,7 @@
       for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
       mk('Δ', 'Heat: put Δ in the text box being edited, or a new text box (e.g. over a reaction arrow)', () => insertSymbol('Δ'));
     }
-    if (['text', 'arrow-resonance', 'lonepair'].includes(m)) gap();
+    if (['text', 'arrow-fishhook', 'lonepair'].includes(m)) gap();
   });
   gap();
   mk('Delete', 'Delete the selected items (Delete key)', () => deleteSelected());
@@ -600,6 +757,8 @@
     stopEditing(); sel.forEach(i => { if (i !== tb) select(i, false); });
     const ed = document.createElement('div'); ed.className = 'dr-edit'; ed.contentEditable = 'true'; ed.spellcheck = false;
     ed.style.left = (tb.x * zoom) + 'px'; ed.style.top = (tb.y * zoom) + 'px'; ed.style.transform = `scale(${zoom})`; ed.style.color = tb.color;
+    if (tb.size && tb.size !== TEXT_PX) ed.style.fontSize = tb.size + 'px';
+    if (tb.bold) ed.style.fontWeight = 'bold';
     ed.innerHTML = tb.html(); scroll.appendChild(ed);
     tb.editing = true; tb.render(); editing = { item: tb, el: ed };
     ed.addEventListener('keydown', e => {
@@ -674,8 +833,9 @@
     } else if (mode === 'text') {
       const tb = new TextBox(''); tb.x = p.x; tb.y = p.y; addItem(tb); setMode('select'); startEditing(tb); e.preventDefault();
     } else if (mode.startsWith('arrow-')) {
-      const ar = addItem(new ArrowItem(mode.slice(6), p, p));
-      start({ move: (q, ev) => ar.setEnd(ar.snapped(ar.p1, q, ev)), up: () => { if (manhattan(ar.p1, ar.p2) < 12) ar.setEnd({ x: ar.p1.x + 140, y: ar.p1.y }); } });   // the tool stays: Esc or Select to stop
+      const ar = addItem(new ArrowItem(mode.slice(6), p, p)), curved = MECH_KINDS.has(ar.kind);   // a mechanism arrow is drawn already bent
+      start({ move: (q, ev) => { ar.setEnd(ar.snapped(ar.p1, q, ev)); if (curved) ar.autoBend(); },
+              up: () => { if (manhattan(ar.p1, ar.p2) < 12) { ar.setEnd({ x: ar.p1.x + (curved ? 90 : 140), y: ar.p1.y }); if (curved) ar.autoBend(); } } });   // the tool stays: Esc or Select to stop
     } else if (mode === 'electron' || mode === 'lonepair') {
       const el = addItem(new ElectronItem(mode === 'lonepair', p));
       start({ move: q => { if (manhattan(q, p) >= 10) { el.angle = Math.atan2(q.y - p.y, q.x - p.x) + Math.PI / 2; el.render(); } }, up: () => {} });   // the tool stays: Esc or Select to stop
@@ -714,8 +874,34 @@
     if (!e.ctrlKey) return;
     e.preventDefault();
     zoom = Math.max(0.3, Math.min(3, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
-    svg.setAttribute('width', SCENE_W * zoom); svg.setAttribute('height', SCENE_H * zoom);
+    fitScene();
   }, { passive: false });
+  /* ---- copy a caption: click a name under a molecule (common name, IUPAC, SMILES, CAS) to copy just that text */
+  // remembered at the press (selecting the box redraws its captions, so the pressed element is gone by the release); copied on a release that did not move
+  svg.addEventListener('pointerdown', e => {
+    const c = e.button === 0 && mode === 'select' && e.target.closest && e.target.closest('.dr-cap');
+    if (!c) return;
+    const down = { copy: c.dataset.copy, kind: c.dataset.kind, x: e.clientX, y: e.clientY };
+    const up = ev => {
+      document.removeEventListener('pointerup', up, true);
+      if (Math.hypot(ev.clientX - down.x, ev.clientY - down.y) > 4) return;                    // a drag of the box is not a click
+      copyText(down.copy, () => {
+        const r = scroll.getBoundingClientRect(), tip = document.createElement('div');
+        tip.className = 'dr-copied'; tip.textContent = 'Copied ' + down.kind;
+        tip.style.left = (ev.clientX - r.left + scroll.scrollLeft) + 'px'; tip.style.top = (ev.clientY - r.top + scroll.scrollTop) + 'px';
+        scroll.appendChild(tip); setTimeout(() => tip.remove(), 1100);
+      });
+    };
+    document.addEventListener('pointerup', up, true);
+  }, true);
+  function copyText(text, done) {
+    const fallback = () => {
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+      document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (err) { ok = false; } ta.remove(); if (ok) done();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+
   /* ---- tool keys (not while typing in a text box or any other field) */
   const TOOL_KEYS = { w: 'molecule', a: 'arrow-forward', d: 'text', e: 'lonepair', q: 'electron' };
 
@@ -872,9 +1058,19 @@
     if (box.smiles) input.value = box.smiles;
   }
 
+  /* bring a part of the scene into view: its top-left near the top-left of the visible canvas (scene coordinates). A page
+     that is hidden (display:none) cannot scroll, so the scroll waits until the canvas has a size */
+  function scrollToScene(x, y) {
+    const go = () => { scroll.scrollTop = Math.max(0, y * zoom); scroll.scrollLeft = Math.max(0, x * zoom); };
+    go();
+    if (!scroll.clientHeight && window.ResizeObserver) { const ro = new ResizeObserver(() => { if (scroll.clientHeight) { ro.disconnect(); go(); } }); ro.observe(scroll); }
+  }
+  function clearAll() { stopEditing(); items.slice().forEach(removeItem); setMode('select'); }
+
   setMode('select');
   window.Draw = {
-    items, MoleculeBox, TextBox, ArrowItem, ElectronItem, setMode, addItem, select, clearSelection, deleteSelected, applyColor, exportPng, SHOW,
-    get mode() { return mode; }, get selection() { return [...sel]; }, get zoom() { return zoom; },
+    items, MoleculeBox, TextBox, ArrowItem, ElectronItem, setMode, addItem, removeItem, clearAll, select, clearSelection, deleteSelected, applyColor, exportPng, SHOW,
+    refreshBoxes, cloneItem, copySelected, paste, scrollToScene, ensureSceneHeight, textWidth, scroll, svg, BOND_LEN, TEXT_PX, FONT,
+    get mode() { return mode; }, get selection() { return [...sel]; }, get zoom() { return zoom; }, get sceneSize() { return { w: SCENE_W, h: sceneH }; },
   };
 })();
