@@ -50,6 +50,89 @@
   const normRect = (a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), w: Math.abs(a.x - b.x), h: Math.abs(a.y - b.y) });
   let measureCtx = null;
   const textWidth = (s, px, bold) => { if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d'); measureCtx.font = (bold ? 'bold ' : '') + px + 'px ' + FONT; return measureCtx.measureText(s).width; };
+  const rectDist = (x, y, r) => Math.hypot(Math.max(r.x0 - x, 0, x - r.x1), Math.max(r.y0 - y, 0, y - r.y1));
+  const rayExit = (rects, ux, uy) => {                             // how far a ray from (0, 0) runs before it has left every rect it enters
+    let best = 0;
+    for (const r of rects) {
+      let t0 = -Infinity, t1 = Infinity, hit = true;
+      for (const [o0, o1, u] of [[r.x0, r.x1, ux], [r.y0, r.y1, uy]]) {
+        if (Math.abs(u) < 1e-9) { if (o0 > 0 || o1 < 0) { hit = false; break; } continue; }
+        let a = o0 / u, b = o1 / u; if (a > b) [a, b] = [b, a];
+        t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+      }
+      if (hit && t1 >= Math.max(t0, 0)) best = Math.max(best, t1);
+    }
+    return best;
+  };
+
+  /* ---- atom labels: the element, its hydrogens and its charge written as one group (OH, H2O+, NH3+, BH3-) ---- */
+  const LABEL_PX = 17, SUB_DY = 0.22, SUP_Y = -0.52, MID_Y = 0.12, LOW_Y = 0.3, STACK = 1.15, LABEL_PAD = 14;
+  const inkCache = new Map();
+  /* the ink of s in the label font drawn from x = 0 on a 'central' baseline, as the SVG draws it: {x0, x1, y0, y1} and the
+     advance w. Canvas measures from its 'middle' baseline, which sits lower than SVG's 'central' one by half the difference
+     of a capital's ascent and descent ('central' centres the capitals) */
+  function ink(s, size) {
+    const k = s + '@' + size; let r = inkCache.get(k); if (r) return r;
+    if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d');
+    measureCtx.font = size + 'px ' + FONT; measureCtx.textBaseline = 'middle';
+    const H = measureCtx.measureText('H'), m = measureCtx.measureText(s), sh = (H.actualBoundingBoxAscent - H.actualBoundingBoxDescent) / 2;
+    measureCtx.textBaseline = 'alphabetic';
+    r = m.actualBoundingBoxAscent >= 0 ? { x0: -m.actualBoundingBoxLeft, x1: m.actualBoundingBoxRight, y0: sh - m.actualBoundingBoxAscent, y1: sh + m.actualBoundingBoxDescent, w: m.width }
+      : { x0: 0, x1: m.width, y0: -0.36 * size, y1: 0.36 * size, w: m.width };   // a browser without ink metrics: the capital height
+    inkCache.set(k, r); return r;
+  }
+  /* an atom's label: the element with its hydrogens written after it (OH2+), before it (H2O+), above or below it, and the
+     charge a superscript after the whole group, or (no H's beside it) at a free corner. Each way of writing it is scored
+     against the atom's bonds (dirs: [{ux, uy, len, order}] out of the atom) and the clearest one wins, so every bond starts
+     at the element and none leaves from under an H or the charge. An atom with no bonds is written the usual way round:
+     HBr, H2O, H3O+, HO- (H first for halogens, O and S), NH3, NH4+, BH4- (after the rest).
+     Returns positions about the atom: {parts: [{s, n (H count as a subscript), x (text start), y (central baseline), size}],
+     rects: the ink [element, charge?, H's?], hSide (-1 west, 1 east, 0 none or above/below), hAngle (where the H's are, or
+     null), trim(ux, uy): how far out a bond in that direction starts} */
+  function atomLabel(el, nH, charge, dirs) {
+    const px = LABEL_PX, E = ink(el, px), eL = -E.w / 2, right = E.w / 2 + 0.5, left = -E.w / 2 - 0.5;
+    const eRect = { x0: eL + E.x0, x1: eL + E.x1, y0: E.y0, y1: E.y1 }, tBox = { x0: eRect.x0 - 2, x1: eRect.x1 + 2, y0: eRect.y0 - 3.5, y1: eRect.y1 + 3.5 };
+    const H = ink('H', px), D = nH > 1 ? ink(String(nH), px * 0.7) : null, hW = H.w + (D ? D.w : 0), sub = px * SUB_DY;
+    const hPart = (x, y) => ({ part: { s: 'H', n: D ? nH : 0, x, y, size: px }, rect: { x0: x + H.x0, x1: x + (D ? H.w + D.x1 : H.x1), y0: y + H.y0, y1: y + (D ? Math.max(H.y1, sub + D.y1) : H.y1) } });
+    const cs = charge ? (Math.abs(charge) > 1 ? Math.abs(charge) : '') + (charge > 0 ? '+' : '−') : '', Q = cs ? ink(cs, px * 0.66) : null;
+    const qPart = (x, yc) => { const y = yc - (Q.y0 + Q.y1) / 2; return { part: { s: cs, x, y, size: px * 0.66 }, rect: { x0: x + Q.x0, x1: x + Q.x1, y0: y + Q.y0, y1: y + Q.y1 } }; };
+    // the charge at a corner of the element, upper right first; the superscript sits high enough for a lone pair beside the label
+    const meet = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+    const corners = (hr, sup = SUP_Y) => [[1, sup, 0], [-1, sup, 0.8], [1, MID_Y, 1], [1, LOW_Y, 1.4], [-1, MID_Y, 1.6], [-1, LOW_Y, 2]].map(([sd, y, c]) => {
+      let q = qPart(sd > 0 ? right : left - Q.w, px * y);
+      if (hr && meet(q.rect, hr)) { q = qPart(sd > 0 ? hr.x1 + 0.8 - Q.x0 : hr.x0 - 0.8 - Q.x1, px * y); c += 0.3; }   // out past H's stacked above or below
+      return [q, c];
+    });
+    const cands = [];
+    if (nH) {
+      const hFirst = !dirs.length && /^(F|Cl|Br|I|O|S|Se|Te)$/.test(el);
+      // in a row: OH2+ or H2O+, the charge after the group (a bond up that side: lower, or before the group)
+      for (const [h, after, before, cost, side, ang] of [[hPart(right, 0), right + hW + 0.5, left, hFirst ? 1 : 0, 1, 0], [hPart(left - hW, 0), right, left - hW - 0.5, hFirst ? 0 : 0.4, -1, Math.PI]])
+        for (const [q, qc] of Q ? [[after, SUP_Y, 0], [after, MID_Y, 1], [after, LOW_Y, 1.4], [before - Q.w, SUP_Y, 1.5]].map(([x, y, c]) => [qPart(x, px * y), c]) : [[null, 0]]) cands.push({ h, q, cost: cost + qc, side, ang });
+      if (dirs.length) for (const [dy, cost, ang] of [[px * STACK, 2.5, Math.PI / 2], [-px * STACK, 3, -Math.PI / 2]])   // below, above: when both sides are taken
+        for (const [q, qc] of Q ? corners(hPart(-hW / 2, dy).rect, dy < 0 ? SUP_Y * 0.6 : SUP_Y) : [[null, 0]]) cands.push({ h: hPart(-hW / 2, dy), q, cost: cost + qc, side: 0, ang });   // under H's above, the charge sits lower, clear of their subscript
+    } else if (Q) for (const [q, qc] of corners()) cands.push({ h: null, q, cost: qc, side: 0, ang: null });
+    else cands.push({ h: null, q: null, cost: 0, side: 0, ang: null });
+    if (cands.length > 1) for (const c of cands) {
+      const near = [c.h && c.h.rect, c.q && c.q.rect].filter(Boolean);
+      if (near.length === 2 && meet(near[0], near[1])) c.cost += 100;   // the charge on the H's
+      for (const d of dirs) {                                      // each bond as drawn (from the element to near the far atom) against the H's and the charge
+        if (c.ang != null) { const off = Math.acos(Math.max(-1, Math.min(1, d.ux * Math.cos(c.ang) + d.uy * Math.sin(c.ang)))); if (off < Math.PI / 2) c.cost += 1.2 * (Math.PI / 2 - off) / (Math.PI / 6); }   // and H's out in the open, not in the V between two bonds
+        const t0 = rayExit([tBox], d.ux, d.uy) + 1, t1 = Math.max(t0, d.len - 10), half = d.order >= 2 ? 4.5 : 1;
+        for (const r of near) {
+          let m = Infinity; for (let k = 0; k <= 10; k++) { const t = t0 + (t1 - t0) * k / 10; m = Math.min(m, rectDist(t * d.ux, t * d.uy, r)); }
+          m -= half;
+          if (m < 1) c.cost += 50 + (1 - m) * 5; else if (m < 5) c.cost += (5 - m) ** 2 * 1.5;
+        }
+      }
+    }
+    const best = cands.reduce((b, c) => (c.cost < b.cost - 1e-9 ? c : b));
+    const rects = [eRect], parts = [{ s: el, n: 0, x: eL, y: 0, size: px }];
+    if (best.q) { rects.push(best.q.rect); parts.push(best.q.part); }          // the charge stays rects[1]: js/draw_mech.js reads it there
+    if (best.h) { rects.push(best.h.rect); parts.push(best.h.part); }
+    const extra = rects.slice(1).map(r => ({ x0: r.x0 - 1.5, x1: r.x1 + 1.5, y0: r.y0 - 1.5, y1: r.y1 + 1.5 }));
+    return { parts, rects, hSide: best.side, hAngle: best.ang, trim: (ux, uy) => Math.max(rayExit([tBox], ux, uy), rayExit(extra, ux, uy)) + 0.5 };
+  }
 
   /* ================= items ================= */
   class Item {
@@ -134,19 +217,40 @@
     }
     wrapped(width) { return this.wrappedItems(width).flatMap(x => x.lines); }
     captionHeight(width) { const n = this.wrapped(Math.max((width ?? this.w) - 16, 40)).length; return n ? 8 + n * (CAPTION_PX + 3) : 0; }
-    /* the laid-out atoms, turned and centred: [{x, y}] in box coordinates, for a box of this size */
-    place(width, height) {
+    /* the laid-out atoms, turned: {pts: [{x, y}]} about the layout's origin (render centres them, labels and all, in the box) */
+    place() {
       const lay = this.lay; if (!lay) return null;
       const a = this.angle * Math.PI / 180, cos = Math.cos(a), sin = Math.sin(a);
-      const pts = lay.atoms.map(at => ({ x: at.x * cos - at.y * sin, y: at.x * sin + at.y * cos }));
-      const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
-      const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
-      return { pts, w: maxx - minx, h: maxy - miny, cx: (minx + maxx) / 2, cy: (miny + maxy) / 2, to: (cx, cy) => pts.map(p => ({ x: cx + p.x - (minx + maxx) / 2, y: cy + p.y - (miny + maxy) / 2 })) };
+      return { pts: lay.atoms.map(at => ({ x: at.x * cos - at.y * sin, y: at.x * sin + at.y * cos })) };
+    }
+    /* every atom's label (null: a bare carbon), for the atoms placed at pts: see atomLabel */
+    labelsFor(pts) {
+      const lay = this.lay, atoms = lay.atoms, idx = new Map(atoms.map((a, i) => [a.id, i])), mine = atoms.map(() => []);
+      lay.bonds.forEach(b => { const i = idx.get(b.a), j = idx.get(b.b); if (i != null && j != null) { mine[i].push([j, b]); mine[j].push([i, b]); } });
+      return atoms.map((a, i) => {
+        const bs = mine[i], used = bs.reduce((s, [, b]) => s + b.order, 0);
+        // the hydrogens written in the SMILES brackets ([AlH3-], which Chem.implicitH leaves out for a metal) while the atom has the bonds it was read with
+        const nH = a.element === 'H' ? 0 : a.hWritten != null && a.hWrittenFor === used ? a.hWritten : C.implicitH(lay, a);
+        const dirs = bs.map(([j, b]) => { const dx = pts[j].x - pts[i].x, dy = pts[j].y - pts[i].y, len = Math.hypot(dx, dy) || 1; return { ux: dx / len, uy: dy / len, len, order: b.order }; });
+        const straightSp = a.element === 'C' && dirs.length === 2 && dirs.every(d => d.order === 2) && dirs[0].ux * dirs[1].ux + dirs[0].uy * dirs[1].uy < -0.87;   // O=C=O, C=C=C drawn straight: the vertex would vanish
+        if (a.element === 'C' && !a.charge && !a.radical && bs.length && !(SHOW.hydrogens && nH > 0) && !straightSp) return null;
+        return atomLabel(a.element, a.element !== 'C' || SHOW.hydrogens || !bs.length ? nH : 0, a.charge || 0, dirs);
+      });
+    }
+    /* what the drawing covers, about the placed atoms: PAD round each atom, and LABEL_PAD round the ink of its label (a long
+       label such as BH3- reaches past PAD, and the box, and what is laid out beside it, must not cut it) */
+    extent(pts, labs) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      pts.forEach((p, i) => {
+        x0 = Math.min(x0, p.x - PAD); x1 = Math.max(x1, p.x + PAD); y0 = Math.min(y0, p.y - PAD); y1 = Math.max(y1, p.y + PAD);
+        for (const r of labs[i] ? labs[i].rects : []) { x0 = Math.min(x0, p.x + r.x0 - LABEL_PAD); x1 = Math.max(x1, p.x + r.x1 + LABEL_PAD); y0 = Math.min(y0, p.y + r.y0 - LABEL_PAD); y1 = Math.max(y1, p.y + r.y1 + LABEL_PAD); }
+      });
+      return { x0, y0, x1, y1 };
     }
     neededSize() {
       const pl = this.place(); if (!pl) return [this.w, this.h];
-      const w = Math.max(MIN_W, pl.w + 2 * PAD);
-      return [w, Math.max(MIN_H, pl.h + 2 * PAD + this.captionHeight(w))];
+      const ext = this.extent(pl.pts, this.labelsFor(pl.pts)), w = Math.max(MIN_W, ext.x1 - ext.x0);
+      return [w, Math.max(MIN_H, ext.y1 - ext.y0 + this.captionHeight(w))];
     }
     resizeAboutCentre(w, hgt) {
       if (Math.abs(w - this.w) < 0.5 && Math.abs(hgt - this.h) < 0.5) return;
@@ -261,7 +365,8 @@
         const t = h('text', { x: this.w / 2, y: this.h / 2, 'text-anchor': 'middle', 'dominant-baseline': 'middle', fill: '#9a9aa2', 'font-size': 13, 'font-family': FONT }, g);
         t.textContent = 'Double-click to add a molecule';
       } else {
-        const pl = this.place(), cx = this.w / 2, cy = (this.h - capH) / 2, pts = pl.to(cx, cy);
+        const pl = this.place(), cx = this.w / 2, cy = (this.h - capH) / 2, labs = this.labelsFor(pl.pts), ext = this.extent(pl.pts, labs);
+        const pts = pl.pts.map(p => ({ x: p.x + cx - (ext.x0 + ext.x1) / 2, y: p.y + cy - (ext.y0 + ext.y1) / 2 }));   // the drawing, labels and all, centred
         this.atomXY = pts; this.bondPairs = this.lay.bonds.map(b => [this.lay.atoms.findIndex(a => a.id === b.a), this.lay.atoms.findIndex(a => a.id === b.b)]);
         if (this.selected && ((this.hover && this.hover.rotate) || this.rotating)) {   // the band that turns the molecule when dragged: one even shape
           const band = h('g', { fill: BLUE, stroke: BLUE, 'stroke-linecap': 'round', opacity: 0.15 }, g);
@@ -273,7 +378,7 @@
         const halo = h('g', { fill: 'rgba(74,134,232,.35)', stroke: 'rgba(74,134,232,.35)', 'stroke-linecap': 'round' }, mol);
         this.selBonds.forEach(k => { const [i, j] = this.bondPairs[k] || []; if (i != null) h('line', { x1: pts[i].x, y1: pts[i].y, x2: pts[j].x, y2: pts[j].y, 'stroke-width': 11 }, halo); });
         this.selAtoms.forEach(i => { if (pts[i]) h('circle', { cx: pts[i].x, cy: pts[i].y, r: 11, stroke: 'none' }, halo); });
-        this.drawStructure(mol, pts);
+        this.drawStructure(mol, pts, labs);
         if (capH) {
           // one group per name: hovering highlights it, a click copies it (see "copy a caption" below)
           let k = 0;
@@ -289,24 +394,14 @@
       }
       if (this.selected) this.drawSelection(g);
     }
-    drawStructure(parent, pts) {
+    drawStructure(parent, pts, labs) {
       const lay = this.lay, atoms = lay.atoms, bonds = lay.bonds, idx = new Map(atoms.map((a, i) => [a.id, i]));
-      const bondsOf = id => bonds.filter(b => b.a === id || b.b === id);
-      const nbrs = id => bondsOf(id).map(b => atoms[idx.get(b.a === id ? b.b : b.a)]);
-      const px = 17, LW = 2, hCount = a => (a.element === 'H' ? 0 : C.implicitH(lay, a));
-      const labelled = a => a.element !== 'C' || a.charge || a.radical || bondsOf(a.id).length === 0 || (SHOW.hydrogens && hCount(a) > 0);
-      const hWest = (a, i) => { const ns = nbrs(a.id); return ns.filter(o => pts[idx.get(o.id)].x > pts[i].x + 1).length > ns.filter(o => pts[idx.get(o.id)].x < pts[i].x - 1).length; };   // neighbours mostly to the east: the hydrogens go west
-      const hasH = a => hCount(a) > 0 && (a.element !== 'C' || SHOW.hydrogens || bondsOf(a.id).length === 0);
-      const box = (a, i) => {                                      // half-extents of the label, from the atom: the bond stops at its outline
-        const ew = a.element.length * px * 0.62 / 2 + 2, hw = hasH(a) ? px * 0.62 + (hCount(a) > 1 ? px * 0.45 : 0) : 0, cw = a.charge ? px * 0.7 : 0;
-        const west = hWest(a, i);
-        return { l: ew + (west ? hw : 0), r: ew + (west ? 0 : hw) + cw, v: px * 0.58 };
-      };
-      const trimAlong = (a, i, ux, uy) => { const bx = box(a, i), ex = ux >= 0 ? bx.r : bx.l; return Math.min(Math.abs(ux) < 1e-6 ? 1e9 : ex / Math.abs(ux), Math.abs(uy) < 1e-6 ? 1e9 : bx.v / Math.abs(uy)) + 1; };
+      const nbrs = id => bonds.filter(b => b.a === id || b.b === id).map(b => atoms[idx.get(b.a === id ? b.b : b.a)]);
+      const LW = 2;
       bonds.forEach((b, k) => {
         const ia = idx.get(b.a), ib = idx.get(b.b), P = pts[ia], Q = pts[ib], A = atoms[ia], B = atoms[ib];
         const dx = Q.x - P.x, dy = Q.y - P.y, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
-        const tp = labelled(A) ? trimAlong(A, ia, ux, uy) : 0, tq = labelled(B) ? trimAlong(B, ib, -ux, -uy) : 0;
+        const tp = labs[ia] ? labs[ia].trim(ux, uy) : 0, tq = labs[ib] ? labs[ib].trim(-ux, -uy) : 0;   // a bond stops at the label's element
         const x1 = P.x + ux * tp, y1 = P.y + uy * tp, x2 = Q.x - ux * tq, y2 = Q.y - uy * tq, col = this.bondColors.get(k) || '#000';
         const grp = h('g', { stroke: col, fill: col, 'stroke-width': LW, 'stroke-linecap': 'round' }, parent);
         if (b.stereo && b.order === 1) {
@@ -316,40 +411,27 @@
           return;
         }
         const off = 5;
-        let offsets = { 1: [0], 2: [0, off * 1.7], 3: [-off * 1.7, 0, off * 1.7] }[b.order] || [0];
+        let offsets = { 1: [0], 2: [0, off * 1.7], 3: [-off * 1.7, 0, off * 1.7] }[b.order] || [0], sh = 4;
         if (b.order === 2) {
           const others = [...nbrs(A.id), ...nbrs(B.id)].filter(o => o !== A && o !== B);
+          const sides = others.map(o => { const q = pts[idx.get(o.id)]; return Math.sign(Math.round((q.x - P.x) * nx + (q.y - P.y) * ny)); }), side = sides.reduce((t, v) => t + v, 0);
           if (!others.length) offsets = [-off, off];
-          else { const side = others.reduce((t, o) => { const q = pts[idx.get(o.id)]; return t + Math.sign((q.x - P.x) * nx + (q.y - P.y) * ny); }, 0); offsets = [0, side < 0 ? -off * 1.7 : off * 1.7]; }   // the second line goes on the side the ring is on
+          else if (sides.every(v => !v)) { offsets = [-off, off]; sh = 0; }   // the neighbours in line (O=C=O drawn straight): the two lines straddle the axis
+          else offsets = [0, side < 0 ? -off * 1.7 : off * 1.7];   // the second line goes on the side the ring is on
         }
-        for (const o of offsets) { const sh = b.order === 2 && o !== 0 ? 4 : 0; h('line', { x1: x1 + nx * o + ux * sh, y1: y1 + ny * o + uy * sh, x2: x2 + nx * o - ux * sh, y2: y2 + ny * o - uy * sh }, grp); }
+        for (const o of offsets) { const s = b.order === 2 && o !== 0 ? sh : 0; h('line', { x1: x1 + nx * o + ux * s, y1: y1 + ny * o + uy * s, x2: x2 + nx * o - ux * s, y2: y2 + ny * o - uy * s }, grp); }
       });
-      /* where each label's ink is, as rectangles about its atom ({x0, y0, x1, y1}; null for a bare carbon), and which side
-         its H goes (-1 west, 1 east, 0 none): lone-pair dots and mechanism arrows (js/draw_mech.js) keep clear of them */
-      this.atomLabels = atoms.map((a, i) => {
-        if (!labelled(a)) return null;
-        const ew = a.element.length * px * 0.62, ch = px * 0.36, hN = hCount(a), west = hWest(a, i), tw = textWidth(a.element, px) / 2;
-        const rects = [{ x0: -tw, y0: -ch, x1: tw, y1: ch }];
-        if (a.charge) { const w = textWidth((Math.abs(a.charge) > 1 ? Math.abs(a.charge) : '') + '+', px * 0.66); rects.push({ x0: ew / 2 + 1, y0: -px * 0.35 - px * 0.27, x1: ew / 2 + 1 + w, y1: -px * 0.35 + px * 0.27 }); }
-        if (hasH(a)) {
-          const w = textWidth('H', px) + (hN > 1 ? textWidth(String(hN), px * 0.7) : 0), x0 = west ? -ew / 2 - 1 - w : ew / 2 + 1 + (a.charge ? px * 0.7 : 0);
-          rects.push({ x0, y0: -ch, x1: x0 + w, y1: ch + (hN > 1 ? px * 0.22 : 0) });
-        }
-        return { rects, hSide: hasH(a) ? (west ? -1 : 1) : 0 };
-      });
+      /* where each label's ink is, as rectangles about its atom ({x0, y0, x1, y1}: the element, then the charge, then the H's;
+         null for a bare carbon), which side its H's are on (hSide: -1 west, 1 east, 0 none or above/below) and the direction
+         they are in (hAngle, radians, y down; null: no H's): lone-pair dots and mechanism arrows (js/draw_mech.js) keep clear */
+      this.atomLabels = labs.map(l => l && { rects: l.rects, hSide: l.hSide, hAngle: l.hAngle });
       atoms.forEach((a, i) => {
-        if (!labelled(a)) return;
+        const l = labs[i]; if (!l) return;
         const P = pts[i], col = this.atomColors.get(i) || '#000';
-        const hN = hCount(a), showHs = hasH(a), west = hWest(a, i);
-        const ew = a.element.length * px * 0.62;
-        h('circle', { cx: P.x, cy: P.y, r: px * 0.55, fill: '#fff' }, parent);
-        const t = h('text', { x: P.x, y: P.y, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': px, 'font-family': FONT, fill: col }, parent);
-        t.textContent = a.element;
-        if (a.charge) { const c = h('text', { x: P.x + ew / 2 + 1, y: P.y - px * 0.35, 'font-size': px * 0.66, 'font-family': FONT, fill: col, 'dominant-baseline': 'central' }, parent); c.textContent = (Math.abs(a.charge) > 1 ? Math.abs(a.charge) : '') + (a.charge > 0 ? '+' : '−'); }
-        if (showHs) {
-          const hx = west ? P.x - ew / 2 - 1 : P.x + ew / 2 + 1 + (a.charge ? px * 0.7 : 0);
-          const ht = h('text', { x: hx, y: P.y, 'text-anchor': west ? 'end' : 'start', 'dominant-baseline': 'central', 'font-size': px, 'font-family': FONT, fill: col }, parent);
-          ht.textContent = 'H'; if (hN > 1) { const s = h('tspan', { 'font-size': px * 0.7, dy: px * 0.22 }, ht); s.textContent = String(hN); }
+        h('circle', { cx: P.x, cy: P.y, r: LABEL_PX * 0.55, fill: '#fff' }, parent);
+        for (const q of l.parts) {
+          const t = h('text', { x: P.x + q.x, y: P.y + q.y, 'dominant-baseline': 'central', 'font-size': q.size, 'font-family': FONT, fill: col }, parent);
+          t.textContent = q.s; if (q.n) { const s = h('tspan', { 'font-size': LABEL_PX * 0.7, dy: LABEL_PX * SUB_DY }, t); s.textContent = String(q.n); }
         }
       });
     }

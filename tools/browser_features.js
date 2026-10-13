@@ -81,8 +81,8 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
   await page.locator('#rxn-rule .rxn-mech-open').click(); await page.waitForTimeout(300);
   const p4 = await page.evaluate(() => { const p = window.__mechPayload; let clone = false; try { clone = JSON.stringify(structuredClone(p)) === JSON.stringify(p); } catch (e) { clone = false; }
     return p && { title: p.title, ruleId: p.ruleId, onExample: p.onExample, steps: p.steps.map(s => [s.step, !!s.before, !!s.arrows, !!s.graph]), clone, tab: (document.querySelector('.tab.active') || {}).dataset.page }; });
-  check('R004 mechanism goes to Draw: 3 workbook steps with arrows, on the Draw tab', p4 && p4.title === 'Mechanism for Radical hydrobromination (anti-Markovnikov)' && p4.ruleId === 'R004' && p4.onExample === true &&
-    p4.steps.length === 3 && p4.steps.every(s => s[1] && s[2] && !s[3]) && p4.clone && p4.tab === 'draw', p4);
+  check('R004 mechanism goes to Draw: 4 workbook steps with arrows (initiation is two steps), on the Draw tab', p4 && p4.title === 'Mechanism for Radical hydrobromination (anti-Markovnikov)' && p4.ruleId === 'R004' && p4.onExample === true &&
+    p4.steps.length === 4 && p4.steps.every(s => s[1] && s[2] && !s[3]) && p4.clone && p4.tab === 'draw', p4);
   await page.evaluate(() => { window.__mechPayload = null; });
   const mSN2 = await mechRun('CCC(C)Br>[C-]#N.[Na+]> | cond=DMSO');
   await page.locator('#rxn-rule .rxn-mech-open').click(); await page.waitForTimeout(300);

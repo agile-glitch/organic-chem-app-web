@@ -2,8 +2,12 @@
 // rules with a Mechanism sheet) out on the Draw canvas, and an engine-form step (SN2 of bromoethane by HO⁻) too.
 //   python tools/serve.py   (another terminal)        node tools/browser_mechanism.js [http://localhost:8000/app.html] [screenshot dir]
 // For every mechanism: no exception; every arrow token of the Mechanism sheet drawn (red curved arrows = tokens, fishhooks =
-// the '~' tokens); every atom carries exactly its lone pairs and unpaired electrons as dots, none on a bond or a label;
-// no map numbers; the step rows do not overlap. Also the new arrow kinds (curved, fishhook) behave like the other arrows.
+// the '~' tokens); every atom carries exactly its lone pairs and unpaired electrons as dots (plus the ones drawn at an
+// arrow's tail on an atom that shows none, a metal), none on a bond or a label, each pair clear of the others; no map
+// numbers; the step rows do not overlap. The arrows' ends: an arrow making a new bond between two far-apart atoms ends at
+// the atom attacked, not in the empty middle; no two heads on one spot; an arrow from a bond starts on its middle; no
+// head lands on another arrow's tail (or the electrons it leaves). Also the new arrow kinds (curved, fishhook) behave
+// like the other arrows.
 // Screenshots of a few mechanisms are saved (default: the system temp folder). The exit status is 1 when a check fails.
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.argv[2] || 'http://localhost:8000/app.html';
@@ -34,14 +38,17 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
       if (arrows.some(a => a.color !== '#d62828')) problems.push('a mechanism arrow is not red');
       // electrons: each dot belongs to its nearest atom; every atom has exactly its lone pairs and unpaired electrons
       const atoms = boxes.flatMap(b => b.lay.atoms.map((a, i) => ({ b, a, i, P: { x: b.x + b.atomXY[i].x, y: b.y + b.atomXY[i].y }, lab: b.atomLabels[i], pairs: 0, singles: 0 })));
+      const owner = new Map();
       for (const e of els) {
         let best = null; for (const t of atoms) { const d = Math.hypot(t.P.x - e.x, t.P.y - e.y); if (!best || d < best.d) best = { t, d }; }
         if (!best || best.d > 26) { problems.push(`a dot far from every atom (${Math.round(e.x)}, ${Math.round(e.y)})`); continue; }
         if (e.pair) best.t.pairs++; else best.t.singles++;
+        owner.set(e, best.t);
       }
       let lpAtoms = 0;
+      const extra = (t, pair) => (L.extras || []).filter(x => x.box === t.b && x.id === t.a.id && x.pair === pair).length;
       for (const t of atoms) {
-        const want = C.lonePairCount(t.b.lay, t.a), rad = t.a.radical === true ? 1 : Math.round(+t.a.radical || 0);
+        const want = C.lonePairCount(t.b.lay, t.a) + extra(t, true), rad = (t.a.radical === true ? 1 : Math.round(+t.a.radical || 0)) + extra(t, false);
         if (want && /^(O|N|S|F|Cl|Br|I)$/.test(t.a.element)) lpAtoms++;
         if (t.pairs !== want || t.singles !== rad) problems.push(`${t.a.element}${t.a.charge ? (t.a.charge > 0 ? '+' : '-') : ''} in ${t.b.smiles}: ${t.pairs} pairs/${t.singles} single, wants ${want}/${rad}`);
       }
@@ -62,6 +69,37 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
       }
       if (onLabel) problems.push(onLabel + ' dot(s) on a label');
       if (onBond) problems.push(onBond + ' dot(s) on a bond');
+      // the groups of dots on one atom read as groups: two groups' nearest dots further apart than a pair's own two (7.2 px)
+      const dotsOf = e => (e.pair ? [3.6, -3.6] : [0]).map(o => ({ x: e.x + o * Math.cos(e.angle), y: e.y + o * Math.sin(e.angle) }));
+      let merged = 0;
+      for (let i = 0; i < els.length; i++) for (let j = i + 1; j < els.length; j++) {
+        if (owner.get(els[i]) !== owner.get(els[j])) continue;
+        const d = Math.min(...dotsOf(els[i]).flatMap(p => dotsOf(els[j]).map(q => Math.hypot(p.x - q.x, p.y - q.y))));
+        if (d < 10) merged++;
+      }
+      if (merged) problems.push(merged + ' pair(s) of electron groups on one atom closer than 10 px (they read as one run of dots)');
+      // the arrows' ends
+      const near = (p, q, r) => Math.hypot(p.x - q.x, p.y - q.y) < r;
+      for (const a of L.arrowInfo || []) {
+        const it = a.item, tag = `step ${a.step} ${a.raw}`;
+        if (a.tk === 'bond' && a.far && !a.mate && a.X && !near(it.p2, a.X, 22)) problems.push(`${tag}: a new bond between far-apart atoms, but the head is ${Math.round(Math.hypot(it.p2.x - a.X.x, it.p2.y - a.X.y))} px from the atom attacked`);
+        if (a.tailLines) {
+          const [l] = a.tailLines.map(([p, q]) => ({ p, q, d: segDist(it.p1, p, q) })).sort((x, y) => x.d - y.d);
+          if (!l || l.d > 3.5) problems.push(`${tag}: the tail is ${l ? l.d.toFixed(1) : '?'} px off its bond's lines`);
+          else { const L2 = Math.hypot(l.q.x - l.p.x, l.q.y - l.p.y) || 1, t = ((it.p1.x - l.p.x) * (l.q.x - l.p.x) + (it.p1.y - l.p.y) * (l.q.y - l.p.y)) / L2; if (Math.abs(t - L2 / 2) > 4) problems.push(`${tag}: the tail is ${Math.abs(t - L2 / 2).toFixed(1)} px from the middle of its bond`); }
+        }
+        for (const b of L.arrowInfo) {
+          if (b === a || b.step !== a.step) continue;
+          // two arrows of one step that cross cannot be told apart (two fishhooks meeting at one new bond may touch)
+          if (L.arrowInfo.indexOf(b) > L.arrowInfo.indexOf(a) && !(a.mate && b.mate)) {
+            const P = a.item.allSamples(), Q = b.item.allSamples(), cr = (o, p, q) => (p.x - o.x) * (q.y - o.y) - (p.y - o.y) * (q.x - o.x);
+            let x = 0; for (let i = 1; i < P.length; i++) for (let j = 1; j < Q.length; j++) if (cr(P[i - 1], P[i], Q[j - 1]) * cr(P[i - 1], P[i], Q[j]) < 0 && cr(Q[j - 1], Q[j], P[i - 1]) * cr(Q[j - 1], Q[j], P[i]) < 0) x++;
+            if (x) problems.push(`${tag} and ${b.raw}: the arrows cross`);
+          }
+          if (near(it.p2, b.item.p2, 8) && L.arrowInfo.indexOf(b) > L.arrowInfo.indexOf(a)) problems.push(`${tag} and ${b.raw}: two heads on one spot`);
+          if (near(it.p2, b.item.p1, 10) || (b.src && near(it.p2, b.src, 10))) problems.push(`${tag}: the head lands on the tail of ${b.raw}`);
+        }
+      }
       // map numbers never show: not in a box's SMILES, not in any text drawn
       if (boxes.some(b => /:\d+\]/.test(b.smiles))) problems.push('a map number in a box SMILES');
       if (items.some(i => /\[[^\]]*:\d+\]/.test(i.g.textContent || ''))) problems.push('a map number in the drawing');
