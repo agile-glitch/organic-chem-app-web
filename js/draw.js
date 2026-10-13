@@ -361,7 +361,7 @@
       this.runs.forEach(r => {
         r.t.split('\n').forEach((part, k) => {
           if (k > 0) { line++; first = true; off = 0; }
-          if (part === '' && !first) return;
+          if (part === '') return;                      // nothing to draw; the next text starts this line (an empty tspan would not move it)
           const sp = h('tspan', { 'font-size': r.s ? TEXT_PX * 0.7 : TEXT_PX }, t);
           const want = r.s < 0 ? TEXT_PX * 0.25 : r.s > 0 ? -TEXT_PX * 0.4 : 0;
           if (first) { sp.setAttribute('x', 4); sp.setAttribute('y', 4 + TEXT_PX * 0.95 + line * lh + want); first = false; }
@@ -534,7 +534,11 @@
   const gap = () => { const d = document.createElement('span'); d.className = 'dr-gap'; bar.appendChild(d); };
   MODES.forEach(([m, txt, tip]) => {
     modeButtons[m] = mk(txt, tip, () => setMode(m));
-    if (m === 'text') for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
+    if (m === 'text') {
+      for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
+      for (const [t2, tip2, sym] of [['☀', 'Light: put ☀ in the text box being edited, or a new text box (e.g. over a reaction arrow)', '☀'],
+                                     ['hν', 'hν (light, photon energy): put it in the text box being edited, or a new text box', 'hν']]) mk(t2, tip2, () => insertSymbol(sym));
+    }
     if (['text', 'arrow-resonance', 'lonepair'].includes(m)) gap();
   });
   gap();
@@ -594,7 +598,11 @@
     ed.style.left = (tb.x * zoom) + 'px'; ed.style.top = (tb.y * zoom) + 'px'; ed.style.transform = `scale(${zoom})`; ed.style.color = tb.color;
     ed.innerHTML = tb.html(); scroll.appendChild(ed);
     tb.editing = true; tb.render(); editing = { item: tb, el: ed };
-    ed.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); ed.blur(); } e.stopPropagation(); });
+    ed.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); ed.blur(); }
+      else if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ed.blur(); clearSelection(); }   // Enter finishes the text and deselects it; Shift+Enter is a new line
+      e.stopPropagation();
+    });
     ed.addEventListener('blur', () => { if (editing && editing.el === ed) stopEditing(); });
     ed.focus();
     const range = document.createRange(); range.selectNodeContents(ed); range.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(range);
@@ -604,6 +612,13 @@
     const { item, el } = editing; editing = null;
     item.setFromEditor(el); item.editing = false; el.remove();
     if (!item.plain().trim()) removeItem(item); else item.render();
+  }
+  /* a symbol (☀, hν) at the caret of the text box being edited, else in a new text box in the middle of what is in view */
+  function insertSymbol(sym) {
+    if (editing) { editing.el.focus(); document.execCommand('insertText', false, sym); return; }
+    const tb = new TextBox(sym);
+    tb.x = (scroll.scrollLeft + scroll.clientWidth / 2) / zoom - 12; tb.y = (scroll.scrollTop + scroll.clientHeight / 2) / zoom - 12;
+    addItem(tb); clearSelection(); select(tb); setMode('select');
   }
   function toggleScript(s) {
     if (editing) { document.execCommand(s < 0 ? 'subscript' : 'superscript'); return; }
