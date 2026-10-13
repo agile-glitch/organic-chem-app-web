@@ -85,24 +85,25 @@
       if (SHOW.cas) { try { out.cas = C.casFor ? C.casFor(g) : null; } catch (e) { out.cas = null; } }
       return out;
     }
-    captionLines() {
+    captionItems() {                                               // [{text shown, copy: what a click copies (null: nothing to copy), kind}]
       if (!this.graph) return [];
-      const inf = this.info(), lines = [];
-      if (SHOW.common && inf.common) lines.push(inf.common);
-      if (SHOW.iupac) lines.push(inf.iupac || 'IUPAC name not found');
-      if (SHOW.smiles) lines.push(this.canonical);
-      if (SHOW.cas) lines.push('CAS ' + (inf.cas || 'not found'));
-      return lines;
+      const inf = this.info(), items = [];
+      if (SHOW.common && inf.common) items.push({ kind: 'common name', text: inf.common, copy: inf.common });
+      if (SHOW.iupac) items.push({ kind: 'IUPAC name', text: inf.iupac || 'IUPAC name not found', copy: inf.iupac || null });
+      if (SHOW.smiles) items.push({ kind: 'SMILES', text: this.canonical, copy: this.canonical });
+      if (SHOW.cas) items.push({ kind: 'CAS number', text: 'CAS ' + (inf.cas || 'not found'), copy: inf.cas || null });
+      return items;
     }
-    wrapped(width) {                                               // caption lines broken anywhere to fit the width
-      const out = [];
-      for (const t of this.captionLines()) {
-        let cur = '';
-        for (const ch of t) { if (cur && textWidth(cur + ch, CAPTION_PX) > width) { out.push(cur); cur = ch; } else cur += ch; }
-        out.push(cur);
-      }
-      return out;
+    captionLines() { return this.captionItems().map(x => x.text); }
+    wrappedItems(width) {                                          // each caption item's text broken anywhere to fit the width: [{item, lines}]
+      return this.captionItems().map(item => {
+        const lines = []; let cur = '';
+        for (const ch of item.text) { if (cur && textWidth(cur + ch, CAPTION_PX) > width) { lines.push(cur); cur = ch; } else cur += ch; }
+        lines.push(cur);
+        return { item, lines };
+      });
     }
+    wrapped(width) { return this.wrappedItems(width).flatMap(x => x.lines); }
     captionHeight(width) { const n = this.wrapped(Math.max((width ?? this.w) - 16, 40)).length; return n ? 8 + n * (CAPTION_PX + 3) : 0; }
     /* the laid-out atoms, turned and centred: [{x, y}] in box coordinates, for a box of this size */
     place(width, height) {
@@ -245,8 +246,16 @@
         this.selAtoms.forEach(i => { if (pts[i]) h('circle', { cx: pts[i].x, cy: pts[i].y, r: 11, stroke: 'none' }, halo); });
         this.drawStructure(mol, pts);
         if (capH) {
-          const t = h('text', { 'text-anchor': 'middle', fill: '#333', 'font-size': CAPTION_PX, 'font-family': FONT }, g), lines = this.wrapped(Math.max(this.w - 16, 40));
-          lines.forEach((ln, k) => { const s = h('tspan', { x: this.w / 2, y: this.h - capH + 8 + (k + 1) * (CAPTION_PX + 3) - 4 }, t); s.textContent = ln; });
+          // one group per name: hovering highlights it, a click copies it (see "copy a caption" below)
+          let k = 0;
+          for (const { item, lines } of this.wrappedItems(Math.max(this.w - 16, 40))) {
+            const cg = h('g', { class: item.copy ? 'dr-cap' : 'dr-cap-none' }, g);
+            if (item.copy) { cg.dataset.copy = item.copy; cg.dataset.kind = item.kind; h('title', {}, cg).textContent = 'Click to copy the ' + item.kind; }
+            const y0 = this.h - capH + 8 + k * (CAPTION_PX + 3) - 2;
+            if (item.copy) h('rect', { x: 6, y: y0, width: Math.max(this.w - 12, 0), height: lines.length * (CAPTION_PX + 3), fill: 'transparent' }, cg);   // the whole block answers the pointer, gaps too
+            const t = h('text', { 'text-anchor': 'middle', fill: '#333', 'font-size': CAPTION_PX, 'font-family': FONT }, cg);
+            lines.forEach(ln => { const s = h('tspan', { x: this.w / 2, y: this.h - capH + 8 + (++k) * (CAPTION_PX + 3) - 4 }, t); s.textContent = ln; });
+          }
         }
       }
       if (this.selected) this.drawSelection(g);
@@ -514,6 +523,9 @@
     .dr-dlg input[type=text]:focus { border-color:#7aa7ff; outline:none; }
     .dr-dlg .status { color:#666; margin:2px 0 8px; min-height:18px; }
     .dr-dlg .preview { border:1px solid #e3e3e3; border-radius:8px; height:300px; display:flex; align-items:center; justify-content:center; background:#fff; margin-bottom:10px; overflow:hidden; }
+    .dr-cap { cursor:pointer; }
+    .dr-cap:hover text { fill:${BLUE}; text-decoration:underline; }
+    .dr-copied { position:absolute; z-index:45; transform:translate(-50%,-130%); background:#1b3a6b; color:#fff; font:12px system-ui,sans-serif; padding:3px 8px; border-radius:5px; pointer-events:none; white-space:nowrap; }
     .dr-menu { position:absolute; z-index:40; min-width:150px; background:#fff; border:1px solid #d6d6dc; border-radius:8px; padding:4px; box-shadow:0 6px 24px rgba(0,0,0,.18); }
     .dr-menu button { display:flex; justify-content:space-between; gap:16px; width:100%; border:0; background:none; padding:6px 10px; border-radius:5px; font:13px system-ui,sans-serif; color:#222; cursor:pointer; text-align:left; }
     .dr-menu button:hover:not(:disabled) { background:#eef3ff; }
@@ -716,6 +728,32 @@
     zoom = Math.max(0.3, Math.min(3, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
     svg.setAttribute('width', SCENE_W * zoom); svg.setAttribute('height', SCENE_H * zoom);
   }, { passive: false });
+  /* ---- copy a caption: click a name under a molecule (common name, IUPAC, SMILES, CAS) to copy just that text */
+  // remembered at the press (selecting the box redraws its captions, so the pressed element is gone by the release); copied on a release that did not move
+  svg.addEventListener('pointerdown', e => {
+    const c = e.button === 0 && mode === 'select' && e.target.closest && e.target.closest('.dr-cap');
+    if (!c) return;
+    const down = { copy: c.dataset.copy, kind: c.dataset.kind, x: e.clientX, y: e.clientY };
+    const up = ev => {
+      document.removeEventListener('pointerup', up, true);
+      if (Math.hypot(ev.clientX - down.x, ev.clientY - down.y) > 4) return;                    // a drag of the box is not a click
+      copyText(down.copy, () => {
+        const r = scroll.getBoundingClientRect(), tip = document.createElement('div');
+        tip.className = 'dr-copied'; tip.textContent = 'Copied ' + down.kind;
+        tip.style.left = (ev.clientX - r.left + scroll.scrollLeft) + 'px'; tip.style.top = (ev.clientY - r.top + scroll.scrollTop) + 'px';
+        scroll.appendChild(tip); setTimeout(() => tip.remove(), 1100);
+      });
+    };
+    document.addEventListener('pointerup', up, true);
+  }, true);
+  function copyText(text, done) {
+    const fallback = () => {
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+      document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (err) { ok = false; } ta.remove(); if (ok) done();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+
   /* ---- tool keys (not while typing in a text box or any other field) */
   const TOOL_KEYS = { w: 'molecule', a: 'arrow-forward', d: 'text', e: 'lonepair', q: 'electron' };
 
