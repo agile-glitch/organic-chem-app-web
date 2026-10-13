@@ -88,6 +88,42 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
           if (!l || l.d > 3.5) problems.push(`${tag}: the tail is ${l ? l.d.toFixed(1) : '?'} px off its bond's lines`);
           else { const L2 = Math.hypot(l.q.x - l.p.x, l.q.y - l.p.y) || 1, t = ((it.p1.x - l.p.x) * (l.q.x - l.p.x) + (it.p1.y - l.p.y) * (l.q.y - l.p.y)) / L2; if (Math.abs(t - L2 / 2) > 4) problems.push(`${tag}: the tail is ${Math.abs(t - L2 / 2).toFixed(1)} px from the middle of its bond`); }
         }
+        const ctl = { x: (it.p1.x + it.p2.x) / 2 + 2 * it.bend.x, y: (it.p1.y + it.p2.y) / 2 + 2 * it.bend.y }, arrive = { x: it.p2.x - ctl.x, y: it.p2.y - ctl.y };
+        const angle = (u, v) => Math.acos(Math.max(-1, Math.min(1, (u.x * v.x + u.y * v.y) / ((Math.hypot(u.x, u.y) * Math.hypot(v.x, v.y)) || 1)))) * 180 / Math.PI;
+        // a lone pair pushed into a bond of its own atom: the head ends on the middle of that bond, coming across it
+        if (a.lpOwn) {
+          const dm = Math.hypot(it.p2.x - a.tgtMid.x, it.p2.y - a.tgtMid.y), dl = Math.min(...a.tgtLines.map(([p, q]) => segDist(it.p2, p, q)));
+          const [p, q] = a.tgtLines[0], along = angle(arrive, { x: q.x - p.x, y: q.y - p.y }), lq = Math.hypot(q.x - p.x, q.y - p.y) || 1;
+          const sl = Math.abs(((it.p2.x - a.tgtMid.x) * (q.x - p.x) + (it.p2.y - a.tgtMid.y) * (q.y - p.y)) / lq);   // along the bond, from its middle
+          if (sl > 6 || dl > 5) problems.push(`${tag}: lone pair into its own bond, but the head is ${dm.toFixed(1)} px from the bond's middle (${dl.toFixed(1)} px off its line)`);
+          if (Math.min(along, 180 - along) < 40) problems.push(`${tag}: lone pair into its own bond, but the head comes in along the bond (${Math.round(Math.min(along, 180 - along))}°)`);
+          if (Math.hypot(it.p2.x - it.p1.x, it.p2.y - it.p1.y) < 16) problems.push(`${tag}: lone pair into its own bond: a stub of an arrow`);
+        }
+        // an arrow onto an atom (a lone pair, or a bond's electrons onto one of its own atoms) ends at its letters, pointing into it
+        if ((a.tk === 'own' || a.tk === 'atom') && a.X && a.Xrects.length) {
+          const d = Math.hypot(it.p2.x - a.X.x, it.p2.y - a.X.y), off = angle(arrive, { x: a.X.x - it.p2.x, y: a.X.y - it.p2.y });
+          if (d > 17) problems.push(`${tag}: the head is ${d.toFixed(1)} px from the atom it ends at`);
+          if (off > 50) problems.push(`${tag}: the head points ${Math.round(off)}° away from the atom it ends at`);
+          // the arrowhead clear of the atom's charge
+          if (a.Xcharged && a.Xrects[1]) {
+            const v = { x: -arrive.x / (Math.hypot(arrive.x, arrive.y) || 1), y: -arrive.y / (Math.hypot(arrive.x, arrive.y) || 1) };
+            const tri = [0, 0.45, -0.45].map(t => ({ x: it.p2.x + (t ? 9.5 : 0) * (v.x * Math.cos(t) - v.y * Math.sin(t)), y: it.p2.y + (t ? 9.5 : 0) * (v.x * Math.sin(t) + v.y * Math.cos(t)) }));
+            const dq = Math.min(...tri.map(q => rectDist(q.x - a.X.x, q.y - a.X.y, a.Xrects[1])));
+            if (dq < 1.5) problems.push(`${tag}: the arrowhead touches the atom's charge (${dq.toFixed(1)} px)`);
+          }
+        }
+        // an arrow crosses no bond line other than those of the atoms it leaves from and goes to
+        {
+          const S = it.allSamples();
+          const cr = (o, p, q) => (p.x - o.x) * (q.y - o.y) - (p.y - o.y) * (q.x - o.x);
+          let x = 0;
+          for (const [p, q] of segs) {
+            const P0 = a.ends.find(e => Math.hypot(e.x - p.x, e.y - p.y) < 14), Q0 = a.ends.find(e => Math.hypot(e.x - q.x, e.y - q.y) < 14);
+            if (P0 && Q0) continue;
+            for (let i = 1; i < S.length; i++) if (cr(S[i - 1], S[i], p) * cr(S[i - 1], S[i], q) < 0 && cr(p, q, S[i - 1]) * cr(p, q, S[i]) < 0) x++;
+          }
+          if (x) problems.push(`${tag}: the arrow crosses ${x} bond line(s)`);
+        }
         for (const b of L.arrowInfo) {
           if (b === a || b.step !== a.step) continue;
           // two arrows of one step that cross cannot be told apart (two fishhooks meeting at one new bond may touch)

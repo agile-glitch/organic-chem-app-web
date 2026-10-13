@@ -66,7 +66,7 @@
   };
 
   /* ---- atom labels: the element, its hydrogens and its charge written as one group (OH, H2O+, NH3+, BH3-) ---- */
-  const LABEL_PX = 17, SUB_DY = 0.22, SUP_Y = -0.52, MID_Y = 0.12, LOW_Y = 0.3, STACK = 1.15, LABEL_PAD = 14;
+  const LABEL_PX = 17, SUB_DY = 0.22, SUP_Y = -0.52, STACK = 1.15, LABEL_PAD = 14;
   const inkCache = new Map();
   /* the ink of s in the label font drawn from x = 0 on a 'central' baseline, as the SVG draws it: {x0, x1, y0, y1} and the
      advance w. Canvas measures from its 'middle' baseline, which sits lower than SVG's 'central' one by half the difference
@@ -82,49 +82,81 @@
     inkCache.set(k, r); return r;
   }
   /* an atom's label: the element with its hydrogens written after it (OH2+), before it (H2O+), above or below it, and the
-     charge a superscript after the whole group, or (no H's beside it) at a free corner. Each way of writing it is scored
-     against the atom's bonds (dirs: [{ux, uy, len, order}] out of the atom) and the clearest one wins, so every bond starts
-     at the element and none leaves from under an H or the charge. An atom with no bonds is written the usual way round:
-     HBr, H2O, H3O+, HO- (H first for halogens, O and S), NH3, NH4+, BH4- (after the rest).
+     charge always a superscript beside the element: after the group (OH2+), after the element (H2O+), before the element
+     (+OH2), or above the element when bonds take the upper corners (never before the H's, never at subscript height).
+     Each way of writing it is scored against the atom's bonds (dirs: [{ux, uy, len, offs (the offsets of the bond's lines
+     along the normal (-uy, ux))}] out of the atom), the other atoms' labels and the other bonds nearby (env: {atoms: [{x, y}]
+     labelled atoms, segs: [{ax, ay, bx, by, half}]}, about this atom), and the clearest one wins, so every bond starts at the
+     element, none leaves from under an H or the charge, no line touches the charge, and the H's and the charge sit nearer
+     their own element than anything else's dots. An atom with no bonds is written the usual way round: HBr, H2O, H3O+, HO-
+     (H first for halogens, O and S), NH3, NH4+, BH4- (after the rest).
      Returns positions about the atom: {parts: [{s, n (H count as a subscript), x (text start), y (central baseline), size}],
      rects: the ink [element, charge?, H's?], hSide (-1 west, 1 east, 0 none or above/below), hAngle (where the H's are, or
      null), trim(ux, uy): how far out a bond in that direction starts} */
-  function atomLabel(el, nH, charge, dirs) {
+  function atomLabel(el, nH, charge, dirs, env) {
     const px = LABEL_PX, E = ink(el, px), eL = -E.w / 2, right = E.w / 2 + 0.5, left = -E.w / 2 - 0.5;
     const eRect = { x0: eL + E.x0, x1: eL + E.x1, y0: E.y0, y1: E.y1 }, tBox = { x0: eRect.x0 - 2, x1: eRect.x1 + 2, y0: eRect.y0 - 3.5, y1: eRect.y1 + 3.5 };
     const H = ink('H', px), D = nH > 1 ? ink(String(nH), px * 0.7) : null, hW = H.w + (D ? D.w : 0), sub = px * SUB_DY;
     const hPart = (x, y) => ({ part: { s: 'H', n: D ? nH : 0, x, y, size: px }, rect: { x0: x + H.x0, x1: x + (D ? H.w + D.x1 : H.x1), y0: y + H.y0, y1: y + (D ? Math.max(H.y1, sub + D.y1) : H.y1) } });
     const cs = charge ? (Math.abs(charge) > 1 ? Math.abs(charge) : '') + (charge > 0 ? '+' : '−') : '', Q = cs ? ink(cs, px * 0.66) : null;
     const qPart = (x, yc) => { const y = yc - (Q.y0 + Q.y1) / 2; return { part: { s: cs, x, y, size: px * 0.66 }, rect: { x0: x + Q.x0, x1: x + Q.x1, y0: y + Q.y0, y1: y + Q.y1 } }; };
-    // the charge at a corner of the element, upper right first; the superscript sits high enough for a lone pair beside the label
     const meet = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
-    const corners = (hr, sup = SUP_Y) => [[1, sup, 0], [-1, sup, 0.8], [1, MID_Y, 1], [1, LOW_Y, 1.4], [-1, MID_Y, 1.6], [-1, LOW_Y, 2]].map(([sd, y, c]) => {
-      let q = qPart(sd > 0 ? right : left - Q.w, px * y);
-      if (hr && meet(q.rect, hr)) { q = qPart(sd > 0 ? hr.x1 + 0.8 - Q.x0 : hr.x0 - 0.8 - Q.x1, px * y); c += 0.3; }   // out past H's stacked above or below
-      return [q, c];
-    });
+    const qTop = Q ? eRect.y0 - 1.8 - (Q.y1 - Q.y0) / 2 : 0, qMid = Q ? -(Q.x0 + Q.x1) / 2 : 0;   // the charge centred over the element
+    /* the superscript places for the charge about the element: [x, y (centre), cost]; ur: where the upper right one starts
+       (after the H's of OH2) */
+    const sups = (ur, opts = {}) => {
+      const out = [[ur, px * SUP_Y, 0], [ur + 1.5, px * -0.8, 1.6]];
+      if (opts.ul !== false) out.push([left - Q.w, px * SUP_Y, 0.8], [left - Q.w - 1.5, px * -0.8, 1.8]);
+      if (opts.top !== false) out.push([qMid, qTop, 1.2]);
+      return out.map(([x, y, c]) => [qPart(x, y), c]);
+    };
     const cands = [];
     if (nH) {
       const hFirst = !dirs.length && /^(F|Cl|Br|I|O|S|Se|Te)$/.test(el);
-      // in a row: OH2+ or H2O+, the charge after the group (a bond up that side: lower, or before the group)
-      for (const [h, after, before, cost, side, ang] of [[hPart(right, 0), right + hW + 0.5, left, hFirst ? 1 : 0, 1, 0], [hPart(left - hW, 0), right, left - hW - 0.5, hFirst ? 0 : 0.4, -1, Math.PI]])
-        for (const [q, qc] of Q ? [[after, SUP_Y, 0], [after, MID_Y, 1], [after, LOW_Y, 1.4], [before - Q.w, SUP_Y, 1.5]].map(([x, y, c]) => [qPart(x, px * y), c]) : [[null, 0]]) cands.push({ h, q, cost: cost + qc, side, ang });
-      if (dirs.length) for (const [dy, cost, ang] of [[px * STACK, 2.5, Math.PI / 2], [-px * STACK, 3, -Math.PI / 2]])   // below, above: when both sides are taken
-        for (const [q, qc] of Q ? corners(hPart(-hW / 2, dy).rect, dy < 0 ? SUP_Y * 0.6 : SUP_Y) : [[null, 0]]) cands.push({ h: hPart(-hW / 2, dy), q, cost: cost + qc, side: 0, ang });   // under H's above, the charge sits lower, clear of their subscript
-    } else if (Q) for (const [q, qc] of corners()) cands.push({ h: null, q, cost: qc, side: 0, ang: null });
+      // in a row: OH2+ (or +OH2, or the + over the O) and H2O+ (or the + over the O)
+      const hR = hPart(right, 0), hL = hPart(left - hW, 0);
+      for (const [q, qc] of Q ? sups(right + hW + 0.5) : [[null, 0]]) cands.push({ h: hR, q, cost: (hFirst ? 1 : 0) + qc, side: 1, ang: 0 });
+      for (const [q, qc] of Q ? sups(right, { ul: false }) : [[null, 0]]) cands.push({ h: hL, q, cost: (hFirst ? 0 : 0.4) + qc, side: -1, ang: Math.PI });
+      if (dirs.length) for (const [dy, cost, ang] of [[px * STACK, 4, Math.PI / 2], [-px * STACK, 4.5, -Math.PI / 2]]) {   // below, above: when both sides are taken
+        const hp = hPart(-hW / 2, dy);
+        // under H's above, the charge sits a little lower, clear of their subscript, and never over the element
+        for (const [q, qc] of Q ? (dy < 0 ? sups(right, { top: false }).map(([q0, c]) => [qPart(q0.part.x, (q0.rect.y0 + q0.rect.y1) / 2 * 0.6), c]) : sups(right)) : [[null, 0]]) cands.push({ h: hp, q, cost: cost + qc, side: 0, ang });
+      }
+      /* tucked against the element in the middle of a wide gap between bonds that is not straight across or up and down
+         (an N+ with bonds up, lower left and lower right: its H upper left, clear of the atom below) */
+      if (dirs.length >= 2) {
+        const angs = dirs.map(d => Math.atan2(d.uy, d.ux)).sort((a, b) => a - b);
+        angs.forEach((a, k) => {
+          const nxt = k + 1 < angs.length ? angs[k + 1] : angs[0] + 2 * Math.PI, gap = nxt - a, ang = Math.atan2(Math.sin(a + gap / 2), Math.cos(a + gap / 2));
+          const axis = Math.min(...[0, Math.PI / 2, Math.PI, -Math.PI / 2, -Math.PI].map(t => Math.abs(ang - t)));
+          if (gap < Math.PI * 0.6 || axis < Math.PI / 9) return;
+          const w = hPart(0, 0).rect, cw = (w.x0 + w.x1) / 2, ch = (w.y0 + w.y1) / 2;
+          let hp = null;
+          for (let r = 8; r <= 30 && !hp; r += 0.5) {
+            const t = hPart(r * Math.cos(ang) - cw, r * Math.sin(ang) - ch);
+            if (!meet(t.rect, { x0: eRect.x0 - 1.5, x1: eRect.x1 + 1.5, y0: eRect.y0 - 1.5, y1: eRect.y1 + 1.5 })) hp = t;
+          }
+          if (hp) for (const [q, qc] of Q ? sups(right) : [[null, 0]]) cands.push({ h: hp, q, cost: 5 + qc, side: 0, ang });
+        });
+      }
+    } else if (Q) for (const [q, qc] of sups(right)) cands.push({ h: null, q, cost: qc, side: 0, ang: null });
     else cands.push({ h: null, q: null, cost: 0, side: 0, ang: null });
+    const segRect = (ax, ay, bx, by, r) => { let m = Infinity; for (let k = 0; k <= 12; k++) { const t = k / 12; m = Math.min(m, rectDist(ax + (bx - ax) * t, ay + (by - ay) * t, r)); } return m; };
+    const clash = (m, q) => (m < 1 ? 50 + (1 - m) * 5 : q ? (m < 6 ? (6 - m) ** 2 * 2 : 0) : m < 5 ? (5 - m) ** 2 * 1.5 : 0);   // a line this far from the H's (q: the charge, which wants more room)
     if (cands.length > 1) for (const c of cands) {
       const near = [c.h && c.h.rect, c.q && c.q.rect].filter(Boolean);
       if (near.length === 2 && meet(near[0], near[1])) c.cost += 100;   // the charge on the H's
-      for (const d of dirs) {                                      // each bond as drawn (from the element to near the far atom) against the H's and the charge
+      for (const d of dirs) {                                      // each bond as drawn (each of its lines, from the element to near the far atom) against the H's and the charge
         if (c.ang != null) { const off = Math.acos(Math.max(-1, Math.min(1, d.ux * Math.cos(c.ang) + d.uy * Math.sin(c.ang)))); if (off < Math.PI / 2) c.cost += 1.2 * (Math.PI / 2 - off) / (Math.PI / 6); }   // and H's out in the open, not in the V between two bonds
-        const t0 = rayExit([tBox], d.ux, d.uy) + 1, t1 = Math.max(t0, d.len - 10), half = d.order >= 2 ? 4.5 : 1;
-        for (const r of near) {
-          let m = Infinity; for (let k = 0; k <= 10; k++) { const t = t0 + (t1 - t0) * k / 10; m = Math.min(m, rectDist(t * d.ux, t * d.uy, r)); }
-          m -= half;
-          if (m < 1) c.cost += 50 + (1 - m) * 5; else if (m < 5) c.cost += (5 - m) ** 2 * 1.5;
-        }
+        const t0 = rayExit([tBox], d.ux, d.uy) + 1, t1 = Math.max(t0, d.len - 10), nx = -d.uy, ny = d.ux;
+        for (const r of near) for (const o of d.offs || [0]) c.cost += clash(segRect(t0 * d.ux + o * nx, t0 * d.uy + o * ny, t1 * d.ux + o * nx, t1 * d.uy + o * ny, r) - 1, c.q && r === c.q.rect);
       }
+      if (env) near.forEach(r => {
+        const isQ = c.q && r === c.q.rect;
+        for (const s of env.segs) c.cost += clash(segRect(s.ax, s.ay, s.bx, s.by, r) - s.half, isQ);
+        // another atom's label, and the lone pairs about it: the H's and the charge must read as this atom's
+        for (const a of env.atoms) { const dd = rectDist(a.x, a.y, r), R = 24; if (dd < R) c.cost += (R - dd) * 2; }
+      });
     }
     const best = cands.reduce((b, c) => (c.cost < b.cost - 1e-9 ? c : b));
     const rects = [eRect], parts = [{ s: el, n: 0, x: eL, y: 0, size: px }];
@@ -132,6 +164,22 @@
     if (best.h) { rects.push(best.h.rect); parts.push(best.h.part); }
     const extra = rects.slice(1).map(r => ({ x0: r.x0 - 1.5, x1: r.x1 + 1.5, y0: r.y0 - 1.5, y1: r.y1 + 1.5 }));
     return { parts, rects, hSide: best.side, hAngle: best.ang, trim: (ux, uy) => Math.max(rayExit([tBox], ux, uy), rayExit(extra, ux, uy)) + 0.5 };
+  }
+  /* the lines of a bond as drawn: their offsets along the normal (-uy, ux) of the bond from atom a to atom b, and how far
+     the second line of a double bond is shortened at each end (sh) */
+  function bondLines(lay, pts, idx, b) {
+    if (b.stereo && b.order === 1) return { offs: [-2.75, 0, 2.75], sh: 0 };   // a wedge, at its wide end
+    const off = 5; let offs = { 1: [0], 2: [0, off * 1.7], 3: [-off * 1.7, 0, off * 1.7] }[b.order] || [0], sh = 4;
+    if (b.order === 2) {
+      const ia = idx.get(b.a), ib = idx.get(b.b), P = pts[ia], Q = pts[ib], L = Math.hypot(Q.x - P.x, Q.y - P.y) || 1, nx = -(Q.y - P.y) / L, ny = (Q.x - P.x) / L;
+      const sides = [];
+      for (const o of lay.bonds) { if (o === b) continue; let j = null; if (o.a === b.a || o.a === b.b) j = o.b; else if (o.b === b.a || o.b === b.b) j = o.a; if (j == null || j === b.a || j === b.b) continue; const q = pts[idx.get(j)]; sides.push(Math.sign(Math.round((q.x - P.x) * nx + (q.y - P.y) * ny))); }
+      const side = sides.reduce((t, v) => t + v, 0);
+      if (!sides.length) offs = [-off, off];
+      else if (sides.every(v => !v)) { offs = [-off, off]; sh = 0; }   // the neighbours in line (O=C=O drawn straight): the two lines straddle the axis
+      else offs = [0, side < 0 ? -off * 1.7 : off * 1.7];   // the second line goes on the side the ring is on
+    }
+    return { offs, sh };
   }
 
   /* ================= items ================= */
@@ -227,14 +275,30 @@
     labelsFor(pts) {
       const lay = this.lay, atoms = lay.atoms, idx = new Map(atoms.map((a, i) => [a.id, i])), mine = atoms.map(() => []);
       lay.bonds.forEach(b => { const i = idx.get(b.a), j = idx.get(b.b); if (i != null && j != null) { mine[i].push([j, b]); mine[j].push([i, b]); } });
+      const lines = b => bondLines(lay, pts, idx, b);
+      const labelled = atoms.map((a, i) => a.element !== 'C' || !!a.charge || !!a.radical || !mine[i].length);
       return atoms.map((a, i) => {
         const bs = mine[i], used = bs.reduce((s, [, b]) => s + b.order, 0);
         // the hydrogens written in the SMILES brackets ([AlH3-], which Chem.implicitH leaves out for a metal) while the atom has the bonds it was read with
         const nH = a.element === 'H' ? 0 : a.hWritten != null && a.hWrittenFor === used ? a.hWritten : C.implicitH(lay, a);
-        const dirs = bs.map(([j, b]) => { const dx = pts[j].x - pts[i].x, dy = pts[j].y - pts[i].y, len = Math.hypot(dx, dy) || 1; return { ux: dx / len, uy: dy / len, len, order: b.order }; });
+        const dirs = bs.map(([j, b]) => { const dx = pts[j].x - pts[i].x, dy = pts[j].y - pts[i].y, len = Math.hypot(dx, dy) || 1, L = lines(b); return { ux: dx / len, uy: dy / len, len, order: b.order, offs: b.a === a.id ? L.offs : L.offs.map(o => -o) }; });
         const straightSp = a.element === 'C' && dirs.length === 2 && dirs.every(d => d.order === 2) && dirs[0].ux * dirs[1].ux + dirs[0].uy * dirs[1].uy < -0.87;   // O=C=O, C=C=C drawn straight: the vertex would vanish
         if (a.element === 'C' && !a.charge && !a.radical && bs.length && !(SHOW.hydrogens && nH > 0) && !straightSp) return null;
-        return atomLabel(a.element, a.element !== 'C' || SHOW.hydrogens || !bs.length ? nH : 0, a.charge || 0, dirs);
+        const showH = a.element !== 'C' || SHOW.hydrogens || !bs.length ? nH : 0;
+        if (!showH && !a.charge) return atomLabel(a.element, 0, 0, dirs);
+        // what is near: the other labelled atoms (their letters and lone pairs) and the bonds that are not this atom's
+        const P = pts[i], env = { atoms: [], segs: [] }, R = 70;
+        atoms.forEach((o, j) => { if (j !== i && labelled[j] && Math.hypot(pts[j].x - P.x, pts[j].y - P.y) < R) env.atoms.push({ x: pts[j].x - P.x, y: pts[j].y - P.y }); });
+        lay.bonds.forEach(b => {
+          if (b.a === a.id || b.b === a.id) return;
+          const ia = idx.get(b.a), ib = idx.get(b.b); if (ia == null || ib == null) return;
+          const A = { x: pts[ia].x - P.x, y: pts[ia].y - P.y }, B = { x: pts[ib].x - P.x, y: pts[ib].y - P.y };
+          if (segDist({ x: 0, y: 0 }, A, B) > R) return;
+          const L = lines(b), dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
+          const ta = labelled[ia] ? 9 : 0, tb = labelled[ib] ? 9 : 0;   // a bond stops short of a labelled atom
+          for (const o of L.offs) env.segs.push({ ax: A.x + ux * ta + nx * o, ay: A.y + uy * ta + ny * o, bx: B.x - ux * tb + nx * o, by: B.y - uy * tb + ny * o, half: 1 });
+        });
+        return atomLabel(a.element, showH, a.charge || 0, dirs, env);
       });
     }
     /* what the drawing covers, about the placed atoms: PAD round each atom, and LABEL_PAD round the ink of its label (a long
@@ -396,7 +460,6 @@
     }
     drawStructure(parent, pts, labs) {
       const lay = this.lay, atoms = lay.atoms, bonds = lay.bonds, idx = new Map(atoms.map((a, i) => [a.id, i]));
-      const nbrs = id => bonds.filter(b => b.a === id || b.b === id).map(b => atoms[idx.get(b.a === id ? b.b : b.a)]);
       const LW = 2;
       bonds.forEach((b, k) => {
         const ia = idx.get(b.a), ib = idx.get(b.b), P = pts[ia], Q = pts[ib], A = atoms[ia], B = atoms[ib];
@@ -410,15 +473,7 @@
           else for (let s = 1; s <= 7; s++) { const t = s / 7, ww = wd * t, qx = sx + (ex - sx) * t, qy = sy + (ey - sy) * t; h('line', { x1: qx + nx * ww, y1: qy + ny * ww, x2: qx - nx * ww, y2: qy - ny * ww, 'stroke-width': 1.6 }, grp); }
           return;
         }
-        const off = 5;
-        let offsets = { 1: [0], 2: [0, off * 1.7], 3: [-off * 1.7, 0, off * 1.7] }[b.order] || [0], sh = 4;
-        if (b.order === 2) {
-          const others = [...nbrs(A.id), ...nbrs(B.id)].filter(o => o !== A && o !== B);
-          const sides = others.map(o => { const q = pts[idx.get(o.id)]; return Math.sign(Math.round((q.x - P.x) * nx + (q.y - P.y) * ny)); }), side = sides.reduce((t, v) => t + v, 0);
-          if (!others.length) offsets = [-off, off];
-          else if (sides.every(v => !v)) { offsets = [-off, off]; sh = 0; }   // the neighbours in line (O=C=O drawn straight): the two lines straddle the axis
-          else offsets = [0, side < 0 ? -off * 1.7 : off * 1.7];   // the second line goes on the side the ring is on
-        }
+        const { offs: offsets, sh } = bondLines(lay, pts, idx, b);
         for (const o of offsets) { const s = b.order === 2 && o !== 0 ? sh : 0; h('line', { x1: x1 + nx * o + ux * s, y1: y1 + ny * o + uy * s, x2: x2 + nx * o - ux * s, y2: y2 + ny * o - uy * s }, grp); }
       });
       /* where each label's ink is, as rectangles about its atom ({x0, y0, x1, y1}: the element, then the charge, then the H's;
