@@ -4763,6 +4763,7 @@ function makeChem() {
         if (m[4]) bracketAtom.__brH = m[4] === 'H' ? 1 : parseInt(m[4].slice(1), 10);
         bracketAtom.__bracket = m[4] ? (m[4] === 'H' ? 1 : parseInt(m[4].slice(1), 10)) : 0;   // its H count is exactly what is written
         if (m[6]) bracketAtom.mapNum = parseInt(m[6], 10);            // atom-map number [CH3:1] (mechanism arrows use it)
+        if (m[1]) bracketAtom.isotope = parseInt(m[1], 10);            // [2H], [13CH3]: kept so the SMILES writer can write it back
         attach(bracketAtom);
         if (m[3]) bracketAtom.__chiralSymbol = m[3];                 // @ or @@
         // a hydrogen written inside the brackets takes its place in the
@@ -4792,6 +4793,8 @@ function makeChem() {
     g.atoms.forEach(a => {
       const brH = a.__bracket, wasBracket = a.__bracket !== undefined;
       delete a.__bracket;
+      // the hydrogens written in the brackets ([AlH4-], [NH4+]), for the writer; valid while the atom keeps these bonds
+      if (wasBracket) { a.hWritten = brH; a.hWrittenFor = usedValence(g, a.id); }
       if (!wasBracket || NO_IMPLICIT_H.includes(a.element) || a.element === 'H') return;
       const open = effectiveValence(a) - usedValence(g, a.id) - brH;
       if (open > 0) a.radical = open;
@@ -5449,7 +5452,7 @@ function makeChem() {
             ringOn.set(k, d);
             [id, nb.id].forEach(x => {
               if (!ringOn.has('atom' + x)) ringOn.set('atom' + x, []);
-              ringOn.get('atom' + x).push(bsym(nb.order) + d);
+              ringOn.get('atom' + x).push(bsym(nb.order) + (d < 10 ? d : '%' + d));   // ring numbers from 10 are written %10, %11 ...
               if (!ringPartners.has('atom' + x)) ringPartners.set('atom' + x, []);
               ringPartners.get('atom' + x).push(x === id ? nb.id : id);   // who this digit links to
             });
@@ -5459,13 +5462,16 @@ function makeChem() {
     });
 
     const token = (a, stereoTok) => {
-      const h = implicitH(g, a);
+      /* hydrogens: what was written in brackets when the atom still has the bonds it was read with ([AlH4-]), else what its valence leaves */
+      const h = a.hWritten != null && a.hWrittenFor === usedValence(g, a.id) ? a.hWritten : implicitH(g, a);
       const chargePart = a.charge
         ? (a.charge > 0 ? '+' : '-') + (Math.abs(a.charge) > 1 ? Math.abs(a.charge) : '') : '';
-      if (stereoTok || a.charge) {
-        return '[' + a.element + (stereoTok || '') + (h ? 'H' + (h > 1 ? h : '') : '') + chargePart + ']';
+      /* brackets for: stereo, charge, an isotope ([2H]), an unpaired electron ([N]=O, [CH3]), an element outside the organic subset,
+         or hydrogens the valence rules would not give */
+      if (stereoTok || a.charge || a.isotope || a.radical || !ORGANIC.includes(a.element) || h !== implicitH(g, a)) {
+        return '[' + (a.isotope || '') + a.element + (stereoTok || '') + (h ? 'H' + (h > 1 ? h : '') : '') + chargePart + ']';
       }
-      return ORGANIC.includes(a.element) ? a.element : '[' + a.element + ']';
+      return a.element;
     };
 
     /* cis/trans marks: for every acyclic C=C whose geometry is drawn, one

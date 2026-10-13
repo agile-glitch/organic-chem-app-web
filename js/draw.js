@@ -76,7 +76,10 @@
       } else this.graph = null;
       this.refreshDisplay();
     }
-    get canonical() { try { return this.graph ? C.toSmiles(this.graph) : this.smiles; } catch (e) { return this.smiles; } }
+    get canonical() {                                             // shown and copied: RDKit's canonical SMILES once RDKit has started (the boxes redraw then)
+      let s; try { s = this.graph ? C.toSmiles(this.graph) : this.smiles; } catch (e) { s = this.smiles; }
+      return window.RDKitLoad && SHOW.smiles ? window.RDKitLoad.display(s, refreshBoxes) : s;
+    }
     info() {
       const g = this.graph, out = {};
       if (!g) return out;

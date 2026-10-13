@@ -438,6 +438,7 @@
     let smiles = '', name = '', formula = '', common = '';
     try { formula = C.formula(g); } catch (e) {}
     try { smiles = C.toSmiles(g); } catch (e) {}
+    if (smiles && window.RDKitLoad) smiles = window.RDKitLoad.display(smiles, readout);   // RDKit's canonical form once it has started
     if (!err) {
       try { name = C.iupacName(g); } catch (e) {}
       /* the everyday name, when the library knows one and it is not just the systematic name again
@@ -479,6 +480,7 @@
     if (r && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); copyRow(r); }
   });
   const currentSmiles = () => { try { return C.toSmiles(g); } catch (e) { return ''; } };
+  const shownSmiles = () => { const s = currentSmiles(); return s && window.RDKitLoad ? window.RDKitLoad.display(s) : s; };   // copied / saved: the form the readout shows
   const currentName = () => { try { C.validateValences(g); return C.iupacName(g); } catch (e) { return ''; } };
 
   /* ================= palette ================= */
@@ -1024,7 +1026,7 @@
     const fmt = formatBox.value;
     const txt = (name, s, type = 'text/plain') => download(name, new Blob([s], { type }));
     switch (fmt) {
-      case 'smiles': txt('molecule.smi', currentSmiles() + '\n'); break;
+      case 'smiles': txt('molecule.smi', shownSmiles() + '\n'); break;
       case 'name': txt('molecule-name.txt', currentName() + '\n'); break;
       case 'common': {
         // only a name the app's library or common-name list gives for exactly this structure
@@ -1068,7 +1070,7 @@
       case 'stripH': edit(stripHydrogens); break;
       case 'import': importText(importBox.value); break;
       case 'export': doExport(); break;
-      case 'copy': { const s = currentSmiles(); if (s) navigator.clipboard.writeText(s).then(() => flash(b, 'Copied')); break; }
+      case 'copy': { const s = shownSmiles(); if (s) navigator.clipboard.writeText(s).then(() => flash(b, 'Copied')); break; }
       case 'toReactions': case 'toRetro': case 'toMolecule': {          // hand the drawing to another tab
         const s = currentSmiles();
         if (!s) { flash(b, 'Draw first'); break; }
