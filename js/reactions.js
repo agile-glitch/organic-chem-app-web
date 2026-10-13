@@ -1914,9 +1914,10 @@
     return () => new Promise(r => { waiting.push(r); ch.port2.postMessage(0); });
   })();
   /* Recorded reactions with exactly these molecules (learned_reactions.xlsx), most recorded first */
+  let lookupOff = false;                               // a benchmark on held-out patents turns the exact look-up off (tools/patent_bench.js)
   async function learnedLookup(R, subs, reagent) {
     const meta = await learnedMeta();
-    if (!meta || !subs.length) return null;
+    if (lookupOff || !meta || !subs.length) return null;
     const key = learnedLookupKey(R, subs, reagent);
     if (!key) return null;
     const X = await learnedPart('x/' + key.slice(0, 2));
@@ -3133,7 +3134,24 @@
   document.getElementById('rxn-t-failed').addEventListener('click', () => runTests(true));
   document.getElementById('rxn-t-stop').addEventListener('click', () => { if (testRun) testRun.stop = true; });
   document.getElementById('rxn-t-close').addEventListener('click', () => { if (testRun) testRun.stop = true; testsPanel.hidden = true; });
-  window.ReactionsTests = { run: runTests, results: () => lastResults, running: () => !!testRun };
+  /* One reaction code through the page exactly as a click would, for a benchmark (tools/patent_bench.js): what the page shows, not graded here */
+  async function benchPredict(code) {
+    const R = await loadRD();
+    if (!R) return { error: 'RDKit did not load' };
+    if (products.classList.contains('on')) { document.getElementById('rxn-arrow').dispatchEvent(new MouseEvent('click', { bubbles: true })); await new Promise(r => setTimeout(r, 50)); }
+    codeBar.value = code;
+    codeBar.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await codeBarBusy;
+    if (codeBar.classList.contains('bad')) return { error: codeBar.title || 'the code bar refused the code' };
+    await new Promise(r => setTimeout(r, 60));
+    document.getElementById('rxn-arrow').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    const done = await waitFor(() => { const v = ruleNote.firstChild; return v && v.textContent && !v.textContent.startsWith('Running'); }, 90000);
+    if (!done) return { error: 'timed out' };
+    await new Promise(r => setTimeout(r, 60));
+    return { products: prodInput.value.split('.').filter(Boolean), note: (ruleNote.firstChild && ruleNote.firstChild.textContent) || '',
+             reading: (ruleNote.innerText || '').slice(0, 4000), bar: codeBar.value };
+  }
+  window.ReactionsTests = { run: runTests, results: () => lastResults, running: () => !!testRun, predict: benchPredict, lookup: on => { lookupOff = !on; } };
 
 
   /* ---- what the suggestion panel (js/advisor.js) may ask of this page ---- */
