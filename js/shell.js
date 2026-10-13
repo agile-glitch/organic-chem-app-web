@@ -29,6 +29,7 @@
     t.frame = document.createElement('iframe');
     t.frame.title = t.name;
     t.frame.src = `app.html?embed=${app}#${app}`;
+    if (window.Usage) window.Usage.track('open', app);
     frames.appendChild(t.frame);
     open.push(t);
     show(t);
@@ -76,6 +77,13 @@
       deliver(to);
     }
   });
+
+  /* usage (js/usage.js): one visit per browser tab, and the visitor's random username under the links */
+  if (window.Usage) {
+    try { if (!sessionStorage.getItem('agilechem.visited')) { sessionStorage.setItem('agilechem.visited', '1'); window.Usage.track('visit', 'home'); } }
+    catch (e) { window.Usage.track('visit', 'home'); }
+    const u = $('userName'); if (u) u.textContent = '· ' + window.Usage.user;
+  }
 
   homeTab.addEventListener('click', () => show(null));
   document.querySelectorAll('[data-app]').forEach(b => b.addEventListener('click', () => openApp(b.dataset.app)));

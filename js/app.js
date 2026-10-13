@@ -16,7 +16,11 @@
   const tabs = document.querySelectorAll('.tab');
   const pages = document.querySelectorAll('.page');
 
+  let shown = null;
   function showPage(name) {
+    // app.html on its own counts each page opened (js/usage.js); inside a home-screen tab the home screen counts it
+    if (name !== shown && !(new URLSearchParams(location.search).get('embed') && window.parent !== window) && window.Usage) window.Usage.track('open', name);
+    shown = name;
     tabs.forEach(t => t.classList.toggle('active', t.dataset.page === name));
     pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
     location.hash = name;
