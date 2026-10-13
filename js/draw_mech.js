@@ -130,7 +130,7 @@
       t = new D.MoleculeBox();
       if (/[@\/\\]/.test(smiles)) t.setMolecule(smiles);
       else { let g = null; try { g = C.parseSmiles(smiles); } catch (e) { g = null; } t.setGraph(g, smiles); }
-      if (t.lay) { straighten(t); if (placeHs(t.lay)) t.refreshDisplay(); } else t = null;
+      if (t.lay) { straighten(t); crossCentre(t); if (placeHs(t.lay)) t.refreshDisplay(); } else t = null;
       if (made.size > 300) made.clear();
       made.set(smiles, t);
     }
@@ -195,6 +195,69 @@
     }
     box.refreshDisplay();
   }
+  /* a non-carbon centre with four or more bonds (MnO4⁻, CrO2Cl2, H2SO4, Ph3P⁺–CH2R) is drawn the way a textbook draws it:
+     four bonds as a cross, 90° apart (Chem's layout leaves two of them 60° apart, with no room for the arrows and lone
+     pairs between them), and branches that crowd each other (three phenyls on P touching at a corner) spread evenly over
+     the room the centre's ring bonds leave. Each branch that does not lead back to the centre is turned rigidly about it;
+     the order round the centre is kept, and nothing is changed unless the branches end up further apart than before */
+  function crossCentre(box) {
+    const lay = box.lay; if (!lay || hasStereo(box)) return;
+    const byId = new Map(lay.atoms.map(a => [a.id, a])), adj = new Map(lay.atoms.map(a => [a.id, []]));
+    lay.bonds.forEach(b => { if (adj.has(b.a) && adj.has(b.b)) { adj.get(b.a).push(b.b); adj.get(b.b).push(b.a); } });
+    const lens = lay.bonds.map(b => { const p = byId.get(b.a), q = byId.get(b.b); return p && q ? dist(p, q) : 0; }).filter(x => x > 1e-6);
+    const L = lens.length ? mean(lens) : BOND;
+    let moved = false;
+    for (const c of lay.atoms) {
+      const ns = adj.get(c.id).map(id => byId.get(id)).filter(Boolean);
+      if (c.element === 'C' || c.element === 'H' || ns.length < 4) continue;
+      const reach = from => { const seen = new Set([from]), todo = [from]; while (todo.length) { const id = todo.pop(); for (const m of adj.get(id)) if (m !== c.id && !seen.has(m)) { seen.add(m); todo.push(m); } } return seen; };
+      const br = new Map(ns.map(n => [n.id, reach(n.id)]));
+      const plain = n => ![...br.get(n.id)].some(id => id !== n.id && ns.some(o => o.id === id));
+      const ang = n => norm(Math.atan2(n.y - c.y, n.x - c.x));
+      const order = ns.slice().sort((p, q) => ang(p) - ang(q));
+      const owner = new Map(); ns.forEach(n => br.get(n.id).forEach(id => { if (!owner.has(id)) owner.set(id, n.id); }));
+      const apart = pos => { let m = Infinity; for (const a of lay.atoms) for (const b of lay.atoms) { if (a.id >= b.id || a === c || b === c) continue; const oa = owner.get(a.id), ob = owner.get(b.id); if (oa == null || ob == null || oa === ob) continue; m = Math.min(m, dist(pos(a), pos(b))); } return m; };
+      let fixed = order.filter(n => !plain(n));
+      const allEnd = ns.every(n => adj.get(n.id).length === 1);
+      if (!fixed.length && !allEnd) fixed = [order.slice().sort((p, q) => br.get(q.id).size - br.get(p.id).size)[0]];
+      // candidate placements: each plain branch spread over the arc between fixed bonds it is in (four bonds and one
+      // fixed: a cross), evenly or pushed a little toward one end of its arc (away from a ring hanging off a fixed branch)
+      const cands = [];
+      if (!fixed.length) {                        // all end atoms: an upright cross
+        const a0 = Math.round(ang(order[0]) / (90 * DEG)) * 90 * DEG;
+        if (ns.length === 4) cands.push(new Map(order.map((n, k) => [n.id, a0 + k * 90 * DEG])));
+      } else {
+        const fa = fixed.map(ang).sort((p, q) => p - q);
+        for (const [w1, w2] of [[1, 1], [1.25, 1], [1, 1.25], [1.5, 1], [1, 1.5], [1.25, 1.25]]) {
+          const want = new Map();
+          fa.forEach((f, k) => {
+            const e = k + 1 < fa.length ? fa[k + 1] : fa[0] + TAU, inArc = order.filter(n => !fixed.includes(n) && norm(ang(n) - f) < e - f).sort((p, q) => norm(ang(p) - f) - norm(ang(q) - f));
+            const n = inArc.length, sp = (e - f) / (n + 1), m1 = sp * w1, m2 = sp * w2;
+            inArc.forEach((nb, j) => want.set(nb.id, n === 1 ? f + (e - f) * w1 / (w1 + w2) : f + m1 + (e - f - m1 - m2) * j / (n - 1)));
+          });
+          cands.push(want);
+        }
+      }
+      const before = apart(a => a);
+      let best = null;
+      // (five or more bonds, three of them to rings, may not fit at bond length: those bonds may be drawn a little longer)
+      for (const stretch of ns.length >= 5 ? [1, 1.2, 1.35] : [1]) for (const want of cands) {
+        const out = new Map();
+        want.forEach((th, id) => {
+          const n = byId.get(id), d = th - Math.atan2(n.y - c.y, n.x - c.x), cs = Math.cos(d), sn = Math.sin(d), u = unit(n.x - c.x, n.y - c.y), ex = (stretch - 1) * dist(n, c);
+          if (Math.abs(Math.atan2(sn, cs)) < 1e-3 && stretch === 1) return;
+          for (const a of br.get(id)) { const p = byId.get(a), dx = p.x - c.x + u.x * ex, dy = p.y - c.y + u.y * ex; out.set(a, { x: c.x + dx * cs - dy * sn, y: c.y + dx * sn + dy * cs }); }
+        });
+        const after = apart(a => out.get(a.id) || a), sc = Math.min(after, 0.7 * L) - (stretch - 1) * 30;
+        if (after >= 0.55 * L && (!best || sc > best.sc + 0.5)) best = { out, after, sc };
+      }
+      if (!best || !best.out.size || best.after < before - 1 || best.after < 0.55 * L) continue;
+      if (!(ns.length === 4 && fixed.length <= 1) && before >= 0.75 * L) continue;   // a crowd only: leave a centre with room alone
+      best.out.forEach((xy, id) => { const a = byId.get(id); a.x = xy.x; a.y = xy.y; });
+      moved = true;
+    }
+    if (moved) box.refreshDisplay();
+  }
   /* an explicit H (an engine graph's, or [H] in a SMILES) as laid out can lie on another bond, crowd another atom, or
      continue a bond in a straight line (H–C2–C3 reading as one bond). Such an H goes into the widest free gap round its
      atom at bond length (with one other bond: 120° from it, a zigzag). An H on a wedge keeps its place. true: one moved */
@@ -245,6 +308,22 @@
     if (box.lay && placeHs(box.lay)) box.refreshDisplay();
     return box.lay ? { box, byId: true } : { text: '(structure)' };
   }
+  /* an engine step's graph holds everything in the flask; a piece no arrow touches (the Br⁻ left by an ionisation) is a
+     spectator, drawn as a species of its own after a '+', not parked against the cation it came from */
+  function graphParts(step) {
+    const g = step.graph, atoms = g.atoms || [], bonds = g.bonds || [], used = new Set();
+    for (const ar of step.gArrows || []) for (const e of [ar.from || {}, ar.to || {}]) [e.atom, e.a, e.b].forEach(id => { if (id != null) used.add(id); });
+    const comp = new Map(), adj = new Map(atoms.map(a => [a.id, []]));
+    bonds.forEach(b => { if (adj.has(b.a) && adj.has(b.b)) { adj.get(b.a).push(b.b); adj.get(b.b).push(b.a); } });
+    let n = 0;
+    for (const a of atoms) { if (comp.has(a.id)) continue; const todo = [a.id]; comp.set(a.id, n); while (todo.length) { const id = todo.pop(); for (const m of adj.get(id)) if (!comp.has(m)) { comp.set(m, n); todo.push(m); } } n++; }
+    const hot = new Set([...used].filter(id => comp.has(id)).map(id => comp.get(id)));
+    if (!hot.size || hot.size === n) return [g];
+    const part = keep => ({ atoms: atoms.filter(a => keep(comp.get(a.id))), bonds: bonds.filter(b => keep(comp.get(b.a))) });
+    const out = [Object.assign({}, g, part(k => hot.has(k)))];
+    for (let k = 0; k < n; k++) if (!hot.has(k)) out.push(part(x => x === k));
+    return out;
+  }
   const hasStereo = box => /[@\/\\]/.test(box.smiles || '') || box.lay.bonds.some(b => b.stereo);
   /* two atoms of one molecule that the step brings together (the ends of a diene, a peracid's H and its C=O) but the layout
      put far apart across a single bond (s-trans): one side is reflected across that bond, a turn about it that changes
@@ -278,6 +357,51 @@
     }
     if (moved) box.refreshDisplay();
     return moved;
+  }
+
+  /* a bond's electrons moving onto (or toward) a neighbour of one of its atoms — a 1,2-shift, a C–H pushing into a C=O
+     next door, a migration to O — read best when that neighbour sits right beside the bond: with another of the pivot
+     atom's bonds between them, the arrow has to cross it. Two plain branches on the pivot (no ring back to it, no stereo
+     marks) are swapped, a turn of each about the pivot, when that brings the two side by side without crowding */
+  function bringBeside(box, pivot, other, x) {
+    const lay = box.lay; if (!lay || hasStereo(box)) return false;
+    const byId = new Map(lay.atoms.map(a => [a.id, a])), adj = new Map(lay.atoms.map(a => [a.id, []]));
+    lay.bonds.forEach(b => { if (adj.has(b.a) && adj.has(b.b)) { adj.get(b.a).push(b.b); adj.get(b.b).push(b.a); } });
+    const P0 = byId.get(pivot); if (!P0 || !adj.has(other) || !adj.has(x)) return false;
+    const ns = adj.get(pivot); if (ns.length < 4 || !ns.includes(other) || !ns.includes(x)) return false;
+    const ang = id => { const a = byId.get(id); return norm(Math.atan2(a.y - P0.y, a.x - P0.x)); };
+    const besides = pos => { const order = ns.slice().sort((p, q) => pos(p) - pos(q)), i = order.indexOf(other), j = order.indexOf(x), n = order.length; return (i - j + n) % n === 1 || (j - i + n) % n === 1; };
+    if (besides(ang)) return false;
+    const reach = from => { const seen = new Set([from]), todo = [from]; while (todo.length) { const id = todo.pop(); for (const m of adj.get(id)) if (m !== pivot && !seen.has(m)) { seen.add(m); todo.push(m); } } return seen; };
+    const branch = new Map(ns.map(m => [m, reach(m)]));
+    const plain = m => ![...branch.get(m)].some(id => id !== m && ns.includes(id));
+    const L = mean(lay.bonds.map(b => { const p = byId.get(b.a), q = byId.get(b.b); return p && q ? dist(p, q) : BOND; }));
+    let best = null;
+    for (let i = 0; i < ns.length; i++) for (let j = i + 1; j < ns.length; j++) {
+      const m1 = ns[i], m2 = ns[j]; if (!plain(m1) || !plain(m2)) continue;
+      const d = ang(m2) - ang(m1), out = new Map();
+      for (const [m, t] of [[m1, d], [m2, -d]]) { const cs = Math.cos(t), sn = Math.sin(t); for (const id of branch.get(m)) { const a = byId.get(id), dx = a.x - P0.x, dy = a.y - P0.y; out.set(id, { x: P0.x + dx * cs - dy * sn, y: P0.y + dx * sn + dy * cs }); } }
+      const pos = id => out.get(id) || byId.get(id), posA = id => norm(Math.atan2(pos(id).y - P0.y, pos(id).x - P0.x));
+      if (!besides(posA)) continue;
+      const setOf = id => (branch.get(m1).has(id) ? 1 : branch.get(m2).has(id) ? 2 : 0);
+      if (lay.atoms.some(a => out.has(a.id) && lay.atoms.some(o => o.id !== pivot && o.id !== a.id && setOf(o.id) !== setOf(a.id) && dist(pos(a.id), pos(o.id)) < 0.55 * L))) continue;
+      if (!best || out.size < best.size) best = out;
+    }
+    if (!best) return false;
+    best.forEach((xy, id) => { const a = byId.get(id); a.x = xy.x; a.y = xy.y; });
+    box.refreshDisplay();
+    return true;
+  }
+  function besideAll(arrows) {
+    for (const ar of arrows) {
+      if (!ar.B || ar.tk === 'own' || ar.A.box !== ar.B.box) continue;
+      for (const x of [ar.Cc, ar.Dd].filter(Boolean)) {
+        if (same(x, ar.A) || same(x, ar.B) || x.box !== ar.A.box) continue;
+        const pivot = [ar.A, ar.B].find(r => bonded(r, x)); if (!pivot) continue;
+        const other = same(pivot, ar.A) ? ar.B : ar.A;
+        bringBeside(x.box, pivot.id, other.id, x.id);
+      }
+    }
   }
 
   /* ---------- the arrows of a step: [{fish, A, B, Cc, Dd, raw}], each end {sp, box, id} ---------- */
@@ -347,16 +471,20 @@
     return mid(P(ar.Cc), P(ar.Dd));
   }
   const sourcePoint = ar => (ar.B ? mid(P(ar.A), P(ar.B)) : P(ar.A));
+  /* a lone pair pushed into a bond of its own atom (O⁻ re-forming C=O): the pair sits beside the bond, not on it, and the
+     arrow curls out from it and comes down onto the middle of the bond */
+  const lpOwn = ar => ar.tk === 'pi' && !ar.B && (same(ar.A, ar.Cc) || same(ar.A, ar.Dd));
+  const lpOwnDir = ar => { const a = P(ar.A), o = P(same(ar.A, ar.Cc) ? ar.Dd : ar.Cc); return Math.atan2(o.y - a.y, o.x - a.x); };
 
   /* ---------- the row: species left to right ---------- */
   const molMid = box => (box.h - box.captionHeight()) / 2;
   /* each molecule centred on y = 0, or nudged up/down to meet the species an arrow comes from: returns where the row has
      got to and where the '+' signs go */
   function placeSpecies(species, arrows) {
-    let x = 0; const plusAt = [];
+    let x = 0; const plusAt = [], mids = [];
     species.forEach((sp, k) => {
       if (k) { plusAt.push(x + GAP / 2 + 8); x += GAP + 16; }
-      if (!sp.box) { const t = sp.item || (sp.item = textItem(sp.text, 15)), b = t.bbox(); t.x = x; t.y = -b.h / 2; t.render(); x += b.w; return; }
+      if (!sp.box) { const t = sp.item || (sp.item = textItem(sp.text, 15)), b = t.bbox(); t.x = x; t.y = -b.h / 2; t.render(); x += b.w; mids.push(0); return; }
       const box = sp.box; box.x = x; box.y = -molMid(box);
       const mine = [], theirs = [];
       for (const ar of arrows) {
@@ -365,12 +493,14 @@
       }
       if (mine.length && theirs.length) {
         const want = mean(theirs.map(r => P(r).y)), have = mean(mine.map(r => P(r).y));
-        const lim = 0.3 * Math.max(box.h, ...theirs.map(r => r.box.h));
+        const lim = Math.min(40, 0.3 * Math.max(box.h, ...theirs.map(r => r.box.h)));
         box.y += Math.max(-lim, Math.min(lim, want - have));
       }
+      mids.push(box.y + molMid(box));
       x += box.w;
     });
-    return { x, plusAt };
+    // each '+' level with the two species it joins (one nudged up to meet an arrow takes its '+' signs part of the way)
+    return { x, plusAt: plusAt.map((px, k) => ({ x: px, y: (mids[k] + mids[k + 1]) / 2 })) };
   }
   /* how good a placement of the species is (lower is better): how far the electrons travel between species (source to
      target) and across each new bond that joins two species, an attack from the same side as the group leaving the atom
@@ -509,7 +639,7 @@
           inside.push({ th, half: angDist(Math.atan2(q1.y - p.y, q1.x - p.x), Math.atan2(q2.y - p.y, q2.x - p.x)) / 2 });
           occ.push(th, th - 25 * DEG, th + 25 * DEG);
         }
-        out.set(entryKey({ box, id: atom.id }, boxes), { box, i, id: atom.id, at, rects, segs, occ: occ.concat(occQ), occNoQ: occ, bondDirs, inside, bonded: bondDirs.length > 0 || hAng != null, pairs, singles, fixed: [], extra: [] });
+        out.set(entryKey({ box, id: atom.id }, boxes), { box, i, id: atom.id, at, rects, segs, occ: occ.concat(occQ), occNoQ: occ, bondDirs, hAng, qAng: occQ[0], inside, bonded: bondDirs.length > 0 || hAng != null, pairs, singles, fixed: [], extra: [] });
       });
     });
     return out;
@@ -616,8 +746,12 @@
         // nothing drawn on the atom (a metal: Pd's d electrons, Na's 3s electron): the electrons the arrow moves are drawn at its tail
         pair = !ar.fish; extra = true;
       }
-      const T = targetPoint(ar), want = Math.atan2(T.y - e.at.y, T.x - e.at.x);
-      const th = e.bonded ? nearestFree(e, e.occ.concat(e.fixed.map(f => f.th)), want, pair) : want;
+      const T = targetPoint(ar), occ = e.occ.concat(e.fixed.map(f => f.th));
+      let want = Math.atan2(T.y - e.at.y, T.x - e.at.x), th;
+      if (lpOwn(ar) && e.bonded) {               // beside its bond, on whichever side has room
+        const b = lpOwnDir(ar), opts = [b + 75 * DEG, b - 75 * DEG].map(w => ({ w, th: nearestFree(e, occ, w, pair) }));
+        const o = opts.sort((p, q) => angDist(p.th, p.w) - angDist(q.th, q.w))[0]; want = o.w; th = o.th;
+      } else th = e.bonded ? nearestFree(e, occ, want, pair) : want;
       const f = { pair, th, R: clearRadius(e, th, pair), source: true, extra };
       const others = e.fixed.slice();
       for (let k = 0; k < 40 && others.some(g => groupGap(f, g) < GROUP_SEP); k++) f.R += 0.5;   // clear of a pair another arrow leaves
@@ -654,7 +788,7 @@
           for (const g of groups) {
             for (const q of groupDots(g, e.at)) for (const a of close) { const d = dist(q, a); if (d < 8) sc += (8 - d) ** 2 * 1.5; }
             const bclear = e.bondDirs.length ? Math.min(...e.bondDirs.map(b => angDist(b, g.th))) : Math.PI;
-            if (bclear < 35 * DEG) sc += (35 * DEG - bclear) / DEG * 0.8;
+            if (bclear < 50 * DEG) sc += (50 * DEG - bclear) / DEG * 0.8 + (bclear < 35 * DEG ? (35 * DEG - bclear) / DEG * 0.8 : 0);   // (a pair by a bond's end looks bonded)
             sc += e.inside.some(r => angDist(g.th, r.th) < r.half) ? 25 : 0;
             for (const o of all) if (o !== g) { const d = groupGap(g, o); if (d < GROUP_SEP) sc += (GROUP_SEP - d) * 4 + (d < 10 ? 40 : 0); }
           }
@@ -727,14 +861,20 @@
     if (ar.src) {                                  // the electrons facing the target, or turned up to 80° round the atom (an arrow
       const f = ar.src, e = ar.srcEntry, out = [];  // that would cross another, or a bond, may leave from another side)
       if (f.th0 === undefined) f.th0 = f.th;
-      const taken = e ? e.occ.concat(e.fixed.filter(g => g !== f).map(g => g.th)) : [];
-      for (const d of [0, -40, 40, -80, 80]) {
-        const th = f.th0 + d * DEG;
-        if (d && (!e || taken.some(o => angDist(o, th) < 38 * DEG))) continue;
-        const R = d && e ? clearRadius(e, th, f.pair) : f.R0 || f.R;
-        if (d && e && e.fixed.some(g => g !== f && groupGap({ pair: f.pair, th, R }, g) < GROUP_SEP)) continue;
-        out.push({ p: { x: a.x + (R + 4.5) * Math.cos(th), y: a.y + (R + 4.5) * Math.sin(th) }, out: th, src: { th, R }, pen: Math.abs(d) / 40 * 5 });
+      // (clear of its bonds, of the H's written beside it (OH, NH2) and of its charge; a ring's inside is no place either)
+      const free = th => e && e.bondDirs.every(o => angDist(o, th) >= 38 * DEG) && (e.hAng == null || angDist(e.hAng, th) >= 48 * DEG) &&
+        (e.qAng == null || angDist(e.qAng, th) >= 30 * DEG) && !e.inside.some(r => angDist(r.th, th) < r.half);
+      // (a pair pushed into its own bond: anywhere 50–110° off that bond, on either side; another arrow's pair: any side,
+      // the nearer its target the better)
+      const cands = lpOwn(ar) && e ? [50, 60, 75, 90, 105].flatMap(d => [1, -1].map(sd => ({ th: lpOwnDir(ar) + sd * d * DEG, pen: Math.abs(d - 75) / 15 * 2, any: true })))
+        : [0, -20, 20, -40, 40, -60, 60, -80, 80, -100, 100, -120, 120, -140, 140, 160, -160, 180].map(d => ({ th: f.th0 + d * DEG, pen: Math.abs(d) / 40 * 5 + (Math.abs(d) > 80 ? (Math.abs(d) - 80) / 20 * 6 : 0), any: !!d }));
+      for (const { th, pen, any } of cands) {
+        if (any && !free(th)) continue;
+        const R = any && e ? clearRadius(e, th, f.pair) : f.R0 || f.R;
+        if (any && e && e.fixed.some(g => g !== f && groupGap({ pair: f.pair, th, R }, g) < GROUP_SEP)) continue;
+        out.push({ p: { x: a.x + (R + 4.5) * Math.cos(th), y: a.y + (R + 4.5) * Math.sin(th) }, out: th, src: { th, R }, pen });
       }
+      if (!out.length && lpOwn(ar)) out.push({ p: { x: a.x + ((f.R0 || f.R) + 4.5) * Math.cos(f.th0), y: a.y + ((f.R0 || f.R) + 4.5) * Math.sin(f.th0) }, out: f.th0, src: { th: f.th0, R: f.R0 || f.R }, pen: 0 });
       return out;
     }
     const T = targetPoint(ar), u = unit(T.x - a.x, T.y - a.y), r = (rectsOf(ar.A).length ? exitDist(rectsOf(ar.A), u.x, u.y) : 4) + 4;
@@ -755,19 +895,33 @@
         // clear of its H's by 10 px, of its charge by 6 (the '+' of a C+ sits where an attack on it comes from)
         rest.forEach((r, j) => { const lim = j === 0 && charged ? 6 : 10, d = rectDist(p.x - c.x, p.y - c.y, r); if (d < lim) pen += (lim - d) ** 2 * 4; });
         for (const b of bdirs) { const a = angDist(th, b); if (a < 40 * DEG) pen += ((40 * DEG - a) / (10 * DEG)) ** 2 * 6; }
-        out.push({ p, pen: pen + spotPen(p, ar, ctx, skip), c });
+        out.push({ p, pen: pen + spotPen(p, ar, ctx, skip), c, X });
       }
     };
     if (ar.tk === 'atom') { const c = P(ar.X); atomEnds(ar.X, Math.atan2(s.y - c.y, s.x - c.x), 1); return out; }
     if (ar.tk === 'own') {
       const other = same(ar.X, ar.A) ? ar.B : ar.A, { n } = bondMid(ar.A, ar.B), c = P(ar.X), o = P(other);
       // beside the atom on the hook's side, a little toward the bond it comes from (pushArrow)
-      const side = tail.side || ar.hookSide || 1, back = unit(o.x - c.x, o.y - c.y), w = unit(n.x * side + 0.45 * back.x, n.y * side + 0.45 * back.y);
-      atomEnds(ar.X, Math.atan2(w.y, w.x), 2, 150 * DEG); return out;
+      // (on the freer side of the bond, or the other side when that is clear and this one is not)
+      const back = unit(o.x - c.x, o.y - c.y);
+      for (const side of tail.side ? [tail.side] : [ar.hookSide || 1, -(ar.hookSide || 1)]) {
+        const w = unit(n.x * side - 0.1 * back.x, n.y * side - 0.1 * back.y), k0 = out.length;
+        atomEnds(ar.X, Math.atan2(w.y, w.x), 2, 150 * DEG);
+        out.slice(k0).forEach(h => { h.side = side; if (side !== (ar.hookSide || 1)) h.pen += 6; });
+      }
+      return out;
     }
     if (ar.tk === 'pi') {                          // the middle of the bond, just off its lines on either side
       const { m, u, n } = bondMid(ar.Cc, ar.Dd), b = bondOf(ctx, ar.Cc, ar.Dd), mine = b ? ctx.ink.filter(l => l.bond === b) : [];
       const skip = { atoms: [ar.Cc, ar.Dd], bonds: b ? [b] : [] };
+      if (lpOwn(ar)) {                             // onto the middle of the bond, from the pair's side, nearly touching its outer line
+        for (const sd of [1, -1]) {
+          const outer = Math.max(0, ...mine.map(l => { const q = mid(l.P, l.Q); return ((q.x - m.x) * n.x + (q.y - m.y) * n.y) * sd; }));
+          const away = ((s.x - m.x) * n.x + (s.y - m.y) * n.y) * sd < 0 ? 80 : 0;
+          for (const t of [0, -3, 3]) { const p = along(along(m, u, t), n, sd * (outer + 3.2)); out.push({ p, pen: away + Math.abs(t) * 0.6 + spotPen(p, ar, ctx, skip), inward: { x: -n.x * sd, y: -n.y * sd } }); }
+        }
+        return out;
+      }
       for (const sd of [1, -1]) for (const t of [0, -5, 5]) {
         let off = 4.5; const base = along(m, u, t);
         while (off < 16 && mine.some(l => segDist(along(base, n, sd * off), l.P, l.Q) < 4)) off += 1;
@@ -815,7 +969,7 @@
     const skip0 = { atoms: farMate ? [] : ar.tk === 'pi' || (ar.tk === 'bond' && !(ar.X && isFar(ar) && !ar.mate)) ? [ar.Cc, ar.Dd] : [ar.X || ar.Cc], bonds: [tgtBond].filter(Boolean) };
     const centre = (() => { const os = ctx.atoms.filter(o => o.sp === ar.A.sp || o.sp === ar.Cc.sp); return { x: mean(os.map(o => o.P.x)), y: mean(os.map(o => o.P.y)) }; })();
     let best = null;
-    for (const tail of tailOptions(ar, ctx)) {
+    for (const tail of tailOptions(ar, ctx).sort((p, q) => (p.pen || 0) - (q.pen || 0))) {
       // the source bond's line the tail is on is passed over; its other lines (a C=C's second line) are not
       const skip = Object.assign({}, skip0, { lines: new Set(srcBond ? ctx.ink.filter(l => l.bond === srcBond && segDist(tail.p, l.P, l.Q) < 5.5) : []) });
       const s = tail.p, heads = headOptions(ar, ctx, tail).sort((p, q) => p.pen - q.pen).slice(0, 8);
@@ -825,13 +979,20 @@
         // a double bond's arrow leaves from the line on the side its head is
         const across = tail.side && !ar.share && ((head.p.x - s.x) * tail.n.x + (head.p.y - s.y) * tail.n.y) * tail.side < -2 ? 40 : 0;
         const e = head.p, L0 = Math.max(dist(s, e), 1), ch = unit(e.x - s.x, e.y - s.y);
-        const mags = [...new Set((L0 < 40 ? [7, 10, 13, 17, 22, 28] : [0.12, 0.2, 0.3, 0.42, 0.58, 0.78].map(f => Math.max(10, Math.min(95, f * L0)))).map(Math.round))];
-        for (const side of [1, -1]) for (const mag of mags) {
-          const bend = { x: -ch.y * side * mag, y: ch.x * side * mag }, cp = control(s, e, bend);
-          let sc = head.pen + (tail.pen || 0) + tailPen + across + arrowCost(s, e, bend, ar, ctx, skip, tail) + 0.08 * mag;   // (a wide loop is longer)
+        const mags = [...new Set((L0 < 40 ? [7, 10, 13, 17, 22, 28] : [0.12, 0.2, 0.3, 0.42, 0.5, 0.58, 0.68, 0.78].map(f => Math.max(10, Math.min(95, f * L0)))).map(Math.round))];
+        // (a short arrow's bulge may also lean toward its head or its tail: a hook that comes round into its atom)
+        const skews = L0 < 40 && (ar.tk === 'own' || ar.tk === 'atom' || lpOwn(ar)) ? [0, 0.45, -0.45] : L0 < 90 ? [0, 0.3, -0.3] : [0];
+        for (const side of [1, -1]) for (const mag of mags) for (const sk of skews) {
+          const bend = { x: -ch.y * side * mag + ch.x * sk * mag, y: ch.x * side * mag + ch.y * sk * mag }, cp = control(s, e, bend);
+          let sc = head.pen + (tail.pen || 0) + tailPen + across + 0.08 * mag + (L0 >= 40 && mag > 0.5 * L0 ? (mag - 0.5 * L0) * 2 : 0);   // (a wide loop is longer; a deep U reads badly)
           if (head.c) {                            // a head comes in toward the atom, not sliding along its letters
             const v = unit(e.x - cp.x, e.y - cp.y), r = unit(head.c.x - e.x, head.c.y - e.y), a = Math.acos(Math.max(-1, Math.min(1, v.x * r.x + v.y * r.y)));
-            if (a > 55 * DEG) sc += ((a - 55 * DEG) / (10 * DEG)) ** 2 * 4;
+            const lim = ar.tk === 'own' || ar.tk === 'atom' ? 30 : 55;
+            if (a > lim * DEG) sc += ((a - lim * DEG) / (10 * DEG)) ** 2 * (lim < 40 ? 8 : 4);
+          }
+          if (head.inward) {                       // onto a bond: across it, not along it
+            const v = unit(e.x - cp.x, e.y - cp.y), a = Math.acos(Math.max(-1, Math.min(1, v.x * head.inward.x + v.y * head.inward.y)));
+            if (a > 35 * DEG) sc += ((a - 35 * DEG) / (10 * DEG)) ** 2 * 8;
           }
           sc += (bend.x * (centre.x - (s.x + e.x) / 2) + bend.y * (centre.y - (s.y + e.y) / 2)) > 0 ? (ar.tk === 'own' ? 6 : 3) : 0;   // rather away from the molecules
           if (tail.side && ar.share) {             // a shared bond's arrow leaves on its own side, not straight on from the other's start
@@ -839,18 +1000,32 @@
             const o = ctx.placed.find(x => x.ar === ar.share);
             if (o) { const v = unit(cp.x - s.x, cp.y - s.y), w = unit(control(o.p1, o.p2, o.bend).x - o.p1.x, control(o.p1, o.p2, o.bend).y - o.p1.y); if (v.x * w.x + v.y * w.y < -0.8) sc += 25; }
           }
-          if (ar.tk === 'own' && !ar.share) { const { n } = bondMid(ar.A, ar.B); if (((cp.x - s.x) * n.x + (cp.y - s.y) * n.y) * ar.hookSide < 0) sc += 8; }
+          if ((ar.tk === 'own' || lpOwn(ar)) && mag < 0.32 * L0) sc += (0.32 * L0 - mag) * 3;   // a hook reads as a hook, not a stub under its head
+          if ((ar.tk === 'own' || lpOwn(ar)) && L0 < 20) sc += (20 - L0) * 5;   // (and is long enough to be more than its head)
+          if (L0 < 40 && mag > 0.8 * L0) sc += (mag - 0.8 * L0) * 4;   // (nor a tall thin loop)
+          if (ar.tk === 'own' && !ar.share) { const { n } = bondMid(ar.A, ar.B); if (((cp.x - s.x) * n.x + (cp.y - s.y) * n.y) * (head.side || ar.hookSide) < 0) sc += 8; }
+          sc += headInk(e, cp, head, ctx);
           if (ar.mate) {                           // the two fishhooks on one side of the new bond, tips side by side (not tip to tip)
             const c = P(ar.Cc), d = P(ar.Dd);
             if (Math.sign(cross2(c, d, cp)) !== ar.forceSide) sc += 200;
             const arrive = unit(e.x - cp.x, e.y - cp.y), lu = unit(d.x - c.x, d.y - c.y), a = Math.acos(Math.min(1, Math.abs(arrive.x * lu.x + arrive.y * lu.y)));
             if (a < 40 * DEG) sc += ((40 * DEG - a) / (10 * DEG)) ** 2 * 6;
           }
+          if (best && sc >= best.sc) continue;    // (the path's own cost is never negative: no need to work it out)
+          sc += arrowCost(s, e, bend, ar, ctx, skip, tail);
           if (!best || sc < best.sc) best = { sc, p1: s, p2: e, bend, side: tail.side || 0, src: tail.src };
         }
       }
     }
     return best;
+  }
+  /* the arrowhead itself (9.5 px back from its tip) kept off its atom's charge and H's, and off bond lines */
+  function headInk(e, cp, head, ctx) {
+    const v = unit(cp.x - e.x, cp.y - e.y), pts = [0.45, -0.45, 0].map(a => { const c = Math.cos(a), sn = Math.sin(a); return along(e, { x: v.x * c - v.y * sn, y: v.x * sn + v.y * c }, a ? 9.5 : 5); });
+    let k = 0;
+    if (head.X) { const c = P(head.X); for (const r of rectsOf(head.X).slice(1)) for (const q of pts) { const d = rectDist(q.x - c.x, q.y - c.y, r); if (d < 4) k += (4 - d) ** 2 * 6; } }
+    for (const l of ctx.ink) for (const q of pts.concat([e])) { const d = segDist(q, l.P, l.Q); if (d < 3) k += (3 - d) ** 2 * 6; }
+    return k;
   }
   function arrowCost(s, e, bend, ar, ctx, skip, tail) {
     const c = control(s, e, bend), pts = [];
@@ -876,6 +1051,15 @@
       for (const r of ctx.room) { if ((!ar.B && same(r.ref, ar.A)) || skip.atoms.some(x => same(x, r.ref))) continue; const d = dist(q, r.P); if (d < 26) k += (26 - d) ** 2 * 0.2 * r.n; }
     }
     for (const o of ctx.placed) if (o.ar !== ar && o.ar !== ar.mate) k += crossings(pts, o.pts) * 120;   // arrows that cross cannot be told apart
+    {                                              // nor go across a bond
+      const srcB = ar.B ? (ar.srcBond !== undefined ? ar.srcBond : (ar.srcBond = bondOf(ctx, ar.A, ar.B) || null)) : null;
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const q of pts) { if (q.x < x0) x0 = q.x; if (q.x > x1) x1 = q.x; if (q.y < y0) y0 = q.y; if (q.y > y1) y1 = q.y; }
+      for (const l of ctx.ink) {
+        if (Math.max(l.P.x, l.Q.x) < x0 || Math.min(l.P.x, l.Q.x) > x1 || Math.max(l.P.y, l.Q.y) < y0 || Math.min(l.P.y, l.Q.y) > y1) continue;
+        if (l.bond !== srcB && !skip.bonds.includes(l.bond) && crossings(pts, [l.P, l.Q])) k += 70;
+      }
+    }
     const v0 = Math.atan2(c.y - s.y, c.x - s.x);
     if (tail.out != null) { const a = angDist(v0, tail.out); if (a > 75 * DEG) k += ((a - 75 * DEG) / (10 * DEG)) ** 2 * 20; }   // leave the electrons outward, not back over the atom
     if (tail.bondDir != null) { const a = Math.min(angDist(v0, tail.bondDir), angDist(v0, tail.bondDir + Math.PI)); if (a < 30 * DEG) k += ((30 * DEG - a) / (10 * DEG)) ** 2 * 20; }   // not along the bond it leaves
@@ -916,10 +1100,11 @@
   /* ---------- one step: a row of items laid out about y = 0, then moved into place ---------- */
   function buildRow(step) {
     const row = [], species = [];
-    if (step.graph) species.push(graphSpecies(step.graph));
+    if (step.graph) graphParts(step).forEach(g => species.push(graphSpecies(g)));
     else if (step.before) String(step.before).split('.').filter(Boolean).forEach(piece => species.push(smilesSpecies(piece)));
     const res = (step.graph || step.before) ? resolveArrows(step, species) : { arrows: [], tokens: 0, unresolved: [] };
     for (const ar of res.arrows) if (ar.shift && shiftH(ar)) ar.Y.box.refreshDisplay();
+    besideAll(res.arrows);
     togetherPairs(species, res.arrows).forEach((pairs, k) => { if (species[k] && species[k].box && !species[k].byId) bringTogether(species[k].box, pairs); });
     orient(species, res.arrows);
     let { x, plusAt } = placeSpecies(species, res.arrows);
@@ -949,11 +1134,12 @@
     const electrons = placeRest(entries, ctx.placed.map(o => o.pts));
     /* each '+' on the middle line, or as little above / below it as keeps it clear of the arrows crossing the gap */
     const dots = electrons.map(e => ({ x: e.x, y: e.y })), heads = ctx.placed.map(o => o.p2), allPts = ctx.placed.flatMap(o => o.pts);
-    for (const px of plusAt) {
+    // (well clear of the arrowheads: a '+' over the spot where two fishhooks meet reads as part of the new bond)
+    for (const { x: px, y: py } of plusAt) {
       let best = null;
-      for (const dy of [0, -6, 6, -12, 12, -18, 18, -24, 24, -30, 30, -38, 38, -46, 46, -56, 56, -66, 66]) {
-        const q = { x: px, y: dy };
-        const clear = Math.min(14, ...allPts.map(p => dist(p, q) - 16), ...heads.map(p => dist(p, q) - 22), ...ctx.atoms.map(o => dist(o.P, q) - 18), ...dots.map(d => dist(d, q) - 12));
+      for (const dy of [0, -6, 6, -12, 12, -18, 18, -24, 24, -30, 30, -38, 38, -46, 46, -56, 56, -66, 66, -78, 78]) {
+        const q = { x: px, y: py + dy };
+        const clear = Math.min(14, ...allPts.map(p => dist(p, q) - 18), ...heads.map((p, i) => dist(p, q) - (ctx.placed[i].ar.mate ? 42 : 32)), ...ctx.atoms.map(o => dist(o.P, q) - 18), ...dots.map(d => dist(d, q) - 12));
         if (!best || clear > best.clear + 1e-6) best = { q, clear };
         if (clear >= 0) break;
       }
@@ -980,13 +1166,15 @@
       return { raw: ar.raw, item: ar.item, fish: ar.fish, tk: ar.tk, far, mate: !!ar.mate, share: !!ar.share,
         tailBond: ar.B ? bondMid(ar.A, ar.B).m : null, tailLines: b ? ctx.ink.filter(l => l.bond === b).map(l => [l.P, l.Q]) : null,
         src: ar.src ? { x: ar.src.cx, y: ar.src.cy } : null, X: ar.X ? P(ar.X) : null, Y: ar.Y ? P(ar.Y) : null,
-        Xrects: ar.X ? rectsOf(ar.X) : [], newBond: ar.Dd ? [P(ar.Cc), P(ar.Dd)] : null };
+        Xrects: ar.X ? rectsOf(ar.X) : [], newBond: ar.Dd ? [P(ar.Cc), P(ar.Dd)] : null,
+        tgtMid: ar.tk === 'pi' ? bondMid(ar.Cc, ar.Dd).m : null, tgtLines: tgtLines(ar, ctx), lpOwn: lpOwn(ar), ends: ends(ar).map(P), Xcharged: ar.X ? !!(ar.X.box.lay.atoms[ar.X.box.atomIndex(ar.X.id)] || {}).charge : false };
     });
     const extras = [];
     for (const e of entries.values()) for (const f of e.extra) extras.push({ box: e.box, id: e.id, pair: f.pair, item: f.item });
     return { row, res, species, info, extras };
   }
 
+  function tgtLines(ar, ctx) { const b = ar.tk === 'pi' ? bondOf(ctx, ar.Cc, ar.Dd) : null; return b ? ctx.ink.filter(l => l.bond === b).map(l => [l.P, l.Q]) : null; }
   function union(items) {
     let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     items.forEach(it => { const b = it.bbox(); x0 = Math.min(x0, b.x); y0 = Math.min(y0, b.y); x1 = Math.max(x1, b.x + b.w); y1 = Math.max(y1, b.y + b.h); });
@@ -1003,12 +1191,17 @@
     const line = (str, size, opts) => { const t = textItem(str, size, opts); t.x = X0; t.y = y; t.render(); y += t.bbox().h; return put(t); };
     line(payload.title || ('Mechanism for ' + (payload.name || 'this reaction')), 22, { bold: true });
     if (payload.status) line('Status: ' + payload.status, 13, { color: /^verified/.test(payload.status) ? '#2b8a3e' : '#9a3412' });
-    if (payload.onExample) line("Drawn on the workbook's example molecules (Mechanism sheet); the arrows are the same for your molecules.", 13, { color: '#555' });
+    // a workbook mechanism with an engine step put in (a carbocation shift): the engine's step is drawn on the user's own
+    // molecule, the workbook's on its example, so the molecule changes between them; said in the heading and at each change
+    const mixed = steps.some(st => st.graph) && steps.some(st => !st.graph && st.before);
+    if (mixed) line("The workbook's steps are drawn on its example molecules (Mechanism sheet); the step drawn on your own molecule is marked, so the molecules change there.", 13, { color: '#555' });
+    else if (payload.onExample) line("Drawn on the workbook's example molecules (Mechanism sheet); the arrows are the same for your molecules.", 13, { color: '#555' });
     const rx = payload.reaction || {};
     if ((rx.reactants || []).length || (rx.products || []).length) {
       const left = (rx.reactants || []).concat(rx.reagent ? [rx.reagent] : []).map(readable).filter(Boolean).join(' + ');
       const right = (rx.products || []).map(readable).filter(Boolean).join(' + ');
-      line(wrap('Your reaction: ' + left + (rx.conditions ? ' (' + rx.conditions + ')' : '') + (right ? ' → ' + right : ''), 110), 14, { color: '#333' });
+      const cond = String(rx.conditions || '').replace(/(-?\d+(?:\.\d+)?)\s*°?\s*C\b/g, '$1 °C');   // '170 C' → '170 °C'
+      line(wrap('Your reaction: ' + left + (cond ? ' (' + cond + ')' : '') + (right ? ' → ' + right : ''), 110), 14, { color: '#333' });
     }
     y += 18;
     let tokens = 0, drawn = 0; const unresolved = [], arrowInfo = [], extras = [];
@@ -1020,6 +1213,9 @@
       const { row, res, info, extras: ex } = buildRow(st);
       tokens += res.tokens; drawn += res.arrows.filter(ar => ar.item).length;
       res.unresolved.forEach(t => unresolved.push(`step ${no}: ${t}`));
+      const prev = steps[k - 1], swap = !mixed ? null : st.graph ? "Drawn on your molecule; the other steps use the workbook's example molecules." :
+        prev && prev.graph && st.before ? "Back on the workbook's example molecules (the step before was drawn on yours)." : null;
+      if (swap) { const t = textItem(swap, NOTE_PX, { color: '#777' }); t.x = X0; t.y = bottom + 2; t.render(); block.push(t); bottom = t.y + t.bbox().h; }
       if (!st.graph && !res.tokens) {          // the Mechanism sheet has no arrows for it yet (said, so it does not look like a slip)
         const t = textItem('The workbook has no arrows for this step yet.', NOTE_PX, { color: '#777' });
         t.x = X0; t.y = bottom + 2; t.render(); block.push(t); bottom = t.y + t.bbox().h;
@@ -1028,7 +1224,7 @@
         const u = union(row), dx = X0 + Math.max(0, -u.x), dy = bottom + 2 - u.y;
         row.forEach(it => it.translate(dx, dy));
         const mv = p => p && { x: p.x + dx, y: p.y + dy };
-        info.forEach(a => { a.step = no; a.tailBond = mv(a.tailBond); a.tailLines = a.tailLines && a.tailLines.map(l => l.map(mv)); a.src = mv(a.src); a.X = mv(a.X); a.Y = mv(a.Y); a.newBond = a.newBond && a.newBond.map(mv); });
+        info.forEach(a => { a.step = no; a.tailBond = mv(a.tailBond); a.tailLines = a.tailLines && a.tailLines.map(l => l.map(mv)); a.tgtMid = mv(a.tgtMid); a.ends = a.ends.map(mv); a.tgtLines = a.tgtLines && a.tgtLines.map(l => l.map(mv)); a.src = mv(a.src); a.X = mv(a.X); a.Y = mv(a.Y); a.newBond = a.newBond && a.newBond.map(mv); });
         block.push(...row); bottom = dy + u.y + u.h;
       }
       arrowInfo.push(...info); extras.push(...ex);
