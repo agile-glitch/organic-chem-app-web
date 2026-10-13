@@ -541,7 +541,7 @@
     modeButtons[m] = mk(txt, tip, () => setMode(m));
     if (m === 'text') {
       for (const [t2, tip2, s] of [['x₂', 'Subscript the selected text in a text box', -1], ['x²', 'Superscript the selected text in a text box', 1]]) mk(t2, tip2, () => toggleScript(s));
-      mk('☀', 'Light: put ☀ in the text box being edited, or a new text box (e.g. over a reaction arrow)', () => insertSymbol('☀'));
+      mk('Δ', 'Heat: put Δ in the text box being edited, or a new text box (e.g. over a reaction arrow)', () => insertSymbol('Δ'));
     }
     if (['text', 'arrow-resonance', 'lonepair'].includes(m)) gap();
   });
@@ -617,7 +617,7 @@
     item.setFromEditor(el); item.editing = false; el.remove();
     if (!item.plain().trim()) removeItem(item); else item.render();
   }
-  /* a symbol (☀) at the caret of the text box being edited, else in a new text box in the middle of what is in view */
+  /* a symbol (Δ, heat) at the caret of the text box being edited, else in a new text box in the middle of what is in view */
   function insertSymbol(sym) {
     if (editing) { editing.el.focus(); document.execCommand('insertText', false, sym); return; }
     const tb = new TextBox(sym);
