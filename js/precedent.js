@@ -9,7 +9,9 @@
      exact(g)    reactions whose product IS the molecule (same canonical key)
      from(g)     reactions that START from it (a reactant with the same key)
      similar(g)  reactions whose product is structurally close (Tanimoto on the fingerprint)
-   The built-in set (window.REACTIONS) is always searched; sets loaded through js/sources.js join in.
+   The built-in set (data/reactions.js, window.REACTIONS, 6.5 MB) is loaded only when a page needs it: Precedent.load() (Retrosynthesis
+   and Validation call it, and it starts by itself when either page is opened); until then the searches answer from the other sets.
+   Sets loaded through js/sources.js join in.
    Every result carries `_set`, the set it came from, so cards can cite it properly.            */
 (() => {
   'use strict';
@@ -27,7 +29,22 @@
     });
     SETS.push(s);
   }
-  if (window.REACTIONS) addSet('db', 'the built-in database (US patents 1976–2001, AstraZeneca ELN, Open Reaction Database)', 'mixed; see README', window.REACTIONS);
+  const DB_TITLE = 'the built-in database (US patents 1976–2001, AstraZeneca ELN, Open Reaction Database)';
+  let dbLoading = null;
+  function load() {                                           // the built-in set, once: a Promise that resolves when it is searchable
+    if (!dbLoading) dbLoading = new Promise(resolve => {
+      const done = () => { if (window.REACTIONS) addSet('db', DB_TITLE, 'mixed; see README', window.REACTIONS); resolve(!!window.REACTIONS); };
+      if (window.REACTIONS) { done(); return; }
+      const sc = document.createElement('script'); sc.src = 'data/reactions.js';
+      sc.onload = done; sc.onerror = () => { dbLoading = null; resolve(false); };
+      document.head.appendChild(sc);
+    });
+    return dbLoading;
+  }
+  if (window.REACTIONS) load();
+  // start fetching as soon as a page that uses it is opened, so it is usually there before the first search
+  const wants = () => /^#(retro|valid)$/.test(location.hash);
+  if (wants()) load(); else window.addEventListener('hashchange', function once() { if (wants()) { window.removeEventListener('hashchange', once); load(); } });
   if (window.Sources) { window.Sources.loaded().forEach(id => { const set = window.Sources.SETS.find(x => x.id === id); addSet(id, set.title, set.license, window.Sources.get(id)); }); window.Sources.onLoad((id, data) => { const set = window.Sources.SETS.find(x => x.id === id); addSet(id, set.title, set.license, data); }); }
 
   const keyOf = g => { try { return C.libKeyHash(C.canonicalKey(g)); } catch (e) { return null; } };
@@ -109,5 +126,5 @@
   const NOTE = () => 'Searched ' + SETS.map(s => s.data.reactions.length.toLocaleString() + ' reactions in ' + s.title + (s.license ? ' [' + s.license + ']' : '')).join('; ') +
     '. Records are quoted as recorded, not re-verified. No entry here does not mean a reaction is unknown.';
 
-  window.Precedent = { exact, from, similar, skipped, card, citeHtml, get NOTE() { return NOTE(); }, get size() { return SETS.reduce((n, s) => n + s.data.reactions.length, 0); }, molName, plausible, sets: () => SETS };
+  window.Precedent = { load, get loaded() { return SETS.some(s => s.id === 'db'); }, exact, from, similar, skipped, card, citeHtml, get NOTE() { return NOTE(); }, get size() { return SETS.reduce((n, s) => n + s.data.reactions.length, 0); }, molName, plausible, sets: () => SETS };
 })();
