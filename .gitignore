@@ -5,3 +5,6 @@ learned_reactions.xlsx
 *(new).xlsx
 __pycache__/
 *.pyc
+# label validation dumps (rebuild with node tools/validate_labels.js / tools/validate_display.js)
+tools/data/label_dump.json
+tools/data/label_display.json

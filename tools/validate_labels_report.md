@@ -1,0 +1,169 @@
+# Label validation (Molecule tab)
+
+Made by `tools/validate_labels.js` + `tools/validate_labels.py` from `data/label_dump.json`: 8,936 molecules analysed, 0 not.
+
+## Findings (2026-10-14)
+
+**Values that follow from the structure are right.** Formal charge, lone pairs, oxidation state (every atom whose
+value does not depend on which Kekulé structure is drawn), Gasteiger–Marsili partial charge, the RDKit hybridization
+port, R/S and E/Z agree with RDKit Python on every one of 116,300 atoms / 1,357 stereocentres / 87 double bonds of
+8,936 molecules. The displayed hybridization agrees with a textbook steric-number rule on 99.5 % of atoms; the rest
+are conventions (below). 130 of 132 hand-checked textbook values agree; the 2 that do not are measured-value choices
+(below). Bond angles of the app's 3D model agree with RDKit's MMFF94 geometry within 5° (218 angles, 40 molecules).
+
+**Problems found, most important first:**
+
+1. **Steric, electronic and Taft labels are dropped although there is room** — 26 %, 20 % and 36 % of the labels that
+   have a value are not drawn ("left out where there is no free space"). The placement keeps a label's centre
+   clearly nearer its own atom than any other (`placeNotes`, mol2d_view.js), and these texts are long; on a carbonyl
+   carbon with three neighbours no position passes. (Aspirin, Taft mode: both labels left out on an empty canvas.)
+2. **pKaH of anilines the Hammett estimate cannot reach: 10.7 instead of about 4.6.** The primary-amine fragment
+   (F002, 10.7) also matches an aryl NH2, and a basic site takes the most basic of its fragments, so it beats the
+   aniline fragment (F026, 4.6) whenever there is an ortho substituent, a fused ring or a heteroaryl ring
+   (2,6-dibromoaniline: measured 0.17, rules 10.7). 228 measured molecules: median error 6.4.
+3. **pKaH of N,N-dialkylanilines: 10 instead of about 5.** Same pattern: the trialkylamine fragment (F093, 10.0)
+   beats F180 (5.1). 76 measured molecules: median error 6.1, none within 1 unit.
+4. **Measured pKa table includes high-pressure measurements.** tools/pka.py takes the median of every 20–30 °C value,
+   including ones at 1,000–3,000 bar: acetic acid shows 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
+5. **Gaps in the pKa rules** (a site the rules miss or value they cannot know; shown only when no measured value
+   exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
+   C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,
+   rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
+   Overall the rules alone are within 1 unit for 42 % of acids and 35 % of bases (median error 1.3 / 1.7); the
+   Hammett estimates are within 1 unit for 100 % / 93 %.
+6. **Labels inside rings**: 5–8 % of per-atom labels (14 % of R/S labels) sit inside a ring — still nearest their own
+   atom, but harder to read (your aspirin screenshots: C8's label inside the benzene ring).
+
+**Conventions, not errors** (worth an ⓘ note, or a decision):
+- Oxidation state of an atom with an aromatic bond to another element (pyridine C2, pyrimidine N) is the average over
+  the Kekulé structures, so it can be fractional (+0.5); RDKit and most textbooks read one Kekulé structure (72 % of
+  these atoms happen to agree).
+- Hybridization: an S or Se on an aromatic ring (thiophenol, thioanisole) stays sp3; a lone pair on N or O next to
+  C=S (thioamide, xanthate) is sp2 like an amide. Halogens are labelled by convention.
+- Atoms with no simple electron count (Na⁺, Zn²⁺) get no lone-pair label.
+- Steric classes saturate: isobutyraldehyde and pivaldehyde are both "hindered"; propanal is already "moderately
+  hindered".
+
+## Agreement with independent references
+
+| Label | Reference | Checked | Agree | |
+|---|---|---:|---:|---:|
+| formal | formal charge vs RDKit Python | 116,300 | 116,300 | 100.00 % |
+| lonepairs | lone pairs vs the electron count | 116,300 | 116,291 | 99.99 % |
+| oxidation | oxidation state vs RDKit CalcOxidationNumbers (atoms whose value does not depend on the Kekulé structure) | 96,129 | 96,129 | 100.00 % |
+| oxidation_kekule | oxidation state, atoms whose value depends on the Kekulé structure (the app averages; RDKit takes one structure) | 20,171 | 14,595 | 72.36 % |
+| partial | Gasteiger-Marsili charge vs RDKit Python (difference below 0.005; the label shows 2 decimals) | 115,052 | 115,052 | 100.00 % |
+| hybridization | displayed hybridization vs the textbook steric-number rule | 114,233 | 113,707 | 99.54 % |
+| rdkit_hybridization | the app's port of RDKit's hybridization vs RDKit Python | 116,300 | 116,300 | 100.00 % |
+| cip | R/S vs RDKit Python CIP labeller (atoms either one labels) | 1,357 | 1,357 | 100.00 % |
+| ez | E/Z vs RDKit Python CIP labeller (bonds either one labels) | 87 | 87 | 100.00 % |
+
+### lonepairs: disagreements by kind
+
+- **unusual electron count**: 9 — e.g. `CCN(CC)c1ccc2nc3cc(C)c(N)cc3[o+]c2c1.CCN(CC)c1ccc2nc3cc(C)c(N)cc3[o+]c2c1.[Cl-].[Cl-].[Cl-].[Cl-].[Zn+2] atom 46 (Zn): app None, count 0`; `CN(C)c1ccc(/N=N/c2ccc(S(=O)(=O)[O-])cc2)cc1.[Na+] atom 21 (Na): app None, count 0`; `O=S(=O)(O)c1ccc(N=Nc2ccc(Nc3ccccc3)cc2)cc1.[Na] atom 25 (Na): app None, count 0`
+
+### oxidation_kekule: disagreements by kind
+
+- **C(arom) 3 σ-bonds, next to a π bond**: 5,432 — e.g. `c1ccncc1 atom 2 (C): app 0.5, RDKit 1`; `c1ccncc1 atom 4 (C): app 0.5, RDKit 0`; `Nc1ccc(S(=O)(=O)Nc2ccccn2)cc1 atom 9 (C): app 2.5, RDKit 2`
+- **N(arom) 2 σ-bonds, next to a π bond**: 144 — e.g. `c1ccnnc1 atom 3 (N): app -1.5, RDKit -2`; `c1ccnnc1 atom 4 (N): app -1.5, RDKit -2`; `Nc1cccnn1 atom 5 (N): app -1.5, RDKit -1`
+
+### hybridization: disagreements by kind
+
+- **S 2 σ-bonds, next to a π bond: app sp3, rule sp2**: 405 — e.g. `Sc1ccccc1 atom 0 (S)`; `Nc1ccccc1S atom 7 (S)`; `CSc1cccc(N)c1 atom 1 (S)`
+- **N 3 σ-bonds: app sp2, rule sp3**: 65 — e.g. `CC(N)=S atom 2 (N)`; `NC(N)=S atom 0 (N)`; `NC(N)=S atom 2 (N)`
+- **Se 2 σ-bonds, next to a π bond: app sp3, rule sp2**: 21 — e.g. `C[Se]c1cccc2cccnc12 atom 1 (Se)`; `[SeH]c1cccc2cccnc12 atom 0 (Se)`; `O=C(O)C[Se]c1ccccc1 atom 4 (Se)`
+- **O 2 σ-bonds: app sp2, rule sp3**: 16 — e.g. `COC(=S)S atom 1 (O)`; `C=CCOC(=S)S atom 3 (O)`; `CC(C)OC(=S)S atom 3 (O)`
+- **P 3 σ-bonds, next to a π bond: app sp3, rule sp2**: 8 — e.g. `OP(O)c1cccc(Cl)c1 atom 1 (P)`; `OP(O)c1ccc(Cl)cc1 atom 1 (P)`; `OP(O)c1cccc(Br)c1 atom 1 (P)`
+- **S 3 σ-bonds charge +1, next to a π bond: app sp3, rule sp2**: 8 — e.g. `C[S+](C)c1cccc(O)c1 atom 1 (S)`; `C[S+](C)c1ccc(O)cc1 atom 1 (S)`; `Oc1cccc([SH2+])c1.[I-] atom 6 (S)`
+- **As 3 σ-bonds, next to a π bond: app sp3, rule sp2**: 3 — e.g. `O=C(O)C[As](CC(=O)O)c1ccccc1 atom 4 (As)`; `CC(=O)Nc1cc([As]2SCC(CO)S2)ccc1O atom 7 (As)`; `O=C(O)CC[As](CCC(=O)O)c1ccc(Cl)cc1 atom 5 (As)`
+
+## pKa: the rules alone against measured values (IUPAC, water)
+
+Molecules with one ionisable group in all: the app finds one site (acid or base) and the dataset has one measured value, of the same kind, so the value belongs to that site. The app works its value out with no measured value to fall back on (on screen a measured value, when there is one, is shown instead).
+
+**acid**: 1,168 molecules; median error 1.27, within 1 unit 42%, within 2 units 64%, mean signed error +2.17.
+
+| | n | median error | within 1 | within 2 | mean signed |
+|---|---:|---:|---:|---:|---:|
+| Hammett estimate | 96 | 0.09 | 100% | 100% | +0.06 |
+| typical value | 1,072 | 1.43 | 37% | 61% | +2.36 |
+| F028 | 358 | 1.73 | 37% | 55% | +2.12 |
+| F001 | 311 | 1.06 | 46% | 83% | +1.02 |
+| F001+F118 | 139 | 0.5 | 70% | 88% | +0.67 |
+| F056 | 56 | 5.33 | 5% | 9% | +5.21 |
+| F021+F095+F121+F185+F187+F202 | 33 | 0.39 | 91% | 94% | +0.21 |
+| F076 | 30 | 9.25 | 7% | 13% | +7.64 |
+| F021+F095+F123 | 27 | 0.72 | 70% | 82% | +0.99 |
+| F072 | 24 | 0.64 | 71% | 96% | +0.57 |
+| F123 | 23 | 1.32 | 39% | 87% | +1.42 |
+| F003+F014 | 15 | 1.69 | 40% | 60% | +2.27 |
+| F063 | 14 | 3.45 | 21% | 36% | +2.36 |
+| F068 | 11 | 0.52 | 73% | 91% | +0.61 |
+| F021+F095+F121+F185+F186+F187+F202 | 10 | 1.36 | 10% | 70% | +0.41 |
+
+Largest errors: `CCCCC1C(=O)N(c2ccc(S(C)(=O)=O)cc2)N(c2ccc(S(C)(=O)=O)cc2)C1=O` measured 2.7, rules 29 (F071+F101); `COC(=O)C[SeH]` measured 4.7, rules 25 (F101+F139+F193); `Cc1ccc2c(c1)S(=O)(=O)CS2(=O)=O` measured 12.63, rules 29 (F071+F101); `CC1=C(O)C(C)C1=O` measured 2.8, rules 19 (F019+F101+F192); `O=C1NS(=O)(=O)c2ccccc21` measured 1.31, rules 17 (F021+F095+F186+F202); `O=C(c1ccccc1)C1C(=O)c2ccccc2C1=O` measured 2.78, rules 18.3 (F019+F116).
+Molecules with a measured acid value but no acid site found: 15 (Very uncertain), 4 (Reliable), 213 (Uncertain), 121 (Approximate), 8 (not stated).
+
+**base**: 1,359 molecules; median error 1.74, within 1 unit 35%, within 2 units 55%, mean signed error +1.75.
+
+| | n | median error | within 1 | within 2 | mean signed |
+|---|---:|---:|---:|---:|---:|
+| Hammett estimate | 81 | 0.22 | 93% | 100% | +0.07 |
+| typical value | 1,278 | 1.85 | 32% | 52% | +1.85 |
+| F091 | 303 | 2.1 | 30% | 48% | -0.09 |
+| F002+F026 | 228 | 6.41 | 35% | 38% | +4.7 |
+| F002+F176 | 164 | 1.11 | 46% | 84% | +1.22 |
+| F093+F179 | 121 | 2.48 | 17% | 43% | +2.87 |
+| F093 | 106 | 0.86 | 52% | 73% | +1.03 |
+| F031 | 77 | 2.27 | 14% | 39% | -0.25 |
+| F093+F180 | 76 | 6.13 | 0% | 1% | +5.64 |
+| F113 | 60 | 0.9 | 53% | 88% | +0.12 |
+| F034+F177 | 56 | 0.75 | 68% | 80% | +0.99 |
+| F034+F178 | 55 | 0.6 | 60% | 82% | +1.03 |
+| F094 | 53 | 0.92 | 55% | 74% | +0.68 |
+| F112 | 40 | 1.67 | 25% | 68% | +1.67 |
+
+Largest errors: `NC1=NN(c2ccccc2)C(=O)C1` measured 1.2, rules 12.4 (F031+F098); `Nc1c(Br)cccc1Br` measured 0.17, rules 10.7 (F002+F026); `Cc1ccc(N)c([N+](=O)[O-])c1` measured 0.4, rules 10.7 (F002+F026); `Nc1c(Cl)cccc1Cl` measured 0.42, rules 10.7 (F002+F026); `Nc1cc([N+](=O)[O-])ccc1Br` measured 0.52, rules 10.7 (F002+F026); `Nc1ccc([N+](=O)[O-])c2ccccc12` measured 0.54, rules 10.7 (F002+F026).
+Molecules with a measured base value but no base site found: 60 (Approximate), 23 (not stated), 81 (Uncertain), 2 (Reliable), 4 (Very uncertain).
+
+## The drawing (`tools/validate_display.js`)
+
+Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*: labels with a value that were not drawn ("no free space"). *Nearer another atom*: the label's centre is closer to another atom than to its own, so a reader can take it for that atom. *Inside a ring*: the label sits inside a ring. *Far*: more than one bond length from its atom.
+
+| Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Nearer another atom | Inside a ring | Far |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| index | 166 | 1,790 | 4 (0.22 %) | 3 | 0 (0.00 %) | 96 (5.36 %) | 0 |
+| cip | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 6 (13.95 %) | 0 |
+| hybridization | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 148 (8.27 %) | 0 |
+| formal | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 |
+| partial | 166 | 1,753 | 26 (1.46 %) | 21 | 0 (0.00 %) | 79 (4.51 %) | 0 |
+| oxidation | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 102 (5.70 %) | 0 |
+| lonepairs | 166 | 1,791 | 3 (0.17 %) | 3 | 0 (0.00 %) | 108 (6.03 %) | 0 |
+| pka | 166 | 299 | 8 (2.61 %) | 8 | 0 (0.00 %) | 0 (0.00 %) | 26 |
+| steric | 166 | 409 | 144 (26.04 %) | 91 | 0 (0.00 %) | 7 (1.71 %) | 68 |
+| electronic | 166 | 443 | 110 (19.89 %) | 72 | 0 (0.00 %) | 7 (1.58 %) | 27 |
+| taft | 166 | 201 | 114 (36.19 %) | 82 | 0 (0.00 %) | 7 (3.48 %) | 32 |
+
+Examples of labels nearer another atom: 
+
+### Bond angles: the app's 3D model against RDKit (ETKDG + MMFF94)
+
+218 angles between heavy atoms in 40 molecules: median difference 0.0°, 95 % within 2.35°, largest 4.35°; 8 differ by more than 3°, 0 by more than 5°.
+
+Largest: `CC(=O)Oc1ccccc1C(=O)O` atoms (10, 9, 4): app 120.8°, RDKit 125.1°; `CC(=O)Oc1ccccc1C(=O)O` atoms (8, 9, 10): app 120.8°, RDKit 116.6°; `CC(=O)c1ccccc1` atoms (1, 3, 4): app 118.4°, RDKit 122.3°; `CC(=O)c1ccccc1` atoms (1, 3, 8): app 122.3°, RDKit 118.4°; `Oc1ccc([N+](=O)[O-])cc1` atoms (0, 1, 9): app 117.5°, RDKit 121.4°.
+
+## Textbook list (`tools/label_textbook.json`)
+
+130 of 132 hand-checked values agree.
+
+| Molecule | Label | Expected | App | Note |
+|---|---|---|---|---|
+| acetic acid `CC(=O)O` | pka | 4.6–4.9 | 4.58 (measured (IUPAC Digitized pKa Dataset); the typical value wa) |  |
+| benzoic acid `OC(=O)c1ccccc1` | pka | 4.1–4.3 | 4.02 (measured (IUPAC Digitized pKa Dataset); the estimate was 4.2) |  |
+
+## Steric class along crowding series
+
+- aldehydes: ok — `CC=O` open (2), `CCC=O` moderately hindered (3), `CC(C)C=O` hindered (4), `CC(C)(C)C=O` hindered (4)
+- alkyl bromides (SN2 order): ok — `CBr` open (1), `CCBr` open (2), `CC(C)Br` moderately hindered (3), `CC(C)(C)Br` hindered (4)
+- amines: ok — `CCCCN` open (2), `CCC(C)N` moderately hindered (3), `CC(C)(C)N` hindered (4)
+- ketones: ok — `CC(C)=O` moderately hindered (3), `CCC(C)=O` hindered (4), `CC(C)C(C)=O` very hindered (5), `CC(C)(C)C(C)=O` very hindered (5)
