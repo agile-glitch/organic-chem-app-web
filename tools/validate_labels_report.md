@@ -1,6 +1,6 @@
 # Label validation (Molecule tab)
 
-Made by `tools/validate_labels.js` + `tools/validate_labels.py` from `data/label_dump.json`: 8,936 molecules analysed, 0 not.
+Made by `tools/validate_labels.js` + `tools/validate_labels.py` from `data/label_dump.json`: 8,941 molecules analysed, 0 not.
 
 ## Findings (2026-10-14)
 
@@ -37,8 +37,17 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
    C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,
    rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
-   Overall the rules alone are within 1 unit for 42 % of acids and 41 % of bases (median error 1.3 / 1.35; bases
-   were 35 % / 1.7 before fixes 2 and 3); the Hammett estimates are within 1 unit for 100 % / 93 %.
+   **Fixed (2026-10-14):** site rules for these groups (SITE_RULES.extra in js/reactions.js, extra in tools/pka.py),
+   values from the measured data where the group is the only ionisable site, else textbook values: acyclic C–H
+   between two C=O / C≡N 11, the same C–H in a 5-/6-ring 5, acyl sulfonamide N–H 4.5, xanthic S–H 2.0,
+   dithiocarbamic 4.0, dithiocarboxylic 2.5, thioic S-acid 3.5, gem-dinitro C–H 3.8, HC(NO2)3 0.1, guanidine
+   pKaH 13.6, N-aryl guanidine 10.8, amidine 11.5. Rules alone against measured: xanthic acids median error 0.5
+   (was about 11), guanidines 0.2 (about 6.5), amidines 0.8 (about 4.5), gem-dinitro 1.15 (about 6), active
+   methine 1.5 (7–25). Found while retesting and fixed with them: the imine fragments F196 / F204 (pKa 11, an
+   oxime's O–H) put a "pKa 11" on the =NH of guanidines and amidines; they no longer mark a site.
+   Overall the rules alone are now within 1 unit for 46 % of acids and 41 % of bases (median error 1.14 / 1.32;
+   42 % / 35 % and 1.3 / 1.7 before fixes 2, 3 and 5); the Hammett estimates are within 1 unit for 100 % / 93 %.
+   17 textbook values for these groups added to tools/label_textbook.json: 149 of 149 agree.
 6. **Labels inside rings, and labels whose edge sits by another atom**: 5–8 % of per-atom labels (14 % of R/S labels)
    sat inside a ring (aspirin: C8's label inside the benzene ring, beside C3's), and up to 6 % of pKa / steric labels
    had their nearest edge closer to another atom than to their own. The cause of the first: for an atom whose bonds
@@ -62,13 +71,13 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
 
 | Label | Reference | Checked | Agree | |
 |---|---|---:|---:|---:|
-| formal | formal charge vs RDKit Python | 116,300 | 116,300 | 100.00 % |
-| lonepairs | lone pairs vs the electron count | 116,300 | 116,291 | 99.99 % |
-| oxidation | oxidation state vs RDKit CalcOxidationNumbers (atoms whose value does not depend on the Kekulé structure) | 96,129 | 96,129 | 100.00 % |
+| formal | formal charge vs RDKit Python | 116,344 | 116,344 | 100.00 % |
+| lonepairs | lone pairs vs the electron count | 116,344 | 116,335 | 99.99 % |
+| oxidation | oxidation state vs RDKit CalcOxidationNumbers (atoms whose value does not depend on the Kekulé structure) | 96,173 | 96,173 | 100.00 % |
 | oxidation_kekule | oxidation state, atoms whose value depends on the Kekulé structure (the app averages; RDKit takes one structure) | 20,171 | 14,595 | 72.36 % |
-| partial | Gasteiger-Marsili charge vs RDKit Python (difference below 0.005; the label shows 2 decimals) | 115,052 | 115,052 | 100.00 % |
-| hybridization | displayed hybridization vs the textbook steric-number rule | 114,233 | 113,707 | 99.54 % |
-| rdkit_hybridization | the app's port of RDKit's hybridization vs RDKit Python | 116,300 | 116,300 | 100.00 % |
+| partial | Gasteiger-Marsili charge vs RDKit Python (difference below 0.005; the label shows 2 decimals) | 115,096 | 115,096 | 100.00 % |
+| hybridization | displayed hybridization vs the textbook steric-number rule | 114,277 | 113,751 | 99.54 % |
+| rdkit_hybridization | the app's port of RDKit's hybridization vs RDKit Python | 116,344 | 116,344 | 100.00 % |
 | cip | R/S vs RDKit Python CIP labeller (atoms either one labels) | 1,357 | 1,357 | 100.00 % |
 | ez | E/Z vs RDKit Python CIP labeller (bonds either one labels) | 87 | 87 | 100.00 % |
 
@@ -83,7 +92,7 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
 
 ### hybridization: disagreements by kind
 
-- **S 2 σ-bonds, next to a π bond: app sp3, rule sp2**: 405 — e.g. `Sc1ccccc1 atom 0 (S)`; `Nc1ccccc1S atom 7 (S)`; `CSc1cccc(N)c1 atom 1 (S)`
+- **S 2 σ-bonds, next to a π bond: app sp3, rule sp2**: 405 — e.g. `Sc1ccccc1 atom 0 (S)`; `CC(=O)S atom 3 (S)`; `Nc1ccccc1S atom 7 (S)`
 - **N 3 σ-bonds: app sp2, rule sp3**: 65 — e.g. `CC(N)=S atom 2 (N)`; `NC(N)=S atom 0 (N)`; `NC(N)=S atom 2 (N)`
 - **Se 2 σ-bonds, next to a π bond: app sp3, rule sp2**: 21 — e.g. `C[Se]c1cccc2cccnc12 atom 1 (Se)`; `[SeH]c1cccc2cccnc12 atom 0 (Se)`; `O=C(O)C[Se]c1ccccc1 atom 4 (Se)`
 - **O 2 σ-bonds: app sp2, rule sp3**: 16 — e.g. `COC(=S)S atom 1 (O)`; `C=CCOC(=S)S atom 3 (O)`; `CC(C)OC(=S)S atom 3 (O)`
@@ -95,47 +104,51 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
 
 Molecules with one ionisable group in all: the app finds one site (acid or base) and the dataset has one measured value, of the same kind, so the value belongs to that site. The app works its value out with no measured value to fall back on (on screen a measured value, when there is one, is shown instead).
 
-**acid**: 1,168 molecules; median error 1.27, within 1 unit 42%, within 2 units 64%, mean signed error +2.17.
+**acid**: 1,171 molecules; median error 1.14, within 1 unit 46%, within 2 units 70%, mean signed error +1.58.
 
 | | n | median error | within 1 | within 2 | mean signed |
 |---|---:|---:|---:|---:|---:|
 | Hammett estimate | 96 | 0.08 | 100% | 100% | +0.05 |
-| typical value | 1,072 | 1.43 | 37% | 61% | +2.36 |
-| F028 | 358 | 1.73 | 37% | 55% | +2.12 |
-| F001 | 311 | 1.06 | 46% | 83% | +1.02 |
+| typical value | 1,075 | 1.28 | 41% | 68% | +1.72 |
+| F028 | 357 | 1.72 | 38% | 55% | +2.11 |
+| F001 | 308 | 1.06 | 46% | 83% | +1.01 |
 | F001+F118 | 139 | 0.5 | 70% | 88% | +0.66 |
-| F056 | 56 | 5.33 | 5% | 9% | +5.21 |
+| F056+gem-dinitro C–H (C(NO2)2) | 45 | 1.12 | 47% | 87% | -0.21 |
 | F021+F095+F121+F185+F187+F202 | 33 | 0.39 | 91% | 94% | +0.21 |
-| F076 | 30 | 9.25 | 7% | 13% | +7.64 |
 | F021+F095+F123 | 27 | 0.72 | 70% | 82% | +0.99 |
 | F072 | 24 | 0.64 | 71% | 96% | +0.57 |
 | F123 | 23 | 1.32 | 39% | 87% | +1.42 |
 | F003+F014 | 15 | 1.69 | 40% | 60% | +2.27 |
 | F063 | 14 | 3.45 | 21% | 36% | +2.36 |
+| F076+xanthic acid S–H (RO–C(=S)–SH) | 13 | 0.48 | 54% | 100% | -0.52 |
 | F068 | 11 | 0.52 | 73% | 91% | +0.61 |
+| F056 | 10 | 1.94 | 30% | 50% | +1.24 |
+| F076+dithiocarbamic acid S–H (R2N–C(=S)–SH) | 10 | 1.21 | 40% | 80% | -1.28 |
 | F021+F095+F121+F185+F186+F187+F202 | 10 | 1.36 | 10% | 70% | +0.41 |
 
-Largest errors: `CCCCC1C(=O)N(c2ccc(S(C)(=O)=O)cc2)N(c2ccc(S(C)(=O)=O)cc2)C1=O` measured 2.7, rules 29 (F071+F101); `COC(=O)C[SeH]` measured 4.7, rules 25 (F101+F139+F193); `Cc1ccc2c(c1)S(=O)(=O)CS2(=O)=O` measured 12.63, rules 29 (F071+F101); `CC1=C(O)C(C)C1=O` measured 2.8, rules 19 (F019+F101+F192); `O=C1NS(=O)(=O)c2ccccc21` measured 1.31, rules 17 (F021+F095+F186+F202); `O=C(c1ccccc1)C1C(=O)c2ccccc2C1=O` measured 2.78, rules 18.3 (F019+F116).
-Molecules with a measured acid value but no acid site found: 15 (Very uncertain), 4 (Reliable), 213 (Uncertain), 121 (Approximate), 8 (not stated).
+Largest errors: `COC(=O)C[SeH]` measured 4.7, rules 25 (F101+F139+F193); `Cc1ccc2c(c1)S(=O)(=O)CS2(=O)=O` measured 12.63, rules 29 (F071+F101); `CC1=C(O)C(C)C1=O` measured 2.8, rules 19 (F019+F101+F192); `O=C1CS(=O)(=O)c2ccccc21` measured 2.88, rules 18.3 (F019+F071+F101+F116+F192); `N#CC1C=CC=C1` measured 9.78, rules 25 (F101+F194); `CCOC(=O)C1=C(O)CNC1=O` measured 2.34, rules 17 (F021+F095+F185+F186+F202).
+Molecules with a measured acid value but no acid site found: 15 (Very uncertain), 4 (Reliable), 206 (Uncertain), 118 (Approximate), 7 (not stated).
 
-**base**: 1,359 molecules; median error 1.35, within 1 unit 41%, within 2 units 66%, mean signed error +0.81.
+**base**: 1,393 molecules; median error 1.32, within 1 unit 41%, within 2 units 66%, mean signed error +0.82.
 
 | | n | median error | within 1 | within 2 | mean signed |
 |---|---:|---:|---:|---:|---:|
 | Hammett estimate | 81 | 0.22 | 93% | 100% | +0.07 |
-| typical value | 1,278 | 1.48 | 37% | 64% | +0.86 |
+| typical value | 1,312 | 1.44 | 38% | 64% | +0.86 |
 | F091 | 303 | 2.1 | 30% | 48% | -0.09 |
 | F002+F026 | 228 | 0.69 | 57% | 79% | +0.77 |
 | F002+F176 | 164 | 1.11 | 46% | 84% | +1.22 |
 | F093+F179 | 121 | 2.48 | 17% | 43% | +2.87 |
 | F093 | 106 | 0.86 | 52% | 73% | +1.03 |
-| F031 | 77 | 2.27 | 14% | 39% | -0.25 |
 | F093+F180 | 76 | 1.61 | 32% | 67% | +0.74 |
 | F113 | 60 | 0.9 | 53% | 88% | +0.12 |
 | F034+F177 | 56 | 0.75 | 68% | 80% | +0.99 |
 | F034+F178 | 55 | 0.6 | 60% | 82% | +1.03 |
 | F094 | 53 | 0.92 | 55% | 74% | +0.68 |
 | F112 | 40 | 1.67 | 25% | 68% | +1.67 |
+| F031 | 34 | 1.83 | 9% | 56% | +1.06 |
+| F031+F204 | 27 | 2.15 | 26% | 37% | -1.53 |
+| F031+F196 | 17 | 2.38 | 12% | 12% | -0.02 |
 
 Largest errors: `NC1=NN(c2ccccc2)C(=O)C1` measured 1.2, rules 12.4 (F031+F098); `NC1=CC(=O)C(=O)c2ccccc21` measured 1.57, rules 10.7 (F002+F127); `C#CCN(CC#C)CC#C` measured 3.09, rules 10.75 (F093+F179); `ClCCN(CCCl)Cc1ccc2ccccc2c1` measured 3.32, rules 10.75 (F093+F179); `NC1(N)C=CC(S(=O)(=O)O)=CC1` measured 3.29, rules 10.7 (F002+F176); `Fc1cccc(CN(CCCl)CCCl)c1` measured 3.35, rules 10.75 (F093+F179).
 Molecules with a measured base value but no base site found: 60 (Approximate), 23 (not stated), 81 (Uncertain), 2 (Reliable), 4 (Very uncertain).
@@ -146,19 +159,19 @@ Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*:
 
 | Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Centre nearer another atom | Edge nearer another atom | Inside a ring | Far |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| index | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 5 (0.28 %) | 6 (0.34 %) | 0 |
-| cip | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
-| hybridization | 166 | 1,788 | 6 (0.33 %) | 5 | 0 (0.00 %) | 10 (0.56 %) | 63 (3.52 %) | 0 |
-| formal | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
-| partial | 166 | 1,769 | 10 (0.56 %) | 7 | 1 (0.06 %) | 6 (0.34 %) | 42 (2.37 %) | 0 |
-| oxidation | 166 | 1,788 | 6 (0.33 %) | 5 | 0 (0.00 %) | 3 (0.17 %) | 7 (0.39 %) | 0 |
-| lonepairs | 166 | 1,791 | 3 (0.17 %) | 3 | 1 (0.06 %) | 4 (0.22 %) | 2 (0.11 %) | 0 |
-| pka | 166 | 305 | 2 (0.65 %) | 2 | 8 (2.62 %) | 0 (0.00 %) | 0 (0.00 %) | 28 |
-| steric | 166 | 475 | 78 (14.10 %) | 60 | 71 (14.95 %) | 1 (0.21 %) | 15 (3.16 %) | 146 |
-| electronic | 166 | 497 | 56 (10.13 %) | 38 | 42 (8.45 %) | 1 (0.20 %) | 9 (1.81 %) | 67 |
-| taft | 166 | 268 | 47 (14.92 %) | 40 | 44 (16.42 %) | 1 (0.37 %) | 13 (4.85 %) | 38 |
+| index | 181 | 1,908 | 6 (0.31 %) | 5 | 0 (0.00 %) | 5 (0.26 %) | 6 (0.31 %) | 0 |
+| cip | 181 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
+| hybridization | 181 | 1,906 | 8 (0.42 %) | 7 | 0 (0.00 %) | 11 (0.58 %) | 66 (3.46 %) | 0 |
+| formal | 181 | 53 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
+| partial | 181 | 1,888 | 11 (0.58 %) | 8 | 2 (0.11 %) | 6 (0.32 %) | 46 (2.44 %) | 0 |
+| oxidation | 181 | 1,906 | 8 (0.42 %) | 7 | 0 (0.00 %) | 3 (0.16 %) | 7 (0.37 %) | 0 |
+| lonepairs | 181 | 1,910 | 4 (0.21 %) | 4 | 1 (0.05 %) | 4 (0.21 %) | 2 (0.10 %) | 0 |
+| pka | 181 | 327 | 2 (0.61 %) | 2 | 10 (3.06 %) | 0 (0.00 %) | 0 (0.00 %) | 29 |
+| steric | 181 | 498 | 83 (14.29 %) | 65 | 81 (16.27 %) | 1 (0.20 %) | 15 (3.01 %) | 158 |
+| electronic | 181 | 524 | 57 (9.81 %) | 39 | 43 (8.21 %) | 1 (0.19 %) | 11 (2.10 %) | 68 |
+| taft | 181 | 277 | 49 (15.03 %) | 42 | 47 (16.97 %) | 1 (0.36 %) | 13 (4.69 %) | 38 |
 
-Examples of labels nearer another atom: `CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)`
+Examples of labels nearer another atom: `O=C1NS(=O)(=O)c2ccccc21: '+0.26' for atom 3 sits nearer atom 6 (0.8 vs 0.67 bond lengths)`; `CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)`
 
 ### Bond angles: the app's 3D model against RDKit (ETKDG + MMFF94)
 
@@ -168,7 +181,7 @@ Largest: `CC(=O)Oc1ccccc1C(=O)O` atoms (10, 9, 4): app 120.8°, RDKit 125.1°; `
 
 ## Textbook list (`tools/label_textbook.json`)
 
-132 of 132 hand-checked values agree.
+149 of 149 hand-checked values agree.
 
 ## Steric class along crowding series
 

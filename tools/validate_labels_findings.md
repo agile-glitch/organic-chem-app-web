@@ -33,8 +33,17 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
    C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,
    rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
-   Overall the rules alone are within 1 unit for 42 % of acids and 41 % of bases (median error 1.3 / 1.35; bases
-   were 35 % / 1.7 before fixes 2 and 3); the Hammett estimates are within 1 unit for 100 % / 93 %.
+   **Fixed (2026-10-14):** site rules for these groups (SITE_RULES.extra in js/reactions.js, extra in tools/pka.py),
+   values from the measured data where the group is the only ionisable site, else textbook values: acyclic C–H
+   between two C=O / C≡N 11, the same C–H in a 5-/6-ring 5, acyl sulfonamide N–H 4.5, xanthic S–H 2.0,
+   dithiocarbamic 4.0, dithiocarboxylic 2.5, thioic S-acid 3.5, gem-dinitro C–H 3.8, HC(NO2)3 0.1, guanidine
+   pKaH 13.6, N-aryl guanidine 10.8, amidine 11.5. Rules alone against measured: xanthic acids median error 0.5
+   (was about 11), guanidines 0.2 (about 6.5), amidines 0.8 (about 4.5), gem-dinitro 1.15 (about 6), active
+   methine 1.5 (7–25). Found while retesting and fixed with them: the imine fragments F196 / F204 (pKa 11, an
+   oxime's O–H) put a "pKa 11" on the =NH of guanidines and amidines; they no longer mark a site.
+   Overall the rules alone are now within 1 unit for 46 % of acids and 41 % of bases (median error 1.14 / 1.32;
+   42 % / 35 % and 1.3 / 1.7 before fixes 2, 3 and 5); the Hammett estimates are within 1 unit for 100 % / 93 %.
+   17 textbook values for these groups added to tools/label_textbook.json: 149 of 149 agree.
 6. **Labels inside rings, and labels whose edge sits by another atom**: 5–8 % of per-atom labels (14 % of R/S labels)
    sat inside a ring (aspirin: C8's label inside the benzene ring, beside C3's), and up to 6 % of pKa / steric labels
    had their nearest edge closer to another atom than to their own. The cause of the first: for an atom whose bonds

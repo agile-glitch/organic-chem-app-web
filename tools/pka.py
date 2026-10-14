@@ -189,20 +189,47 @@ def fragment_defaults():
 #  - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9-13 (acetylacetone 8.9, ethyl
 #    acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N-H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4), an
 #    alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol).
+#  - no site: F196 / F204 (imines, pKa 11 for an oxime's O-H) match only the C=N, so their 11 landed on the N-H of a
+#    C=NH (guanidine, amidine), which is no acid; the oxime O-H is F049's.
 #  - a basic N: the catch-all amine fragments yield to the aryl-amine ones on the same N. The primary amine F002 (10.7)
 #    also matches an aryl NH2, and the tertiary amine F093 (10.0) an N,N-dialkylaniline; a basic site took the most
 #    basic of its fragments, so 2,6-dibromoaniline showed 10.7 (measured 0.17) and 4-nitro-N,N-dimethylaniline 10
 #    (measured 0.64). With an aniline fragment (F026 4.6, aminoazine F115 / F183 6.9, 2-aminoazole F182 5.4;
 #    N,N-dialkylaniline F180 5.1) on the N, the catch-all one gives no value.
+#  - extra: groups no fragment of the sheet describes as an acid or base site: values from the
+#    IUPAC measured data for molecules where the group is the only ionisable site (median) or, where there are
+#    too few, the textbook value — acyclic C–H between two C=O / C≡N 11 (acetylacetone 8.9, ethyl 2-methyl-
+#    acetoacetate about 11); the same C–H in a 5- or 6-ring with both C=O (1,3-cyclohexanedione 5.3,
+#    2-methylindandione 6.15, barbituric acid 4.0, phenylbutazone 4.5) 5; acyl sulfonamide N–H 4.5 (saccharin
+#    1.3); xanthic acid S–H 2.0 (13 measured, median 2.05); dithiocarbamic 4.0; dithiocarboxylic 2.5; thioic
+#    S-acid 3.5 (thioacetic acid 3.62); gem-dinitro C–H 3.8 (46 measured, median 3.8); HC(NO2)3 0.1 (0.12);
+#    guanidine pKaH 13.6 (7 measured, median 13.6), N-aryl guanidine 10.8 (phenylguanidine 10.77); amidine pKaH 11.5 (16 measured, median 11.4; N-aryl, N-acyl,
+#    N–N and N–O ones left to the imine value; guanidines likewise for N-acyl, N–N and N–O). Each marks its first atom; the id is its name.
 SITE_RULES = dict(
     generic={'F101'},
     alpha={'F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195'},
     carbon={'F018', 'F019', 'F056', 'F101', 'F102', 'F116', 'F125', 'F071', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195'},
     oxygen={'F136'},
-    no_site={'F052'},
+    no_site={'F052', 'F196', 'F204'},
     value={'F102': 11, 'F090': 11},
     alkyl_thiol={'F072': 10.5},
-    base_yield={'F002': ['F026', 'F115', 'F182', 'F183'], 'F093': ['F180']})
+    base_yield={'F002': ['F026', 'F115', 'F182', 'F183'], 'F093': ['F180']},
+    extra=[
+    ('acid', 'active methine C–H (CH between two C=O / C≡N)', '[CX4;H1](-[$([CX3]=[OX1]),$([CX2]#[NX1])])-[$([CX3]=[OX1]),$([CX2]#[NX1])]', 11),
+    ('acid', 'ring 1,3-dicarbonyl C–H (1,3-cyclohexanedione, indandione, barbituric acid)', '[CX4;!H0]1-[CX3](=[OX1])~*~*-[CX3]1=[OX1]', 5),
+    ('acid', 'ring 1,3-dicarbonyl C–H (1,3-cyclohexanedione, indandione, barbituric acid)', '[CX4;!H0]1-[CX3](=[OX1])~*~*~*-[CX3]1=[OX1]', 5),
+    ('acid', 'acyl sulfonamide N–H (C(=O)–NH–SO2)', '[NX3;H1;+0](-[CX3]=[OX1])-[SX4](=[OX1])(=[OX1])', 4.5),
+    ('acid', 'xanthic acid S–H (RO–C(=S)–SH)', '[SX2H1]-[CX3](=[SX1])-[OX2]', 2.0),
+    ('acid', 'dithiocarbamic acid S–H (R2N–C(=S)–SH)', '[SX2H1]-[CX3](=[SX1])-[NX3]', 4.0),
+    ('acid', 'dithiocarboxylic acid S–H (R–C(=S)–SH)', '[SX2H1]-[CX3](=[SX1])-[#6]', 2.5),
+    ('acid', 'thioic S-acid S–H (R–C(=O)–SH)', '[SX2H1]-[CX3]=[OX1]', 3.5),
+    ('acid', 'gem-dinitro C–H (C(NO2)2)', '[CX4;H1,H2;!$(C([N+](=O)[O-])([N+](=O)[O-])[N+](=O)[O-])]([N+](=O)[O-])[N+](=O)[O-]', 3.8),
+    ('acid', 'trinitromethyl C–H (HC(NO2)3)', '[CX4;H1]([N+](=O)[O-])([N+](=O)[O-])[N+](=O)[O-]', 0.1),
+    ('base', 'guanidine (substituted or not)', '[NX2;!a;!$(N-[#7,#8]);!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a)]=[CX3;!a](-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a);!$(N-[#7,#8])])-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a);!$(N-[#7,#8])]', 13.6),
+    ('base', 'N-aryl guanidine', '[NX2;!a;!$(N-[#7,#8]);!$(N-C=[O,S]);!$(N-S(=O)=O)]=[CX3;!a;$(C~[#7]-a),$(C=[#7]-a)](-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-[#7,#8])])-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-[#7,#8])]', 10.8),
+    ('base', 'amidine (substituted or not)', '[NX2;!a;!$(N-[#7,#8]);!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a)]=[CX3;!a](-[#6,#1])-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a);!$(N-[#7,#8])]', 11.5)
+    ])
+EXTRA_VALUE = {i: v for _, i, _, v in SITE_RULES['extra']}
 
 
 def molecule_pkas(smiles, frags, defaults, measured):
@@ -247,6 +274,13 @@ def molecule_pkas(smiles, frags, defaults, measured):
                 if ns:
                     s_ = out['base'].setdefault(ns[0], {'atom': ns[0], 'fragments': [], 'typical': dh})
                     s_['fragments'].append(fid); s_['typical'] = max(s_['typical'], dh)
+    for kind, xid, sm, v in SR['extra']:                 # the site rules for groups no fragment describes
+        for match in m.GetSubstructMatches(_q(sm), uniquify=True, maxMatches=1000):
+            site = match[0]
+            if kind == 'base' and m.GetAtomWithIdx(site).GetFormalCharge() != 0: continue
+            s_ = out[kind].setdefault(site, {'atom': site, 'fragments': [], 'typical': v})
+            s_['fragments'].append(xid)
+            if kind == 'acid': acid_val.setdefault(site, {})[xid] = v
     # each acid site's typical value: the most acidic of its fragments, the catch-all alpha-C-H one only when no specific one is there
     for s_ in out['acid'].values():
         v = acid_val.get(s_['atom'], {})
@@ -258,7 +292,7 @@ def molecule_pkas(smiles, frags, defaults, measured):
     for s_ in out['base'].values():
         ids = list(dict.fromkeys(s_['fragments']))
         use = [i for i in ids if not any(sp in ids for sp in SR['base_yield'].get(i, []))]
-        s_['typical'] = max(defaults[i][1] for i in use)
+        s_['typical'] = max(EXTRA_VALUE[i] if i in EXTRA_VALUE else defaults[i][1] for i in use)
     cls = symmetry_classes(m)
     for kind in ('acid', 'base'):                        # symmetry-equivalent sites (acetone's two CH3) are one site
         merged = {}

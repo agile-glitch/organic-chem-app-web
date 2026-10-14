@@ -3,17 +3,17 @@
  "display": {
   "modes": {
    "index": {
-    "molecules": 166,
-    "drawn": 1789,
-    "left_out": 5,
+    "molecules": 181,
+    "drawn": 1908,
+    "left_out": 6,
     "ambiguous": 0,
     "in_ring": 6,
     "far": 0,
     "edge_ambiguous": 5,
-    "molecules_with_left_out": 4
+    "molecules_with_left_out": 5
    },
    "cip": {
-    "molecules": 166,
+    "molecules": 181,
     "drawn": 43,
     "left_out": 0,
     "ambiguous": 0,
@@ -22,18 +22,18 @@
     "edge_ambiguous": 0
    },
    "hybridization": {
-    "molecules": 166,
-    "drawn": 1788,
-    "left_out": 6,
+    "molecules": 181,
+    "drawn": 1906,
+    "left_out": 8,
     "ambiguous": 0,
-    "in_ring": 63,
+    "in_ring": 66,
     "far": 0,
-    "edge_ambiguous": 10,
-    "molecules_with_left_out": 5
+    "edge_ambiguous": 11,
+    "molecules_with_left_out": 7
    },
    "formal": {
-    "molecules": 166,
-    "drawn": 43,
+    "molecules": 181,
+    "drawn": 53,
     "left_out": 0,
     "ambiguous": 0,
     "in_ring": 0,
@@ -41,74 +41,74 @@
     "edge_ambiguous": 0
    },
    "partial": {
-    "molecules": 166,
-    "drawn": 1769,
-    "left_out": 10,
-    "ambiguous": 1,
-    "in_ring": 42,
+    "molecules": 181,
+    "drawn": 1888,
+    "left_out": 11,
+    "ambiguous": 2,
+    "in_ring": 46,
     "far": 0,
     "edge_ambiguous": 6,
-    "molecules_with_left_out": 7
+    "molecules_with_left_out": 8
    },
    "oxidation": {
-    "molecules": 166,
-    "drawn": 1788,
-    "left_out": 6,
+    "molecules": 181,
+    "drawn": 1906,
+    "left_out": 8,
     "ambiguous": 0,
     "in_ring": 7,
     "far": 0,
     "edge_ambiguous": 3,
-    "molecules_with_left_out": 5
+    "molecules_with_left_out": 7
    },
    "lonepairs": {
-    "molecules": 166,
-    "drawn": 1791,
-    "left_out": 3,
+    "molecules": 181,
+    "drawn": 1910,
+    "left_out": 4,
     "ambiguous": 1,
     "in_ring": 2,
     "far": 0,
     "edge_ambiguous": 4,
-    "molecules_with_left_out": 3
+    "molecules_with_left_out": 4
    },
    "pka": {
-    "molecules": 166,
-    "drawn": 305,
+    "molecules": 181,
+    "drawn": 327,
     "left_out": 2,
-    "ambiguous": 8,
+    "ambiguous": 10,
     "in_ring": 0,
-    "far": 28,
+    "far": 29,
     "edge_ambiguous": 0,
     "molecules_with_left_out": 2
    },
    "steric": {
-    "molecules": 166,
-    "drawn": 475,
-    "left_out": 78,
-    "ambiguous": 71,
+    "molecules": 181,
+    "drawn": 498,
+    "left_out": 83,
+    "ambiguous": 81,
     "in_ring": 15,
-    "far": 146,
+    "far": 158,
     "edge_ambiguous": 1,
-    "molecules_with_left_out": 60
+    "molecules_with_left_out": 65
    },
    "electronic": {
-    "molecules": 166,
-    "drawn": 497,
-    "left_out": 56,
-    "ambiguous": 42,
-    "in_ring": 9,
-    "far": 67,
+    "molecules": 181,
+    "drawn": 524,
+    "left_out": 57,
+    "ambiguous": 43,
+    "in_ring": 11,
+    "far": 68,
     "edge_ambiguous": 1,
-    "molecules_with_left_out": 38
+    "molecules_with_left_out": 39
    },
    "taft": {
-    "molecules": 166,
-    "drawn": 268,
-    "left_out": 47,
-    "ambiguous": 44,
+    "molecules": 181,
+    "drawn": 277,
+    "left_out": 49,
+    "ambiguous": 47,
     "in_ring": 13,
     "far": 38,
     "edge_ambiguous": 1,
-    "molecules_with_left_out": 40
+    "molecules_with_left_out": 42
    }
   },
   "ambiguous_examples": {
@@ -132,23 +132,24 @@
     "CC(=O)Oc1ccccc1C(=O)O: 'δ +0.34 Σσ +0.00' for atom 10 sits nearer atom 8 (1.19 vs 0.87 bond lengths)",
     "OC(=O)c1ccccc1: 'δ +0.34 Σσ +0.00' for atom 1 sits nearer atom 0 (1.19 vs 1.07 bond lengths)",
     "CC(=O)c1ccccc1: 'δ +0.16 Σσ +0.00' for atom 1 sits nearer atom 0 (1.16 vs 1.05 bond lengths)",
+    "O=C1NS(=O)(=O)c2ccccc21: 'δ +0.27 Σσ +0.00' for atom 1 sits nearer atom 0 (1.12 vs 0.59 bond lengths)",
     "Cc1cnc2c(O)cccc2c1C: 'δ −0.04' for atom 11 sits nearer atom 10 (0.83 vs 0.72 bond lengths)",
-    "Cc1ccc2nc(Cc3ccccc3)[nH]c2c1: 'δ −0.04 Σσ +0.00' for atom 8 sits nearer atom 13 (1.09 vs 0.8 bond lengths)",
-    "CN1c2ccccc2C(O)(c2ccccc2)c2ccccc21: 'δ −0.34 Σσ +0.00' for atom 1 sits nearer atom 0 (1.07 vs 0.37 bond lengths)"
+    "Cc1ccc2nc(Cc3ccccc3)[nH]c2c1: 'δ −0.04 Σσ +0.00' for atom 8 sits nearer atom 13 (1.09 vs 0.8 bond lengths)"
+   ],
+   "partial": [
+    "O=C1NS(=O)(=O)c2ccccc21: '+0.26' for atom 3 sits nearer atom 6 (0.8 vs 0.67 bond lengths)",
+    "CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)"
    ],
    "pka": [
     "CN1CCC(c2ccccc2)(c2ccccc2)CC1: 'pKaH 8.65' for atom 1 sits nearer atom 0 (0.87 vs 0.5 bond lengths)",
     "c1ccc(CCN2CCCC2)nc1: 'pKaH 9.39' for atom 6 sits nearer atom 5 (0.87 vs 0.5 bond lengths)",
     "CC(CC(c1ccccc1)c1ccccc1)N1CCOCC1: 'pKaH 6.85' for atom 16 sits nearer atom 21 (0.7 vs 0.55 bond lengths)",
     "CN1c2ccccc2C(O)(c2ccccc2)c2ccccc21: 'pKaH 9.58' for atom 1 sits nearer atom 0 (0.87 vs 0.5 bond lengths)",
-    "CN1CCOC(CCN(Cc2ccccc2)c2ccccc2)C1: 'pKaH 1.22' for atom 1 sits nearer atom 0 (0.85 vs 0.5 bond lengths)",
+    "CN1CCOC(CCN(Cc2ccccc2)c2ccccc2)C1: 'pKaH 1.22' for atom 8 sits nearer atom 9 (1.22 vs 1.13 bond lengths)",
     "C=C1CCN(C)C(C)C1: 'pKaH 9.25' for atom 4 sits nearer atom 5 (0.87 vs 0.5 bond lengths)"
    ],
    "lonepairs": [
     "CC[As](=O)(CC)c1ccccc1[N+](=O)[O-]: '0' for atom 2 sits nearer atom 4 (0.6 vs 0.57 bond lengths)"
-   ],
-   "partial": [
-    "CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)"
    ]
   },
   "angles": {
@@ -243,22 +244,22 @@
    ]
   }
  },
- "analysed": 8936,
+ "analysed": 8941,
  "not_analysed": 0,
  "not_analysed_examples": [],
  "checks": {
   "formal": {
    "name": "formal",
    "what": "formal charge vs RDKit Python",
-   "checked": 116300,
-   "agree": 116300,
+   "checked": 116344,
+   "agree": 116344,
    "disagreements": {}
   },
   "lonepairs": {
    "name": "lonepairs",
    "what": "lone pairs vs the electron count",
-   "checked": 116300,
-   "agree": 116291,
+   "checked": 116344,
+   "agree": 116335,
    "disagreements": {
     "unusual electron count": {
      "count": 9,
@@ -278,8 +279,8 @@
   "oxidation": {
    "name": "oxidation",
    "what": "oxidation state vs RDKit CalcOxidationNumbers (atoms whose value does not depend on the Kekulé structure)",
-   "checked": 96129,
-   "agree": 96129,
+   "checked": 96173,
+   "agree": 96173,
    "disagreements": {}
   },
   "oxidation_kekule": {
@@ -319,27 +320,27 @@
   "partial": {
    "name": "partial",
    "what": "Gasteiger-Marsili charge vs RDKit Python (difference below 0.005; the label shows 2 decimals)",
-   "checked": 115052,
-   "agree": 115052,
+   "checked": 115096,
+   "agree": 115096,
    "disagreements": {}
   },
   "hybridization": {
    "name": "hybridization",
    "what": "displayed hybridization vs the textbook steric-number rule",
-   "checked": 114233,
-   "agree": 113707,
+   "checked": 114277,
+   "agree": 113751,
    "disagreements": {
     "S 2 σ-bonds, next to a π bond: app sp3, rule sp2": {
      "count": 405,
      "examples": [
       "Sc1ccccc1 atom 0 (S)",
+      "CC(=O)S atom 3 (S)",
       "Nc1ccccc1S atom 7 (S)",
       "CSc1cccc(N)c1 atom 1 (S)",
       "CSc1ccc(N)cc1 atom 1 (S)",
       "Sc1ccccn1 atom 0 (S)",
       "Sc1cccnc1 atom 0 (S)",
-      "Sc1ccncc1 atom 0 (S)",
-      "CN1C=CC=C(S)C1 atom 6 (S)"
+      "Sc1ccncc1 atom 0 (S)"
      ]
     },
     "N 3 σ-bonds: app sp2, rule sp3": {
@@ -420,8 +421,8 @@
   "rdkit_hybridization": {
    "name": "rdkit_hybridization",
    "what": "the app's port of RDKit's hybridization vs RDKit Python",
-   "checked": 116300,
-   "agree": 116300,
+   "checked": 116344,
+   "agree": 116344,
    "disagreements": {}
   },
   "cip": {
@@ -442,11 +443,11 @@
  "pka": {
   "acid": {
    "all": {
-    "n": 1168,
-    "median_abs_err": 1.27,
-    "within_1": 0.424,
-    "within_2": 0.643,
-    "mean_signed_err": 2.17
+    "n": 1171,
+    "median_abs_err": 1.14,
+    "within_1": 0.455,
+    "within_2": 0.702,
+    "mean_signed_err": 1.58
    },
    "by_method": {
     "Hammett estimate": {
@@ -457,28 +458,28 @@
      "mean_signed_err": 0.05
     },
     "typical value": {
-     "n": 1072,
-     "median_abs_err": 1.43,
-     "within_1": 0.372,
-     "within_2": 0.611,
-     "mean_signed_err": 2.36
+     "n": 1075,
+     "median_abs_err": 1.28,
+     "within_1": 0.407,
+     "within_2": 0.675,
+     "mean_signed_err": 1.72
     }
    },
    "by_fragment": {
     "F028": {
-     "n": 358,
-     "median_abs_err": 1.73,
-     "within_1": 0.374,
-     "within_2": 0.55,
-     "mean_signed_err": 2.12,
+     "n": 357,
+     "median_abs_err": 1.72,
+     "within_1": 0.375,
+     "within_2": 0.552,
+     "mean_signed_err": 2.11,
      "name": "F028"
     },
     "F001": {
-     "n": 311,
+     "n": 308,
      "median_abs_err": 1.06,
-     "within_1": 0.457,
-     "within_2": 0.826,
-     "mean_signed_err": 1.02,
+     "within_1": 0.461,
+     "within_2": 0.828,
+     "mean_signed_err": 1.01,
      "name": "F001"
     },
     "F001+F118": {
@@ -489,13 +490,13 @@
      "mean_signed_err": 0.66,
      "name": "F001+F118"
     },
-    "F056": {
-     "n": 56,
-     "median_abs_err": 5.33,
-     "within_1": 0.054,
-     "within_2": 0.089,
-     "mean_signed_err": 5.21,
-     "name": "F056"
+    "F056+gem-dinitro C–H (C(NO2)2)": {
+     "n": 45,
+     "median_abs_err": 1.12,
+     "within_1": 0.467,
+     "within_2": 0.867,
+     "mean_signed_err": -0.21,
+     "name": "F056+gem-dinitro C–H (C(NO2)2)"
     },
     "F021+F095+F121+F185+F187+F202": {
      "n": 33,
@@ -504,14 +505,6 @@
      "within_2": 0.939,
      "mean_signed_err": 0.21,
      "name": "F021+F095+F121+F185+F187+F202"
-    },
-    "F076": {
-     "n": 30,
-     "median_abs_err": 9.25,
-     "within_1": 0.067,
-     "within_2": 0.133,
-     "mean_signed_err": 7.64,
-     "name": "F076"
     },
     "F021+F095+F123": {
      "n": 27,
@@ -553,6 +546,14 @@
      "mean_signed_err": 2.36,
      "name": "F063"
     },
+    "F076+xanthic acid S–H (RO–C(=S)–SH)": {
+     "n": 13,
+     "median_abs_err": 0.48,
+     "within_1": 0.538,
+     "within_2": 1.0,
+     "mean_signed_err": -0.52,
+     "name": "F076+xanthic acid S–H (RO–C(=S)–SH)"
+    },
     "F068": {
      "n": 11,
      "median_abs_err": 0.52,
@@ -560,6 +561,22 @@
      "within_2": 0.909,
      "mean_signed_err": 0.61,
      "name": "F068"
+    },
+    "F056": {
+     "n": 10,
+     "median_abs_err": 1.94,
+     "within_1": 0.3,
+     "within_2": 0.5,
+     "mean_signed_err": 1.24,
+     "name": "F056"
+    },
+    "F076+dithiocarbamic acid S–H (R2N–C(=S)–SH)": {
+     "n": 10,
+     "median_abs_err": 1.21,
+     "within_1": 0.4,
+     "within_2": 0.8,
+     "mean_signed_err": -1.28,
+     "name": "F076+dithiocarbamic acid S–H (R2N–C(=S)–SH)"
     },
     "F021+F095+F121+F185+F186+F187+F202": {
      "n": 10,
@@ -571,15 +588,6 @@
     }
    },
    "worst": [
-    {
-     "smiles": "CCCCC1C(=O)N(c2ccc(S(C)(=O)=O)cc2)N(c2ccc(S(C)(=O)=O)cc2)C1=O",
-     "measured": 2.7,
-     "rules": 29,
-     "err": 26.3,
-     "method": "typical value",
-     "fragments": "F071+F101",
-     "quality": "Uncertain"
-    },
     {
      "smiles": "COC(=O)C[SeH]",
      "measured": 4.7,
@@ -608,24 +616,6 @@
      "quality": "Uncertain"
     },
     {
-     "smiles": "O=C1NS(=O)(=O)c2ccccc21",
-     "measured": 1.31,
-     "rules": 17,
-     "err": 15.69,
-     "method": "typical value",
-     "fragments": "F021+F095+F186+F202",
-     "quality": "Approximate"
-    },
-    {
-     "smiles": "O=C(c1ccccc1)C1C(=O)c2ccccc2C1=O",
-     "measured": 2.78,
-     "rules": 18.3,
-     "err": 15.520000000000001,
-     "method": "typical value",
-     "fragments": "F019+F116",
-     "quality": "not stated"
-    },
-    {
      "smiles": "O=C1CS(=O)(=O)c2ccccc21",
      "measured": 2.88,
      "rules": 18.3,
@@ -644,15 +634,6 @@
      "quality": "Uncertain"
     },
     {
-     "smiles": "O=C1c2ccccc2C(=O)C1c1ccc(Br)cc1",
-     "measured": 3.54,
-     "rules": 18.3,
-     "err": 14.760000000000002,
-     "method": "typical value",
-     "fragments": "F019+F116",
-     "quality": "not stated"
-    },
-    {
      "smiles": "CCOC(=O)C1=C(O)CNC1=O",
      "measured": 2.34,
      "rules": 17,
@@ -660,33 +641,6 @@
      "method": "typical value",
      "fragments": "F021+F095+F185+F186+F202",
      "quality": "Uncertain"
-    },
-    {
-     "smiles": "O=C1c2ccccc2C(=O)C1c1ccc(C2C(=O)c3ccccc3C2=O)c2ccccc12",
-     "measured": 3.68,
-     "rules": 18.3,
-     "err": 14.620000000000001,
-     "method": "typical value",
-     "fragments": "F019+F116",
-     "quality": "not stated"
-    },
-    {
-     "smiles": "O=C1c2ccccc2C(=O)C1c1cccc2ccccc12",
-     "measured": 3.74,
-     "rules": 18.3,
-     "err": 14.56,
-     "method": "typical value",
-     "fragments": "F019+F116",
-     "quality": "not stated"
-    },
-    {
-     "smiles": "O=C1c2ccccc2C(=O)C1c1ccc2ccccc2c1",
-     "measured": 3.74,
-     "rules": 18.3,
-     "err": 14.56,
-     "method": "typical value",
-     "fragments": "F019+F116",
-     "quality": "not stated"
     },
     {
      "smiles": "O=S(O)CO",
@@ -698,30 +652,93 @@
      "quality": "Approximate"
     },
     {
-     "smiles": "CC(C)(C)C(=O)C1C(=O)c2ccccc2C1=O",
-     "measured": 4.19,
-     "rules": 18.3,
-     "err": 14.11,
+     "smiles": "COC(=O)C(C#N)C#N",
+     "measured": -2.8,
+     "rules": 11,
+     "err": 13.8,
      "method": "typical value",
-     "fragments": "F019+F116",
-     "quality": "not stated"
+     "fragments": "F139+active methine C–H (CH between two C=O / C≡N)",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCOP(=O)(NC(=O)C(F)(F)F)OCC",
+     "measured": 4.16,
+     "rules": 17,
+     "err": 12.84,
+     "method": "typical value",
+     "fragments": "F021+F095",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=S(=O)(O)c1ccc(N=NN(O)c2ccccc2)cc1",
+     "measured": 9.99,
+     "rules": -2.8,
+     "err": -12.79,
+     "method": "typical value",
+     "fragments": "F048",
+     "quality": "Approximate"
+    },
+    {
+     "smiles": "O=C1CC(c2ccccc2)=C1O",
+     "measured": 6.25,
+     "rules": 19,
+     "err": 12.75,
+     "method": "typical value",
+     "fragments": "F019+F101+F192",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCOP(=O)(NC(=O)C(Cl)(Cl)Cl)OCC",
+     "measured": 4.77,
+     "rules": 17,
+     "err": 12.23,
+     "method": "typical value",
+     "fragments": "F021+F095",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=[N+]([O-])C(F)(F)C(O)(C(F)(F)F)C(F)(F)F",
+     "measured": 3.9,
+     "rules": 15.5,
+     "err": 11.6,
+     "method": "typical value",
+     "fragments": "F014+F016+F129",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=C(C(F)F)C(F)(F)Cl",
+     "measured": 7.9,
+     "rules": 19,
+     "err": 11.1,
+     "method": "typical value",
+     "fragments": "F019",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCC1(c2ccccc2)C(=O)NC(=[Se])NC1=O",
+     "measured": 6.02,
+     "rules": 17,
+     "err": 10.98,
+     "method": "typical value",
+     "fragments": "F021+F095+F185+F202",
+     "quality": "Uncertain"
     }
    ],
    "molecules_with_a_measured_value_and_no_site": {
     "Very uncertain": 15,
     "Reliable": 4,
-    "Uncertain": 213,
-    "Approximate": 121,
-    "not stated": 8
+    "Uncertain": 206,
+    "Approximate": 118,
+    "not stated": 7
    }
   },
   "base": {
    "all": {
-    "n": 1359,
-    "median_abs_err": 1.35,
-    "within_1": 0.406,
-    "within_2": 0.659,
-    "mean_signed_err": 0.81
+    "n": 1393,
+    "median_abs_err": 1.32,
+    "within_1": 0.412,
+    "within_2": 0.665,
+    "mean_signed_err": 0.82
    },
    "by_method": {
     "Hammett estimate": {
@@ -732,10 +749,10 @@
      "mean_signed_err": 0.07
     },
     "typical value": {
-     "n": 1278,
-     "median_abs_err": 1.48,
-     "within_1": 0.373,
-     "within_2": 0.637,
+     "n": 1312,
+     "median_abs_err": 1.44,
+     "within_1": 0.38,
+     "within_2": 0.645,
      "mean_signed_err": 0.86
     }
    },
@@ -779,14 +796,6 @@
      "within_2": 0.726,
      "mean_signed_err": 1.03,
      "name": "F093"
-    },
-    "F031": {
-     "n": 77,
-     "median_abs_err": 2.27,
-     "within_1": 0.143,
-     "within_2": 0.39,
-     "mean_signed_err": -0.25,
-     "name": "F031"
     },
     "F093+F180": {
      "n": 76,
@@ -835,6 +844,30 @@
      "within_2": 0.675,
      "mean_signed_err": 1.67,
      "name": "F112"
+    },
+    "F031": {
+     "n": 34,
+     "median_abs_err": 1.83,
+     "within_1": 0.088,
+     "within_2": 0.559,
+     "mean_signed_err": 1.06,
+     "name": "F031"
+    },
+    "F031+F204": {
+     "n": 27,
+     "median_abs_err": 2.15,
+     "within_1": 0.259,
+     "within_2": 0.37,
+     "mean_signed_err": -1.53,
+     "name": "F031+F204"
+    },
+    "F031+F196": {
+     "n": 17,
+     "median_abs_err": 2.38,
+     "within_1": 0.118,
+     "within_2": 0.118,
+     "mean_signed_err": -0.02,
+     "name": "F031+F196"
     }
    },
    "worst": [
@@ -2171,6 +2204,159 @@
    "app": "σ* 1.05 / Es -0.24",
    "ok": true,
    "why": "methyl (0, 0) + chloromethyl (1.05, -0.24): Σσ* 1.05, bulkiest Es -0.24"
+  },
+  {
+   "name": "1,3-cyclohexanedione",
+   "smiles": "O=C1CC(=O)CCC1",
+   "mode": "pka",
+   "expected": "4.9–5.6",
+   "app": "5.25 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": "C–H between two ring C=O: 5.26"
+  },
+  {
+   "name": "dimedone",
+   "smiles": "CC1(C)CC(=O)CC(=O)C1",
+   "mode": "pka",
+   "expected": "4.9–5.6",
+   "app": "5.26 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "barbituric acid",
+   "smiles": "O=C1CC(=O)NC(=O)N1",
+   "mode": "pka",
+   "expected": "3.8–5.2",
+   "app": "5 (typical value for F102, ring 1,3-dicarbonyl C–H (1,3-cyclohe)",
+   "ok": true,
+   "why": "C5–H between two C=O in the ring: 4.0"
+  },
+  {
+   "name": "3-methylpentane-2,4-dione",
+   "smiles": "CC(=O)C(C)C(C)=O",
+   "mode": "pka",
+   "expected": "10.5–11.5",
+   "app": "10.79 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "saccharin",
+   "smiles": "O=C1NS(=O)(=O)c2ccccc21",
+   "mode": "pka",
+   "expected": "1.2–2.0",
+   "app": "1.31 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": "acyl sulfonamide N–H"
+  },
+  {
+   "name": "N-acetylbenzenesulfonamide",
+   "smiles": "CC(=O)NS(=O)(=O)c1ccccc1",
+   "mode": "pka",
+   "expected": "3.5–5.5",
+   "app": "4.5 (typical value for F021, F095, F137, acyl sulfonamide N–H (C()",
+   "ok": true,
+   "why": "acyl sulfonamide N–H, about 4.5"
+  },
+  {
+   "name": "methyl xanthic acid",
+   "smiles": "COC(=S)S",
+   "mode": "pka",
+   "expected": "1.4–2.2",
+   "app": "1.55 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "thioacetic acid",
+   "smiles": "CC(=O)S",
+   "mode": "pka",
+   "expected": "3.3–3.8",
+   "app": "3.62 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "dinitromethane",
+   "smiles": "O=[N+]([O-])C[N+](=O)[O-]",
+   "mode": "pka",
+   "expected": "3.4–4.0",
+   "app": "3.6 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "trinitromethane",
+   "smiles": "O=[N+]([O-])C([N+](=O)[O-])[N+](=O)[O-]",
+   "mode": "pka",
+   "expected": "-0.2–0.5",
+   "app": "0.12 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "guanidine",
+   "smiles": "NC(N)=N",
+   "mode": "pka",
+   "expected": "13.3–13.9",
+   "app": "13.59 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "guanidine",
+   "smiles": "NC(N)=N",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": "the =NH of a guanidine is not an acid"
+  },
+  {
+   "name": "pentamethylguanidine",
+   "smiles": "CN=C(N(C)C)N(C)C",
+   "mode": "pka",
+   "expected": "13.3–14.2",
+   "app": "13.8 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "2-methyl-2-imidazoline",
+   "smiles": "CC1=NCCN1",
+   "mode": "pka",
+   "expected": "10.8–11.5",
+   "app": "11.09 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "phenylguanidine",
+   "smiles": "NC(N)=Nc1ccccc1",
+   "mode": "pka",
+   "expected": "10.4–11.2",
+   "app": "10.8 (typical value for F031, F204, N-aryl guanidine)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetone oxime",
+   "smiles": "CC(C)=NO",
+   "mode": "pka",
+   "expected": "10.5–12.6",
+   "app": "12.42 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": "oxime O–H about 12.4"
+  },
+  {
+   "name": "acetone oxime",
+   "smiles": "CC(C)=NO",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": ""
   }
  ],
  "steric_series": [

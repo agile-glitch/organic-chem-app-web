@@ -1,106 +1,1516 @@
 {
-  "about": "Hand-checked textbook values for the Molecule tab's labels, written without running the app: hybridization (VSEPR / textbook convention), formal charge, lone pairs, oxidation state (IUPAC 2016: bonding electrons to the more electronegative atom, Pauling values), R/S and E/Z (the compounds' known configurations), pKa (water; range = measured or textbook value with its usual spread) and Taft σ*/Es of the groups on the reacting atom (Taft 1956; Hansch & Leo 1979). Atom numbers are 0-based in the order the SMILES writes the atoms; 'el' is the element there, so a wrong number is caught. Used by tools/validate_labels.py.",
-  "cases": [
-    {"name": "acetonitrile", "smiles": "CC#N", "expect": [
-      {"mode": "hybridization", "atom": 0, "el": "C", "value": "sp3"}, {"mode": "hybridization", "atom": 1, "el": "C", "value": "sp"},
-      {"mode": "hybridization", "atom": 2, "el": "N", "value": "sp"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -3},
-      {"mode": "oxidation", "atom": 1, "el": "C", "value": 3}, {"mode": "oxidation", "atom": 2, "el": "N", "value": -3},
-      {"mode": "lonepairs", "atom": 2, "el": "N", "value": 1},
-      {"mode": "pka", "atom": 0, "el": "C", "range": [25, 31], "why": "α-C–H of a nitrile: 25 (Evans table), 28.9 in water (Richard), 31.3 in DMSO (Bordwell)"}]},
-    {"name": "ethanol", "smiles": "CCO", "expect": [
-      {"mode": "hybridization", "atom": 2, "el": "O", "value": "sp3"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -3},
-      {"mode": "oxidation", "atom": 1, "el": "C", "value": -1}, {"mode": "oxidation", "atom": 2, "el": "O", "value": -2},
-      {"mode": "lonepairs", "atom": 2, "el": "O", "value": 2}, {"mode": "pka", "atom": 2, "el": "O", "range": [15.5, 16.5]}]},
-    {"name": "formaldehyde", "smiles": "C=O", "expect": [
-      {"mode": "hybridization", "atom": 0, "el": "C", "value": "sp2"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": 0},
-      {"mode": "lonepairs", "atom": 1, "el": "O", "value": 2}]},
-    {"name": "formic acid", "smiles": "OC=O", "expect": [{"mode": "oxidation", "atom": 1, "el": "C", "value": 2}, {"mode": "pka", "atom": 0, "el": "O", "range": [3.6, 3.9]}]},
-    {"name": "carbon dioxide", "smiles": "O=C=O", "expect": [
-      {"mode": "hybridization", "atom": 1, "el": "C", "value": "sp"}, {"mode": "oxidation", "atom": 1, "el": "C", "value": 4},
-      {"mode": "lonepairs", "atom": 0, "el": "O", "value": 2}]},
-    {"name": "methane", "smiles": "C", "expect": [{"mode": "hybridization", "atom": 0, "el": "C", "value": "sp3"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -4}]},
-    {"name": "tetrachloromethane", "smiles": "ClC(Cl)(Cl)Cl", "expect": [{"mode": "oxidation", "atom": 1, "el": "C", "value": 4}, {"mode": "lonepairs", "atom": 0, "el": "Cl", "value": 3}, {"mode": "oxidation", "atom": 0, "el": "Cl", "value": -1}]},
-    {"name": "acetic acid", "smiles": "CC(=O)O", "expect": [
-      {"mode": "oxidation", "atom": 0, "el": "C", "value": -3}, {"mode": "oxidation", "atom": 1, "el": "C", "value": 3},
-      {"mode": "hybridization", "atom": 1, "el": "C", "value": "sp2"}, {"mode": "lonepairs", "atom": 2, "el": "O", "value": 2},
-      {"mode": "lonepairs", "atom": 3, "el": "O", "value": 2}, {"mode": "pka", "atom": 3, "el": "O", "range": [4.6, 4.9]}]},
-    {"name": "benzene", "smiles": "c1ccccc1", "expect": [{"mode": "hybridization", "atom": 0, "el": "C", "value": "sp2"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -1}]},
-    {"name": "acetamide", "smiles": "CC(N)=O", "expect": [
-      {"mode": "hybridization", "atom": 2, "el": "N", "value": "sp2", "why": "amide N is planar"}, {"mode": "lonepairs", "atom": 2, "el": "N", "value": 1},
-      {"mode": "oxidation", "atom": 1, "el": "C", "value": 3}, {"mode": "oxidation", "atom": 2, "el": "N", "value": -3}]},
-    {"name": "pyridine", "smiles": "c1ccncc1", "expect": [
-      {"mode": "hybridization", "atom": 3, "el": "N", "value": "sp2"}, {"mode": "lonepairs", "atom": 3, "el": "N", "value": 1},
-      {"mode": "pka", "atom": 3, "el": "N", "range": [5.1, 5.35], "kind": "base"}]},
-    {"name": "pyrrole", "smiles": "c1cc[nH]c1", "expect": [{"mode": "hybridization", "atom": 3, "el": "N", "value": "sp2", "why": "its lone pair is in the aromatic π system"}, {"mode": "lonepairs", "atom": 3, "el": "N", "value": 1}]},
-    {"name": "furan", "smiles": "c1ccoc1", "expect": [{"mode": "hybridization", "atom": 3, "el": "O", "value": "sp2"}, {"mode": "lonepairs", "atom": 3, "el": "O", "value": 2}]},
-    {"name": "ammonium", "smiles": "[NH4+]", "expect": [
-      {"mode": "formal", "atom": 0, "el": "N", "value": 1}, {"mode": "lonepairs", "atom": 0, "el": "N", "value": 0},
-      {"mode": "oxidation", "atom": 0, "el": "N", "value": -3}, {"mode": "hybridization", "atom": 0, "el": "N", "value": "sp3"},
-      {"mode": "pka", "atom": 0, "el": "N", "range": [9.2, 9.3]}]},
-    {"name": "nitromethane", "smiles": "C[N+](=O)[O-]", "expect": [
-      {"mode": "formal", "atom": 1, "el": "N", "value": 1}, {"mode": "formal", "atom": 3, "el": "O", "value": -1}, {"mode": "formal", "atom": 2, "el": "O", "value": 0},
-      {"mode": "hybridization", "atom": 1, "el": "N", "value": "sp2"}, {"mode": "lonepairs", "atom": 1, "el": "N", "value": 0},
-      {"mode": "lonepairs", "atom": 2, "el": "O", "value": 2}, {"mode": "lonepairs", "atom": 3, "el": "O", "value": 3},
-      {"mode": "oxidation", "atom": 1, "el": "N", "value": 3}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -2},
-      {"mode": "pka", "atom": 0, "el": "C", "range": [10, 10.5]}]},
-    {"name": "acetate", "smiles": "CC(=O)[O-]", "expect": [{"mode": "formal", "atom": 3, "el": "O", "value": -1}, {"mode": "lonepairs", "atom": 3, "el": "O", "value": 3}, {"mode": "oxidation", "atom": 1, "el": "C", "value": 3}]},
-    {"name": "allene", "smiles": "C=C=C", "expect": [{"mode": "hybridization", "atom": 1, "el": "C", "value": "sp"}, {"mode": "hybridization", "atom": 0, "el": "C", "value": "sp2"}]},
-    {"name": "dimethyl sulfoxide", "smiles": "CS(C)=O", "expect": [
-      {"mode": "hybridization", "atom": 1, "el": "S", "value": "sp3"}, {"mode": "lonepairs", "atom": 1, "el": "S", "value": 1},
-      {"mode": "oxidation", "atom": 1, "el": "S", "value": 0, "why": "Pauling S 2.58 > C 2.55: S keeps the C–S electrons, O takes the S=O pair"},
-      {"mode": "pka", "atom": 0, "el": "C", "none": true, "why": "α-C–H of a sulfoxide, pKa about 35: no label (sites above 20 are not shown)"}]},
-    {"name": "ethene", "smiles": "C=C", "expect": [{"mode": "hybridization", "atom": 0, "el": "C", "value": "sp2"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -2}]},
-    {"name": "ethyne", "smiles": "C#C", "expect": [{"mode": "hybridization", "atom": 0, "el": "C", "value": "sp"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -1}]},
-    {"name": "water", "smiles": "O", "expect": [{"mode": "lonepairs", "atom": 0, "el": "O", "value": 2}, {"mode": "hybridization", "atom": 0, "el": "O", "value": "sp3"}, {"mode": "oxidation", "atom": 0, "el": "O", "value": -2}]},
-    {"name": "ammonia", "smiles": "N", "expect": [{"mode": "lonepairs", "atom": 0, "el": "N", "value": 1}, {"mode": "hybridization", "atom": 0, "el": "N", "value": "sp3"}]},
-    {"name": "methylamine", "smiles": "CN", "expect": [
-      {"mode": "hybridization", "atom": 1, "el": "N", "value": "sp3"}, {"mode": "oxidation", "atom": 0, "el": "C", "value": -2},
-      {"mode": "pka", "atom": 1, "el": "N", "range": [10.5, 10.8], "kind": "base"}]},
-    {"name": "methyl cation", "smiles": "[CH3+]", "expect": [{"mode": "hybridization", "atom": 0, "el": "C", "value": "sp2"}, {"mode": "formal", "atom": 0, "el": "C", "value": 1}, {"mode": "lonepairs", "atom": 0, "el": "C", "value": 0}]},
-    {"name": "methyl anion", "smiles": "[CH3-]", "expect": [{"mode": "hybridization", "atom": 0, "el": "C", "value": "sp3"}, {"mode": "formal", "atom": 0, "el": "C", "value": -1}, {"mode": "lonepairs", "atom": 0, "el": "C", "value": 1}]},
-    {"name": "hydroxide", "smiles": "[OH-]", "expect": [{"mode": "lonepairs", "atom": 0, "el": "O", "value": 3}, {"mode": "formal", "atom": 0, "el": "O", "value": -1}]},
-    {"name": "aspirin", "smiles": "CC(=O)Oc1ccccc1C(=O)O", "expect": [
-      {"mode": "oxidation", "atom": 0, "el": "C", "value": -3}, {"mode": "oxidation", "atom": 1, "el": "C", "value": 3}, {"mode": "oxidation", "atom": 4, "el": "C", "value": 1},
-      {"mode": "oxidation", "atom": 5, "el": "C", "value": -1}, {"mode": "oxidation", "atom": 9, "el": "C", "value": 0}, {"mode": "oxidation", "atom": 10, "el": "C", "value": 3},
-      {"mode": "lonepairs", "atom": 3, "el": "O", "value": 2}, {"mode": "hybridization", "atom": 0, "el": "C", "value": "sp3"},
-      {"mode": "pka", "atom": 12, "el": "O", "range": [3.3, 3.6]}, {"mode": "pka", "atom": 0, "el": "C", "range": [24, 26], "why": "α-C–H of an ester: about 25"}]},
-    {"name": "L-alanine", "smiles": "C[C@@H](C(=O)O)N", "expect": [{"mode": "cip", "atom": 1, "el": "C", "value": "S"}]},
-    {"name": "L-cysteine", "smiles": "C([C@@H](C(=O)O)N)S", "expect": [{"mode": "cip", "atom": 1, "el": "C", "value": "R", "why": "L-cysteine is R: the CH2SH outranks the CO2H"}]},
-    {"name": "L-lactic acid", "smiles": "C[C@@H](C(=O)O)O", "expect": [{"mode": "cip", "atom": 1, "el": "C", "value": "S"}]},
-    {"name": "D-glyceraldehyde", "smiles": "C([C@H](C=O)O)O", "expect": [{"mode": "cip", "atom": 1, "el": "C", "value": "R"}]},
-    {"name": "(S)-ibuprofen", "smiles": "C[C@@H](c1ccc(CC(C)C)cc1)C(=O)O", "expect": [{"mode": "cip", "atom": 1, "el": "C", "value": "S"}]},
-    {"name": "(E)-but-2-ene", "smiles": "C/C=C/C", "expect": [{"mode": "ez", "bond": [1, 2], "value": "E"}]},
-    {"name": "(Z)-but-2-ene", "smiles": "C/C=C\\C", "expect": [{"mode": "ez", "bond": [1, 2], "value": "Z"}]},
-    {"name": "phenol", "smiles": "Oc1ccccc1", "expect": [{"mode": "pka", "atom": 0, "el": "O", "range": [9.8, 10.1]}, {"mode": "hybridization", "atom": 0, "el": "O", "value": "sp2", "why": "the O lone pair is conjugated with the ring (textbook convention)"}]},
-    {"name": "4-nitrophenol", "smiles": "Oc1ccc([N+](=O)[O-])cc1", "expect": [{"mode": "pka", "atom": 0, "el": "O", "range": [7.0, 7.3]}]},
-    {"name": "benzoic acid", "smiles": "OC(=O)c1ccccc1", "expect": [{"mode": "pka", "atom": 0, "el": "O", "range": [4.1, 4.3]}]},
-    {"name": "trifluoroacetic acid", "smiles": "OC(=O)C(F)(F)F", "expect": [{"mode": "pka", "atom": 0, "el": "O", "range": [0.2, 0.6]}]},
-    {"name": "acetone", "smiles": "CC(C)=O", "expect": [{"mode": "pka", "atom": 0, "el": "C", "range": [19, 20.5]},
-      {"mode": "taft", "atom": 1, "el": "C", "sigmaStar": 0.0, "Es": 0.0, "why": "two methyl groups: the reference (0, 0)"}]},
-    {"name": "ethyl acetate", "smiles": "CC(=O)OCC", "expect": [{"mode": "pka", "atom": 0, "el": "C", "range": [24, 26]}, {"mode": "pka", "atom": 4, "el": "C", "none": true, "why": "the O–CH2 has no acidic H"}]},
-    {"name": "acetaldehyde", "smiles": "CC=O", "expect": [{"mode": "pka", "atom": 0, "el": "C", "range": [16, 17.5]}]},
-    {"name": "cyclohexanone", "smiles": "O=C1CCCCC1", "expect": [{"mode": "pka", "atom": 2, "el": "C", "range": [18, 20]}]},
-    {"name": "acetophenone", "smiles": "CC(=O)c1ccccc1", "expect": [{"mode": "pka", "atom": 0, "el": "C", "range": [18, 19.5]}]},
-    {"name": "acetylacetone", "smiles": "CC(=O)CC(C)=O", "expect": [{"mode": "pka", "atom": 3, "el": "C", "range": [8.5, 9.5]}]},
-    {"name": "diethyl malonate", "smiles": "CCOC(=O)CC(=O)OCC", "expect": [{"mode": "pka", "atom": 5, "el": "C", "range": [12.5, 13.5]}]},
-    {"name": "dimethyl sulfone", "smiles": "CS(C)(=O)=O", "expect": [{"mode": "pka", "atom": 0, "el": "C", "range": [28, 31.5]}]},
-    {"name": "aniline", "smiles": "Nc1ccccc1", "expect": [{"mode": "pka", "atom": 0, "el": "N", "range": [4.5, 4.7], "kind": "base"}]},
-    {"name": "imidazole", "smiles": "c1cnc[nH]1", "expect": [{"mode": "pka", "atom": 2, "el": "N", "range": [6.9, 7.1], "kind": "base"}]},
-    {"name": "thiophenol", "smiles": "Sc1ccccc1", "expect": [{"mode": "pka", "atom": 0, "el": "S", "range": [6.4, 6.8]}]},
-    {"name": "ethanethiol", "smiles": "CCS", "expect": [{"mode": "pka", "atom": 2, "el": "S", "range": [10.3, 10.8]}]},
-    {"name": "TBS ether of ethanol", "smiles": "CCO[Si](C)(C)C(C)(C)C", "expect": [{"mode": "pka", "atom": 1, "el": "C", "none": true}, {"mode": "pka", "atom": 0, "el": "C", "none": true}]},
-    {"name": "pivaldehyde", "smiles": "CC(C)(C)C=O", "expect": [{"mode": "taft", "atom": 4, "el": "C", "sigmaStar": -0.30, "Es": -1.54}]},
-    {"name": "isobutyraldehyde", "smiles": "CC(C)C=O", "expect": [{"mode": "taft", "atom": 3, "el": "C", "sigmaStar": -0.19, "Es": -0.47}]},
-    {"name": "propanal", "smiles": "CCC=O", "expect": [{"mode": "taft", "atom": 2, "el": "C", "sigmaStar": -0.10, "Es": -0.07}]},
-    {"name": "chloroacetone", "smiles": "CC(=O)CCl", "expect": [{"mode": "taft", "atom": 1, "el": "C", "sigmaStar": 1.05, "Es": -0.24, "why": "methyl (0, 0) + chloromethyl (1.05, -0.24): Σσ* 1.05, bulkiest Es -0.24"}]}
-  ],
-  "steric_series": {
-    "about": "each list goes from less to more crowded at the reacting atom; the steric class must never go down along a list",
-    "series": [
-      {"name": "aldehydes", "smiles": ["CC=O", "CCC=O", "CC(C)C=O", "CC(C)(C)C=O"]},
-      {"name": "alkyl bromides (SN2 order)", "smiles": ["CBr", "CCBr", "CC(C)Br", "CC(C)(C)Br"]},
-      {"name": "amines", "smiles": ["CCCCN", "CCC(C)N", "CC(C)(C)N"]},
-      {"name": "ketones", "smiles": ["CC(C)=O", "CCC(C)=O", "CC(C)C(C)=O", "CC(C)(C)C(C)=O"]}
-    ]
+ "about": "Hand-checked textbook values for the Molecule tab's labels, written without running the app: hybridization (VSEPR / textbook convention), formal charge, lone pairs, oxidation state (IUPAC 2016: bonding electrons to the more electronegative atom, Pauling values), R/S and E/Z (the compounds' known configurations), pKa (water; range = measured or textbook value with its usual spread) and Taft σ*/Es of the groups on the reacting atom (Taft 1956; Hansch & Leo 1979). Atom numbers are 0-based in the order the SMILES writes the atoms; 'el' is the element there, so a wrong number is caught. Used by tools/validate_labels.py.",
+ "cases": [
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp3"
+    },
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "C",
+     "value": "sp"
+    },
+    {
+     "mode": "hybridization",
+     "atom": 2,
+     "el": "N",
+     "value": "sp"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 2,
+     "el": "N",
+     "value": -3
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 2,
+     "el": "N",
+     "value": 1
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      25,
+      31
+     ],
+     "why": "α-C–H of a nitrile: 25 (Evans table), 28.9 in water (Richard), 31.3 in DMSO (Bordwell)"
+    }
+   ]
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 2,
+     "el": "O",
+     "value": "sp3"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": -1
+    },
+    {
+     "mode": "oxidation",
+     "atom": 2,
+     "el": "O",
+     "value": -2
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 2,
+     "el": "O",
+     "value": 2
+    },
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "O",
+     "range": [
+      15.5,
+      16.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "formaldehyde",
+   "smiles": "C=O",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp2"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": 0
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 1,
+     "el": "O",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "name": "formic acid",
+   "smiles": "OC=O",
+   "expect": [
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 2
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "O",
+     "range": [
+      3.6,
+      3.9
+     ]
+    }
+   ]
+  },
+  {
+   "name": "carbon dioxide",
+   "smiles": "O=C=O",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "C",
+     "value": "sp"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 4
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "O",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "name": "methane",
+   "smiles": "C",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp3"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -4
+    }
+   ]
+  },
+  {
+   "name": "tetrachloromethane",
+   "smiles": "ClC(Cl)(Cl)Cl",
+   "expect": [
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 4
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "Cl",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "Cl",
+     "value": -1
+    }
+   ]
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "expect": [
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 3
+    },
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "C",
+     "value": "sp2"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 2,
+     "el": "O",
+     "value": 2
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "O",
+     "value": 2
+    },
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "O",
+     "range": [
+      4.6,
+      4.9
+     ]
+    }
+   ]
+  },
+  {
+   "name": "benzene",
+   "smiles": "c1ccccc1",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp2"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -1
+    }
+   ]
+  },
+  {
+   "name": "acetamide",
+   "smiles": "CC(N)=O",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 2,
+     "el": "N",
+     "value": "sp2",
+     "why": "amide N is planar"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 2,
+     "el": "N",
+     "value": 1
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 2,
+     "el": "N",
+     "value": -3
+    }
+   ]
+  },
+  {
+   "name": "pyridine",
+   "smiles": "c1ccncc1",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 3,
+     "el": "N",
+     "value": "sp2"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "N",
+     "value": 1
+    },
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "N",
+     "range": [
+      5.1,
+      5.35
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "pyrrole",
+   "smiles": "c1cc[nH]c1",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 3,
+     "el": "N",
+     "value": "sp2",
+     "why": "its lone pair is in the aromatic π system"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "N",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "name": "furan",
+   "smiles": "c1ccoc1",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 3,
+     "el": "O",
+     "value": "sp2"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "O",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "name": "ammonium",
+   "smiles": "[NH4+]",
+   "expect": [
+    {
+     "mode": "formal",
+     "atom": 0,
+     "el": "N",
+     "value": 1
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "N",
+     "value": 0
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "N",
+     "value": -3
+    },
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "N",
+     "value": "sp3"
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "N",
+     "range": [
+      9.2,
+      9.3
+     ]
+    }
+   ]
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "expect": [
+    {
+     "mode": "formal",
+     "atom": 1,
+     "el": "N",
+     "value": 1
+    },
+    {
+     "mode": "formal",
+     "atom": 3,
+     "el": "O",
+     "value": -1
+    },
+    {
+     "mode": "formal",
+     "atom": 2,
+     "el": "O",
+     "value": 0
+    },
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "N",
+     "value": "sp2"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 1,
+     "el": "N",
+     "value": 0
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 2,
+     "el": "O",
+     "value": 2
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "O",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "N",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -2
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      10,
+      10.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "acetate",
+   "smiles": "CC(=O)[O-]",
+   "expect": [
+    {
+     "mode": "formal",
+     "atom": 3,
+     "el": "O",
+     "value": -1
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "O",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "name": "allene",
+   "smiles": "C=C=C",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "C",
+     "value": "sp"
+    },
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp2"
+    }
+   ]
+  },
+  {
+   "name": "dimethyl sulfoxide",
+   "smiles": "CS(C)=O",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "S",
+     "value": "sp3"
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 1,
+     "el": "S",
+     "value": 1
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "S",
+     "value": 0,
+     "why": "Pauling S 2.58 > C 2.55: S keeps the C–S electrons, O takes the S=O pair"
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "none": true,
+     "why": "α-C–H of a sulfoxide, pKa about 35: no label (sites above 20 are not shown)"
+    }
+   ]
+  },
+  {
+   "name": "ethene",
+   "smiles": "C=C",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp2"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -2
+    }
+   ]
+  },
+  {
+   "name": "ethyne",
+   "smiles": "C#C",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -1
+    }
+   ]
+  },
+  {
+   "name": "water",
+   "smiles": "O",
+   "expect": [
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "O",
+     "value": 2
+    },
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "O",
+     "value": "sp3"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "O",
+     "value": -2
+    }
+   ]
+  },
+  {
+   "name": "ammonia",
+   "smiles": "N",
+   "expect": [
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "N",
+     "value": 1
+    },
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "N",
+     "value": "sp3"
+    }
+   ]
+  },
+  {
+   "name": "methylamine",
+   "smiles": "CN",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 1,
+     "el": "N",
+     "value": "sp3"
+    },
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -2
+    },
+    {
+     "mode": "pka",
+     "atom": 1,
+     "el": "N",
+     "range": [
+      10.5,
+      10.8
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "methyl cation",
+   "smiles": "[CH3+]",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp2"
+    },
+    {
+     "mode": "formal",
+     "atom": 0,
+     "el": "C",
+     "value": 1
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "C",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "name": "methyl anion",
+   "smiles": "[CH3-]",
+   "expect": [
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp3"
+    },
+    {
+     "mode": "formal",
+     "atom": 0,
+     "el": "C",
+     "value": -1
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "C",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "name": "hydroxide",
+   "smiles": "[OH-]",
+   "expect": [
+    {
+     "mode": "lonepairs",
+     "atom": 0,
+     "el": "O",
+     "value": 3
+    },
+    {
+     "mode": "formal",
+     "atom": 0,
+     "el": "O",
+     "value": -1
+    }
+   ]
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "expect": [
+    {
+     "mode": "oxidation",
+     "atom": 0,
+     "el": "C",
+     "value": -3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 1,
+     "el": "C",
+     "value": 3
+    },
+    {
+     "mode": "oxidation",
+     "atom": 4,
+     "el": "C",
+     "value": 1
+    },
+    {
+     "mode": "oxidation",
+     "atom": 5,
+     "el": "C",
+     "value": -1
+    },
+    {
+     "mode": "oxidation",
+     "atom": 9,
+     "el": "C",
+     "value": 0
+    },
+    {
+     "mode": "oxidation",
+     "atom": 10,
+     "el": "C",
+     "value": 3
+    },
+    {
+     "mode": "lonepairs",
+     "atom": 3,
+     "el": "O",
+     "value": 2
+    },
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "C",
+     "value": "sp3"
+    },
+    {
+     "mode": "pka",
+     "atom": 12,
+     "el": "O",
+     "range": [
+      3.3,
+      3.6
+     ]
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      24,
+      26
+     ],
+     "why": "α-C–H of an ester: about 25"
+    }
+   ]
+  },
+  {
+   "name": "L-alanine",
+   "smiles": "C[C@@H](C(=O)O)N",
+   "expect": [
+    {
+     "mode": "cip",
+     "atom": 1,
+     "el": "C",
+     "value": "S"
+    }
+   ]
+  },
+  {
+   "name": "L-cysteine",
+   "smiles": "C([C@@H](C(=O)O)N)S",
+   "expect": [
+    {
+     "mode": "cip",
+     "atom": 1,
+     "el": "C",
+     "value": "R",
+     "why": "L-cysteine is R: the CH2SH outranks the CO2H"
+    }
+   ]
+  },
+  {
+   "name": "L-lactic acid",
+   "smiles": "C[C@@H](C(=O)O)O",
+   "expect": [
+    {
+     "mode": "cip",
+     "atom": 1,
+     "el": "C",
+     "value": "S"
+    }
+   ]
+  },
+  {
+   "name": "D-glyceraldehyde",
+   "smiles": "C([C@H](C=O)O)O",
+   "expect": [
+    {
+     "mode": "cip",
+     "atom": 1,
+     "el": "C",
+     "value": "R"
+    }
+   ]
+  },
+  {
+   "name": "(S)-ibuprofen",
+   "smiles": "C[C@@H](c1ccc(CC(C)C)cc1)C(=O)O",
+   "expect": [
+    {
+     "mode": "cip",
+     "atom": 1,
+     "el": "C",
+     "value": "S"
+    }
+   ]
+  },
+  {
+   "name": "(E)-but-2-ene",
+   "smiles": "C/C=C/C",
+   "expect": [
+    {
+     "mode": "ez",
+     "bond": [
+      1,
+      2
+     ],
+     "value": "E"
+    }
+   ]
+  },
+  {
+   "name": "(Z)-but-2-ene",
+   "smiles": "C/C=C\\C",
+   "expect": [
+    {
+     "mode": "ez",
+     "bond": [
+      1,
+      2
+     ],
+     "value": "Z"
+    }
+   ]
+  },
+  {
+   "name": "phenol",
+   "smiles": "Oc1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "O",
+     "range": [
+      9.8,
+      10.1
+     ]
+    },
+    {
+     "mode": "hybridization",
+     "atom": 0,
+     "el": "O",
+     "value": "sp2",
+     "why": "the O lone pair is conjugated with the ring (textbook convention)"
+    }
+   ]
+  },
+  {
+   "name": "4-nitrophenol",
+   "smiles": "Oc1ccc([N+](=O)[O-])cc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "O",
+     "range": [
+      7.0,
+      7.3
+     ]
+    }
+   ]
+  },
+  {
+   "name": "benzoic acid",
+   "smiles": "OC(=O)c1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "O",
+     "range": [
+      4.1,
+      4.3
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trifluoroacetic acid",
+   "smiles": "OC(=O)C(F)(F)F",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "O",
+     "range": [
+      0.2,
+      0.6
+     ]
+    }
+   ]
+  },
+  {
+   "name": "acetone",
+   "smiles": "CC(C)=O",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      19,
+      20.5
+     ]
+    },
+    {
+     "mode": "taft",
+     "atom": 1,
+     "el": "C",
+     "sigmaStar": 0.0,
+     "Es": 0.0,
+     "why": "two methyl groups: the reference (0, 0)"
+    }
+   ]
+  },
+  {
+   "name": "ethyl acetate",
+   "smiles": "CC(=O)OCC",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      24,
+      26
+     ]
+    },
+    {
+     "mode": "pka",
+     "atom": 4,
+     "el": "C",
+     "none": true,
+     "why": "the O–CH2 has no acidic H"
+    }
+   ]
+  },
+  {
+   "name": "acetaldehyde",
+   "smiles": "CC=O",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      16,
+      17.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "cyclohexanone",
+   "smiles": "O=C1CCCCC1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "C",
+     "range": [
+      18,
+      20
+     ]
+    }
+   ]
+  },
+  {
+   "name": "acetophenone",
+   "smiles": "CC(=O)c1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      18,
+      19.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "acetylacetone",
+   "smiles": "CC(=O)CC(C)=O",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "C",
+     "range": [
+      8.5,
+      9.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "diethyl malonate",
+   "smiles": "CCOC(=O)CC(=O)OCC",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 5,
+     "el": "C",
+     "range": [
+      12.5,
+      13.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "dimethyl sulfone",
+   "smiles": "CS(C)(=O)=O",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "range": [
+      28,
+      31.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "aniline",
+   "smiles": "Nc1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "N",
+     "range": [
+      4.5,
+      4.7
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "imidazole",
+   "smiles": "c1cnc[nH]1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "N",
+     "range": [
+      6.9,
+      7.1
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "thiophenol",
+   "smiles": "Sc1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "S",
+     "range": [
+      6.4,
+      6.8
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ethanethiol",
+   "smiles": "CCS",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "S",
+     "range": [
+      10.3,
+      10.8
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TBS ether of ethanol",
+   "smiles": "CCO[Si](C)(C)C(C)(C)C",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 1,
+     "el": "C",
+     "none": true
+    },
+    {
+     "mode": "pka",
+     "atom": 0,
+     "el": "C",
+     "none": true
+    }
+   ]
+  },
+  {
+   "name": "pivaldehyde",
+   "smiles": "CC(C)(C)C=O",
+   "expect": [
+    {
+     "mode": "taft",
+     "atom": 4,
+     "el": "C",
+     "sigmaStar": -0.3,
+     "Es": -1.54
+    }
+   ]
+  },
+  {
+   "name": "isobutyraldehyde",
+   "smiles": "CC(C)C=O",
+   "expect": [
+    {
+     "mode": "taft",
+     "atom": 3,
+     "el": "C",
+     "sigmaStar": -0.19,
+     "Es": -0.47
+    }
+   ]
+  },
+  {
+   "name": "propanal",
+   "smiles": "CCC=O",
+   "expect": [
+    {
+     "mode": "taft",
+     "atom": 2,
+     "el": "C",
+     "sigmaStar": -0.1,
+     "Es": -0.07
+    }
+   ]
+  },
+  {
+   "name": "chloroacetone",
+   "smiles": "CC(=O)CCl",
+   "expect": [
+    {
+     "mode": "taft",
+     "atom": 1,
+     "el": "C",
+     "sigmaStar": 1.05,
+     "Es": -0.24,
+     "why": "methyl (0, 0) + chloromethyl (1.05, -0.24): Σσ* 1.05, bulkiest Es -0.24"
+    }
+   ]
+  },
+  {
+   "name": "1,3-cyclohexanedione",
+   "smiles": "O=C1CC(=O)CCC1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "C",
+     "range": [
+      4.9,
+      5.6
+     ],
+     "why": "C–H between two ring C=O: 5.26"
+    }
+   ]
+  },
+  {
+   "name": "dimedone",
+   "smiles": "CC1(C)CC(=O)CC(=O)C1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 6,
+     "el": "C",
+     "range": [
+      4.9,
+      5.6
+     ]
+    }
+   ]
+  },
+  {
+   "name": "barbituric acid",
+   "smiles": "O=C1CC(=O)NC(=O)N1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "C",
+     "range": [
+      3.8,
+      5.2
+     ],
+     "why": "C5–H between two C=O in the ring: 4.0"
+    }
+   ]
+  },
+  {
+   "name": "3-methylpentane-2,4-dione",
+   "smiles": "CC(=O)C(C)C(C)=O",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "C",
+     "range": [
+      10.5,
+      11.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "saccharin",
+   "smiles": "O=C1NS(=O)(=O)c2ccccc21",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "N",
+     "range": [
+      1.2,
+      2.0
+     ],
+     "why": "acyl sulfonamide N–H"
+    }
+   ]
+  },
+  {
+   "name": "N-acetylbenzenesulfonamide",
+   "smiles": "CC(=O)NS(=O)(=O)c1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "N",
+     "range": [
+      3.5,
+      5.5
+     ],
+     "why": "acyl sulfonamide N–H, about 4.5"
+    }
+   ]
+  },
+  {
+   "name": "methyl xanthic acid",
+   "smiles": "COC(=S)S",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 4,
+     "el": "S",
+     "range": [
+      1.4,
+      2.2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "thioacetic acid",
+   "smiles": "CC(=O)S",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "S",
+     "range": [
+      3.3,
+      3.8
+     ]
+    }
+   ]
+  },
+  {
+   "name": "dinitromethane",
+   "smiles": "O=[N+]([O-])C[N+](=O)[O-]",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "C",
+     "range": [
+      3.4,
+      4.0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trinitromethane",
+   "smiles": "O=[N+]([O-])C([N+](=O)[O-])[N+](=O)[O-]",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "C",
+     "range": [
+      -0.2,
+      0.5
+     ]
+    }
+   ]
+  },
+  {
+   "name": "guanidine",
+   "smiles": "NC(N)=N",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "N",
+     "range": [
+      13.3,
+      13.9
+     ],
+     "kind": "base"
+    },
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "N",
+     "none": true,
+     "why": "the =NH of a guanidine is not an acid"
+    }
+   ]
+  },
+  {
+   "name": "pentamethylguanidine",
+   "smiles": "CN=C(N(C)C)N(C)C",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 1,
+     "el": "N",
+     "range": [
+      13.3,
+      14.2
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "2-methyl-2-imidazoline",
+   "smiles": "CC1=NCCN1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 2,
+     "el": "N",
+     "range": [
+      10.8,
+      11.5
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "phenylguanidine",
+   "smiles": "NC(N)=Nc1ccccc1",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "N",
+     "range": [
+      10.4,
+      11.2
+     ],
+     "kind": "base"
+    }
+   ]
+  },
+  {
+   "name": "acetone oxime",
+   "smiles": "CC(C)=NO",
+   "expect": [
+    {
+     "mode": "pka",
+     "atom": 4,
+     "el": "O",
+     "range": [
+      10.5,
+      12.6
+     ],
+     "why": "oxime O–H about 12.4"
+    },
+    {
+     "mode": "pka",
+     "atom": 3,
+     "el": "N",
+     "none": true
+    }
+   ]
   }
+ ],
+ "steric_series": {
+  "about": "each list goes from less to more crowded at the reacting atom; the steric class must never go down along a list",
+  "series": [
+   {
+    "name": "aldehydes",
+    "smiles": [
+     "CC=O",
+     "CCC=O",
+     "CC(C)C=O",
+     "CC(C)(C)C=O"
+    ]
+   },
+   {
+    "name": "alkyl bromides (SN2 order)",
+    "smiles": [
+     "CBr",
+     "CCBr",
+     "CC(C)Br",
+     "CC(C)(C)Br"
+    ]
+   },
+   {
+    "name": "amines",
+    "smiles": [
+     "CCCCN",
+     "CCC(C)N",
+     "CC(C)(C)N"
+    ]
+   },
+   {
+    "name": "ketones",
+    "smiles": [
+     "CC(C)=O",
+     "CCC(C)=O",
+     "CC(C)C(C)=O",
+     "CC(C)(C)C(C)=O"
+    ]
+   }
+  ]
+ }
 }
