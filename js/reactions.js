@@ -981,6 +981,24 @@
     F028: { kind: 'acid', smarts: '[c:1][OX2H1]', pKa0: 9.99, rho: 2.23, para: 'sigma-', name: 'phenol' },
     F001: { kind: 'acid', smarts: '[c:1][CX3](=O)[OX2H1]', pKa0: 4.20, rho: 1.00, para: 'sigma', name: 'benzoic acid' },
     F026: { kind: 'base', smarts: '[c:1][NX3;H2;+0]', pKa0: 4.60, rho: 2.89, para: 'sigma-', name: 'anilinium' } };
+  /* where a fragment's typical value is not the value of the site it marks (tools/pka.py SITE_RULES is the same):
+       - the catch-all α-C–H fragment (F101, 17) yields to the specific one on the same carbon: ketone 19, aryl ketone
+         18.3, ester 25, nitrile 25, sulfone 29 (aldehyde 17). The specific ones above 20 never mark a site themselves;
+         they only give the value of a carbon a fragment of 20 or below marked.
+       - only these fragments mark a CARBON (an α-C–H); every other fragment's acidic H is on its O, N or S, so a
+         fragment with no such H (a silyl ether, an organic azide, a pinacol boronate, a Weinreb amide) marks nothing.
+       - the H of F136 is the acid's O–H (trifluoroacetic acid 0.5), not a trifluoroacetamide's N–H (about 12).
+       - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9–13 (acetylacetone 8.9, ethyl
+         acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N–H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4),
+         an alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol). */
+  const SITE_RULES = {
+    generic: new Set(['F101']),
+    alpha: new Set(['F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
+    carbon: new Set(['F018', 'F019', 'F056', 'F101', 'F102', 'F116', 'F125', 'F071', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
+    oxygen: new Set(['F136']),
+    noSite: new Set(['F052']),
+    value: { F102: 11, F090: 11 },
+    alkylThiol: { F072: 10.5 } };
   const pkaQ = {}, pkaCache = new Map();
   const qmolOf = (R, sm) => { if (!(sm in pkaQ)) { try { pkaQ[sm] = R.get_qmol(sm); } catch (e) { pkaQ[sm] = null; } } return pkaQ[sm]; };
   const EL = { 1: 'H', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 15: 'P', 16: 'S', 17: 'Cl', 35: 'Br', 53: 'I' };
@@ -1006,20 +1024,36 @@
       const ringCount = new Map(); rings.forEach(r => r.forEach(i => ringCount.set(i, (ringCount.get(i) || 0) + 1)));
       const F = (window.REACTION_RULES || {}).fragments || {};
       const sites = { acid: new Map(), base: new Map() };
+      const SR = SITE_RULES, acidVal = {};             // per site atom: {fragment: its value there}
       for (const [fid, f] of Object.entries(F)) {
-        if (!(f.pKa != null && f.pKa <= 20) && !(f.pKaH != null && f.pKaH >= 0)) continue;
+        const marks = f.pKa != null && f.pKa <= 20 && !SR.noSite.has(fid), names = f.pKa != null && f.pKa > 20 && SR.alpha.has(fid);
+        if (!marks && !names && !(f.pKaH != null && f.pKaH >= 0)) continue;
         const q = qmolOf(R, f.smarts); if (!q) continue;
         for (const mt of matchesOf(m, q)) {
-          if (f.pKa != null && f.pKa <= 20) {
-            const het = mt.atoms.filter(i => ['O', 'N', 'S'].includes(atoms[i].el) && atoms[i].h > 0), car = mt.atoms.filter(i => atoms[i].el === 'C' && atoms[i].h > 0 && !atoms[i].multi && !aromatic.has(i));   // sp3 C: the alpha C, not a formyl C-H
-            const site = het.length ? het[0] : car.length ? car[0] : null;
-            if (site != null) { const s_ = sites.acid.get(site) || { atom: site, fragments: [], typical: f.pKa }; s_.fragments.push(fid); s_.typical = Math.min(s_.typical, f.pKa); sites.acid.set(site, s_); }
+          if (marks || names) {
+            const het = mt.atoms.filter(i => (SR.oxygen.has(fid) ? ['O'] : ['O', 'N', 'S']).includes(atoms[i].el) && atoms[i].h > 0);
+            const car = SR.carbon.has(fid) ? mt.atoms.filter(i => atoms[i].el === 'C' && atoms[i].h > 0 && !atoms[i].multi && !aromatic.has(i)) : [];   // sp3 C: the alpha C, not a formyl C-H
+            let val = SR.value[fid] != null ? SR.value[fid] : f.pKa;
+            if (marks) {
+              const site = het.length ? het[0] : car.length ? car[0] : null;
+              if (site == null) continue;
+              if (SR.alkylThiol[fid] != null && atoms[site].el === 'S' && !atoms[site].nb.some(j => aromatic.has(j))) val = SR.alkylThiol[fid];
+              const s_ = sites.acid.get(site) || { atom: site, fragments: [], typical: val }; s_.fragments.push(fid); sites.acid.set(site, s_);
+              (acidVal[site] = acidVal[site] || {})[fid] = Math.min(val, (acidVal[site] || {})[fid] ?? Infinity);
+            } else for (const c of car) (acidVal[c] = acidVal[c] || {})[fid] = val;   // a value for a carbon another fragment marks
           }
           if (f.pKaH != null && f.pKaH >= 0) {
             const ns = mt.atoms.filter(i => atoms[i].el === 'N' && atoms[i].chg === 0);
             if (ns.length) { const s_ = sites.base.get(ns[0]) || { atom: ns[0], fragments: [], typical: f.pKaH }; s_.fragments.push(fid); s_.typical = Math.max(s_.typical, f.pKaH); sites.base.set(ns[0], s_); }
           }
         }
+      }
+      // each acid site's typical value: the most acidic of its fragments, the catch-all α-C–H one only when no specific one is there
+      for (const s_ of sites.acid.values()) {
+        const v = acidVal[s_.atom] || {}, ids = Object.keys(v), own = ids.filter(id => !SR.generic.has(id));
+        const use = own.some(id => SR.alpha.has(id)) ? own : ids;
+        s_.typical = Math.min(...use.map(id => v[id]));
+        s_.fragments = [...new Set(s_.fragments.concat(use))];   // the catch-all one stays listed: a rule that names it still finds the site
       }
       const hammett = fid => {                           // [{value|null, text, siteAtom}] per occurrence of the fragment's site
         const h = HAMMETT[fid], res = [];
@@ -1096,10 +1130,11 @@
       const M = ((window.PKA_MEASURED || {}).molecules || {})[key];
       // an aldehyde/ketone measured in water is partly hydrated: with no O-H/N-H/S-H of its own, a measured acid value
       // below 15 is the hydrate's O-H (acetaldehyde 13.57); it goes on the carbonyl O (tools/pka.py does the same)
+      // (not when a carbon of its own is that acidic: a 1,3-dicarbonyl's value is its CH2, acetylacetone 8.94)
       const measAcid = M ? (M.acid || []).slice() : [];
       let hydrate = null;
       const co = matchesOf(m, qmolOf(R, '[CX3;$([CH1](=O)[#6]),$([CH2]=O),$(C(=O)([#6])[#6])]=[OX1]'));
-      if (co.length && measAcid.length && Math.min(...measAcid) < 15 && !out.acid.some(x => ['O', 'N', 'S'].includes(atoms[x.atom].el))) {
+      if (co.length && measAcid.length && Math.min(...measAcid) < 15 && !out.acid.some(x => ['O', 'N', 'S'].includes(atoms[x.atom].el) || x.pKa < 15)) {
         const v = Math.min(...measAcid); measAcid.splice(measAcid.indexOf(v), 1);
         hydrate = { atom: co[0].atoms[1], atoms: [co[0].atoms[1]], fragments: [atoms[co[0].atoms[0]].h > 0 ? 'F018' : 'F019'], typical: v, pKa: v,
           source: 'measured (IUPAC Digitized pKa Dataset) in water, where the C=O is partly hydrated: the O–H of the hydrate R2C(OH)2' };

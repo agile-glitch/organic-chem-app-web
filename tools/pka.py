@@ -170,6 +170,26 @@ def fragment_defaults():
             for f in L.read_sheet(os.path.join(APP, 'molecule_data.xlsx'), 'Fragments') if str(f.get('Fragment ID', '')).startswith('F')}
 
 
+# where a fragment's typical value is not the value of the site it marks (js/reactions.js SITE_RULES is the same):
+#  - the catch-all alpha-C-H fragment (F101, 17) yields to the specific one on the same carbon: ketone 19, aryl ketone
+#    18.3, ester 25, nitrile 25, sulfone 29 (aldehyde 17). The specific ones above 20 never mark a site themselves; they
+#    only give the value of a carbon a fragment of 20 or below marked.
+#  - only these fragments mark a CARBON (an alpha-C-H); every other fragment's acidic H is on its O, N or S, so a
+#    fragment with no such H (a silyl ether, an organic azide, a pinacol boronate, a Weinreb amide) marks nothing.
+#  - the H of F136 is the acid's O-H (trifluoroacetic acid 0.5), not a trifluoroacetamide's N-H (about 12).
+#  - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9-13 (acetylacetone 8.9, ethyl
+#    acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N-H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4), an
+#    alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol).
+SITE_RULES = dict(
+    generic={'F101'},
+    alpha={'F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195'},
+    carbon={'F018', 'F019', 'F056', 'F101', 'F102', 'F116', 'F125', 'F071', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195'},
+    oxygen={'F136'},
+    no_site={'F052'},
+    value={'F102': 11, 'F090': 11},
+    alkyl_thiol={'F072': 10.5})
+
+
 def molecule_pkas(smiles, frags, defaults, measured):
     """Every acidic and basic SITE of a molecule with its pKa and where the number comes from.
     A site is one atom: the H-bearing O/N/S (else C) of an acidic fragment with a typical pKa <= 20, or the N of a
@@ -181,24 +201,44 @@ def molecule_pkas(smiles, frags, defaults, measured):
     from rdkit import Chem
     m = Chem.MolFromSmiles(smiles)
     out = {'acid': {}, 'base': {}}
+    SR, acid_val = SITE_RULES, {}                       # per site atom: {fragment: its value there}
     for fid, q in frags:
         if q is None: continue
         dk, dh = defaults.get(fid, (None, None))
+        marks = dk is not None and dk <= 20 and fid not in SR['no_site']
+        names = dk is not None and dk > 20 and fid in SR['alpha']
         for match in m.GetSubstructMatches(q, uniquify=True, maxMatches=1000):
-            if dk is not None and dk <= 20:
-                het = [i for i in match if m.GetAtomWithIdx(i).GetSymbol() in ('O', 'N', 'S') and m.GetAtomWithIdx(i).GetTotalNumHs() > 0]
+            if marks or names:
+                els = ('O',) if fid in SR['oxygen'] else ('O', 'N', 'S')
+                het = [i for i in match if m.GetAtomWithIdx(i).GetSymbol() in els and m.GetAtomWithIdx(i).GetTotalNumHs() > 0]
                 # a carbon acid's acidic H is on an sp3 carbon (the alpha C of an aldehyde, not its formyl C-H)
                 car = [i for i in match if m.GetAtomWithIdx(i).GetSymbol() == 'C' and m.GetAtomWithIdx(i).GetTotalNumHs() > 0
-                       and not m.GetAtomWithIdx(i).GetIsAromatic() and all(b.GetBondTypeAsDouble() == 1.0 for b in m.GetAtomWithIdx(i).GetBonds())]
-                site = (het or car or [None])[0]
-                if site is not None:
-                    s_ = out['acid'].setdefault(site, {'atom': site, 'fragments': [], 'typical': dk})
-                    s_['fragments'].append(fid); s_['typical'] = min(s_['typical'], dk)
+                       and not m.GetAtomWithIdx(i).GetIsAromatic() and all(b.GetBondTypeAsDouble() == 1.0 for b in m.GetAtomWithIdx(i).GetBonds())] \
+                    if fid in SR['carbon'] else []
+                val = SR['value'].get(fid, dk)
+                if marks:
+                    site = (het or car or [None])[0]
+                    if site is None: continue
+                    a = m.GetAtomWithIdx(site)
+                    if fid in SR['alkyl_thiol'] and a.GetSymbol() == 'S' and not any(n.GetIsAromatic() for n in a.GetNeighbors()):
+                        val = SR['alkyl_thiol'][fid]
+                    s_ = out['acid'].setdefault(site, {'atom': site, 'fragments': [], 'typical': val})
+                    s_['fragments'].append(fid)
+                    acid_val.setdefault(site, {})[fid] = min(val, acid_val.get(site, {}).get(fid, float('inf')))
+                else:
+                    for c in car: acid_val.setdefault(c, {})[fid] = val   # a value for a carbon another fragment marks
             if dh is not None and dh >= 0:
                 ns = [i for i in match if m.GetAtomWithIdx(i).GetSymbol() == 'N' and m.GetAtomWithIdx(i).GetFormalCharge() == 0]
                 if ns:
                     s_ = out['base'].setdefault(ns[0], {'atom': ns[0], 'fragments': [], 'typical': dh})
                     s_['fragments'].append(fid); s_['typical'] = max(s_['typical'], dh)
+    # each acid site's typical value: the most acidic of its fragments, the catch-all alpha-C-H one only when no specific one is there
+    for s_ in out['acid'].values():
+        v = acid_val.get(s_['atom'], {})
+        own = [i for i in v if i not in SR['generic']]
+        use = own if any(i in SR['alpha'] for i in own) else list(v)
+        s_['typical'] = min(v[i] for i in use)
+        s_['fragments'] = list(dict.fromkeys(s_['fragments'] + use))   # the catch-all one stays listed: a rule that names it still finds the site
     cls = symmetry_classes(m)
     for kind in ('acid', 'base'):                        # symmetry-equivalent sites (acetone's two CH3) are one site
         merged = {}
@@ -227,10 +267,11 @@ def molecule_pkas(smiles, frags, defaults, measured):
     # the dataset's 'acid' value is the NH3+) still gets 10.2 on the amine and 3.6 on the acid.
     # an aldehyde or ketone measured in water is partly hydrated (R2C=O + H2O <-> R2C(OH)2): with no O-H/N-H/S-H of its
     # own, a measured acid value below 15 is the hydrate's O-H (acetaldehyde 13.57, formaldehyde 13.3); it goes on the O
+    # (not when a carbon of its own is that acidic: a 1,3-dicarbonyl's value is its CH2, acetylacetone 8.94)
     meas_acid = list((measured or {}).get('acid') or [])
     hydrate = None
     co = m.GetSubstructMatches(_q('[CX3;$([CH1](=O)[#6]),$([CH2]=O),$(C(=O)([#6])[#6])]=[OX1]'))
-    if co and meas_acid and min(meas_acid) < 15 and not any(m.GetAtomWithIdx(x['atom']).GetSymbol() in ('O', 'N', 'S') for x in out['acid']):
+    if co and meas_acid and min(meas_acid) < 15 and not any(m.GetAtomWithIdx(x['atom']).GetSymbol() in ('O', 'N', 'S') or x['pKa'] < 15 for x in out['acid']):
         v = min(meas_acid); meas_acid.remove(v)
         fid = 'F018' if m.GetAtomWithIdx(co[0][0]).GetTotalNumHs() > 0 else 'F019'
         hydrate = {'atom': co[0][1], 'atoms': [co[0][1]], 'fragments': [fid], 'typical': v, 'pKa': v,

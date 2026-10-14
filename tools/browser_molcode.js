@@ -65,14 +65,14 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   check('the SDF file opens with the code\'s labels', !!(await p.evaluate(() => MolView._debug.state.cs.code)));
 
   // a code whose labels differ from this version's: the drawing shows the code's, the banner lists the difference
-  check('the pKa labels hold "1 pKa 17"', /<ACM\.labels\.pka>\n(?:.+\n)*1 pKa 17\n/.test(sdf));
-  const changed = sdf.replace(/(<ACM\.labels\.pka>\n(?:.+\n)*)1 pKa 17\n/, '$11 pKa 99\n');
+  check('the pKa labels hold "1 pKa 25"', /<ACM\.labels\.pka>\n(?:.+\n)*1 pKa 25\n/.test(sdf));
+  const changed = sdf.replace(/(<ACM\.labels\.pka>\n(?:.+\n)*)1 pKa 25\n/, '$11 pKa 99\n');
   const code2 = await p.evaluate(s => MolCode.encode(s), changed);
   await show(code2);
   const pk = await p.evaluate(() => { const sel = document.getElementById('molLabels'); sel.value = 'pka'; sel.dispatchEvent(new Event('change'));
     return [...document.querySelectorAll('#mol2d .mv-2d-notes text')].map(t => t.textContent); });
   check('the code\'s changed label is drawn', pk.includes('pKa 99'), pk);
-  check('banner lists the difference', /1 of them differ.*pKa on C1: code “pKa 99”, this version “pKa 17”/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
+  check('banner lists the difference', /1 of them differ.*pKa on C1: code “pKa 99”, this version “pKa 25”/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
 
   // a damaged code is refused with a reason, and the molecule shown stays
   await p.locator('#molInput').fill(code.slice(0, 30)); await p.locator('#molShow').click();
