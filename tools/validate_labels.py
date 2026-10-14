@@ -169,15 +169,20 @@ def main():
         # RDKit's oxidation numbers on a copy without isotope labels: it reads an explicit D or T atom unlike an H
         # (C6D6: C 0), where the app (and chemistry) treat it as H
         mo = Chem.Mol(m)
-        for a_ in mo.GetAtoms(): a_.SetIsotope(0)
-        try: rdMolDescriptors.CalcOxidationNumbers(mo); have_ox = True
+        for a_ in mo.GetAtoms(): a_.SetIsotope(0); a_.SetIntProp('orig', a_.GetIdx())
+        ox_ref = {}
+        try:
+            mo = Chem.RemoveHs(mo)                       # explicit H atoms (former D / T) become implicit H, as RDKit expects
+            rdMolDescriptors.CalcOxidationNumbers(mo)
+            ox_ref = {a_.GetIntProp('orig'): int(a_.GetProp('OxidationNumber')) for a_ in mo.GetAtoms()}
+            have_ox = True
         except Exception: have_ox = False
         mq = Chem.Mol(m)
         try: AllChem.ComputeGasteigerCharges(mq, nIter=12); have_q = True
         except Exception: have_q = False
         if have_q and r.get('qSum') is not None:
             # the app's total against RDKit's own (the model does not always conserve the charge: then neither does the port)
-            ref_sum = sum(float(x.GetProp('_GasteigerCharge')) + x.GetTotalNumHs() * float(x.GetProp('_GasteigerHCharge')) for x in mq.GetAtoms())
+            ref_sum = sum(float(x.GetProp('_GasteigerCharge')) + float(x.GetProp('_GasteigerHCharge')) for x in mq.GetAtoms())   # HCharge: all of the atom's implicit H together
             if ref_sum == ref_sum:
                 t['partial_sum'].add(abs(r['qSum'] - ref_sum) < 0.01, 'sum differs from RDKit\'s', f'{smi}: Σ {r["qSum"]:.3f}, RDKit {ref_sum:.3f}')
                 if abs(ref_sum - r['netCharge']) > 0.01: NONCONSERVING.append(f'{smi} (Σ {ref_sum:.3f}, charge {r["netCharge"]})')
@@ -189,8 +194,8 @@ def main():
             lp = lone_pairs(mk, i)
             if lp is not None or r['lp'][i] is not None:
                 t['lonepairs'].add(lp == r['lp'][i], 'unusual electron count' if lp is None or r['lp'][i] is None else environment(m, i), f'{ex}: app {r["lp"][i]}, count {lp}')
-            if have_ox and r['ox'][i] is not None:
-                ref = int(mo.GetAtomWithIdx(i).GetProp('OxidationNumber'))
+            if have_ox and r['ox'][i] is not None and i in ox_ref:
+                ref = ox_ref[i]
                 key = 'oxidation_kekule' if kekule_dependent(m, i) else 'oxidation'
                 t[key].add(abs(r['ox'][i] - ref) < 1e-6, environment(m, i), f'{ex}: app {r["ox"][i]}, RDKit {ref}')
             if have_q and r['q'][i] is not None:
@@ -345,6 +350,7 @@ def check_display(path, CLASSES=None):
     # bond angles
     from rdkit.Chem import AllChem as AC
     diffs, worst, n_mol, notes_left = [], [], 0, Counter()
+    sdiffs, sworst = [], []
     for smi, r in D.items():
         A = r.get('angles')
         if not A or A.get('error') or not A.get('optimised'): continue
@@ -357,10 +363,14 @@ def check_display(path, CLASSES=None):
         if '(' in A.get('foot', '') or 'left out' in A.get('foot', ''): notes_left[A['foot'][:80]] += 1
         for j in range(heavy):
             nb = [x.GetIdx() for x in m.GetAtomWithIdx(j).GetNeighbors() if x.GetIdx() < heavy]
-            for p_ in range(len(nb)):
-                for q in range(p_ + 1, len(nb)):
-                    a1, a2 = angle(A['coords'], nb[p_], j, nb[q]), angle(X, nb[p_], j, nb[q])
-                    diffs.append(abs(a1 - a2)); worst.append((abs(a1 - a2), smi, (nb[p_], j, nb[q]), round(a1, 1), round(a2, 1)))
+            trip = [(nb[p_], j, nb[q]) for p_ in range(len(nb)) for q in range(p_ + 1, len(nb))]
+            a1s = [angle(A['coords'], *t) for t in trip]; a2s = [angle(X, *t) for t in trip]
+            for t, a1, a2 in zip(trip, a1s, a2s):
+                diffs.append(abs(a1 - a2)); worst.append((abs(a1 - a2), smi, t, round(a1, 1), round(a2, 1)))
+            # the same angles at the centre, in order of size: a group that points the other way in one model (a methoxy
+            # syn or anti) swaps two angles without either model being wrong
+            for a1, a2 in zip(sorted(a1s), sorted(a2s)):
+                sdiffs.append(abs(a1 - a2)); sworst.append((abs(a1 - a2), smi, j, round(a1, 1), round(a2, 1)))
     worst.sort(reverse=True)
     ang = None
     if diffs:
@@ -368,6 +378,10 @@ def check_display(path, CLASSES=None):
         ang = {'molecules': n_mol, 'angles': len(ds), 'median': round(statistics.median(ds), 2), 'p95': round(ds[int(0.95 * (len(ds) - 1))], 2),
                'max': round(ds[-1], 2), 'over_3': sum(d > 3 for d in ds), 'over_5': sum(d > 5 for d in ds),
                'worst': [{'smiles': w[1], 'atoms': w[2], 'app': w[3], 'rdkit': w[4]} for w in worst[:8]]}
+        ss = sorted(sdiffs); sworst.sort(reverse=True)
+        ang['by_centre'] = {'median': round(statistics.median(ss), 2), 'p95': round(ss[int(0.95 * (len(ss) - 1))], 2), 'max': round(ss[-1], 2),
+                            'over_3': sum(d > 3 for d in ss), 'over_5': sum(d > 5 for d in ss),
+                            'worst': [{'smiles': w[1], 'centre': w[2], 'app': w[3], 'rdkit': w[4]} for w in sworst[:8]]}
     n_shown = sum(1 for r in D.values() if not r.get('error'))
     return {'molecules': len(D), 'shown': n_shown, 'not_shown': [s_ for s_, r in D.items() if r.get('error')][:20],
             'modes': {k: dict(v) for k, v in modes.items()}, 'by_class': {k: dict(v) for k, v in by_class.items()}, 'ambiguous_examples': dict(examples), 'angles': ang}
@@ -379,8 +393,9 @@ def pct(a, n): return f'{100 * a / n:.2f} %' if n else '—'
 def write_report(o):
     L = ['# Label validation (Molecule tab)', '',
          f'Made by `tools/validate_labels.js` + `tools/validate_labels.py` from `{o["dump"]}`: {o["analysed"]:,} molecules analysed, {o["not_analysed"]} not.', '']
-    if os.path.exists(os.path.join(HERE, 'validate_labels_findings.md')):
-        L += [open(os.path.join(HERE, 'validate_labels_findings.md')).read().rstrip(), '']
+    fnd = os.path.join(HERE, f'validate_labels{"_" + o["tag"] if o.get("tag") else ""}_findings.md')
+    if os.path.exists(fnd):
+        L += [open(fnd).read().rstrip(), '']
     L += [
          '## Agreement with independent references', '', '| Label | Reference | Checked | Agree | |', '|---|---|---:|---:|---:|']
     for k, c in o['checks'].items():
@@ -436,6 +451,10 @@ def write_report(o):
             L += ['### Bond angles: the app\'s 3D model against RDKit (ETKDG + MMFF94)', '',
                   f"{a['angles']:,} angles between heavy atoms in {a['molecules']} molecules: median difference {a['median']}°, 95 % within {a['p95']}°, largest {a['max']}°; {a['over_3']} differ by more than 3°, {a['over_5']} by more than 5°.", '',
                   'Largest: ' + '; '.join(f"`{w['smiles']}` atoms {w['atoms']}: app {w['app']}°, RDKit {w['rdkit']}°" for w in a['worst'][:5]) + '.', '']
+            if a.get('by_centre'):
+                b = a['by_centre']
+                L += [f"The same angles compared at each centre in order of size (a group pointing the other way in one model swaps two angles without either being wrong): median {b['median']}°, 95 % within {b['p95']}°, largest {b['max']}°; {b['over_3']} differ by more than 3°, {b['over_5']} by more than 5°. Largest: "
+                      + '; '.join(f"`{w['smiles']}` atom {w['centre']}: app {w['app']}°, RDKit {w['rdkit']}°" for w in b['worst'][:4]) + '.', '']
     n_ok = sum(r['ok'] for r in o['textbook'])
     L += ['## Textbook list (`tools/label_textbook.json`)', '', f'{n_ok} of {len(o["textbook"])} hand-checked values agree.', '']
     bad = [r for r in o['textbook'] if not r['ok']]

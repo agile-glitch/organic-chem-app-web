@@ -1,247 +1,417 @@
 {
  "dump": "data/label_dump_diverse.json",
  "display": {
+  "molecules": 250,
+  "shown": 250,
+  "not_shown": [],
   "modes": {
    "index": {
-    "molecules": 181,
-    "drawn": 1908,
-    "left_out": 6,
+    "molecules": 250,
+    "drawn": 4314,
+    "left_out": 27,
     "ambiguous": 0,
-    "in_ring": 6,
+    "in_ring": 58,
     "far": 0,
-    "edge_ambiguous": 5,
-    "molecules_with_left_out": 5
+    "edge_ambiguous": 14,
+    "molecules_with_left_out": 20
    },
    "cip": {
-    "molecules": 181,
-    "drawn": 43,
+    "molecules": 250,
+    "drawn": 147,
     "left_out": 0,
     "ambiguous": 0,
-    "in_ring": 0,
+    "in_ring": 3,
     "far": 0,
     "edge_ambiguous": 0
    },
    "hybridization": {
-    "molecules": 181,
-    "drawn": 1906,
-    "left_out": 8,
+    "molecules": 250,
+    "drawn": 4248,
+    "left_out": 28,
     "ambiguous": 0,
-    "in_ring": 66,
+    "in_ring": 135,
     "far": 0,
-    "edge_ambiguous": 11,
-    "molecules_with_left_out": 7
+    "edge_ambiguous": 18,
+    "molecules_with_left_out": 24
    },
    "formal": {
-    "molecules": 181,
-    "drawn": 53,
+    "molecules": 250,
+    "drawn": 89,
     "left_out": 0,
     "ambiguous": 0,
-    "in_ring": 0,
+    "in_ring": 2,
     "far": 0,
     "edge_ambiguous": 0
    },
    "partial": {
-    "molecules": 181,
-    "drawn": 1888,
-    "left_out": 11,
-    "ambiguous": 2,
-    "in_ring": 46,
+    "molecules": 250,
+    "drawn": 3958,
+    "left_out": 42,
+    "ambiguous": 14,
+    "in_ring": 103,
     "far": 0,
-    "edge_ambiguous": 6,
-    "molecules_with_left_out": 8
+    "edge_ambiguous": 23,
+    "molecules_with_left_out": 35
    },
    "oxidation": {
-    "molecules": 181,
-    "drawn": 1906,
-    "left_out": 8,
+    "molecules": 250,
+    "drawn": 4311,
+    "left_out": 30,
     "ambiguous": 0,
-    "in_ring": 7,
+    "in_ring": 39,
     "far": 0,
-    "edge_ambiguous": 3,
-    "molecules_with_left_out": 7
+    "edge_ambiguous": 7,
+    "molecules_with_left_out": 26
    },
    "lonepairs": {
-    "molecules": 181,
-    "drawn": 1910,
-    "left_out": 4,
-    "ambiguous": 1,
-    "in_ring": 2,
+    "molecules": 250,
+    "drawn": 4270,
+    "left_out": 15,
+    "ambiguous": 5,
+    "in_ring": 35,
     "far": 0,
-    "edge_ambiguous": 4,
-    "molecules_with_left_out": 4
+    "edge_ambiguous": 5,
+    "molecules_with_left_out": 15
    },
    "pka": {
-    "molecules": 181,
-    "drawn": 327,
-    "left_out": 2,
-    "ambiguous": 10,
-    "in_ring": 0,
-    "far": 29,
+    "molecules": 250,
+    "drawn": 339,
+    "left_out": 1,
+    "ambiguous": 4,
+    "in_ring": 5,
+    "far": 30,
     "edge_ambiguous": 0,
-    "molecules_with_left_out": 2
+    "molecules_with_left_out": 1
    },
    "steric": {
-    "molecules": 181,
-    "drawn": 498,
-    "left_out": 83,
-    "ambiguous": 81,
-    "in_ring": 15,
-    "far": 158,
-    "edge_ambiguous": 1,
-    "molecules_with_left_out": 65
+    "molecules": 250,
+    "drawn": 825,
+    "left_out": 167,
+    "ambiguous": 142,
+    "in_ring": 31,
+    "far": 194,
+    "edge_ambiguous": 4,
+    "molecules_with_left_out": 105
    },
    "electronic": {
-    "molecules": 181,
-    "drawn": 524,
-    "left_out": 57,
-    "ambiguous": 43,
-    "in_ring": 11,
-    "far": 68,
-    "edge_ambiguous": 1,
-    "molecules_with_left_out": 39
+    "molecules": 250,
+    "drawn": 857,
+    "left_out": 115,
+    "ambiguous": 94,
+    "in_ring": 23,
+    "far": 134,
+    "edge_ambiguous": 8,
+    "molecules_with_left_out": 81
    },
    "taft": {
-    "molecules": 181,
-    "drawn": 277,
-    "left_out": 49,
-    "ambiguous": 47,
-    "in_ring": 13,
-    "far": 38,
+    "molecules": 250,
+    "drawn": 516,
+    "left_out": 80,
+    "ambiguous": 81,
+    "in_ring": 19,
+    "far": 43,
+    "edge_ambiguous": 4,
+    "molecules_with_left_out": 69
+   }
+  },
+  "by_class": {
+   "tiny (6 or fewer heavy atoms)": {
+    "drawn": 1015,
+    "left_out": 37,
+    "edge_ambiguous": 3,
+    "in_ring": 5
+   },
+   "ordinary organic": {
+    "drawn": 1067,
+    "left_out": 17,
+    "edge_ambiguous": 0,
+    "in_ring": 16
+   },
+   "zwitterion or dipole": {
+    "drawn": 1765,
+    "left_out": 43,
+    "edge_ambiguous": 5,
+    "in_ring": 56
+   },
+   "heteroaromatic": {
+    "drawn": 9113,
+    "left_out": 153,
+    "edge_ambiguous": 36,
+    "in_ring": 132
+   },
+   "hypervalent S / P / halogen": {
+    "drawn": 4322,
+    "left_out": 192,
+    "edge_ambiguous": 21,
+    "in_ring": 139
+   },
+   "3+ aromatic rings": {
+    "drawn": 10267,
+    "left_out": 220,
+    "edge_ambiguous": 50,
+    "in_ring": 245
+   },
+   "ion": {
+    "drawn": 3292,
+    "left_out": 71,
+    "edge_ambiguous": 4,
+    "in_ring": 110
+   },
+   "small ring (3-4)": {
+    "drawn": 3304,
+    "left_out": 69,
+    "edge_ambiguous": 16,
+    "in_ring": 75
+   },
+   "stereocentres": {
+    "drawn": 6024,
+    "left_out": 91,
+    "edge_ambiguous": 41,
+    "in_ring": 80
+   },
+   "salt or mixture": {
+    "drawn": 1500,
+    "left_out": 45,
+    "edge_ambiguous": 2,
+    "in_ring": 40
+   },
+   "E/Z double bond": {
+    "drawn": 2130,
+    "left_out": 28,
+    "edge_ambiguous": 6,
+    "in_ring": 18
+   },
+   "macrocycle (ring of 8+)": {
+    "drawn": 1550,
+    "left_out": 11,
     "edge_ambiguous": 1,
-    "molecules_with_left_out": 42
+    "in_ring": 93
+   },
+   "large (40+ heavy atoms)": {
+    "drawn": 5474,
+    "left_out": 113,
+    "edge_ambiguous": 43,
+    "in_ring": 166
+   },
+   "metal or other element": {
+    "drawn": 1679,
+    "left_out": 73,
+    "edge_ambiguous": 10,
+    "in_ring": 94
+   },
+   "radical or carbene": {
+    "drawn": 962,
+    "left_out": 49,
+    "edge_ambiguous": 5,
+    "in_ring": 61
+   },
+   "cumulene / allene / ketene": {
+    "drawn": 1147,
+    "left_out": 26,
+    "edge_ambiguous": 1,
+    "in_ring": 18
+   },
+   "isotope label": {
+    "drawn": 273,
+    "left_out": 24,
+    "edge_ambiguous": 3,
+    "in_ring": 2
    }
   },
   "ambiguous_examples": {
-   "taft": [
-    "CC(=O)O: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
-    "CC(N)=O: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
-    "C[N+](=O)[O-]: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.99 vs 0.9 bond lengths)",
-    "CC(=O)[O-]: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
-    "CC(=O)Oc1ccccc1C(=O)O: '+0.00/+0.00' for atom 1 sits nearer atom 3 (0.92 vs 0.91 bond lengths)",
-    "OC(=O)C(F)(F)F: '+2.61/−1.16' for atom 1 sits nearer atom 0 (0.83 vs 0.72 bond lengths)"
-   ],
    "steric": [
-    "CC(=O)Oc1ccccc1C(=O)O: 'moderately hindered' for atom 10 sits nearer atom 8 (1.36 vs 0.83 bond lengths)",
-    "C[C@@H](C(=O)O)N: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
-    "C([C@@H](C(=O)O)N)S: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
-    "C[C@@H](C(=O)O)O: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
-    "OC(=O)C(F)(F)F: 'very hindered' for atom 1 sits nearer atom 0 (0.98 vs 0.76 bond lengths)",
-    "CC(=O)OCC: 'moderately hindered' for atom 1 sits nearer atom 0 (1.36 vs 0.74 bond lengths)"
+    "CC(=N)N: 'moderately hindered' for atom 1 sits nearer atom 0 (1.36 vs 0.74 bond lengths)",
+    "N#CCNCC#N: 'moderately hindered' for atom 5 sits nearer atom 6 (1.22 vs 0.85 bond lengths)",
+    "C[N+](C)(C)c1cccc(O)c1.[Cl-]: 'hindered' for atom 1 sits nearer atom 3 (1.02 vs 0.52 bond lengths)",
+    "CN1CCCCC(=O)C(O)CCCC1: 'very hindered' for atom 8 sits nearer atom 9 (0.98 vs 0.9 bond lengths)",
+    "O=C(Nc1ccccc1)Nc1ccc(CC(CN2CCCCC2)c2ccc(NC(=O)Nc3ccccc3)cc2)cc1: 'moderately hindered' for atom 1 sits nearer atom 9 (1.39 vs 1.23 bond lengths)",
+    "O=C(Nc1ccccc1)Nc1ccc(CC(CN2CCCCC2)c2ccc(NC(=O)Nc3ccccc3)cc2)cc1: 'very hindered' for atom 23 sits nearer atom 38 (0.99 vs 0.99 bond lengths)"
    ],
-   "electronic": [
-    "CC(=O)Oc1ccccc1C(=O)O: 'δ +0.34 Σσ +0.00' for atom 10 sits nearer atom 8 (1.19 vs 0.87 bond lengths)",
-    "OC(=O)c1ccccc1: 'δ +0.34 Σσ +0.00' for atom 1 sits nearer atom 0 (1.19 vs 1.07 bond lengths)",
-    "CC(=O)c1ccccc1: 'δ +0.16 Σσ +0.00' for atom 1 sits nearer atom 0 (1.16 vs 1.05 bond lengths)",
-    "O=C1NS(=O)(=O)c2ccccc21: 'δ +0.27 Σσ +0.00' for atom 1 sits nearer atom 0 (1.12 vs 0.59 bond lengths)",
-    "Cc1cnc2c(O)cccc2c1C: 'δ −0.04' for atom 11 sits nearer atom 10 (0.83 vs 0.72 bond lengths)",
-    "Cc1ccc2nc(Cc3ccccc3)[nH]c2c1: 'δ −0.04 Σσ +0.00' for atom 8 sits nearer atom 13 (1.09 vs 0.8 bond lengths)"
+   "taft": [
+    "CC(=N)N: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "C[N+](C)(C)c1cccc(O)c1.[Cl-]: '+0.60/−1.01' for atom 1 sits nearer atom 3 (1.17 vs 0.58 bond lengths)",
+    "CN1CCCCC(=O)C(O)CCCC1: '+0.00/+0.00' for atom 1 sits nearer atom 0 (1.18 vs 0.98 bond lengths)",
+    "Nc1ccc(Cl)cc1N: '–/+0.27' for atom 4 sits nearer atom 3 (0.82 vs 0.72 bond lengths)",
+    "CN(C)Cc1cccc([N+](=O)[O-])c1: '+0.00/−0.36' for atom 1 sits nearer atom 0 (0.81 vs 0.46 bond lengths)",
+    "CN(C)Cc1cccc([N+](=O)[O-])c1: '–/−0.36' for atom 4 sits nearer atom 5 (0.83 vs 0.72 bond lengths)"
    ],
    "partial": [
-    "O=C1NS(=O)(=O)c2ccccc21: '+0.26' for atom 3 sits nearer atom 6 (0.8 vs 0.67 bond lengths)",
-    "CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)"
+    "C[N+](C)(C)c1cccc(O)c1.[Cl-]: '−0.30' for atom 1 sits nearer atom 3 (0.81 vs 0.71 bond lengths)",
+    "CCCCCCCCN(CC[N+]1(C)CCCCC1)c1ccccc1: '−0.32' for atom 11 sits nearer atom 13 (0.86 vs 0.5 bond lengths)",
+    "C[N+](C)(C)CCc1cccnc1.[Br-]: '−0.33' for atom 1 sits nearer atom 3 (0.81 vs 0.71 bond lengths)",
+    "C[N+](C)(C)c1ccc(O)cc1.[I-]: '−0.30' for atom 1 sits nearer atom 3 (0.81 vs 0.71 bond lengths)",
+    "CNc1ccc(N=Cc2ccc([N+](C)(C)C)cc2)cc1.Cl: '−0.30' for atom 12 sits nearer atom 11 (0.81 vs 0.71 bond lengths)",
+    "CC(C)(C)OC(=O)[C@@H]1CSSC[C@H](N)C(=O)NCCC2(CCCC2)C(=O)N1: '+0.05' for atom 19 sits nearer atom 18 (0.71 vs 0.65 bond lengths)"
+   ],
+   "electronic": [
+    "C[N+](C)(C)c1cccc(O)c1.[Cl-]: 'δ −0.30 Σσ +0.12' for atom 1 sits nearer atom 3 (1.17 vs 0.49 bond lengths)",
+    "O=C(Nc1ccccc1)Nc1ccc(CC(CN2CCCCC2)c2ccc(NC(=O)Nc3ccccc3)cc2)cc1: 'δ −0.04 Σσ +0.00' for atom 23 sits nearer atom 14 (1.21 vs 0.91 bond lengths)",
+    "CN(C)Cc1cccc([N+](=O)[O-])c1: 'δ +0.06 Σσ +0.00' for atom 9 sits nearer atom 12 (1.49 vs 0.49 bond lengths)",
+    "CCCCCCCCN(CC[N+]1(C)CCCCC1)c1ccccc1: 'δ −0.37 Σσ +0.00' for atom 8 sits nearer atom 7 (1.05 vs 0.72 bond lengths)",
+    "C[N+](C)(C)CCc1cccnc1.[Br-]: 'δ −0.33' for atom 1 sits nearer atom 0 (0.72 vs 0.71 bond lengths)",
+    "O=C(O)c1cc(O)ccc1O: 'δ +0.34 Σσ +0.12' for atom 1 sits nearer atom 2 (1.16 vs 1.05 bond lengths)"
    ],
    "pka": [
-    "CN1CCC(c2ccccc2)(c2ccccc2)CC1: 'pKaH 8.65' for atom 1 sits nearer atom 0 (0.87 vs 0.5 bond lengths)",
-    "c1ccc(CCN2CCCC2)nc1: 'pKaH 9.39' for atom 6 sits nearer atom 5 (0.87 vs 0.5 bond lengths)",
-    "CC(CC(c1ccccc1)c1ccccc1)N1CCOCC1: 'pKaH 6.85' for atom 16 sits nearer atom 21 (0.7 vs 0.55 bond lengths)",
-    "CN1c2ccccc2C(O)(c2ccccc2)c2ccccc21: 'pKaH 9.58' for atom 1 sits nearer atom 0 (0.87 vs 0.5 bond lengths)",
-    "CN1CCOC(CCN(Cc2ccccc2)c2ccccc2)C1: 'pKaH 1.22' for atom 8 sits nearer atom 9 (1.22 vs 1.13 bond lengths)",
-    "C=C1CCN(C)C(C)C1: 'pKaH 9.25' for atom 4 sits nearer atom 5 (0.87 vs 0.5 bond lengths)"
+    "O=C(Nc1ccccc1)Nc1ccc(CC(CN2CCCCC2)c2ccc(NC(=O)Nc3ccccc3)cc2)cc1: 'pKaH 7.99' for atom 17 sits nearer atom 16 (0.86 vs 0.5 bond lengths)",
+    "CN(C)Cc1cccc([N+](=O)[O-])c1: 'pKaH 8.2' for atom 1 sits nearer atom 0 (0.64 vs 0.6 bond lengths)",
+    "CCCCCCCCN(CC[N+]1(C)CCCCC1)c1ccccc1: 'pKaH 3.32' for atom 8 sits nearer atom 7 (0.87 vs 0.8 bond lengths)",
+    "CCCN(CCC(=O)N1CCC[C@@H]1C(=O)OCc1ccccc1)CCC(=O)N1CCC[C@@H]1C(=O)OCc1ccccc1: 'pKaH 10.75' for atom 3 sits nearer atom 2 (0.9 vs 0.69 bond lengths)"
    ],
    "lonepairs": [
-    "CC[As](=O)(CC)c1ccccc1[N+](=O)[O-]: '0' for atom 2 sits nearer atom 4 (0.6 vs 0.57 bond lengths)"
+    "CC(C)[As](=O)(O)O: '0' for atom 3 sits nearer atom 1 (0.6 vs 0.57 bond lengths)",
+    "CC(OS(C)(=O)=O)=C(C(=O)OCC(Cl)(Cl)Cl)N1C(=O)C2N=C(COc3ccccc3)SC21: '0' for atom 3 sits nearer atom 4 (0.6 vs 0.6 bond lengths)",
+    "C=CC1N([Si](C)(C)C(C)(C)C)C(=O)C1(C)CO: '0' for atom 4 sits nearer atom 7 (0.6 vs 0.57 bond lengths)",
+    "C[C@]12CC[C@H]3[C@@H]([C@H](Cl)[C@H]4O[C@]45C[C@@H](O[Si](Cc4ccccc4)(Cc4ccccc4)Cc4ccccc4)CC[C@]35C)[C@@H]1[C@@H]1C[C@@H]1C2=O: '0' for atom 14 sits nearer atom 29 (0.6 vs 0.57 bond lengths)",
+    "c1ccc([P]([Pd][P](c2ccccc2)(c2ccccc2)c2ccccc2)(c2ccccc2)c2ccccc2)cc1: '0' for atom 6 sits nearer atom 19 (0.6 vs 0.57 bond lengths)"
    ]
   },
   "angles": {
-   "molecules": 40,
-   "angles": 218,
-   "median": 0.0,
-   "p95": 2.35,
-   "max": 4.35,
-   "over_3": 8,
-   "over_5": 0,
+   "molecules": 55,
+   "angles": 1125,
+   "median": 0.19,
+   "p95": 4.13,
+   "max": 13.74,
+   "over_3": 103,
+   "over_5": 30,
    "worst": [
     {
-     "smiles": "CC(=O)Oc1ccccc1C(=O)O",
-     "atoms": [
-      10,
-      9,
-      4
-     ],
-     "app": 120.8,
-     "rdkit": 125.1
-    },
-    {
-     "smiles": "CC(=O)Oc1ccccc1C(=O)O",
-     "atoms": [
-      8,
-      9,
-      10
-     ],
-     "app": 120.8,
-     "rdkit": 116.6
-    },
-    {
-     "smiles": "CC(=O)c1ccccc1",
+     "smiles": "COc1cc(CC2=C(N)S[C@@H]3C(C(=O)Cc4ccccc4)C(=O)N3C2C(=O)OC(c2ccccc2)c2ccccc2)ccc1O",
      "atoms": [
       1,
-      3,
-      4
+      2,
+      43
      ],
-     "app": 118.4,
-     "rdkit": 122.3
+     "app": 128.8,
+     "rdkit": 115.1
     },
     {
-     "smiles": "CC(=O)c1ccccc1",
+     "smiles": "COc1cc(CC2=C(N)S[C@@H]3[C@H](C(=O)Cc4ccccc4)C(=O)N3C2C(=O)O)ccc1O",
      "atoms": [
       1,
-      3,
-      8
+      2,
+      30
      ],
-     "app": 122.3,
-     "rdkit": 118.4
+     "app": 128.7,
+     "rdkit": 115.0
     },
     {
-     "smiles": "Oc1ccc([N+](=O)[O-])cc1",
+     "smiles": "COc1cc(CC2=C(N)S[C@@H]3C(C(=O)Cc4ccccc4)C(=O)N3C2C(=O)OC(c2ccccc2)c2ccccc2)ccc1O",
      "atoms": [
-      0,
       1,
-      9
+      2,
+      3
      ],
-     "app": 117.5,
-     "rdkit": 121.4
+     "app": 112.7,
+     "rdkit": 126.2
     },
     {
-     "smiles": "Oc1ccc([N+](=O)[O-])cc1",
+     "smiles": "COc1cc(CC2=C(N)S[C@@H]3[C@H](C(=O)Cc4ccccc4)C(=O)N3C2C(=O)O)ccc1O",
      "atoms": [
-      0,
       1,
-      2
+      2,
+      3
      ],
-     "app": 121.3,
-     "rdkit": 117.5
+     "app": 112.8,
+     "rdkit": 126.2
     },
     {
-     "smiles": "Oc1ccccc1",
+     "smiles": "COc1ccc(N=Nc2c(S(=O)(=O)O)cc3cc(S(=O)(=O)O)c(N=Nc4ccc(OC)cc4)c(O)c3c2O)cc1",
      "atoms": [
-      0,
-      1,
-      6
+      27,
+      28,
+      29
      ],
-     "app": 117.8,
-     "rdkit": 121.4
+     "app": 114.7,
+     "rdkit": 126.1
     },
     {
-     "smiles": "Oc1ccccc1",
+     "smiles": "COc1ccc(N=Nc2c(S(=O)(=O)O)cc3cc(S(=O)(=O)O)c(N=Nc4ccc(OC)cc4)c(O)c3c2O)cc1",
      "atoms": [
-      0,
-      1,
-      2
+      29,
+      28,
+      31
      ],
-     "app": 121.4,
-     "rdkit": 117.8
+     "app": 126.1,
+     "rdkit": 114.7
+    },
+    {
+     "smiles": "CC(C)CCN1C=C/C(=C\\c2cc[n+](CCC(C)C)c3ccccc23)c2ccccc21.[I-]",
+     "atoms": [
+      13,
+      14,
+      15
+     ],
+     "app": 109.4,
+     "rdkit": 118.9
+    },
+    {
+     "smiles": "Clc1ccc(C2NCCNCc3ccccc32)cc1",
+     "atoms": [
+      6,
+      5,
+      16
+     ],
+     "app": 110.6,
+     "rdkit": 119.7
     }
-   ]
+   ],
+   "by_centre": {
+    "median": 0.11,
+    "p95": 2.88,
+    "max": 9.5,
+    "over_3": 54,
+    "over_5": 12,
+    "worst": [
+     {
+      "smiles": "CC(C)CCN1C=C/C(=C\\c2cc[n+](CCC(C)C)c3ccccc23)c2ccccc21.[I-]",
+      "centre": 14,
+      "app": 109.4,
+      "rdkit": 118.9
+     },
+     {
+      "smiles": "COc1cc(CC2=C(N)S[C@@H]3C(C(=O)Cc4ccccc4)C(=O)N3C2C(=O)OC(c2ccccc2)c2ccccc2)ccc1O",
+      "centre": 9,
+      "app": 105.2,
+      "rdkit": 96.5
+     },
+     {
+      "smiles": "COc1cc(CC2=C(N)S[C@@H]3C(C(=O)Cc4ccccc4)C(=O)N3C2C(=O)OC(c2ccccc2)c2ccccc2)ccc1O",
+      "centre": 10,
+      "app": 110.8,
+      "rdkit": 103.0
+     },
+     {
+      "smiles": "CC(C)CCN1C=C/C(=C\\c2cc[n+](CCC(C)C)c3ccccc23)c2ccccc21.[I-]",
+      "centre": 16,
+      "app": 109.7,
+      "rdkit": 103.2
+     },
+     {
+      "smiles": "Clc1ccc(C2NCCNCc3ccccc32)cc1",
+      "centre": 5,
+      "app": 113.5,
+      "rdkit": 119.7
+     },
+     {
+      "smiles": "c1ccc(-c2[cH+]c2-c2ccccc2)cc1",
+      "centre": 5,
+      "app": 60.1,
+      "rdkit": 54.4
+     },
+     {
+      "smiles": "Clc1ccc(C2NCCNCc3ccccc32)cc1",
+      "centre": 16,
+      "app": 121.0,
+      "rdkit": 126.5
+     },
+     {
+      "smiles": "C[N+](C)(C)CCc1cccnc1.[Br-]",
+      "centre": 5,
+      "app": 110.5,
+      "rdkit": 115.9
+     }
+    ]
+   }
   }
  },
  "analysed": 36708,
@@ -328,12 +498,12 @@
   "lonepairs": {
    "name": "lonepairs",
    "what": "lone pairs vs the electron count",
-   "checked": 593462,
-   "agree": 593080,
+   "checked": 593466,
+   "agree": 593081,
    "by_class": {
     "tiny (6 or fewer heavy atoms)": [
      8411,
-     8190
+     8191
     ],
     "ordinary organic": [
      212292,
@@ -344,7 +514,7 @@
      42765
     ],
     "heteroaromatic": [
-     220434,
+     220438,
      220416
     ],
     "hypervalent S / P / halogen": [
@@ -352,12 +522,12 @@
      54736
     ],
     "3+ aromatic rings": [
-     129457,
+     129461,
      129426
     ],
     "ion": [
-     15555,
-     15446
+     15559,
+     15447
     ],
     "small ring (3-4)": [
      27290,
@@ -380,11 +550,11 @@
      6282
     ],
     "large (40+ heavy atoms)": [
-     29906,
+     29910,
      29884
     ],
     "metal or other element": [
-     4633,
+     4637,
      4252
     ],
     "radical or carbene": [
@@ -402,7 +572,7 @@
    },
    "disagreements": {
     "unusual electron count": {
-     "count": 381,
+     "count": 385,
      "examples": [
       "CCN(CC)c1ccc2nc3cc(C)c(N)cc3[o+]c2c1.CCN(CC)c1ccc2nc3cc(C)c(N)cc3[o+]c2c1.[Cl-].[Cl-].[Cl-].[Cl-].[Zn+2] atom 46 (Zn): app None, count 0",
       "CN(C)c1ccc(/N=N/c2ccc(S(=O)(=O)[O-])cc2)cc1.[Na+] atom 21 (Na): app None, count 0",
@@ -413,24 +583,18 @@
       "Cc1c(C2(c3cc(C(C)C)c(O)c(CN(CC(=O)[O-])CC(=O)[O-])c3C)OS(=O)(=O)c3ccccc32)cc(C(C)C)c(O)c1CN(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Na+].[Na+] atom 55 (Na): app None, count 0",
       "Cc1c(C2(c3cc(C(C)C)c(O)c(CN(CC(=O)[O-])CC(=O)[O-])c3C)OS(=O)(=O)c3ccccc32)cc(C(C)C)c(O)c1CN(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Na+].[Na+] atom 56 (Na): app None, count 0"
      ]
-    },
-    "H 0 σ-bonds charge -1": {
-     "count": 1,
-     "examples": [
-      "[H-] atom 0 (H): app 1, count 0"
-     ]
     }
    }
   },
   "oxidation": {
    "name": "oxidation",
    "what": "oxidation state vs RDKit CalcOxidationNumbers (atoms whose value does not depend on the Kekulé structure)",
-   "checked": 535149,
-   "agree": 535132,
+   "checked": 535122,
+   "agree": 535122,
    "by_class": {
     "tiny (6 or fewer heavy atoms)": [
-     8019,
-     8003
+     7992,
+     7992
     ],
     "ordinary organic": [
      212292,
@@ -442,26 +606,26 @@
     ],
     "heteroaromatic": [
      162094,
-     162093
+     162094
     ],
     "hypervalent S / P / halogen": [
-     51698,
-     51696
+     51692,
+     51692
     ],
     "3+ aromatic rings": [
      110143,
-     110142
+     110143
     ],
     "ion": [
      14642,
-     14641
+     14642
     ],
     "small ring (3-4)": [
      25679,
      25679
     ],
     "stereocentres": [
-     65544,
+     65543,
      65543
     ],
     "salt or mixture": [
@@ -478,11 +642,11 @@
     ],
     "large (40+ heavy atoms)": [
      28390,
-     28389
+     28390
     ],
     "metal or other element": [
      4578,
-     4577
+     4578
     ],
     "radical or carbene": [
      794,
@@ -493,69 +657,21 @@
      2484
     ],
     "isotope label": [
-     63,
-     47
+     36,
+     36
     ]
    },
-   "disagreements": {
-    "C(arom) 3 σ-bonds, next to a π bond": {
-     "count": 6,
-     "examples": [
-      "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] atom 1 (C): app -1, RDKit 0",
-      "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] atom 2 (C): app -1, RDKit 0",
-      "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] atom 4 (C): app -1, RDKit 0",
-      "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] atom 6 (C): app -1, RDKit 0",
-      "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] atom 8 (C): app -1, RDKit 0",
-      "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] atom 10 (C): app -1, RDKit 0"
-     ]
-    },
-    "C 4 σ-bonds": {
-     "count": 5,
-     "examples": [
-      "[2H]C([2H])([2H])O atom 1 (C): app -2, RDKit 1",
-      "[2H][C@@H](C)O atom 1 (C): app -1, RDKit 0",
-      "[2H]C(Cl)(Cl)Cl atom 1 (C): app 2, RDKit 3",
-      "[2H]C([2H])([2H])S(=O)C([2H])([2H])[2H] atom 1 (C): app -2, RDKit 1",
-      "[2H]C([2H])([2H])S(=O)C([2H])([2H])[2H] atom 6 (C): app -2, RDKit 1"
-     ]
-    },
-    "O 2 σ-bonds": {
-     "count": 2,
-     "examples": [
-      "[2H]O[2H] atom 1 (O): app -2, RDKit 0",
-      "[3H]O atom 1 (O): app -2, RDKit -1"
-     ]
-    },
-    "C 4 σ-bonds, next to a π bond": {
-     "count": 2,
-     "examples": [
-      "[2H]C([2H])([2H])C(=O)C([2H])([2H])[2H] atom 1 (C): app -3, RDKit 0",
-      "[2H]C([2H])([2H])C(=O)C([2H])([2H])[2H] atom 6 (C): app -3, RDKit 0"
-     ]
-    },
-    "Ir 6 σ-bonds charge +1, next to a π bond": {
-     "count": 1,
-     "examples": [
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 8 (Ir): app 71, RDKit 3"
-     ]
-    },
-    "O 2 σ-bonds, next to a π bond": {
-     "count": 1,
-     "examples": [
-      "CC(=O)O[2H] atom 3 (O): app -2, RDKit -1"
-     ]
-    }
-   }
+   "disagreements": {}
   },
   "oxidation_kekule": {
    "name": "oxidation_kekule",
    "what": "oxidation state, atoms whose value depends on the Kekulé structure (the app averages; RDKit takes one structure)",
    "checked": 58344,
-   "agree": 44915,
+   "agree": 44919,
    "by_class": {
     "heteroaromatic": [
      58344,
-     44915
+     44919
     ],
     "hypervalent S / P / halogen": [
      3068,
@@ -571,7 +687,7 @@
     ],
     "3+ aromatic rings": [
      19322,
-     15087
+     15091
     ],
     "zwitterion or dipole": [
      2538,
@@ -583,7 +699,7 @@
     ],
     "ion": [
      922,
-     606
+     610
     ],
     "E/Z double bond": [
      487,
@@ -591,7 +707,7 @@
     ],
     "large (40+ heavy atoms)": [
      1522,
-     1310
+     1314
     ],
     "macrocycle (ring of 8+)": [
      215,
@@ -599,7 +715,7 @@
     ],
     "metal or other element": [
      86,
-     46
+     50
     ],
     "small ring (3-4)": [
      1611,
@@ -635,15 +751,6 @@
       "Nc1ccnnc1 atom 5 (N): app -1.5, RDKit -1",
       "Cc1ccc(N)nn1 atom 6 (N): app -1.5, RDKit -2",
       "Cc1ccc(N)nn1 atom 7 (N): app -1.5, RDKit -2"
-     ]
-    },
-    "N(arom) 3 σ-bonds, next to a π bond": {
-     "count": 4,
-     "examples": [
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 7 (N): app -20, RDKit -3",
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 26 (N): app -20, RDKit -3",
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 44 (N): app -20, RDKit -3",
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 45 (N): app -20, RDKit -3"
      ]
     },
     "N(arom) 3 σ-bonds charge +1, next to a π bond": {
@@ -923,7 +1030,7 @@
    "name": "rdkit_hybridization",
    "what": "the app's port of RDKit's hybridization vs RDKit Python",
    "checked": 593502,
-   "agree": 593498,
+   "agree": 593502,
    "by_class": {
     "tiny (6 or fewer heavy atoms)": [
      8439,
@@ -939,7 +1046,7 @@
     ],
     "heteroaromatic": [
      220438,
-     220434
+     220438
     ],
     "hypervalent S / P / halogen": [
      54766,
@@ -947,11 +1054,11 @@
     ],
     "3+ aromatic rings": [
      129465,
-     129461
+     129465
     ],
     "ion": [
      15565,
-     15561
+     15565
     ],
     "small ring (3-4)": [
      27290,
@@ -975,11 +1082,11 @@
     ],
     "large (40+ heavy atoms)": [
      29912,
-     29908
+     29912
     ],
     "metal or other element": [
      4673,
-     4669
+     4673
     ],
     "radical or carbene": [
      795,
@@ -994,17 +1101,7 @@
      63
     ]
    },
-   "disagreements": {
-    "app UNSPECIFIED, RDKit sp2": {
-     "count": 4,
-     "examples": [
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 7 (N)",
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 26 (N)",
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 44 (N)",
-      "CC(C)(C)c1cc[n]2->[Ir+]34([c]5cc(F)cc(F)c5-c5ccc(C(F)(F)F)c[n]->35)([c]3cc(F)cc(F)c3-c3ccc(C(F)(F)F)c[n]->43)<-[n]3ccc(C(C)(C)C)cc3-c2c1 atom 45 (N)"
-     ]
-    }
-   }
+   "disagreements": {}
   },
   "cip": {
    "name": "cip",
@@ -1140,7 +1237,7 @@
    "name": "oxidation_sum",
    "what": "self-consistency: the oxidation states of all atoms (H included) add up to the net charge",
    "checked": 36705,
-   "agree": 36538,
+   "agree": 36705,
    "by_class": {
     "tiny (6 or fewer heavy atoms)": [
      1801,
@@ -1152,19 +1249,19 @@
     ],
     "zwitterion or dipole": [
      2532,
-     2530
+     2532
     ],
     "heteroaromatic": [
      11736,
-     11569
+     11736
     ],
     "hypervalent S / P / halogen": [
      2649,
-     2648
+     2649
     ],
     "3+ aromatic rings": [
      4459,
-     4405
+     4459
     ],
     "ion": [
      1002,
@@ -1172,11 +1269,11 @@
     ],
     "small ring (3-4)": [
      1285,
-     1284
+     1285
     ],
     "stereocentres": [
      2774,
-     2767
+     2774
     ],
     "salt or mixture": [
      149,
@@ -1211,27 +1308,13 @@
      12
     ]
    },
-   "disagreements": {
-    "sum differs": {
-     "count": 167,
-     "examples": [
-      "Oc1nc2cccnc2nc1O: Σ 1.0000000010279564e-06, charge 0",
-      "Oc1ccnc2nccnc12: Σ 1.0000000010279564e-06, charge 0",
-      "c1cnc2ncncc2n1: Σ 1.000000000139778e-06, charge 0",
-      "CC(=O)Nc1ncc2nccnc2n1: Σ 1.0000000010279564e-06, charge 0",
-      "CC(=O)Nc1ncnc2nccnc12: Σ 1.0000000010279564e-06, charge 0",
-      "COc1nc(NC(C)=O)nc2nccnc12: Σ 1.0000000010279564e-06, charge 0",
-      "Nc1ncnc2nccnc12: Σ 1.0000000010279564e-06, charge 0",
-      "Nc1nc(OCc2ccccc2)c2nccnc2n1: Σ 1.0000000010279564e-06, charge 0"
-     ]
-    }
-   }
+   "disagreements": {}
   },
   "partial_sum": {
    "name": "partial_sum",
-   "what": "self-consistency: the partial charges of all atoms (H included) add up to the net charge (within 0.01)",
+   "what": "the partial charges of all atoms (H included) add up to the same total as RDKit's model (within 0.01)",
    "checked": 36333,
-   "agree": 36332,
+   "agree": 36333,
    "by_class": {
     "tiny (6 or fewer heavy atoms)": [
      1653,
@@ -1243,11 +1326,11 @@
     ],
     "zwitterion or dipole": [
      2517,
-     2516
+     2517
     ],
     "heteroaromatic": [
      11697,
-     11696
+     11697
     ],
     "hypervalent S / P / halogen": [
      2606,
@@ -1302,24 +1385,17 @@
      12
     ]
    },
-   "disagreements": {
-    "sum differs": {
-     "count": 1,
-     "examples": [
-      "O=[N+]([O-])c1c[nH]c([N+](=O)[O-])n1: Σ -0.500, charge 0"
-     ]
-    }
-   }
+   "disagreements": {}
   },
   "pka_acid_site": {
    "name": "pka_acid_site",
    "what": "self-consistency: an acid pKa sits on an atom that has an H",
    "checked": 32124,
-   "agree": 32121,
+   "agree": 32124,
    "by_class": {
     "tiny (6 or fewer heavy atoms)": [
      786,
-     783
+     786
     ],
     "ordinary organic": [
      12823,
@@ -1383,19 +1459,10 @@
     ],
     "isotope label": [
      7,
-     4
+     7
     ]
    },
-   "disagreements": {
-    "no H on the atom": {
-     "count": 3,
-     "examples": [
-      "[2H]C([2H])([2H])C(=O)C([2H])([2H])[2H] atom 1 (C): pKa 19 from F019+F101+F192",
-      "[2H]C([2H])([2H])C(=O)C([2H])([2H])[2H] atom 6 (C): pKa 19 from F019+F101+F192",
-      "CC(=O)O[2H] atom 3 (O): pKa 4.8 from F001"
-     ]
-    }
-   }
+   "disagreements": {}
   },
   "pka_base_site": {
    "name": "pka_base_site",
@@ -3723,6 +3790,12 @@
   }
  ],
  "tag": "diverse",
+ "gasteiger_nonconserving": {
+  "count": 1,
+  "examples": [
+   "O=[N+]([O-])c1c[nH]c([N+](=O)[O-])n1 (Σ -0.500, charge 0)"
+  ]
+ },
  "class_counts": {
   "ordinary organic": 15541,
   "heteroaromatic": 11736,
