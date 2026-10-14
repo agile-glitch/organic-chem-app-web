@@ -36,8 +36,14 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
    Overall the rules alone are within 1 unit for 42 % of acids and 35 % of bases (median error 1.3 / 1.7); the
    Hammett estimates are within 1 unit for 100 % / 93 %.
-6. **Labels inside rings**: 5–8 % of per-atom labels (14 % of R/S labels) sit inside a ring — still nearest their own
-   atom, but harder to read (your aspirin screenshots: C8's label inside the benzene ring).
+6. **Labels inside rings, and labels whose edge sits by another atom**: 5–8 % of per-atom labels (14 % of R/S labels)
+   sat inside a ring (aspirin: C8's label inside the benzene ring, beside C3's), and up to 6 % of pKa / steric labels
+   had their nearest edge closer to another atom than to their own. The cause of the first: for an atom whose bonds
+   balance out (a ring carbon with a substituent) the "open side" defaulted to straight down, often into the ring.
+   **Fixed (2026-10-14):** such an atom's open side is away from its rings; a place inside a ring costs more; and every
+   label's nearest edge must be clearly nearer its own atom (its written label: OH, NH2) than any other atom. Inside a
+   ring now 0.3–3.5 % (only where nothing outside is free: fused-ring atoms); edge nearer another atom 0–0.6 % (was up
+   to 6 %); labels left out about the same (pKa 7 → 2).
 
 **Conventions, not errors** (worth an ⓘ note, or a decision):
 - Oxidation state of an atom with an aromatic bond to another element (pyridine C2, pyrimidine N) is the average over
@@ -137,19 +143,19 @@ Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*:
 
 | Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Centre nearer another atom | Edge nearer another atom | Inside a ring | Far |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| index | 166 | 1,790 | 4 (0.22 %) | 3 | 0 (0.00 %) | 0 (0.00 %) | 96 (5.36 %) | 0 |
-| cip | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 6 (13.95 %) | 0 |
-| hybridization | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 0 (0.00 %) | 147 (8.22 %) | 0 |
+| index | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 5 (0.28 %) | 6 (0.34 %) | 0 |
+| cip | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
+| hybridization | 166 | 1,788 | 6 (0.33 %) | 5 | 0 (0.00 %) | 10 (0.56 %) | 63 (3.52 %) | 0 |
 | formal | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
-| partial | 166 | 1,769 | 10 (0.56 %) | 8 | 0 (0.00 %) | 7 (0.40 %) | 77 (4.35 %) | 0 |
-| oxidation | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 0 (0.00 %) | 102 (5.70 %) | 0 |
-| lonepairs | 166 | 1,791 | 3 (0.17 %) | 3 | 0 (0.00 %) | 0 (0.00 %) | 108 (6.03 %) | 0 |
-| pka | 166 | 300 | 7 (2.28 %) | 7 | 0 (0.00 %) | 17 (5.67 %) | 0 (0.00 %) | 27 |
-| steric | 166 | 486 | 67 (12.12 %) | 52 | 53 (10.91 %) | 31 (6.38 %) | 6 (1.23 %) | 104 |
-| electronic | 166 | 495 | 58 (10.49 %) | 40 | 33 (6.67 %) | 3 (0.61 %) | 7 (1.41 %) | 60 |
-| taft | 166 | 261 | 54 (17.14 %) | 48 | 26 (9.96 %) | 10 (3.83 %) | 8 (3.07 %) | 32 |
+| partial | 166 | 1,769 | 10 (0.56 %) | 7 | 1 (0.06 %) | 6 (0.34 %) | 42 (2.37 %) | 0 |
+| oxidation | 166 | 1,788 | 6 (0.33 %) | 5 | 0 (0.00 %) | 3 (0.17 %) | 7 (0.39 %) | 0 |
+| lonepairs | 166 | 1,791 | 3 (0.17 %) | 3 | 1 (0.06 %) | 4 (0.22 %) | 2 (0.11 %) | 0 |
+| pka | 166 | 305 | 2 (0.65 %) | 2 | 8 (2.62 %) | 0 (0.00 %) | 0 (0.00 %) | 28 |
+| steric | 166 | 475 | 78 (14.10 %) | 60 | 71 (14.95 %) | 1 (0.21 %) | 15 (3.16 %) | 146 |
+| electronic | 166 | 497 | 56 (10.13 %) | 38 | 42 (8.45 %) | 1 (0.20 %) | 9 (1.81 %) | 67 |
+| taft | 166 | 268 | 47 (14.92 %) | 40 | 44 (16.42 %) | 1 (0.37 %) | 13 (4.85 %) | 38 |
 
-Examples of labels nearer another atom: 
+Examples of labels nearer another atom: `CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)`
 
 ### Bond angles: the app's 3D model against RDKit (ETKDG + MMFF94)
 

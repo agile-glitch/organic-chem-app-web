@@ -47,14 +47,19 @@ function sample() {
         const BL = bl.length ? bl[bl.length >> 1] : 40;
         const rings = (rec.rings || []).filter(rg => rg.every(i => i < n)).map(rg => rg.map(i => pos[i]));
         const inside = (pt, poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a.y > pt.y) !== (b.y > pt.y) && pt.x < (b.x - a.x) * (pt.y - a.y) / (b.y - a.y) + a.x) c = !c; } return c; };
+        const labelBox = {};
+        for (const t of document.querySelectorAll('#mol2d .mv-2d-labels text[data-atom]')) labelBox[+t.getAttribute('data-atom')] = t.getBoundingClientRect();
         const notes = [...document.querySelectorAll('#mol2d .mv-2d-notes text')].map(t => {
           const R = t.getBoundingClientRect(), c = { x: R.left + R.width / 2, y: R.top + R.height / 2 }, own = +t.getAttribute('data-atom');
           let near = own, dn = Infinity;
           pos.forEach((q, i) => { const d = Math.hypot(q.x - c.x, q.y - c.y); if (d < dn) { dn = d; near = i; } });
           const d0 = Math.hypot(pos[own].x - c.x, pos[own].y - c.y);
           // the gap between an atom and the label's nearest edge: a long label is read from the end next to its atom
-          const edge = q => Math.hypot(Math.max(R.left - q.x, 0, q.x - R.right), Math.max(R.top - q.y, 0, q.y - R.bottom));
-          const e0 = edge(pos[own]), edgeNear = pos.findIndex((q, i) => i !== own && edge(q) < e0);
+          // to an atom as drawn: its written label (OH, NH2, Cl) when it has one, else its point
+          const edge = (q, i) => { const L = labelBox[i];
+            return L ? Math.hypot(Math.max(L.left - R.right, 0, R.left - L.right), Math.max(L.top - R.bottom, 0, R.top - L.bottom))
+              : Math.hypot(Math.max(R.left - q.x, 0, q.x - R.right), Math.max(R.top - q.y, 0, q.y - R.bottom)); };
+          const e0 = edge(pos[own], own), edgeNear = pos.findIndex((q, i) => i !== own && edge(q, i) < e0);
           return { atom: own, text: t.textContent, nearest: near, ownDist: +(d0 / BL).toFixed(2), nearDist: +(dn / BL).toFixed(2), inRing: rings.some(pg => inside(c, pg)),
             edgeGap: +(e0 / BL).toFixed(2), edgeNearer: edgeNear };
         });

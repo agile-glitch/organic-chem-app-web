@@ -32,8 +32,14 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
    Overall the rules alone are within 1 unit for 42 % of acids and 35 % of bases (median error 1.3 / 1.7); the
    Hammett estimates are within 1 unit for 100 % / 93 %.
-6. **Labels inside rings**: 5–8 % of per-atom labels (14 % of R/S labels) sit inside a ring — still nearest their own
-   atom, but harder to read (your aspirin screenshots: C8's label inside the benzene ring).
+6. **Labels inside rings, and labels whose edge sits by another atom**: 5–8 % of per-atom labels (14 % of R/S labels)
+   sat inside a ring (aspirin: C8's label inside the benzene ring, beside C3's), and up to 6 % of pKa / steric labels
+   had their nearest edge closer to another atom than to their own. The cause of the first: for an atom whose bonds
+   balance out (a ring carbon with a substituent) the "open side" defaulted to straight down, often into the ring.
+   **Fixed (2026-10-14):** such an atom's open side is away from its rings; a place inside a ring costs more; and every
+   label's nearest edge must be clearly nearer its own atom (its written label: OH, NH2) than any other atom. Inside a
+   ring now 0.3–3.5 % (only where nothing outside is free: fused-ring atoms); edge nearer another atom 0–0.6 % (was up
+   to 6 %); labels left out about the same (pKa 7 → 2).
 
 **Conventions, not errors** (worth an ⓘ note, or a decision):
 - Oxidation state of an atom with an aromatic bond to another element (pyridine C2, pyrimidine N) is the average over
