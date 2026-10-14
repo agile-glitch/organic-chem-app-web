@@ -9,6 +9,7 @@
     "ambiguous": 0,
     "in_ring": 96,
     "far": 0,
+    "edge_ambiguous": 0,
     "molecules_with_left_out": 3
    },
    "cip": {
@@ -17,15 +18,17 @@
     "left_out": 0,
     "ambiguous": 0,
     "in_ring": 6,
-    "far": 0
+    "far": 0,
+    "edge_ambiguous": 0
    },
    "hybridization": {
     "molecules": 166,
     "drawn": 1789,
     "left_out": 5,
     "ambiguous": 0,
-    "in_ring": 148,
+    "in_ring": 147,
     "far": 0,
+    "edge_ambiguous": 0,
     "molecules_with_left_out": 4
    },
    "formal": {
@@ -34,16 +37,18 @@
     "left_out": 0,
     "ambiguous": 0,
     "in_ring": 0,
-    "far": 0
+    "far": 0,
+    "edge_ambiguous": 0
    },
    "partial": {
     "molecules": 166,
-    "drawn": 1753,
-    "left_out": 26,
+    "drawn": 1769,
+    "left_out": 10,
     "ambiguous": 0,
-    "in_ring": 79,
+    "in_ring": 77,
     "far": 0,
-    "molecules_with_left_out": 21
+    "edge_ambiguous": 7,
+    "molecules_with_left_out": 8
    },
    "oxidation": {
     "molecules": 166,
@@ -52,6 +57,7 @@
     "ambiguous": 0,
     "in_ring": 102,
     "far": 0,
+    "edge_ambiguous": 0,
     "molecules_with_left_out": 4
    },
    "lonepairs": {
@@ -61,46 +67,76 @@
     "ambiguous": 0,
     "in_ring": 108,
     "far": 0,
+    "edge_ambiguous": 0,
     "molecules_with_left_out": 3
    },
    "pka": {
     "molecules": 166,
-    "drawn": 299,
-    "left_out": 8,
+    "drawn": 300,
+    "left_out": 7,
     "ambiguous": 0,
     "in_ring": 0,
-    "far": 26,
-    "molecules_with_left_out": 8
+    "far": 27,
+    "edge_ambiguous": 17,
+    "molecules_with_left_out": 7
    },
    "steric": {
     "molecules": 166,
-    "drawn": 409,
-    "left_out": 144,
-    "ambiguous": 0,
-    "in_ring": 7,
-    "far": 68,
-    "molecules_with_left_out": 91
+    "drawn": 486,
+    "left_out": 67,
+    "ambiguous": 53,
+    "in_ring": 6,
+    "far": 104,
+    "edge_ambiguous": 31,
+    "molecules_with_left_out": 52
    },
    "electronic": {
     "molecules": 166,
-    "drawn": 443,
-    "left_out": 110,
-    "ambiguous": 0,
+    "drawn": 495,
+    "left_out": 58,
+    "ambiguous": 33,
     "in_ring": 7,
-    "far": 27,
-    "molecules_with_left_out": 72
+    "far": 60,
+    "edge_ambiguous": 3,
+    "molecules_with_left_out": 40
    },
    "taft": {
     "molecules": 166,
-    "drawn": 201,
-    "left_out": 114,
-    "ambiguous": 0,
-    "in_ring": 7,
+    "drawn": 261,
+    "left_out": 54,
+    "ambiguous": 26,
+    "in_ring": 8,
     "far": 32,
-    "molecules_with_left_out": 82
+    "edge_ambiguous": 10,
+    "molecules_with_left_out": 48
    }
   },
-  "ambiguous_examples": {},
+  "ambiguous_examples": {
+   "taft": [
+    "CC(=O)O: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "CC(N)=O: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "C[N+](=O)[O-]: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.99 vs 0.9 bond lengths)",
+    "CC(=O)[O-]: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "CC(=O)Oc1ccccc1C(=O)O: '+0.00/+0.00' for atom 1 sits nearer atom 3 (0.92 vs 0.91 bond lengths)",
+    "OC(=O)C(F)(F)F: '+2.61/−1.16' for atom 1 sits nearer atom 0 (0.83 vs 0.72 bond lengths)"
+   ],
+   "steric": [
+    "CC(=O)Oc1ccccc1C(=O)O: 'moderately hindered' for atom 10 sits nearer atom 8 (1.36 vs 0.83 bond lengths)",
+    "C[C@@H](C(=O)O)N: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
+    "C([C@@H](C(=O)O)N)S: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
+    "C[C@@H](C(=O)O)O: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
+    "OC(=O)C(F)(F)F: 'very hindered' for atom 1 sits nearer atom 0 (0.98 vs 0.76 bond lengths)",
+    "CC(=O)OCC: 'moderately hindered' for atom 1 sits nearer atom 0 (1.35 vs 0.96 bond lengths)"
+   ],
+   "electronic": [
+    "CC(=O)Oc1ccccc1C(=O)O: 'δ +0.34 Σσ +0.00' for atom 10 sits nearer atom 8 (1.19 vs 0.87 bond lengths)",
+    "OC(=O)c1ccccc1: 'δ +0.34 Σσ +0.00' for atom 1 sits nearer atom 0 (1.19 vs 1.07 bond lengths)",
+    "CC(=O)c1ccccc1: 'δ +0.16 Σσ +0.00' for atom 1 sits nearer atom 0 (1.16 vs 1.05 bond lengths)",
+    "Cc1ccc2nc(Cc3ccccc3)[nH]c2c1: 'δ −0.04 Σσ +0.00' for atom 8 sits nearer atom 9 (1.09 vs 0.8 bond lengths)",
+    "Cc1cc2nc3ccc(N(C)C)cc3nc2cc1N: 'δ −0.03 Σσ +0.00' for atom 1 sits nearer atom 0 (1.2 vs 1.11 bond lengths)",
+    "O=C(OC1C[C@@H]2CC[C@@H](C1)N2)[C@H](CO)c1ccccc1: 'δ +0.10 Σσ +0.00' for atom 11 sits nearer atom 0 (1.1 vs 0.79 bond lengths)"
+   ]
+  },
   "angles": {
    "molecules": 40,
    "angles": 218,
@@ -395,22 +431,22 @@
     "n": 1168,
     "median_abs_err": 1.27,
     "within_1": 0.424,
-    "within_2": 0.642,
+    "within_2": 0.643,
     "mean_signed_err": 2.17
    },
    "by_method": {
     "Hammett estimate": {
      "n": 96,
-     "median_abs_err": 0.09,
+     "median_abs_err": 0.08,
      "within_1": 1.0,
      "within_2": 1.0,
-     "mean_signed_err": 0.06
+     "mean_signed_err": 0.05
     },
     "typical value": {
      "n": 1072,
      "median_abs_err": 1.43,
      "within_1": 0.372,
-     "within_2": 0.61,
+     "within_2": 0.611,
      "mean_signed_err": 2.36
     }
    },
@@ -435,8 +471,8 @@
      "n": 139,
      "median_abs_err": 0.5,
      "within_1": 0.698,
-     "within_2": 0.878,
-     "mean_signed_err": 0.67,
+     "within_2": 0.885,
+     "mean_signed_err": 0.66,
      "name": "F001+F118"
     },
     "F056": {
@@ -1227,8 +1263,8 @@
    "smiles": "CC(=O)O",
    "mode": "pka",
    "expected": "4.6–4.9",
-   "app": "4.58 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
-   "ok": false,
+   "app": "4.76 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
    "why": ""
   },
   {
@@ -1929,8 +1965,8 @@
    "smiles": "OC(=O)c1ccccc1",
    "mode": "pka",
    "expected": "4.1–4.3",
-   "app": "4.02 (measured (IUPAC Digitized pKa Dataset); the estimate was 4.2)",
-   "ok": false,
+   "app": "4.21 (measured (IUPAC Digitized pKa Dataset); the estimate was 4.2)",
+   "ok": true,
    "why": ""
   },
   {

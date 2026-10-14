@@ -652,6 +652,15 @@
     return { segs, blocks, zones };
   }
 
+  /* the gap between a point and a box (0 inside it) */
+  const gapTo = (b, x, y) => Math.hypot(Math.max(b.x0 - x, 0, x - b.x1), Math.max(b.y0 - y, 0, y - b.y1));
+  /* a note's box read from its nearest edge: that edge is within half a bond of its own atom and clearly nearer it than any other atom */
+  function edgeOwned(box, a, atoms) {
+    const g = gapTo(box, a.X, a.Y);
+    if (g > 0.5 * BL) return false;
+    for (const o of atoms) if (o !== a && gapTo(box, o.X, o.Y) < g / 0.85 + 0.1 * BL) return false;
+    return true;
+  }
   function placeNotes(scene, texts) {
     const { atoms } = scene;
     const notes = [], info = { placed: 0, overlapping: 0, hOmitted: 0 };
@@ -672,7 +681,7 @@
       for (const { j } of a.nb) { const dx = atoms[j].X - a.X, dy = atoms[j].Y - a.Y, L = Math.hypot(dx, dy) || 1; ox -= dx / L; oy -= dy / L; }
       const open = Math.hypot(ox, oy) < 0.1 ? Math.PI / 2 : Math.atan2(oy, ox);
       let best = null;
-      for (const ring of [0, 1, 2]) {
+      for (const ring of [0, 1, 2, 3, 4]) {
         for (let s = 0; s < 24; s++) {
           const ang = s * Math.PI / 12, dx = Math.cos(ang), dy = Math.sin(ang);
           /* start just outside the label (or the atom point) in this direction */
@@ -683,19 +692,36 @@
             const ty = Math.abs(dy) > 1e-6 ? ((dy > 0 ? a.extent.y1 : a.extent.y0) - a.Y) / dy : Infinity;
             r0 = Math.min(Math.abs(tx), Math.abs(ty), Math.hypot(ex, ey)) + LABEL_GAP + 0.05 * FONT;
           }
+          /* the box centred on this direction; then, for a label wider than it is tall, the box whose start (or end) is at
+             the point in this direction and runs away from the atom, as one writes a word beside an atom (a little dearer,
+             so a short label keeps the centred place) */
           const r = r0 + ring * 0.18 * BL + Math.abs(dx) * w / 2 + Math.abs(dy) * h / 2;
-          const cx = a.X + dx * r, cy = a.Y + dy * r;
+          const px = a.X + dx * (r0 + ring * 0.18 * BL), py = a.Y + dy * (r0 + ring * 0.18 * BL);
+          const yc = dy > 0.3 ? py + h / 2 : dy < -0.3 ? py - h / 2 : py;
+          const cands = [[a.X + dx * r, a.Y + dy * r, 0]];
+          if (w > 2 * h) {
+            if (dx > -0.3) cands.push([px + w / 2, yc, 0.5]);
+            if (dx < 0.3) cands.push([px - w / 2, yc, 0.5]);
+          }
+          for (const [cx, cy, extra] of cands) {
           const box = boxOf(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2);
-          let cost = ring * 3 + angDiff(ang, open) / Math.PI * 2, hard = 0;
+          let cost = ring * 3 + angDiff(ang, open) / Math.PI * 2 + extra, hard = 0;
           for (const z of zones) if (boxesMeet(box, z)) { hard++; break; }
-          /* it must be clearly nearer its own atom than any other, or it could be read as that atom's */
+          /* it must be clearly nearer its own atom than any other, or it could be read as that atom's: its centre, or, for
+             a label too long for that (a word, the Taft pair), the edge it is read from, next to its atom (a place where only the
+             edge passes costs more, so a short label keeps the place it had) */
           const own = Math.hypot(cx - a.X, cy - a.Y);
-          for (const o of atoms) if (o !== a && Math.hypot(cx - o.X, cy - o.Y) < own / 0.85) { hard++; break; }
+          let centreOwned = true;
+          for (const o of atoms) if (o !== a && Math.hypot(cx - o.X, cy - o.Y) < own / 0.85) { centreOwned = false; break; }
+          if (!centreOwned) {
+            if (edgeOwned(box, a, atoms)) cost += 5; else hard++;
+          }
           for (const sg of segs) if (segMeetsBox(sg[0], sg[1], sg[2], sg[3], grow(box, LW))) hard++;
           for (const bl of blocks) if (boxesMeet(box, bl)) hard++;
           for (const n of notes) if (boxesMeet(grow(box, NOTE_GAP), n.box)) hard++;
           cost += 100 * hard;
           if (!best || cost < best.cost) best = { cost, hard, cx, cy, box };
+          }
         }
         if (best && !best.hard) break;
       }

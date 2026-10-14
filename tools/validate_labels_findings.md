@@ -4,23 +4,28 @@
 value does not depend on which Kekulé structure is drawn), Gasteiger–Marsili partial charge, the RDKit hybridization
 port, R/S and E/Z agree with RDKit Python on every one of 116,300 atoms / 1,357 stereocentres / 87 double bonds of
 8,936 molecules. The displayed hybridization agrees with a textbook steric-number rule on 99.5 % of atoms; the rest
-are conventions (below). 130 of 132 hand-checked textbook values agree; the 2 that do not are measured-value choices
-(below). Bond angles of the app's 3D model agree with RDKit's MMFF94 geometry within 5° (218 angles, 40 molecules).
+are conventions (below). 132 of 132 hand-checked textbook values agree (130 before fix 4 below). Bond angles of the app's 3D model agree with RDKit's MMFF94 geometry within 5° (218 angles, 40 molecules).
 
 **Problems found, most important first:**
 
 1. **Steric, electronic and Taft labels are dropped although there is room** — 26 %, 20 % and 36 % of the labels that
-   have a value are not drawn ("left out where there is no free space"). The placement keeps a label's centre
+   have a value were not drawn ("left out where there is no free space"). The placement kept a label's centre
    clearly nearer its own atom than any other (`placeNotes`, mol2d_view.js), and these texts are long; on a carbonyl
-   carbon with three neighbours no position passes. (Aspirin, Taft mode: both labels left out on an empty canvas.)
+   carbon with three neighbours no position passed. (Aspirin, Taft mode: both labels left out on an empty canvas.)
+   **Fixed (2026-10-14):** a long label may also pass by the edge it is read from (that edge within half a bond of its
+   atom and clearly nearer it than any other atom), may start or end at its atom and run outward, and is looked for up
+   to 0.7 bond further out. Left out now 12 % / 10 % / 17 % (the rest is real crowding: CCl4's carbon between four Cl,
+   several long labels on neighbouring atoms); labels whose nearest edge is nearer another atom went down
+   (steric 39 → 31, Taft 21 → 10); short labels (hybridization, charges) are placed as before.
 2. **pKaH of anilines the Hammett estimate cannot reach: 10.7 instead of about 4.6.** The primary-amine fragment
    (F002, 10.7) also matches an aryl NH2, and a basic site takes the most basic of its fragments, so it beats the
    aniline fragment (F026, 4.6) whenever there is an ortho substituent, a fused ring or a heteroaryl ring
    (2,6-dibromoaniline: measured 0.17, rules 10.7). 228 measured molecules: median error 6.4.
 3. **pKaH of N,N-dialkylanilines: 10 instead of about 5.** Same pattern: the trialkylamine fragment (F093, 10.0)
    beats F180 (5.1). 76 measured molecules: median error 6.1, none within 1 unit.
-4. **Measured pKa table includes high-pressure measurements.** tools/pka.py takes the median of every 20–30 °C value,
-   including ones at 1,000–3,000 bar: acetic acid shows 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
+4. **Measured pKa table includes high-pressure measurements.** tools/pka.py took the median of every 20–30 °C value,
+   including ones at 1,000–3,000 bar: acetic acid showed 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
+   **Fixed (2026-10-14):** measurements above 1 bar are left out; the 11 molecules now have their 1-bar values.
 5. **Gaps in the pKa rules** (a site the rules miss or value they cannot know; shown only when no measured value
    exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
    C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,

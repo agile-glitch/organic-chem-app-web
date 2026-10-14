@@ -8,23 +8,28 @@ Made by `tools/validate_labels.js` + `tools/validate_labels.py` from `data/label
 value does not depend on which Kekulé structure is drawn), Gasteiger–Marsili partial charge, the RDKit hybridization
 port, R/S and E/Z agree with RDKit Python on every one of 116,300 atoms / 1,357 stereocentres / 87 double bonds of
 8,936 molecules. The displayed hybridization agrees with a textbook steric-number rule on 99.5 % of atoms; the rest
-are conventions (below). 130 of 132 hand-checked textbook values agree; the 2 that do not are measured-value choices
-(below). Bond angles of the app's 3D model agree with RDKit's MMFF94 geometry within 5° (218 angles, 40 molecules).
+are conventions (below). 132 of 132 hand-checked textbook values agree (130 before fix 4 below). Bond angles of the app's 3D model agree with RDKit's MMFF94 geometry within 5° (218 angles, 40 molecules).
 
 **Problems found, most important first:**
 
 1. **Steric, electronic and Taft labels are dropped although there is room** — 26 %, 20 % and 36 % of the labels that
-   have a value are not drawn ("left out where there is no free space"). The placement keeps a label's centre
+   have a value were not drawn ("left out where there is no free space"). The placement kept a label's centre
    clearly nearer its own atom than any other (`placeNotes`, mol2d_view.js), and these texts are long; on a carbonyl
-   carbon with three neighbours no position passes. (Aspirin, Taft mode: both labels left out on an empty canvas.)
+   carbon with three neighbours no position passed. (Aspirin, Taft mode: both labels left out on an empty canvas.)
+   **Fixed (2026-10-14):** a long label may also pass by the edge it is read from (that edge within half a bond of its
+   atom and clearly nearer it than any other atom), may start or end at its atom and run outward, and is looked for up
+   to 0.7 bond further out. Left out now 12 % / 10 % / 17 % (the rest is real crowding: CCl4's carbon between four Cl,
+   several long labels on neighbouring atoms); labels whose nearest edge is nearer another atom went down
+   (steric 39 → 31, Taft 21 → 10); short labels (hybridization, charges) are placed as before.
 2. **pKaH of anilines the Hammett estimate cannot reach: 10.7 instead of about 4.6.** The primary-amine fragment
    (F002, 10.7) also matches an aryl NH2, and a basic site takes the most basic of its fragments, so it beats the
    aniline fragment (F026, 4.6) whenever there is an ortho substituent, a fused ring or a heteroaryl ring
    (2,6-dibromoaniline: measured 0.17, rules 10.7). 228 measured molecules: median error 6.4.
 3. **pKaH of N,N-dialkylanilines: 10 instead of about 5.** Same pattern: the trialkylamine fragment (F093, 10.0)
    beats F180 (5.1). 76 measured molecules: median error 6.1, none within 1 unit.
-4. **Measured pKa table includes high-pressure measurements.** tools/pka.py takes the median of every 20–30 °C value,
-   including ones at 1,000–3,000 bar: acetic acid shows 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
+4. **Measured pKa table includes high-pressure measurements.** tools/pka.py took the median of every 20–30 °C value,
+   including ones at 1,000–3,000 bar: acetic acid showed 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
+   **Fixed (2026-10-14):** measurements above 1 bar are left out; the 11 molecules now have their 1-bar values.
 5. **Gaps in the pKa rules** (a site the rules miss or value they cannot know; shown only when no measured value
    exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
    C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,
@@ -85,11 +90,11 @@ Molecules with one ionisable group in all: the app finds one site (acid or base)
 
 | | n | median error | within 1 | within 2 | mean signed |
 |---|---:|---:|---:|---:|---:|
-| Hammett estimate | 96 | 0.09 | 100% | 100% | +0.06 |
+| Hammett estimate | 96 | 0.08 | 100% | 100% | +0.05 |
 | typical value | 1,072 | 1.43 | 37% | 61% | +2.36 |
 | F028 | 358 | 1.73 | 37% | 55% | +2.12 |
 | F001 | 311 | 1.06 | 46% | 83% | +1.02 |
-| F001+F118 | 139 | 0.5 | 70% | 88% | +0.67 |
+| F001+F118 | 139 | 0.5 | 70% | 88% | +0.66 |
 | F056 | 56 | 5.33 | 5% | 9% | +5.21 |
 | F021+F095+F121+F185+F187+F202 | 33 | 0.39 | 91% | 94% | +0.21 |
 | F076 | 30 | 9.25 | 7% | 13% | +7.64 |
@@ -128,21 +133,21 @@ Molecules with a measured base value but no base site found: 60 (Approximate), 2
 
 ## The drawing (`tools/validate_display.js`)
 
-Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*: labels with a value that were not drawn ("no free space"). *Nearer another atom*: the label's centre is closer to another atom than to its own, so a reader can take it for that atom. *Inside a ring*: the label sits inside a ring. *Far*: more than one bond length from its atom.
+Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*: labels with a value that were not drawn ("no free space"). *Centre / edge nearer another atom*: the label's centre (or its nearest edge) is closer to another atom than to its own, so a reader can take it for that atom. *Inside a ring*: the label sits inside a ring. *Far*: more than one bond length from its atom.
 
-| Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Nearer another atom | Inside a ring | Far |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| index | 166 | 1,790 | 4 (0.22 %) | 3 | 0 (0.00 %) | 96 (5.36 %) | 0 |
-| cip | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 6 (13.95 %) | 0 |
-| hybridization | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 148 (8.27 %) | 0 |
-| formal | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 |
-| partial | 166 | 1,753 | 26 (1.46 %) | 21 | 0 (0.00 %) | 79 (4.51 %) | 0 |
-| oxidation | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 102 (5.70 %) | 0 |
-| lonepairs | 166 | 1,791 | 3 (0.17 %) | 3 | 0 (0.00 %) | 108 (6.03 %) | 0 |
-| pka | 166 | 299 | 8 (2.61 %) | 8 | 0 (0.00 %) | 0 (0.00 %) | 26 |
-| steric | 166 | 409 | 144 (26.04 %) | 91 | 0 (0.00 %) | 7 (1.71 %) | 68 |
-| electronic | 166 | 443 | 110 (19.89 %) | 72 | 0 (0.00 %) | 7 (1.58 %) | 27 |
-| taft | 166 | 201 | 114 (36.19 %) | 82 | 0 (0.00 %) | 7 (3.48 %) | 32 |
+| Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Centre nearer another atom | Edge nearer another atom | Inside a ring | Far |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| index | 166 | 1,790 | 4 (0.22 %) | 3 | 0 (0.00 %) | 0 (0.00 %) | 96 (5.36 %) | 0 |
+| cip | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 6 (13.95 %) | 0 |
+| hybridization | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 0 (0.00 %) | 147 (8.22 %) | 0 |
+| formal | 166 | 43 | 0 (0.00 %) | 0 | 0 (0.00 %) | 0 (0.00 %) | 0 (0.00 %) | 0 |
+| partial | 166 | 1,769 | 10 (0.56 %) | 8 | 0 (0.00 %) | 7 (0.40 %) | 77 (4.35 %) | 0 |
+| oxidation | 166 | 1,789 | 5 (0.28 %) | 4 | 0 (0.00 %) | 0 (0.00 %) | 102 (5.70 %) | 0 |
+| lonepairs | 166 | 1,791 | 3 (0.17 %) | 3 | 0 (0.00 %) | 0 (0.00 %) | 108 (6.03 %) | 0 |
+| pka | 166 | 300 | 7 (2.28 %) | 7 | 0 (0.00 %) | 17 (5.67 %) | 0 (0.00 %) | 27 |
+| steric | 166 | 486 | 67 (12.12 %) | 52 | 53 (10.91 %) | 31 (6.38 %) | 6 (1.23 %) | 104 |
+| electronic | 166 | 495 | 58 (10.49 %) | 40 | 33 (6.67 %) | 3 (0.61 %) | 7 (1.41 %) | 60 |
+| taft | 166 | 261 | 54 (17.14 %) | 48 | 26 (9.96 %) | 10 (3.83 %) | 8 (3.07 %) | 32 |
 
 Examples of labels nearer another atom: 
 
@@ -154,12 +159,7 @@ Largest: `CC(=O)Oc1ccccc1C(=O)O` atoms (10, 9, 4): app 120.8°, RDKit 125.1°; `
 
 ## Textbook list (`tools/label_textbook.json`)
 
-130 of 132 hand-checked values agree.
-
-| Molecule | Label | Expected | App | Note |
-|---|---|---|---|---|
-| acetic acid `CC(=O)O` | pka | 4.6–4.9 | 4.58 (measured (IUPAC Digitized pKa Dataset); the typical value wa) |  |
-| benzoic acid `OC(=O)c1ccccc1` | pka | 4.1–4.3 | 4.02 (measured (IUPAC Digitized pKa Dataset); the estimate was 4.2) |  |
+132 of 132 hand-checked values agree.
 
 ## Steric class along crowding series
 

@@ -83,6 +83,14 @@ def canon(smi):
 RANK = {'Reliable': 0, 'Approximate': 1, 'Probably approximate': 1, '': 2, 'Unknown': 2, 'Uncertain': 3, 'Very uncertain': 4}
 
 
+def above_1_bar(p):
+    """a measurement under pressure ('1000 (bar)', '2780 (atm)'): left out. pKa falls with pressure (acetic acid 4.76 at
+    1 bar, 4.58 at 1000 bar, 4.28 at 3000 bar), and the dataset gives these series at 25 °C, so taking them into the
+    median moved acetic acid to 4.58 and benzoic acid to 4.02 (4.21 at 1 bar). An empty field is ordinary pressure."""
+    m = re.match(r'\s*([\d.]+)\s*\((bar|atm)\)', str(p or ''))
+    return bool(m) and float(m.group(1)) > 1.5
+
+
 def measured_table():
     """{canonical SMILES: {'acid': [pKa, ...] most acidic first, 'base': [pKaH, ...] most basic first, 'n': measurements}}"""
     from rdkit import RDLogger
@@ -93,6 +101,7 @@ def measured_table():
         try: t = float(r['T'])
         except ValueError: t = 25.0 if r['T'] in ('', 'not_stated') else None
         if t is None or not 20 <= t <= 30: continue
+        if above_1_bar(r.get('pressure', '')): continue
         try: v = float(r['pka_value'])
         except ValueError: continue
         best[(r['SMILES'], r['pka_type'])].append((RANK.get(r['assessment'], 3), v))

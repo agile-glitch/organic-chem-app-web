@@ -52,7 +52,11 @@ function sample() {
           let near = own, dn = Infinity;
           pos.forEach((q, i) => { const d = Math.hypot(q.x - c.x, q.y - c.y); if (d < dn) { dn = d; near = i; } });
           const d0 = Math.hypot(pos[own].x - c.x, pos[own].y - c.y);
-          return { atom: own, text: t.textContent, nearest: near, ownDist: +(d0 / BL).toFixed(2), nearDist: +(dn / BL).toFixed(2), inRing: rings.some(pg => inside(c, pg)) };
+          // the gap between an atom and the label's nearest edge: a long label is read from the end next to its atom
+          const edge = q => Math.hypot(Math.max(R.left - q.x, 0, q.x - R.right), Math.max(R.top - q.y, 0, q.y - R.bottom));
+          const e0 = edge(pos[own]), edgeNear = pos.findIndex((q, i) => i !== own && edge(q) < e0);
+          return { atom: own, text: t.textContent, nearest: near, ownDist: +(d0 / BL).toFixed(2), nearDist: +(dn / BL).toFixed(2), inRing: rings.some(pg => inside(c, pg)),
+            edgeGap: +(e0 / BL).toFixed(2), edgeNearer: edgeNear };
         });
         const left = (document.querySelector('#mol2d .mv-2d-leftout') || {}).textContent || '';
         const m = /(\d+) labels? left out where there is no free space/.exec(left);

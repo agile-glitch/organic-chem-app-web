@@ -277,6 +277,7 @@ def check_display(path):
             for nt in x['notes']:
                 amb = nt['nearest'] != nt['atom']
                 c['ambiguous'] += amb; c['in_ring'] += nt['inRing']; c['far'] += nt['ownDist'] > 1.0
+                c['edge_ambiguous'] += nt.get('edgeNearer', -1) >= 0
                 if amb and len(examples[md]) < 6: examples[md].append(f"{smi}: '{nt['text']}' for atom {nt['atom']} sits nearer atom {nt['nearest']} ({nt['ownDist']} vs {nt['nearDist']} bond lengths)")
     # bond angles
     from rdkit.Chem import AllChem as AC
@@ -341,12 +342,12 @@ def write_report(o):
     Dp = o.get('display')
     if Dp:
         L += ['## The drawing (`tools/validate_display.js`)', '',
-              'Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*: labels with a value that were not drawn ("no free space"). *Nearer another atom*: the label\'s centre is closer to another atom than to its own, so a reader can take it for that atom. *Inside a ring*: the label sits inside a ring. *Far*: more than one bond length from its atom.', '',
-              '| Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Nearer another atom | Inside a ring | Far |', '|---|---:|---:|---:|---:|---:|---:|---:|']
+              'Each label mode on the 2D drawing, as the tab shows it (Show H off). *Left out*: labels with a value that were not drawn ("no free space"). *Centre / edge nearer another atom*: the label\'s centre (or its nearest edge) is closer to another atom than to its own, so a reader can take it for that atom. *Inside a ring*: the label sits inside a ring. *Far*: more than one bond length from its atom.', '',
+              '| Mode | Molecules | Labels drawn | Left out | Molecules with labels left out | Centre nearer another atom | Edge nearer another atom | Inside a ring | Far |', '|---|---:|---:|---:|---:|---:|---:|---:|---:|']
         for md, c in Dp['modes'].items():
             dr = c.get('drawn', 0)
             L.append(f"| {md} | {c.get('molecules', 0)} | {dr:,} | {c.get('left_out', 0):,} ({pct(c.get('left_out', 0), dr + c.get('left_out', 0))}) | {c.get('molecules_with_left_out', 0)} | "
-                     f"{c.get('ambiguous', 0):,} ({pct(c.get('ambiguous', 0), dr)}) | {c.get('in_ring', 0):,} ({pct(c.get('in_ring', 0), dr)}) | {c.get('far', 0):,} |")
+                     f"{c.get('ambiguous', 0):,} ({pct(c.get('ambiguous', 0), dr)}) | {c.get('edge_ambiguous', 0):,} ({pct(c.get('edge_ambiguous', 0), dr)}) | {c.get('in_ring', 0):,} ({pct(c.get('in_ring', 0), dr)}) | {c.get('far', 0):,} |")
         L += ['', 'Examples of labels nearer another atom: ' + '; '.join(f'`{x}`' for md in ('partial', 'index') for x in Dp['ambiguous_examples'].get(md, [])[:3]), '']
         a = Dp.get('angles')
         if a:
