@@ -718,10 +718,10 @@
   "base": {
    "all": {
     "n": 1359,
-    "median_abs_err": 1.74,
-    "within_1": 0.351,
-    "within_2": 0.553,
-    "mean_signed_err": 1.75
+    "median_abs_err": 1.35,
+    "within_1": 0.406,
+    "within_2": 0.659,
+    "mean_signed_err": 0.81
    },
    "by_method": {
     "Hammett estimate": {
@@ -733,10 +733,10 @@
     },
     "typical value": {
      "n": 1278,
-     "median_abs_err": 1.85,
-     "within_1": 0.315,
-     "within_2": 0.524,
-     "mean_signed_err": 1.85
+     "median_abs_err": 1.48,
+     "within_1": 0.373,
+     "within_2": 0.637,
+     "mean_signed_err": 0.86
     }
    },
    "by_fragment": {
@@ -750,10 +750,10 @@
     },
     "F002+F026": {
      "n": 228,
-     "median_abs_err": 6.41,
-     "within_1": 0.346,
-     "within_2": 0.382,
-     "mean_signed_err": 4.7,
+     "median_abs_err": 0.69,
+     "within_1": 0.57,
+     "within_2": 0.794,
+     "mean_signed_err": 0.77,
      "name": "F002+F026"
     },
     "F002+F176": {
@@ -790,10 +790,10 @@
     },
     "F093+F180": {
      "n": 76,
-     "median_abs_err": 6.13,
-     "within_1": 0.0,
-     "within_2": 0.013,
-     "mean_signed_err": 5.64,
+     "median_abs_err": 1.61,
+     "within_1": 0.316,
+     "within_2": 0.671,
+     "mean_signed_err": 0.74,
      "name": "F093+F180"
     },
     "F113": {
@@ -848,129 +848,129 @@
      "quality": "not stated"
     },
     {
-     "smiles": "Nc1c(Br)cccc1Br",
-     "measured": 0.17,
+     "smiles": "NC1=CC(=O)C(=O)c2ccccc21",
+     "measured": 1.57,
      "rules": 10.7,
-     "err": 10.53,
+     "err": 9.129999999999999,
      "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Reliable"
+     "fragments": "F002+F127",
+     "quality": "Uncertain"
     },
     {
-     "smiles": "Cc1ccc(N)c([N+](=O)[O-])c1",
-     "measured": 0.4,
-     "rules": 10.7,
-     "err": 10.299999999999999,
+     "smiles": "C#CCN(CC#C)CC#C",
+     "measured": 3.09,
+     "rules": 10.75,
+     "err": 7.66,
      "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Reliable"
+     "fragments": "F093+F179",
+     "quality": "not stated"
     },
     {
-     "smiles": "Nc1c(Cl)cccc1Cl",
-     "measured": 0.42,
-     "rules": 10.7,
-     "err": 10.28,
+     "smiles": "ClCCN(CCCl)Cc1ccc2ccccc2c1",
+     "measured": 3.32,
+     "rules": 10.75,
+     "err": 7.43,
      "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Reliable"
+     "fragments": "F093+F179",
+     "quality": "not stated"
     },
     {
-     "smiles": "Nc1cc([N+](=O)[O-])ccc1Br",
-     "measured": 0.52,
+     "smiles": "NC1(N)C=CC(S(=O)(=O)O)=CC1",
+     "measured": 3.29,
      "rules": 10.7,
-     "err": 10.18,
+     "err": 7.409999999999999,
      "method": "typical value",
-     "fragments": "F002+F026",
+     "fragments": "F002+F176",
      "quality": "Approximate"
     },
     {
-     "smiles": "Nc1ccc([N+](=O)[O-])c2ccccc12",
-     "measured": 0.54,
-     "rules": 10.7,
-     "err": 10.16,
+     "smiles": "Fc1cccc(CN(CCCl)CCCl)c1",
+     "measured": 3.35,
+     "rules": 10.75,
+     "err": 7.4,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "Cc1cc(C)c(CN(CCCl)CCCl)c(C)c1",
+     "measured": 3.4,
+     "rules": 10.75,
+     "err": 7.35,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "ClCCN(CCCl)Cc1ccc(Cl)cc1",
+     "measured": 3.48,
+     "rules": 10.75,
+     "err": 7.27,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "C[n+]1c2ccccc2cc2ccc(N)cc21.[Br-]",
+     "measured": 11.85,
+     "rules": 4.6,
+     "err": -7.25,
      "method": "typical value",
      "fragments": "F002+F026",
      "quality": "Uncertain"
     },
     {
-     "smiles": "Nc1cc([N+](=O)[O-])ccc1Cl",
-     "measured": 0.64,
-     "rules": 10.7,
-     "err": 10.059999999999999,
+     "smiles": "Fc1ccccc1CN(CCCl)CCCl",
+     "measured": 3.5,
+     "rules": 10.75,
+     "err": 7.25,
      "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Approximate"
+     "fragments": "F093+F179",
+     "quality": "not stated"
     },
     {
-     "smiles": "Cc1cc(Br)c(N)c(Br)c1",
-     "measured": 0.69,
-     "rules": 10.7,
-     "err": 10.01,
+     "smiles": "Cc1ccccc1CN(CCCl)CCCl",
+     "measured": 3.5,
+     "rules": 10.75,
+     "err": 7.25,
      "method": "typical value",
-     "fragments": "F002+F026",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "CSc1nc(=N)ccn1C",
+     "measured": 12.43,
+     "rules": 5.2,
+     "err": -7.2299999999999995,
+     "method": "typical value",
+     "fragments": "F091",
      "quality": "Uncertain"
     },
     {
-     "smiles": "CCCCOc1ccc(N)c([N+](=O)[O-])c1",
-     "measured": 0.78,
-     "rules": 10.7,
-     "err": 9.92,
+     "smiles": "ClCCN(CCCl)Cc1cc(Cl)cc2c1OCOC2",
+     "measured": 3.55,
+     "rules": 10.75,
+     "err": 7.2,
      "method": "typical value",
-     "fragments": "F002+F026",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "C=CCn1cccnc1=NCCC",
+     "measured": 12.25,
+     "rules": 5.2,
+     "err": -7.05,
+     "method": "typical value",
+     "fragments": "F091",
      "quality": "Approximate"
     },
     {
-     "smiles": "Cc1cc([N+](=O)[O-])ccc1N",
-     "measured": 0.94,
-     "rules": 10.7,
-     "err": 9.76,
+     "smiles": "CCCc1c(C)nc(=N)n(C)c1C",
+     "measured": 12.21,
+     "rules": 5.2,
+     "err": -7.010000000000001,
      "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Approximate"
-    },
-    {
-     "smiles": "Cc1cc([N+](=O)[O-])cc(C)c1N",
-     "measured": 0.98,
-     "rules": 10.7,
-     "err": 9.719999999999999,
-     "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Uncertain"
-    },
-    {
-     "smiles": "Nc1cc([N+](=O)[O-])ccc1F",
-     "measured": 1.09,
-     "rules": 10.7,
-     "err": 9.61,
-     "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Approximate"
-    },
-    {
-     "smiles": "Nc1cc(Cl)c(Cl)cc1Cl",
-     "measured": 1.09,
-     "rules": 10.7,
-     "err": 9.61,
-     "method": "typical value",
-     "fragments": "F002+F026",
-     "quality": "Uncertain"
-    },
-    {
-     "smiles": "CN(C)c1ccc([N+](=O)[O-])cc1",
-     "measured": 0.64,
-     "rules": 10,
-     "err": 9.36,
-     "method": "typical value",
-     "fragments": "F093+F180",
-     "quality": "Reliable"
-    },
-    {
-     "smiles": "Nc1ccccc1C=O",
-     "measured": 1.36,
-     "rules": 10.7,
-     "err": 9.34,
-     "method": "typical value",
-     "fragments": "F002+F026",
+     "fragments": "F091",
      "quality": "Approximate"
     }
    ],

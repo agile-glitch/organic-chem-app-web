@@ -21,8 +21,11 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    (F002, 10.7) also matches an aryl NH2, and a basic site takes the most basic of its fragments, so it beats the
    aniline fragment (F026, 4.6) whenever there is an ortho substituent, a fused ring or a heteroaryl ring
    (2,6-dibromoaniline: measured 0.17, rules 10.7). 228 measured molecules: median error 6.4.
+   **Fixed (2026-10-14):** a catch-all amine fragment gives no value when an aryl-amine fragment is on the same N
+   (SITE_RULES.baseYield in js/reactions.js, base_yield in tools/pka.py). Median error 6.4 → 0.7, within 1 unit 35 % → 57 %.
 3. **pKaH of N,N-dialkylanilines: 10 instead of about 5.** Same pattern: the trialkylamine fragment (F093, 10.0)
    beats F180 (5.1). 76 measured molecules: median error 6.1, none within 1 unit.
+   **Fixed (2026-10-14)** with 2: median error 6.1 → 1.6, within 1 unit 0 % → 32 %.
 4. **Measured pKa table includes high-pressure measurements.** tools/pka.py took the median of every 20–30 °C value,
    including ones at 1,000–3,000 bar: acetic acid showed 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
    **Fixed (2026-10-14):** measurements above 1 bar are left out; the 11 molecules now have their 1-bar values.
@@ -30,8 +33,8 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
    C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,
    rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
-   Overall the rules alone are within 1 unit for 42 % of acids and 35 % of bases (median error 1.3 / 1.7); the
-   Hammett estimates are within 1 unit for 100 % / 93 %.
+   Overall the rules alone are within 1 unit for 42 % of acids and 41 % of bases (median error 1.3 / 1.35; bases
+   were 35 % / 1.7 before fixes 2 and 3); the Hammett estimates are within 1 unit for 100 % / 93 %.
 6. **Labels inside rings, and labels whose edge sits by another atom**: 5–8 % of per-atom labels (14 % of R/S labels)
    sat inside a ring (aspirin: C8's label inside the benzene ring, beside C3's), and up to 6 % of pKa / steric labels
    had their nearest edge closer to another atom than to their own. The cause of the first: for an atom whose bonds

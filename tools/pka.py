@@ -189,6 +189,11 @@ def fragment_defaults():
 #  - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9-13 (acetylacetone 8.9, ethyl
 #    acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N-H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4), an
 #    alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol).
+#  - a basic N: the catch-all amine fragments yield to the aryl-amine ones on the same N. The primary amine F002 (10.7)
+#    also matches an aryl NH2, and the tertiary amine F093 (10.0) an N,N-dialkylaniline; a basic site took the most
+#    basic of its fragments, so 2,6-dibromoaniline showed 10.7 (measured 0.17) and 4-nitro-N,N-dimethylaniline 10
+#    (measured 0.64). With an aniline fragment (F026 4.6, aminoazine F115 / F183 6.9, 2-aminoazole F182 5.4;
+#    N,N-dialkylaniline F180 5.1) on the N, the catch-all one gives no value.
 SITE_RULES = dict(
     generic={'F101'},
     alpha={'F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195'},
@@ -196,7 +201,8 @@ SITE_RULES = dict(
     oxygen={'F136'},
     no_site={'F052'},
     value={'F102': 11, 'F090': 11},
-    alkyl_thiol={'F072': 10.5})
+    alkyl_thiol={'F072': 10.5},
+    base_yield={'F002': ['F026', 'F115', 'F182', 'F183'], 'F093': ['F180']})
 
 
 def molecule_pkas(smiles, frags, defaults, measured):
@@ -248,6 +254,11 @@ def molecule_pkas(smiles, frags, defaults, measured):
         use = own if any(i in SR['alpha'] for i in own) else list(v)
         s_['typical'] = min(v[i] for i in use)
         s_['fragments'] = list(dict.fromkeys(s_['fragments'] + use))   # the catch-all one stays listed: a rule that names it still finds the site
+    # each base site's typical value: the most basic of its fragments, a catch-all amine one only when no aryl-amine one is there
+    for s_ in out['base'].values():
+        ids = list(dict.fromkeys(s_['fragments']))
+        use = [i for i in ids if not any(sp in ids for sp in SR['base_yield'].get(i, []))]
+        s_['typical'] = max(defaults[i][1] for i in use)
     cls = symmetry_classes(m)
     for kind in ('acid', 'base'):                        # symmetry-equivalent sites (acetone's two CH3) are one site
         merged = {}

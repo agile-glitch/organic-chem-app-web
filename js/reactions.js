@@ -990,7 +990,12 @@
        - the H of F136 is the acid's O–H (trifluoroacetic acid 0.5), not a trifluoroacetamide's N–H (about 12).
        - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9–13 (acetylacetone 8.9, ethyl
          acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N–H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4),
-         an alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol). */
+         an alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol).
+       - a basic N: the catch-all amine fragments yield to the aryl-amine ones on the same N. The primary amine F002
+         (10.7) also matches an aryl NH2, and the tertiary amine F093 (10.0) an N,N-dialkylaniline; a basic site took
+         the most basic of its fragments, so 2,6-dibromoaniline showed 10.7 (measured 0.17) and 4-nitro-N,N-
+         dimethylaniline 10 (measured 0.64). With an aniline fragment (F026 4.6, aminoazine F115 / F183 6.9,
+         2-aminoazole F182 5.4; N,N-dialkylaniline F180 5.1) on the N, the catch-all one gives no value. */
   const SITE_RULES = {
     generic: new Set(['F101']),
     alpha: new Set(['F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
@@ -998,7 +1003,8 @@
     oxygen: new Set(['F136']),
     noSite: new Set(['F052']),
     value: { F102: 11, F090: 11 },
-    alkylThiol: { F072: 10.5 } };
+    alkylThiol: { F072: 10.5 },
+    baseYield: { F002: ['F026', 'F115', 'F182', 'F183'], F093: ['F180'] } };
   const pkaQ = {}, pkaCache = new Map();
   const qmolOf = (R, sm) => { if (!(sm in pkaQ)) { try { pkaQ[sm] = R.get_qmol(sm); } catch (e) { pkaQ[sm] = null; } } return pkaQ[sm]; };
   const EL = { 1: 'H', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 15: 'P', 16: 'S', 17: 'Cl', 35: 'Br', 53: 'I' };
@@ -1054,6 +1060,12 @@
         const use = own.some(id => SR.alpha.has(id)) ? own : ids;
         s_.typical = Math.min(...use.map(id => v[id]));
         s_.fragments = [...new Set(s_.fragments.concat(use))];   // the catch-all one stays listed: a rule that names it still finds the site
+      }
+      // each base site's typical value: the most basic of its fragments, a catch-all amine one only when no aryl-amine one is there
+      for (const s_ of sites.base.values()) {
+        const ids = [...new Set(s_.fragments)];
+        const use = ids.filter(id => !(SR.baseYield[id] || []).some(sp => ids.includes(sp)));
+        s_.typical = Math.max(...use.map(id => F[id].pKaH));
       }
       const hammett = fid => {                           // [{value|null, text, siteAtom}] per occurrence of the fragment's site
         const h = HAMMETT[fid], res = [];

@@ -25,8 +25,11 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    (F002, 10.7) also matches an aryl NH2, and a basic site takes the most basic of its fragments, so it beats the
    aniline fragment (F026, 4.6) whenever there is an ortho substituent, a fused ring or a heteroaryl ring
    (2,6-dibromoaniline: measured 0.17, rules 10.7). 228 measured molecules: median error 6.4.
+   **Fixed (2026-10-14):** a catch-all amine fragment gives no value when an aryl-amine fragment is on the same N
+   (SITE_RULES.baseYield in js/reactions.js, base_yield in tools/pka.py). Median error 6.4 → 0.7, within 1 unit 35 % → 57 %.
 3. **pKaH of N,N-dialkylanilines: 10 instead of about 5.** Same pattern: the trialkylamine fragment (F093, 10.0)
    beats F180 (5.1). 76 measured molecules: median error 6.1, none within 1 unit.
+   **Fixed (2026-10-14)** with 2: median error 6.1 → 1.6, within 1 unit 0 % → 32 %.
 4. **Measured pKa table includes high-pressure measurements.** tools/pka.py took the median of every 20–30 °C value,
    including ones at 1,000–3,000 bar: acetic acid showed 4.58 (4.76 at 1 bar), benzoic acid 4.02 (4.21). 11 molecules.
    **Fixed (2026-10-14):** measurements above 1 bar are left out; the 11 molecules now have their 1-bar values.
@@ -34,8 +37,8 @@ are conventions (below). 132 of 132 hand-checked textbook values agree (130 befo
    exists): a CH between two C=O (active methine, about 11–13; phenylbutazone measured 2.7, rules 29); an N–H between
    C=O and SO2 (acyl sulfonamide; saccharin measured 1.3, rules 17); xanthic / dithiocarboxylic acid S–H (about 1.5,
    rules 13); N-substituted amidines and guanidines (pKaH 12–14, rules 7 as an imine); gem-dinitro / polynitro C–H.
-   Overall the rules alone are within 1 unit for 42 % of acids and 35 % of bases (median error 1.3 / 1.7); the
-   Hammett estimates are within 1 unit for 100 % / 93 %.
+   Overall the rules alone are within 1 unit for 42 % of acids and 41 % of bases (median error 1.3 / 1.35; bases
+   were 35 % / 1.7 before fixes 2 and 3); the Hammett estimates are within 1 unit for 100 % / 93 %.
 6. **Labels inside rings, and labels whose edge sits by another atom**: 5–8 % of per-atom labels (14 % of R/S labels)
    sat inside a ring (aspirin: C8's label inside the benzene ring, beside C3's), and up to 6 % of pKa / steric labels
    had their nearest edge closer to another atom than to their own. The cause of the first: for an atom whose bonds
@@ -115,26 +118,26 @@ Molecules with one ionisable group in all: the app finds one site (acid or base)
 Largest errors: `CCCCC1C(=O)N(c2ccc(S(C)(=O)=O)cc2)N(c2ccc(S(C)(=O)=O)cc2)C1=O` measured 2.7, rules 29 (F071+F101); `COC(=O)C[SeH]` measured 4.7, rules 25 (F101+F139+F193); `Cc1ccc2c(c1)S(=O)(=O)CS2(=O)=O` measured 12.63, rules 29 (F071+F101); `CC1=C(O)C(C)C1=O` measured 2.8, rules 19 (F019+F101+F192); `O=C1NS(=O)(=O)c2ccccc21` measured 1.31, rules 17 (F021+F095+F186+F202); `O=C(c1ccccc1)C1C(=O)c2ccccc2C1=O` measured 2.78, rules 18.3 (F019+F116).
 Molecules with a measured acid value but no acid site found: 15 (Very uncertain), 4 (Reliable), 213 (Uncertain), 121 (Approximate), 8 (not stated).
 
-**base**: 1,359 molecules; median error 1.74, within 1 unit 35%, within 2 units 55%, mean signed error +1.75.
+**base**: 1,359 molecules; median error 1.35, within 1 unit 41%, within 2 units 66%, mean signed error +0.81.
 
 | | n | median error | within 1 | within 2 | mean signed |
 |---|---:|---:|---:|---:|---:|
 | Hammett estimate | 81 | 0.22 | 93% | 100% | +0.07 |
-| typical value | 1,278 | 1.85 | 32% | 52% | +1.85 |
+| typical value | 1,278 | 1.48 | 37% | 64% | +0.86 |
 | F091 | 303 | 2.1 | 30% | 48% | -0.09 |
-| F002+F026 | 228 | 6.41 | 35% | 38% | +4.7 |
+| F002+F026 | 228 | 0.69 | 57% | 79% | +0.77 |
 | F002+F176 | 164 | 1.11 | 46% | 84% | +1.22 |
 | F093+F179 | 121 | 2.48 | 17% | 43% | +2.87 |
 | F093 | 106 | 0.86 | 52% | 73% | +1.03 |
 | F031 | 77 | 2.27 | 14% | 39% | -0.25 |
-| F093+F180 | 76 | 6.13 | 0% | 1% | +5.64 |
+| F093+F180 | 76 | 1.61 | 32% | 67% | +0.74 |
 | F113 | 60 | 0.9 | 53% | 88% | +0.12 |
 | F034+F177 | 56 | 0.75 | 68% | 80% | +0.99 |
 | F034+F178 | 55 | 0.6 | 60% | 82% | +1.03 |
 | F094 | 53 | 0.92 | 55% | 74% | +0.68 |
 | F112 | 40 | 1.67 | 25% | 68% | +1.67 |
 
-Largest errors: `NC1=NN(c2ccccc2)C(=O)C1` measured 1.2, rules 12.4 (F031+F098); `Nc1c(Br)cccc1Br` measured 0.17, rules 10.7 (F002+F026); `Cc1ccc(N)c([N+](=O)[O-])c1` measured 0.4, rules 10.7 (F002+F026); `Nc1c(Cl)cccc1Cl` measured 0.42, rules 10.7 (F002+F026); `Nc1cc([N+](=O)[O-])ccc1Br` measured 0.52, rules 10.7 (F002+F026); `Nc1ccc([N+](=O)[O-])c2ccccc12` measured 0.54, rules 10.7 (F002+F026).
+Largest errors: `NC1=NN(c2ccccc2)C(=O)C1` measured 1.2, rules 12.4 (F031+F098); `NC1=CC(=O)C(=O)c2ccccc21` measured 1.57, rules 10.7 (F002+F127); `C#CCN(CC#C)CC#C` measured 3.09, rules 10.75 (F093+F179); `ClCCN(CCCl)Cc1ccc2ccccc2c1` measured 3.32, rules 10.75 (F093+F179); `NC1(N)C=CC(S(=O)(=O)O)=CC1` measured 3.29, rules 10.7 (F002+F176); `Fc1cccc(CN(CCCl)CCCl)c1` measured 3.35, rules 10.75 (F093+F179).
 Molecules with a measured base value but no base site found: 60 (Approximate), 23 (not stated), 81 (Uncertain), 2 (Reliable), 4 (Very uncertain).
 
 ## The drawing (`tools/validate_display.js`)
