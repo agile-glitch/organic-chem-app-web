@@ -3,7 +3,8 @@
 // them against independent references (RDKit Python, the IUPAC measured pKa values, a hand-checked textbook list).
 //   python tools/serve.py   (another terminal)
 //   node tools/validate_labels.js [http://localhost:8000/app.html] [--set pka|textbook|all] [--limit N] [--out tools/data/label_dump.json]
-// The molecule set: 'pka' = every molecule of data/pka.js (IUPAC Digitized pKa Dataset, 8,894 molecules: acids, bases,
+// The molecule set: 'diverse' = tools/data/label_molecules.json (every molecule of the app's data plus unusual ones,
+// classified by tools/label_molecules.py) and the textbook list; 'pka' = every molecule of data/pka.js (IUPAC Digitized pKa Dataset, 8,894 molecules: acids, bases,
 // 539 with stereocentres); 'textbook' = the SMILES of tools/label_textbook.json; 'all' = both.
 const fs = require('fs'), path = require('path');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
@@ -14,6 +15,12 @@ const set = opt('--set', 'all'), limit = +opt('--limit', 0), out = opt('--out', 
 function molecules() {
   const smis = [];
   if (set === 'textbook' || set === 'all') {
+    const T = JSON.parse(fs.readFileSync(path.join(__dirname, 'label_textbook.json'), 'utf8'));
+    for (const c of T.cases) smis.push(c.smiles);
+    for (const sr of T.steric_series.series) smis.push(...sr.smiles);
+  }
+  if (set === 'diverse') {                          // tools/label_molecules.py: every molecule of the app's data, classified
+    smis.push(...JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'label_molecules.json'), 'utf8')).map(x => x.smiles));
     const T = JSON.parse(fs.readFileSync(path.join(__dirname, 'label_textbook.json'), 'utf8'));
     for (const c of T.cases) smis.push(c.smiles);
     for (const sr of T.steric_series.series) smis.push(...sr.smiles);
@@ -59,6 +66,11 @@ function molecules() {
             el: A.map(a => a.el), cip: A.map(a => a.cip), hyb: A.map(a => a.hybridization.label), rdHyb: A.map(a => a.rdkitHybridization),
             charge: A.map(a => a.charge), q: A.map(a => a.gasteiger), ox: A.map(a => a.oxidationState.value), oxFlag: A.map(a => a.oxidationState.flag || null),
             lp: A.map(a => a.lonePairs), ez: rec.bonds.filter(bd => bd.ez).map(bd => [bd.a, bd.b, bd.ez]),
+            // over every atom, H included: oxidation states and partial charges must add up to the net charge
+            oxSum: rec.atoms.some(a => a.oxidationState.value == null) ? null : rec.atoms.reduce((t, a) => t + a.oxidationState.value, 0),
+            qSum: rec.atoms.some(a => a.gasteiger == null) ? null : rec.atoms.reduce((t, a) => t + a.gasteiger, 0),
+            netCharge: rec.atoms.reduce((t, a) => t + (a.charge || 0), 0),
+            labelCounts: Object.fromEntries(['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepairs'].map(md => [md, MI.labelsFor(rec, md).filter(Boolean).length])),
             pka, rules, effects: eff,
           };
         } catch (e) { out[smi] = { error: String(e && e.message || e) }; }

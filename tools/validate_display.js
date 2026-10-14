@@ -12,7 +12,20 @@ const N = +opt('--n', 120), NA = +opt('--angles', 40), out = opt('--out', path.j
 const MODES = ['index', 'cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepairs', 'pka', 'steric', 'electronic', 'taft'];
 
 // the sample: the textbook list, then every k-th single-component molecule of data/pka.js with 6-30 heavy atoms
+// --set diverse: up to --per-class molecules of each kind (tools/data/label_molecules.json), taken in turn from each
+// kind so that the first --angles of them (the ones whose 3D model is built) cover every kind too
+function sampleDiverse(per) {
+  const M = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'label_molecules.json'), 'utf8'));
+  const heavy = x => (x.match(/\[[^\]]+\]|Br|Cl|[BCNOPSFIbcnops]/g) || []).length;
+  const byClass = {};
+  for (const e of M) { if (heavy(e.smiles) > 60) continue; for (const c of e.classes) (byClass[c] = byClass[c] || []).push(e.smiles); }
+  const lists = Object.values(byClass).map(l => { const k = Math.max(1, Math.floor(l.length / per)); return l.filter((_, i) => i % k === 0).slice(0, per); });
+  const out = [], seen = new Set();
+  for (let r = 0; r < per; r++) for (const l of lists) if (l[r] && !seen.has(l[r])) { seen.add(l[r]); out.push(l[r]); }
+  return out;
+}
 function sample() {
+  if (opt('--set', '') === 'diverse') return sampleDiverse(+opt('--per-class', 15));
   const T = JSON.parse(fs.readFileSync(path.join(__dirname, 'label_textbook.json'), 'utf8'));
   const s = fs.readFileSync(path.join(__dirname, '..', 'data', 'pka.js'), 'utf8');
   const all = Object.keys(JSON.parse(s.slice(s.indexOf('{'), s.lastIndexOf('}') + 1)).molecules)

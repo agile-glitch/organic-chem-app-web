@@ -254,7 +254,14 @@
     const atoms = m.atoms.map((a, i) => ({
       z: pick(a, 'z', d.atom), hs: pick(a, 'impHs', d.atom), chg: pick(a, 'chg', d.atom), rad: pick(a, 'nRad', d.atom),
       iso: pick(a, 'isotope', d.atom), stereo: pick(a, 'stereo', d.atom), arom: aA.has(i) }));
-    const bonds = (m.bonds || []).map((b, k) => ({ a: b.atoms[0], b: b.atoms[1], order: pick(b, 'bo', d.bond), arom: aB.has(k) }));
+    /* a dative bond (L→M, RDKit bond type 17, the donor first) adds nothing to either atom's bond-order sum: the pair is
+       the donor's lone pair, so the donor keeps its oxidation state (cisplatin: N −3, Pt +2, the usual convention that a
+       neutral ligand gives the metal no charge) and that lone pair is counted as used by the bond. Read as order 17 it
+       made the N of a metal amine −20 and the metal +36. */
+    const bonds = (m.bonds || []).map((b, k) => {
+      const bo = pick(b, 'bo', d.bond);
+      return bo === 17 ? { a: b.atoms[0], b: b.atoms[1], order: 0, dative: b.atoms[0], arom: false } : { a: b.atoms[0], b: b.atoms[1], order: bo, arom: aB.has(k) };
+    });
     const g = prepare({ atoms, bonds, rings: ext.atomRings || [] });
     g.cipRanks = ext.cipRanks || null;
     return g;
@@ -432,7 +439,8 @@
   function lewis(g, i) {
     const a = g.atoms[i], V = valenceElectrons(a.z);
     if (V === null) return null;
-    const B = sumBO(g, i), nonbond = V - a.chg - B, lp2 = nonbond - a.rad;
+    const B = sumBO(g, i), nonbond = V - a.chg - B, donated = g.adj[i].filter(e => g.bonds[e.bond].dative === i).length;
+    const lp2 = nonbond - a.rad - 2 * donated;                       // a lone pair given to a dative bond is a bonding pair now
     const lp = lp2 >= 0 && lp2 % 2 === 0 ? lp2 / 2 : null;
     return { V, bondOrderSum: B, nonbonding: nonbond, lp, radicals: a.rad, shell: 2 * B + nonbond };
   }

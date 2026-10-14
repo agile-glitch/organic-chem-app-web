@@ -35,7 +35,7 @@ def norm_hyb(h):
 
 def lone_pairs(m, i):
     a = m.GetAtomWithIdx(i)
-    if a.GetAtomicNum() == 1: return 0
+    if a.GetAtomicNum() == 1 and a.GetDegree() > 0: return 0
     bonds = sum(b.GetBondTypeAsDouble() for b in a.GetBonds()) + a.GetTotalNumHs()
     v = PT.GetNOuterElecs(a.GetAtomicNum()) - a.GetFormalCharge() - bonds - a.GetNumRadicalElectrons()
     return int(v // 2) if v >= 0 and v == int(v) and v % 2 == 0 else None
@@ -80,22 +80,33 @@ def kekule_dependent(m, i):
     return any(b.GetIsAromatic() and b.GetOtherAtom(a).GetAtomicNum() != a.GetAtomicNum() for b in a.GetBonds())
 
 
+CUR = {'classes': []}                                   # the molecule classes of the molecule being checked
+
+
 class Tally:
     def __init__(self, name, what):
         self.name, self.what, self.n, self.ok, self.classes = name, what, 0, 0, defaultdict(list)
+        self.by_class = defaultdict(lambda: [0, 0])
 
     def add(self, ok, cls=None, example=None):
         self.n += 1
         if ok: self.ok += 1
         else: self.classes[cls].append(example)
+        for c in CUR['classes']:
+            self.by_class[c][0] += 1; self.by_class[c][1] += bool(ok)
 
     def summary(self):
-        return {'name': self.name, 'what': self.what, 'checked': self.n, 'agree': self.ok,
+        return {'name': self.name, 'what': self.what, 'checked': self.n, 'agree': self.ok, 'by_class': dict(self.by_class),
                 'disagreements': {k: {'count': len(v), 'examples': v[:MAX_EXAMPLES]} for k, v in sorted(self.classes.items(), key=lambda kv: -len(kv[1]))}}
 
 
 def main():
-    dump_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'data', 'label_dump.json')
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    TAG = next((a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('--tag=')), '')
+    dump_path = args[0] if args else os.path.join(HERE, 'data', 'label_dump.json')
+    CLASSES = {}
+    if TAG:                                              # tools/label_molecules.py: the classes of each molecule
+        CLASSES = {e['smiles']: e['classes'] for e in json.load(open(os.path.join(HERE, 'data', 'label_molecules.json')))}
     D = json.load(open(dump_path))['molecules']
     T = json.load(open(os.path.join(HERE, 'label_textbook.json')))
     s = open(os.path.join(HERE, '..', 'data', 'pka.js')).read()
@@ -109,9 +120,17 @@ def main():
         ('hybridization', 'displayed hybridization vs the textbook steric-number rule'),
         ('rdkit_hybridization', "the app's port of RDKit's hybridization vs RDKit Python"),
         ('cip', 'R/S vs RDKit Python CIP labeller (atoms either one labels)'),
-        ('ez', 'E/Z vs RDKit Python CIP labeller (bonds either one labels)')]}
+        ('ez', 'E/Z vs RDKit Python CIP labeller (bonds either one labels)'),
+        ('oxidation_sum', 'self-consistency: the oxidation states of all atoms (H included) add up to the net charge'),
+        ('partial_sum', 'the partial charges of all atoms (H included) add up to the same total as RDKit\'s model (within 0.01)'),
+        ('pka_acid_site', 'self-consistency: an acid pKa sits on an atom that has an H'),
+        ('pka_base_site', 'self-consistency: a pKaH sits on a neutral N, O, P or S with a lone pair'),
+        ('pka_range', 'self-consistency: every pKa / pKaH is a number between -12 and 52'),
+        ('electronic_partial', 'self-consistency: the electronic label\'s δ is the partial charge of the same atom'),
+        ('steric_class', 'self-consistency: the steric word matches its crowding score (≤2 open, 3 moderately, 4 hindered, ≥5 very)')]}
     analysed = failed = 0
     fails = []
+    NONCONSERVING = []
     for smi, r in D.items():
         if r.get('error'):
             failed += 1; fails.append((smi, r['error'])); continue
@@ -119,14 +138,49 @@ def main():
         if m is None or m.GetNumAtoms() != r['n']:
             failed += 1; fails.append((smi, 'RDKit Python reads a different atom count')); continue
         analysed += 1
+        CUR['classes'] = CLASSES.get(smi, [])
+        if r.get('oxSum') is not None:
+            t['oxidation_sum'].add(abs(r['oxSum'] - r['netCharge']) < 1e-4, 'sum differs', f'{smi}: Σ {r["oxSum"]}, charge {r["netCharge"]}')
+
+        for s_ in (r.get('pka') or {}).get('acid', []):
+            if 'hydrated' in s_['source']: continue           # a measured hydrate value on the C=O oxygen, said so in its note
+            for ai in s_['atoms']:
+                if ai >= r['n']: continue
+                t['pka_acid_site'].add(m.GetAtomWithIdx(ai).GetTotalNumHs(includeNeighbors=True) > 0, 'no H on the atom', f'{smi} atom {ai} ({m.GetAtomWithIdx(ai).GetSymbol()}): pKa {s_["pKa"]} from {"+".join(s_["fragments"])}')
+        for s_ in (r.get('pka') or {}).get('base', []):
+            for ai in s_['atoms']:
+                if ai >= r['n']: continue
+                a_ = m.GetAtomWithIdx(ai)
+                t['pka_base_site'].add(a_.GetSymbol() in ('N', 'O', 'P', 'S') and a_.GetFormalCharge() == 0 and (r['lp'][ai] or 0) > 0, 'not a neutral atom with a lone pair', f'{smi} atom {ai} ({a_.GetSymbol()}): pKaH {s_["pKa"]} from {"+".join(s_["fragments"])}')
+        for kind in ('acid', 'base'):
+            for s_ in (r.get('pka') or {}).get(kind, []):
+                v = s_['pKa']
+                t['pka_range'].add(isinstance(v, (int, float)) and -12 <= v <= 52, 'out of range', f'{smi}: {kind} {v} ({s_["source"][:50]})')
+        for e in r.get('effects') or []:
+            if e['atom'] < r['n'] and e.get('charge') is not None and r['q'][e['atom']] is not None:
+                t['electronic_partial'].add(abs(e['charge'] - r['q'][e['atom']]) < 1e-9, 'differs', f'{smi} atom {e["atom"]}')
+            sc = e.get('score')
+            if sc is not None:
+                want = 'open' if sc <= 2 else 'moderately hindered' if sc == 3 else 'hindered' if sc == 4 else 'very hindered'
+                t['steric_class'].add(e['steric'] == want, 'differs', f'{smi} atom {e["atom"]}: {e["steric"]} at score {sc}')
         mk = Chem.Mol(m)
         try: Chem.Kekulize(mk, clearAromaticFlags=False)
         except Exception: mk = m
-        try: rdMolDescriptors.CalcOxidationNumbers(m); have_ox = True
+        # RDKit's oxidation numbers on a copy without isotope labels: it reads an explicit D or T atom unlike an H
+        # (C6D6: C 0), where the app (and chemistry) treat it as H
+        mo = Chem.Mol(m)
+        for a_ in mo.GetAtoms(): a_.SetIsotope(0)
+        try: rdMolDescriptors.CalcOxidationNumbers(mo); have_ox = True
         except Exception: have_ox = False
         mq = Chem.Mol(m)
         try: AllChem.ComputeGasteigerCharges(mq, nIter=12); have_q = True
         except Exception: have_q = False
+        if have_q and r.get('qSum') is not None:
+            # the app's total against RDKit's own (the model does not always conserve the charge: then neither does the port)
+            ref_sum = sum(float(x.GetProp('_GasteigerCharge')) + x.GetTotalNumHs() * float(x.GetProp('_GasteigerHCharge')) for x in mq.GetAtoms())
+            if ref_sum == ref_sum:
+                t['partial_sum'].add(abs(r['qSum'] - ref_sum) < 0.01, 'sum differs from RDKit\'s', f'{smi}: Σ {r["qSum"]:.3f}, RDKit {ref_sum:.3f}')
+                if abs(ref_sum - r['netCharge']) > 0.01: NONCONSERVING.append(f'{smi} (Σ {ref_sum:.3f}, charge {r["netCharge"]})')
         rdCIPLabeler.AssignCIPLabels(m)
         for i in range(r['n']):
             a = m.GetAtomWithIdx(i)
@@ -136,7 +190,7 @@ def main():
             if lp is not None or r['lp'][i] is not None:
                 t['lonepairs'].add(lp == r['lp'][i], 'unusual electron count' if lp is None or r['lp'][i] is None else environment(m, i), f'{ex}: app {r["lp"][i]}, count {lp}')
             if have_ox and r['ox'][i] is not None:
-                ref = int(a.GetProp('OxidationNumber'))
+                ref = int(mo.GetAtomWithIdx(i).GetProp('OxidationNumber'))
                 key = 'oxidation_kekule' if kekule_dependent(m, i) else 'oxidation'
                 t[key].add(abs(r['ox'][i] - ref) < 1e-6, environment(m, i), f'{ex}: app {r["ox"][i]}, RDKit {ref}')
             if have_q and r['q'][i] is not None:
@@ -246,11 +300,16 @@ def main():
         ok = all(s1 is not None for _, s1, _ in scores) and all(scores[k][1] <= scores[k + 1][1] for k in range(len(scores) - 1))
         series_rows.append({'name': sr['name'], 'ok': ok, 'molecules': scores})
 
-    display = check_display(os.path.join(HERE, 'data', 'label_display.json'))
+    display = check_display(os.path.join(HERE, 'data', f'label_display{"_" + TAG if TAG else ""}.json'), CLASSES)
     out = {'dump': os.path.relpath(dump_path, HERE), 'display': display, 'analysed': analysed, 'not_analysed': failed, 'not_analysed_examples': fails[:15],
            'checks': {k: v.summary() for k, v in t.items()}, 'pka': pka_summary, 'textbook': tb_rows, 'steric_series': series_rows}
     os.makedirs(os.path.join(HERE, 'data'), exist_ok=True)
-    json.dump(out, open(os.path.join(HERE, 'data', 'label_validation.json'), 'w'), indent=1, ensure_ascii=False)
+    out['tag'] = TAG
+    out['gasteiger_nonconserving'] = {'count': len(NONCONSERVING), 'examples': NONCONSERVING[:10]}
+    if CLASSES:
+        from collections import Counter as _C
+        out['class_counts'] = dict(_C(c for smi in D if smi in CLASSES for c in CLASSES[smi]).most_common())
+    json.dump(out, open(os.path.join(HERE, 'data', f'label_validation{"_" + TAG if TAG else ""}.json'), 'w'), indent=1, ensure_ascii=False)
     write_report(out)
 
 
@@ -261,16 +320,20 @@ def angle(X, i, j, k):
     return math.degrees(math.acos(max(-1, min(1, d))))
 
 
-def check_display(path):
+def check_display(path, CLASSES=None):
     """tools/validate_display.js: labels left out, nearer another atom than their own, inside a ring, far from their
     atom (distances in bond lengths); bond angles of the app's 3D model against RDKit ETKDG + MMFF94"""
     if not os.path.exists(path): return None
     D = json.load(open(path))['molecules']
     modes = defaultdict(lambda: Counter())
+    by_class = defaultdict(lambda: Counter())
     examples = defaultdict(list)
     for smi, r in D.items():
         if r.get('error'): continue
         for md, x in r['modes'].items():
+            for cl in (CLASSES or {}).get(smi, []):
+                bc = by_class[cl]; bc['drawn'] += x['drawn']; bc['left_out'] += x['leftOut']
+                bc['edge_ambiguous'] += sum(nt.get('edgeNearer', -1) >= 0 for nt in x['notes']); bc['in_ring'] += sum(nt['inRing'] for nt in x['notes'])
             c = modes[md]
             c['molecules'] += 1; c['drawn'] += x['drawn']; c['left_out'] += x['leftOut']
             if x['leftOut']: c['molecules_with_left_out'] += 1
@@ -305,7 +368,9 @@ def check_display(path):
         ang = {'molecules': n_mol, 'angles': len(ds), 'median': round(statistics.median(ds), 2), 'p95': round(ds[int(0.95 * (len(ds) - 1))], 2),
                'max': round(ds[-1], 2), 'over_3': sum(d > 3 for d in ds), 'over_5': sum(d > 5 for d in ds),
                'worst': [{'smiles': w[1], 'atoms': w[2], 'app': w[3], 'rdkit': w[4]} for w in worst[:8]]}
-    return {'modes': {k: dict(v) for k, v in modes.items()}, 'ambiguous_examples': dict(examples), 'angles': ang}
+    n_shown = sum(1 for r in D.values() if not r.get('error'))
+    return {'molecules': len(D), 'shown': n_shown, 'not_shown': [s_ for s_, r in D.items() if r.get('error')][:20],
+            'modes': {k: dict(v) for k, v in modes.items()}, 'by_class': {k: dict(v) for k, v in by_class.items()}, 'ambiguous_examples': dict(examples), 'angles': ang}
 
 
 def pct(a, n): return f'{100 * a / n:.2f} %' if n else '—'
@@ -320,6 +385,17 @@ def write_report(o):
          '## Agreement with independent references', '', '| Label | Reference | Checked | Agree | |', '|---|---|---:|---:|---:|']
     for k, c in o['checks'].items():
         L.append(f'| {k} | {c["what"]} | {c["checked"]:,} | {c["agree"]:,} | {pct(c["agree"], c["checked"])} |')
+    cls_all = sorted({c for ch in o['checks'].values() for c in ch.get('by_class', {})}, key=lambda c: -max(ch.get('by_class', {}).get(c, [0])[0] for ch in o['checks'].values()))
+    if cls_all:
+        keys = [k for k in ('formal', 'lonepairs', 'oxidation', 'oxidation_sum', 'partial', 'partial_sum', 'hybridization', 'cip', 'ez', 'pka_acid_site', 'pka_base_site', 'electronic_partial') if k in o['checks']]
+        L += ['', '### Agreement by kind of molecule', '', 'Percent of checked atoms (or sites, bonds, molecules) that agree; — = nothing of that kind to check. Molecules: ' + ', '.join(f'{k} {v:,}' for k, v in o.get('class_counts', {}).items()) + '.', '',
+              '| Kind of molecule | ' + ' | '.join(keys) + ' |', '|---|' + '---:|' * len(keys)]
+        for c in cls_all:
+            cells = []
+            for k in keys:
+                n_, ok_ = o['checks'][k].get('by_class', {}).get(c, [0, 0])
+                cells.append('—' if not n_ else ('100' if ok_ == n_ else f'{100 * ok_ / n_:.2f}'))
+            L.append(f'| {c} | ' + ' | '.join(cells) + ' |')
     for k, c in o['checks'].items():
         if not c['disagreements']: continue
         L += ['', f'### {k}: disagreements by kind', '']
@@ -348,6 +424,12 @@ def write_report(o):
             dr = c.get('drawn', 0)
             L.append(f"| {md} | {c.get('molecules', 0)} | {dr:,} | {c.get('left_out', 0):,} ({pct(c.get('left_out', 0), dr + c.get('left_out', 0))}) | {c.get('molecules_with_left_out', 0)} | "
                      f"{c.get('ambiguous', 0):,} ({pct(c.get('ambiguous', 0), dr)}) | {c.get('edge_ambiguous', 0):,} ({pct(c.get('edge_ambiguous', 0), dr)}) | {c.get('in_ring', 0):,} ({pct(c.get('in_ring', 0), dr)}) | {c.get('far', 0):,} |")
+        if Dp.get('by_class'):
+            L += ['', 'By kind of molecule (all label modes together):', '', '| Kind of molecule | Labels drawn | Left out | Edge nearer another atom | Inside a ring |', '|---|---:|---:|---:|---:|']
+            for cl, c in sorted(Dp['by_class'].items(), key=lambda kv: -kv[1].get('drawn', 0)):
+                dr = c.get('drawn', 0)
+                L.append(f"| {cl} | {dr:,} | {c.get('left_out', 0):,} ({pct(c.get('left_out', 0), dr + c.get('left_out', 0))}) | {c.get('edge_ambiguous', 0):,} ({pct(c.get('edge_ambiguous', 0), dr)}) | {c.get('in_ring', 0):,} ({pct(c.get('in_ring', 0), dr)}) |")
+            if Dp.get('not_shown'): L.append('Not shown by the tab: ' + ', '.join(f'`{x}`' for x in Dp['not_shown']) + '.')
         L += ['', 'Examples of labels nearer another atom: ' + '; '.join(f'`{x}`' for md in ('partial', 'index') for x in Dp['ambiguous_examples'].get(md, [])[:3]), '']
         a = Dp.get('angles')
         if a:
@@ -364,7 +446,7 @@ def write_report(o):
     L += ['## Steric class along crowding series', '']
     for s_ in o['steric_series']:
         L.append(f'- {s_["name"]}: {"ok" if s_["ok"] else "**out of order**"} — ' + ', '.join(f'`{a}` {c} ({b})' for a, b, c in s_['molecules']))
-    open(os.path.join(HERE, 'validate_labels_report.md'), 'w').write('\n'.join(L) + '\n')
+    open(os.path.join(HERE, f'validate_labels{"_" + o["tag"] if o.get("tag") else ""}_report.md'), 'w').write('\n'.join(L) + '\n')
     print('\n'.join(L[:20]))
 
 
