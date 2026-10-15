@@ -13339,7 +13339,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       if (!casChecksumOk(raw))
         throw new Error('"' + raw + '" is shaped like a CAS number, but its check digit is wrong — one of the digits is mistyped.');
       const hit = MOL_BY_CAS.get(raw);
-      if (hit) return { graph: parseSmiles(hit.smiles), via: 'CAS number', matched: hit.name + ' (CAS ' + raw + ')' };
+      if (hit) return { graph: parseSmiles(hit.smiles), smiles: hit.smiles, via: 'CAS number', matched: hit.name + ' (CAS ' + raw + ')' };
       throw new Error('CAS ' + raw + ' is a valid number, but it is not one of the ' + MOL_BY_CAS.size +
         ' CAS entries embedded in this offline library. You can look it up at commonchemistry.cas.org.');
     }
@@ -13348,15 +13348,16 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
     if (typeof acronymLookup === 'function') {
       const ac = acronymLookup(raw);
       if (ac) {
-        if (ac.s) return { graph: parseSmiles(ac.s), via: 'acronym', matched: raw.toUpperCase() + ' = ' + ac.f };
+        if (ac.s) return { graph: parseSmiles(ac.s), smiles: ac.s, via: 'acronym', matched: raw.toUpperCase() + ' = ' + ac.f };
         throw new Error(raw.toUpperCase() + ' = ' + ac.f + ' — ' + ac.r +
           '. It names a group, reagent system or reaction rather than a single drawable molecule.');
       }
     }
 
     const libHit = MOL_BY_NAME.get(key);
-    if (libHit) return { graph: parseSmiles(libHit.smiles), via: 'molecule library', matched: libHit.name };
-    if (COMMON_NAMES[key]) return { graph: parseSmiles(COMMON_NAMES[key]), via: 'common name', matched: raw };
+    /* smiles: the entry's own SMILES, for a reader that keeps every stereo mark (RDKit); the graph is this file's reading */
+    if (libHit) return { graph: parseSmiles(libHit.smiles), smiles: libHit.smiles, via: 'molecule library', matched: libHit.name };
+    if (COMMON_NAMES[key]) return { graph: parseSmiles(COMMON_NAMES[key]), smiles: COMMON_NAMES[key], via: 'common name', matched: raw };
 
     let iupacErr = null;
     try {
@@ -13389,7 +13390,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       const near = nearestName(key);
       if (near) {
         const src = MOL_BY_NAME.get(near) ? MOL_BY_NAME.get(near).smiles : COMMON_NAMES[near];
-        return { graph: parseSmiles(src), via: 'closest name', matched: near, warn: '"' + raw + '" is not a name I know — showing the closest one, ' + near + '.' };
+        return { graph: parseSmiles(src), smiles: src, via: 'closest name', matched: near, warn: '"' + raw + '" is not a name I know — showing the closest one, ' + near + '.' };
       }
       throw new Error('Not recognised as a name, an IUPAC name, or a SMILES string. ' +
         'As a structure it failed with: ' + smilesErr.message);

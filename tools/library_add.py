@@ -234,7 +234,7 @@ def write():
     open(OUT, 'w', encoding='utf-8').write(head + 'window.MOL_LIBRARY_MORE = `' + '\n'.join(lines) + '`;\n')
     c = collections.Counter('drugs' if 'building blocks' not in l.split('|')[4] else 'building blocks' for l in lines)
     print(f'{len(lines)} compounds -> {os.path.relpath(OUT, APP)} ({os.path.getsize(OUT) / 1e6:.2f} MB):', dict(c))
-    for k, v in sorted(why.items()): print(f'  left out, {k}: {v}')
+    for k, v in sorted(why.items()): print(f'  {k}: {v}' if k.startswith('(kept)') else f'  left out, {k}: {v}')
 
 
 if __name__ == '__main__':

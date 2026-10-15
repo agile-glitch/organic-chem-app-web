@@ -289,7 +289,9 @@
       throw new Error(smilesRefusal(text));
     }
     if (r && r.graph && r.graph.atoms.length) {
-      const m = rdMol(graphMolfile(r.graph));
+      // a name from the library (or a CAS number, acronym, common name): RDKit reads the entry's own SMILES, so every
+      // stereo mark is kept as written (the app's reader can lose some, e.g. ring cis/trans); otherwise the app's graph
+      const m = (r.smiles && rdMol(r.smiles)) || rdMol(graphMolfile(r.graph));
       if (!m) throw new Error(`"${text}" was read as ${r.matched || r.via}, but RDKit could not read that structure.`);
       info.via = r.via; info.matched = r.matched || ''; info.warn = r.warn || '';
       // the same text may also be a valid SMILES for something else: say so rather than pick silently
