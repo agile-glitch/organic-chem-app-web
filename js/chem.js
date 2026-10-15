@@ -4333,6 +4333,31 @@ function makeChem() {
     return self + '(' + kids.join(',') + ')';
   }
 
+  /* Do the tied arms at this centre tie at every depth? Colour refinement (1-dimensional Weisfeiler-Lehman) with the
+     centre given a colour of its own: two neighbours with the same final colour have the same unfolding tree, so the
+     same CIP descriptor however deep it goes, and looking deeper can never separate them (probucol's two identical
+     halves, a tert-butyl's three methyls). Without this the deeper looks ran their whole budget on every such centre,
+     many times over, and the namer took minutes. */
+  function tiesForever(g, centerId, items) {
+    const idx = new Map(); g.atoms.forEach((a, i) => idx.set(a.id, i));
+    const nb = g.atoms.map(a => neighbors(g, a.id).filter(n => n.atom).map(n => [idx.get(n.atom.id), n.bond.order]));
+    let col = g.atoms.map(a => a.id === centerId ? '*' : (a.element + '/' + (a.charge || 0) + '/' + implicitH(g, a)));
+    let classes = new Set(col).size;
+    for (let it = 0; it < g.atoms.length; it++) {
+      const next = col.map((c, i) => hash32(c + '{' + nb[i].map(([j, o]) => o + ':' + col[j]).sort().join(',') + '}'));
+      const k = new Set(next).size;
+      col = next;
+      if (k === classes) break;
+      classes = k;
+    }
+    for (let i = 1; i < items.length; i++) {
+      const p = items[i - 1], q = items[i];
+      if (p.kind === 'H' || q.kind === 'H' || p.desc !== q.desc) continue;
+      if (col[idx.get(p.id)] !== col[idx.get(q.id)]) return false;   // a tie that a deeper look may break
+    }
+    return true;
+  }
+
   // The four things attached to an atom, ranked highest CIP priority first.
   function cipRanked(g, centerId) {
     const build = depth => {
@@ -4354,7 +4379,7 @@ function makeChem() {
        look the same for more than 8 bonds and differ further out. Look deeper while they tie AND a branch was cut off
        (when nothing was cut off, deeper cannot change anything), within a budget so a symmetric ring system cannot
        blow up; if the budget runs out the 8-bond answer stands. */
-    if (tied(items)) {
+    if (tied(items) && !tiesForever(g, centerId, items)) {
       for (const d of [16, 32, 64]) {
         cipCut = false; cipBudget = 60000;
         let next = null;

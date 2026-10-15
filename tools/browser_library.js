@@ -29,7 +29,8 @@ const base = process.argv[2] || 'http://localhost:8000/app.html';
     for (const [name, want] of (out.lossy || [])) {
       const r = await MolView.agilesFor(name);
       const got = r.ok && r.ids && r.ids.smiles_rdkit;
-      if (got !== want) out.fail.push(`${name}: the Molecule tab shows ${got || r.error}, not ${want}`); else out.tab.push(name);
+      // a salt or hydrate: the tab shows its main component, which must be one of the entry's components exactly
+      if (got !== want && !(got && want.split('.').includes(got))) out.fail.push(`${name}: the Molecule tab shows ${got || r.error}, not ${want}`); else out.tab.push(name);
     }
     const look = {};
     for (const q of ['lsd', 'psilocybin', 'psilocin', 'mdma', 'fentanyl citrate', 'dronabinol', 'sodium oxybate', 'chembl2', 'methamphetamine', 'imatinib']) {
