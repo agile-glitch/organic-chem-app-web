@@ -40,10 +40,23 @@ def items(sdf):
     return {k: ' '.join(v) for k, v in out.items()}
 
 
+def macrocycle_only(md):
+    """the drawing's InChIKey when the E/Z of double bonds in rings of 8 or more atoms is not read from the drawing:
+    InChI reads one for such a ring bond (a porphyrin's), where the ring allows only the geometry drawn, while the same
+    molecule from SMILES has none"""
+    m = Chem.Mol(md)
+    ri = m.GetRingInfo()
+    for b in m.GetBonds():
+        if b.GetBondType() == Chem.BondType.DOUBLE and any(len(r) >= 8 and b.GetIdx() in r for r in ri.BondRings()):
+            b.SetStereo(Chem.BondStereo.STEREOANY)
+    m.RemoveAllConformers()
+    return rdinchi.MolToInchiKey(m)
+
+
 def main():
     src = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'data', 'agiles_table.json')
     rows = json.load(open(src))['rows']
-    good, bad = [], []
+    good, bad, macro = [], [], []
     for r in rows:
         if not r.get('ok'):
             bad.append((r['name'], r.get('error') or 'not shown')); continue
@@ -66,7 +79,8 @@ def main():
                 md = Chem.MolFromMolBlock(sdf.split('M  END')[0] + 'M  END\n')
                 if md is None: why = 'RDKit Python cannot read the drawing (MOL block)'
                 elif row['inchikey'] and rdinchi.MolToInchiKey(md) != row['inchikey']:
-                    why = f'the drawing reads as another molecule or stereoisomer ({rdinchi.MolToInchiKey(md)})'
+                    if macrocycle_only(md) == row['inchikey']: macro.append(row['name'])
+                    else: why = f'the drawing reads as another molecule or stereoisomer ({rdinchi.MolToInchiKey(md)})'
         (bad.append((r['name'], why)) if why else good.append(row))
     good.sort(key=lambda x: x['name'].lower())
     xlsx, csvp = os.path.join(APP, 'AGILES_codes.xlsx'), os.path.join(APP, 'AGILES_codes.csv')
@@ -98,6 +112,7 @@ def main():
         'SMILES (as given): the library\'s own SMILES. SMILES (RDKit canonical): how the tab reads the molecule and numbers its atoms in the drawing.',
         'CAS number: from the app\'s library; a blank cell: the library has none for this compound.',
         f'Every code was unpacked and checked: its identifiers are the row\'s, both SMILES are one molecule whose InChIKey (RDKit) is the row\'s, and the drawing alone (the MOL block: atoms, bonds, wedges, coordinates) reads back as that same molecule and stereoisomer. {len(good):,} rows; {len(bad)} compounds left out (no code or a check failed).',
+        f'{len(macro)} of them have a double bond in a ring of 8 or more atoms (a porphyrin\'s): InChI reads an E/Z for it from the drawing that the ring allows only one way, so their drawing\'s InChIKey has that extra layer; without it, it is the row\'s. ' + ', '.join(macro[:20]),
     ]: about.append([line])
     about.column_dimensions['A'].width = 160
     wb.save(xlsx)

@@ -2335,14 +2335,21 @@
      other, and a MOL reader takes the drawn geometry as given. Such bonds get the V2000 stereo flag 3 ("either"), so the
      code's drawing reads back as E/Z unspecified (vitamin D3's ring C=C, one of lycopene's), not as one isomer. */
   function openDoubleBonds(cs) {
-    const r = cs.record, open = new Set(r.bonds.filter(b => b.ez === 'unspecified').map(b => Math.min(b.a, b.b) + 1 + '-' + (Math.max(b.a, b.b) + 1)));
-    if (!open.size) return cs.mb2d;
+    const r = cs.record, pair = (a, b) => Math.min(a, b) + '-' + Math.max(a, b);
+    const open = new Set(r.bonds.filter(b => b.ez === 'unspecified').map(b => pair(b.a + 1, b.b + 1)));
+    // also a chain double bond with a substituent at each end whose E/Z is not given although RDKit sees no E/Z there
+    // (cefotetan's ylidene between two ring S that differ only by a far stereocentre): InChI still reads an E/Z from
+    // the drawn geometry, so the drawing would name a stereoisomer the molecule does not have
+    const given = new Set(r.bonds.filter(b => b.ez === 'E' || b.ez === 'Z' || b.inRing).map(b => pair(b.a + 1, b.b + 1)));
     const L = cs.mb2d.split('\n'), counts = L[3] || '';
     if (/V3000/.test(counts)) return cs.mb2d;
-    const na = +counts.slice(0, 3), nb = +counts.slice(3, 6);
+    const na = +counts.slice(0, 3), nb = +counts.slice(3, 6), deg = new Array(na + 1).fill(0);
+    for (let k = 4 + na; k < 4 + na + nb; k++) { deg[+L[k].slice(0, 3)]++; deg[+L[k].slice(3, 6)]++; }
     for (let k = 4 + na; k < 4 + na + nb; k++) {
-      const a = +L[k].slice(0, 3), b = +L[k].slice(3, 6), o = +L[k].slice(6, 9);
-      if (o === 2 && open.has(Math.min(a, b) + '-' + Math.max(a, b))) L[k] = L[k].slice(0, 9) + '  3' + L[k].slice(12);
+      const a = +L[k].slice(0, 3), b = +L[k].slice(3, 6), o = +L[k].slice(6, 9), st = +L[k].slice(9, 12);
+      if (o !== 2 || st) continue;
+      const el = i => L[3 + i].slice(31, 34).trim(), cn = i => el(i) === 'C' || el(i) === 'N';
+      if (open.has(pair(a, b)) || (!given.has(pair(a, b)) && deg[a] >= 2 && deg[b] >= 2 && cn(a) && cn(b))) L[k] = L[k].slice(0, 9) + '  3' + L[k].slice(12);
     }
     return L.join('\n');
   }
