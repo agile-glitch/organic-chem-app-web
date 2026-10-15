@@ -258,7 +258,7 @@
       for (const q of b.extentPts || []) take(q[0], q[1], 0);
     }
     if (!N) Object.assign(bbox, { x0: 0, y0: 0, x1: 0, y1: 0 });
-    return { atoms, bonds, byK: new Map(bonds.map(b => [b.k, b])), bbox, warnings, notes: [] };
+    return { atoms, bonds, rings, byK: new Map(bonds.map(b => [b.k, b])), bbox, warnings, notes: [] };
   }
 
   /* ---- labels ---- */
@@ -652,11 +652,38 @@
     return { segs, blocks, zones };
   }
 
+  /* the gap between a point and a box (0 inside it) */
+  const gapTo = (b, x, y) => Math.hypot(Math.max(b.x0 - x, 0, x - b.x1), Math.max(b.y0 - y, 0, y - b.y1));
+  /* a note's box read from its nearest edge: that edge is within half a bond of its own atom and clearly nearer it than
+     any other atom (margin: a further 0.1 bond for a label that only passes this way) */
+  function edgeOwned(box, a, atoms, margin = 0.1 * BL) {
+    const g = atomGap(box, a);
+    if (g > 0.5 * BL) return false;
+    for (const o of atoms) if (o !== a && atomGap(box, o) < g / 0.85 + margin) return false;
+    return true;
+  }
+  /* the gap between a note's box and an atom as drawn: its written label (OH, NH2, Cl) when it has one, else its point */
+  function atomGap(box, o) {
+    if (!o.labelled || !o.extent) return gapTo(box, o.X, o.Y);
+    const e = o.extent;
+    return Math.hypot(Math.max(e.x0 - box.x1, 0, box.x0 - e.x1), Math.max(e.y0 - box.y1, 0, box.y0 - e.y1));
+  }
+  /* a point inside a ring's polygon (the ring's atoms in order) */
+  function inRing(ring, atoms, x, y) {
+    let c = false;
+    const r = ring.atoms;
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      const p = atoms[r[i]], q = atoms[r[j]];
+      if ((p.Y > y) !== (q.Y > y) && x < (q.X - p.X) * (y - p.Y) / (q.Y - p.Y) + p.X) c = !c;
+    }
+    return c;
+  }
   function placeNotes(scene, texts) {
     const { atoms } = scene;
     const notes = [], info = { placed: 0, overlapping: 0, hOmitted: 0 };
     if (!texts) return { notes, info };
     const { segs, blocks, zones } = noteObstacles(scene);
+    const rings = scene.rings || [];
     let heavy = 0;
     for (const a of atoms) if (!isPlainH(a, atoms)) heavy++;
     const skipH = heavy > 40;
@@ -667,12 +694,18 @@
       const a = atoms[i];
       if (skipH && isPlainH(a, atoms)) { info.hOmitted++; return; }
       const w = textWidth(text, NOTE);
-      /* the open side: away from the bonds (straight down for an atom without bonds, or when they balance out) */
+      /* the open side: away from the bonds; when they balance out (a ring atom with a substituent, three bonds at 120°),
+         away from the centre of its rings, never into a ring; straight down for an atom without bonds */
       let ox = 0, oy = 0;
       for (const { j } of a.nb) { const dx = atoms[j].X - a.X, dy = atoms[j].Y - a.Y, L = Math.hypot(dx, dy) || 1; ox -= dx / L; oy -= dy / L; }
+      const myRings = rings.filter(rg => rg.atoms.includes(i));
+      if (Math.hypot(ox, oy) < 0.1 && myRings.length) {
+        const rx = myRings.reduce((t, rg) => t + rg.cx, 0) / myRings.length, ry = myRings.reduce((t, rg) => t + rg.cy, 0) / myRings.length;
+        ox = a.X - rx; oy = a.Y - ry;
+      }
       const open = Math.hypot(ox, oy) < 0.1 ? Math.PI / 2 : Math.atan2(oy, ox);
       let best = null;
-      for (const ring of [0, 1, 2]) {
+      for (const ring of [0, 1, 2, 3, 4]) {
         for (let s = 0; s < 24; s++) {
           const ang = s * Math.PI / 12, dx = Math.cos(ang), dy = Math.sin(ang);
           /* start just outside the label (or the atom point) in this direction */
@@ -683,19 +716,38 @@
             const ty = Math.abs(dy) > 1e-6 ? ((dy > 0 ? a.extent.y1 : a.extent.y0) - a.Y) / dy : Infinity;
             r0 = Math.min(Math.abs(tx), Math.abs(ty), Math.hypot(ex, ey)) + LABEL_GAP + 0.05 * FONT;
           }
+          /* the box centred on this direction; then, for a label wider than it is tall, the box whose start (or end) is at
+             the point in this direction and runs away from the atom, as one writes a word beside an atom (a little dearer,
+             so a short label keeps the centred place) */
           const r = r0 + ring * 0.18 * BL + Math.abs(dx) * w / 2 + Math.abs(dy) * h / 2;
-          const cx = a.X + dx * r, cy = a.Y + dy * r;
+          const px = a.X + dx * (r0 + ring * 0.18 * BL), py = a.Y + dy * (r0 + ring * 0.18 * BL);
+          const yc = dy > 0.3 ? py + h / 2 : dy < -0.3 ? py - h / 2 : py;
+          const cands = [[a.X + dx * r, a.Y + dy * r, 0]];
+          if (w > 2 * h) {
+            if (dx > -0.3) cands.push([px + w / 2, yc, 0.5]);
+            if (dx < 0.3) cands.push([px - w / 2, yc, 0.5]);
+          }
+          for (const [cx, cy, extra] of cands) {
           const box = boxOf(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2);
-          let cost = ring * 3 + angDiff(ang, open) / Math.PI * 2, hard = 0;
+          let cost = ring * 3 + angDiff(ang, open) / Math.PI * 2 + extra, hard = 0;
           for (const z of zones) if (boxesMeet(box, z)) { hard++; break; }
-          /* it must be clearly nearer its own atom than any other, or it could be read as that atom's */
+          /* it must be clearly nearer its own atom than any other, or it could be read as that atom's: its centre, or, for
+             a label too long for that (a word, the Taft pair), the edge it is read from, next to its atom (a place where only the
+             edge passes costs more, so a short label keeps the place it had) */
           const own = Math.hypot(cx - a.X, cy - a.Y);
-          for (const o of atoms) if (o !== a && Math.hypot(cx - o.X, cy - o.Y) < own / 0.85) { hard++; break; }
+          let centreOwned = true;
+          for (const o of atoms) if (o !== a && Math.hypot(cx - o.X, cy - o.Y) < own / 0.85) { centreOwned = false; break; }
+          if (!centreOwned) {
+            if (edgeOwned(box, a, atoms)) cost += 5; else hard++;
+          } else if (!edgeOwned(box, a, atoms, 0)) hard++;             // its edge must not sit by another atom either
+          /* inside a ring the label reads as the ring's, and two neighbours' labels pair up there: outside first */
+          if (rings.some(rg => inRing(rg, atoms, cx, cy))) cost += 6;
           for (const sg of segs) if (segMeetsBox(sg[0], sg[1], sg[2], sg[3], grow(box, LW))) hard++;
           for (const bl of blocks) if (boxesMeet(box, bl)) hard++;
           for (const n of notes) if (boxesMeet(grow(box, NOTE_GAP), n.box)) hard++;
           cost += 100 * hard;
           if (!best || cost < best.cost) best = { cost, hard, cx, cy, box };
+          }
         }
         if (best && !best.hard) break;
       }

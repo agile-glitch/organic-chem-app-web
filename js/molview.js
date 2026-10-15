@@ -77,6 +77,7 @@
     gen: 0,                // the molecule shown: changes only when a new input has been read (build results are
     req: 0,                // tied to it); req counts Show requests, so an older one still waiting for RDKit gives way
     fileBlock: null,       // a 3D MOL/SDF input's first record, as read (for the "File" conformer)
+    code: null,            // the molecule code read with the input (MolCode.parse of its SDF record), or null
     closed: new Set(),     // side-panel sections the user collapsed (by title), kept across re-renders
     info: null,            // how the input was read: {source, via, matched, warn, notes: [{kind, html}]}
     mols: [],              // RDKit objects owned by the current input (deleted when the next one is shown)
@@ -217,6 +218,8 @@
     return `RDKit cannot read “${text}” as SMILES` + (why ? ': ' + why : '') + '. Nothing else is shown in its place.';
   }
 
+  // a molecule code's record (js/mol_code.js) goes to RDKit as its MOL block only: the label items stay with the page
+  const molPart = block => (window.MolCode && window.MolCode.hasData(block) ? block.slice(0, block.indexOf('M  END') + 6) + '\n' : block);
   // a molfile's counts line (V2000 or V3000): where line 4 of a MOL record must be
   const isCountsLine = l => /^\s*\d+\s+\d+.*V[23]000\s*$/.test(String(l || ''));
   // → {mol, info, block?} or throws Error(user-readable message)
@@ -235,7 +238,7 @@
       : 'Type a SMILES, common name or IUPAC name first (or open a MOL/SDF file).');
     if (C.looksLikeMolfile(text)) {
       let { block, count } = firstRecord(raw.replace(/\s+$/, ''));
-      let m = rdMol(block);
+      let m = rdMol(molPart(block));
       // One extra blank line before the header (as copied from some web pages) moves every header line down one, so
       // RDKit refuses the text. Only then, and only when the counts line sits one line below its place, the text is
       // read once more without that first line, and the page says so. (Otherwise the first line is never removed:
@@ -252,7 +255,8 @@
         }
       }
       if (!m) throw new Error(source === 'file' ? 'RDKit could not read this MOL/SDF file.' : 'RDKit could not read this MOL text.');
-      info.via = source === 'file' ? 'MOL/SDF file' : source === 'pasted' ? 'pasted MOL text' : 'MOL text';
+      info.via = source === 'file' ? 'MOL/SDF file' : source === 'pasted' ? 'pasted MOL text' : source === 'code' ? 'molecule code' : 'MOL text';
+      if (source === 'code') info.label = 'Read from a molecule code';
       if (count > 1) info.notes.push({ kind: 'info', html: `The SDF holds ${count} records; the first one is shown.` });
       return { mol: m, info, block };
     }
@@ -330,6 +334,15 @@
       return { ok: false, error: 'RDKit could not start: ' + e.message };
     }
     if (req !== S.req) return { ok: false, error: 'superseded by a newer request' };
+    // a molecule code (ACM1:…): unpacked to its SDF record, which is then read like pasted MOL text
+    if (typeof input === 'string' && window.MolCode && window.MolCode.isCode(input)) {
+      try { input = await window.MolCode.decode(input); } catch (e) {
+        if (req === S.req) { restoreStatus(); showError(e.message); }
+        return { ok: false, error: e.message };
+      }
+      if (req !== S.req) return { ok: false, error: 'superseded by a newer request' };
+      opts = Object.assign({}, opts, { source: 'code' });
+    }
     setStatus('Reading the input…', true);           // name resolution and large molecules take a moment
     await nextPaint();
     if (req !== S.req) return { ok: false, error: 'superseded by a newer request' };
@@ -381,6 +394,7 @@
     S.measureN = 0;                                // measuring belongs to one molecule
     S.info = got.info;
     S.fileBlock = got.block || null;
+    S.code = got.block && window.MolCode && window.MolCode.hasData(got.block) ? window.MolCode.parse(got.block) : null;
     S.full = got.mol; S.mols.push(got.mol);
     if (frags) S.mols.push(...frags);
     $('molSide').scrollTop = 0;                    // a new molecule starts at its name, not mid-list
@@ -431,6 +445,7 @@
       cs.record = MI.analyse(S.R, M);
       cs.pka = window.MoleculePka ? window.MoleculePka.forMol(S.R, M) : null;   // js/reactions.js: measured, estimated or typical
       cs.effects = window.MoleculeEffects ? window.MoleculeEffects.forMol(S.R, M, cs.record) : null;   // steric / electronic per fragment
+      attachCode(cs);
       if (S.typed) {   // "Location in SMILES" shows the SMILES as typed: this component's atom j is typed atom typedAtoms[j]
         const at = cs.record.atoms.slice(0, cs.record.n).map((x, j) => S.typed.at[cs.typedAtoms ? cs.typedAtoms[j] : j] || null);
         if (at.every(Boolean)) cs.record.smilesLoc = { text: S.typed.text, at };
@@ -1225,8 +1240,10 @@
   /* ================================================================ labels */
   /* lone pairs per atom, for the 'electrons' labels: an atom whose count could not be worked out (an unusual
      electron count) gets none, and the foot line says how many */
-  function lonePairCounts(record) {
-    return record.atoms.map(a => (a.isH || a.lonePairs === null ? 0 : a.lonePairs));
+  function lonePairCounts(cs) {
+    const stored = cs.code && cs.code.labels.lonepairs;
+    if (stored) return stored.map(t => parseInt(t, 10) || 0);
+    return cs.record.atoms.map(a => (a.isH || a.lonePairs === null ? 0 : a.lonePairs));
   }
   function unknownLonePairs(record) {
     return record.atoms.filter(a => !a.isH && a.lonePairs === null).length;
@@ -1255,6 +1272,44 @@
     }
     return out;
   }
+  /* the labels of one mode as this version works them out, for every record atom */
+  function liveLabels(cs, mode) {
+    return mode === 'pka' ? pkaLabels(cs) : mode === 'steric' || mode === 'electronic' || mode === 'taft' ? effectLabels(cs, mode) : MI.labelsFor(cs.record, mode);
+  }
+  /* the labels drawn: a molecule code's own when the input brought one (the code is the record of what was shown when it
+     was made; where this version works a label out differently, the banner lists it), else this version's */
+  function labelTexts(cs, mode) {
+    const stored = cs.code && cs.code.labels[mode];
+    return stored ? stored.slice() : liveLabels(cs, mode);
+  }
+  const CODE_MODE_NAME = { cip: 'R/S', hybridization: 'hybridization', formal: 'formal charge', partial: 'partial charge', oxidation: 'oxidation state',
+    lonepairs: 'lone pairs', pka: 'pKa', steric: 'steric', electronic: 'electronic', taft: 'Taft σ*/Es' };
+  /* a molecule code read with the input → cs.code (its labels, in record order) and cs.codeNote (the banner). Only for
+     an input of one molecule whose atoms are the code's: a code is written for one molecule. */
+  function attachCode(cs) {
+    cs.code = null; cs.codeNote = null;
+    const K = S.code;
+    if (!K) return;
+    if (!K.ok) { cs.codeNote = { kind: 'warn', html: `The structure was read, but its molecule-code labels were not: ${esc(K.error)} The labels shown are this version's.` }; return; }
+    const r = cs.record, N = r.atoms.length;
+    if (S.comps.length !== 1 || K.nHeavy !== r.n || K.nHeavy + K.nH !== N) {
+      cs.codeNote = { kind: 'warn', html: `The molecule code's labels are for ${K.nHeavy} heavy atoms and ${K.nH} H, but the structure read has ${r.n} and ${N - r.n}, so they are not used. The labels shown are this version's.` };
+      return;
+    }
+    const diffs = [];
+    for (const m of Object.keys(K.labels)) {
+      const now = liveLabels(cs, m);
+      K.labels[m].forEach((t, i) => { if ((t || '') !== (now[i] || '')) diffs.push({ mode: m, atom: i, code: t, now: now[i] || '' }); });
+    }
+    cs.code = { labels: K.labels, angles: K.angles, app: K.app, diffs };
+    const by = K.app ? ` (written by version ${esc(K.app)})` : '';
+    const notes = K.notes.length ? ' ' + K.notes.map(esc).join(' ') : '';
+    if (!diffs.length) { cs.codeNote = { kind: 'info', html: `The labels are the molecule code's own${by}; they are the same as this version works out.${notes}` }; return; }
+    const say = t => (t ? `“${esc(t)}”` : 'none');
+    const shown = diffs.slice(0, 8).map(d => `${CODE_MODE_NAME[d.mode]} on ${esc(atomName(r, d.atom))}: code ${say(d.code)}, this version ${say(d.now)}`);
+    cs.codeNote = { kind: 'warn', html: `The labels are the molecule code's own${by}. ${diffs.length} of them differ from what this version works out, and the drawing shows the code's: ` +
+      shown.join('; ') + (diffs.length > 8 ? `; and ${diffs.length - 8} more` : '') + `. Hovering an atom shows this version's values.${notes}` };
+  }
   /* the 3D model the bond angles are measured on, when only the 2D drawing is shown: build it (once) and take its values */
   function modelFor2D(cs) {
     if (!cs || !cs.record) return;
@@ -1275,10 +1330,10 @@
   }
   function applyLabels2D() {
     if (!v2 || !v2info || !S.cs || !S.cs.record) return;
-    const r = S.cs.record;
-    v2.setElectrons(S.labels === 'electrons' ? lonePairCounts(r).slice(0, v2info.N) : null);
+    v2.setElectrons(S.labels === 'electrons' ? lonePairCounts(S.cs).slice(0, v2info.N) : null);
     if (S.labels === 'angles') {
       v2.setAnnotations(null);
+      if (S.cs.code && S.cs.code.angles) { v2.setAngleNotes(S.cs.code.angles.filter(x => x.a < v2info.N && x.i < v2info.N && x.j < v2info.N)); return; }
       modelFor2D(S.cs);
       const c = currentConf(S.cs);
       if (!c || !geometryOK(S.cs, c)) { v2.setAngleNotes(null); return; }
@@ -1288,15 +1343,12 @@
       return;
     }
     if (S.labels === 'none' || S.labels === 'electrons') { v2.setAnnotations(null); return; }
-    const all = S.labels === 'pka' ? pkaLabels(S.cs) : S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft' ? effectLabels(S.cs, S.labels) : MI.labelsFor(r, S.labels);
-    v2.setAnnotations(all.slice(0, v2info.N));
+    v2.setAnnotations(labelTexts(S.cs, S.labels).slice(0, v2info.N));
   }
   function applyLabels3D() {
     if (!v3 || v3cs !== S.cs || !S.cs) return;
-    const r = S.cs.record;
-    v3.setElectrons(S.labels === 'electrons' ? lonePairCounts(r) : null);
-    v3.setLabels(S.labels === 'none' || S.labels === 'electrons' || S.labels === 'angles' ? null : S.labels === 'pka' ? pkaLabels(S.cs)
-      : S.labels === 'steric' || S.labels === 'electronic' || S.labels === 'taft' ? effectLabels(S.cs, S.labels) : MI.labelsFor(r, S.labels));
+    v3.setElectrons(S.labels === 'electrons' ? lonePairCounts(S.cs) : null);
+    v3.setLabels(S.labels === 'none' || S.labels === 'electrons' || S.labels === 'angles' ? null : labelTexts(S.cs, S.labels));
   }
   function renderLabels() { applyLabels2D(); applyLabels3D(); applyMeasures(); renderFoot(); }
 
@@ -1733,6 +1785,7 @@
     const box = $('molBanners'), cs = S.cs, out = [];
     const add = (kind, html) => out.push(`<div class="mv-banner mv-${kind}">${html}</div>`);
     if (S.info) for (const n of S.info.notes) add(n.kind, n.html);
+    if (cs && cs.codeNote) add(cs.codeNote.kind, cs.codeNote.html);
     if (cs && cs.record) {
       if (S.comps.length > 1) add('info', `This input has ${S.comps.length} components (a salt or mixture); each is analysed on its own. Showing component ${cs.i + 1}: ${esc(cs.formula)}.` +
         (S.combined ? ` Whole input: ${esc(S.combined.formulaText || '')}, ${S.combined.mw.rounded.toFixed(2)} g/mol.` : '') +
@@ -2082,8 +2135,9 @@
   /* ================================================================ controls */
   function exportOptions() {
     const cs = S.cs, has3D = !!(cs && currentConf(cs));
-    if (S.view === '2d') return [['png2d', 'PNG image'], ['svg', 'SVG image'], ['mol2d', 'MOL file (2D)']];
-    return [['png3d', 'PNG image', has3D], ['mol3d', 'MOL file (3D, with H)', has3D], ['xyz', 'XYZ file', has3D], ['sdf', 'SDF (all conformers)', !!(cs && cs.b3d && cs.b3d.confs.some(c => c.source === 'OpenChemLib'))]];
+    const code = window.MolCode ? [['code', 'Molecule code (copy)', true], ['sdfcode', 'SDF with all labels', true]] : [];
+    if (S.view === '2d') return [['png2d', 'PNG image'], ['svg', 'SVG image'], ['mol2d', 'MOL file (2D)']].concat(code);
+    return [['png3d', 'PNG image', has3D], ['mol3d', 'MOL file (3D, with H)', has3D], ['xyz', 'XYZ file', has3D], ['sdf', 'SDF (all conformers)', !!(cs && cs.b3d && cs.b3d.confs.some(c => c.source === 'OpenChemLib'))]].concat(code);
   }
   function renderControls() {
     const cs = S.cs, is3 = S.view === '3d', B = cs && cs.b3d;
@@ -2232,8 +2286,51 @@
       } else if (fmt === 'sdf') {
         const confs = cs.b3d.confs.filter(x => x.source === 'OpenChemLib');
         download(base + '_conformers.sdf', new Blob([window.Mol3DEngine.sdf(cs.record, confs, titleOf(cs))], { type: 'chemical/x-mdl-sdfile' }));
+      } else if (fmt === 'sdfcode') {
+        const sdf = await codeRecord(cs);
+        if (sdf != null) download(base + '_labels.sdf', new Blob([sdf], { type: 'chemical/x-mdl-sdfile' }));
+      } else if (fmt === 'code') {
+        const sdf = await codeRecord(cs);
+        if (sdf != null) showCode(await window.MolCode.encode(sdf));
       }
     } catch (e) { addBanner3D(cs, 'error', 'Export failed: ' + esc(e.message || e)); renderBanners(); }
+  }
+
+  /* ---- the molecule code (js/mol_code.js): the 2D MOL block with every label mode's labels for every atom, and the bond
+     angles of the 3D model (built first if there is none yet: they are measured on it). A molecule read from a code
+     keeps the code's labels and angles, so a code made from a code says the same. → SDF text, or null when the
+     molecule shown changed meanwhile. */
+  async function codeRecord(cs) {
+    const r = cs.record, N = r.atoms.length, labels = {}, notes = [];
+    for (const m of window.MolCode.MODES) labels[m] = labelTexts(cs, m);
+    let angles = cs.code && cs.code.angles ? cs.code.angles : null;
+    if (!angles) {
+      modelFor2D(cs);
+      const B = cs.b3d, t0 = Date.now();
+      if (B && !B.done) setStatus('Building the 3D model for the bond angles…', true);
+      while (B && !B.done && !B.error && Date.now() - t0 < 60000) {
+        await new Promise(res => setTimeout(res, 200));
+        if (cs !== S.cs) return null;
+      }
+      restoreStatus();
+      const c = currentConf(cs);
+      if (c && geometryOK(cs, c)) {
+        angles = [];
+        for (const p of anglePairs(() => true)) { const text = angleText(c, p.i, p.a, p.j); if (text) angles.push({ a: p.a, i: p.i, j: p.j, text }); }
+      } else notes.push('No bond angles: ' + (B && B.error ? 'the 3D model could not be built.' : B && !B.done ? 'the 3D model was still being built.' : 'there is no optimised 3D model.'));
+    }
+    const V = window.APP_VERSION;
+    return window.MolCode.build({ molblock: cs.mb2d, title: titleOf(cs), app: V ? `${V.version} (${V.date})` : '', nHeavy: r.n, nH: N - r.n, labels, angles, notes });
+  }
+  /* the code copied, and shown in a box where it can be selected by hand (a page without clipboard access) */
+  function showCode(code) {
+    const box = $('molResolved');
+    box.innerHTML = '<span class="mv-via">Molecule code</span> <input class="mv-code" readonly spellcheck="false"> <span class="mv-dim"></span>';
+    const inp = box.querySelector('.mv-code'), msg = box.querySelector('.mv-dim');
+    inp.value = code;
+    inp.addEventListener('focus', () => inp.select());
+    msg.textContent = `${code.length} characters — paste it into the molecule box to show this molecule with its labels`;
+    copyText(code, () => { msg.textContent = `copied (${code.length} characters) — paste it into the molecule box to show this molecule with its labels`; });
   }
 
   /* ================================================================ wiring */
@@ -2261,6 +2358,7 @@
   // as it is and read it as a MOL file (placeholder and error texts no longer promise typed MOL text)
   input.addEventListener('paste', e => {
     const t = e.clipboardData && e.clipboardData.getData('text');
+    if (t && window.MolCode && window.MolCode.isCode(t)) { e.preventDefault(); input.value = t.trim(); submit(t.trim()); return; }
     if (!t || !/[\r\n]/.test(t.trim()) || !C.looksLikeMolfile(t)) return;
     e.preventDefault();
     input.value = '';

@@ -981,6 +981,57 @@
     F028: { kind: 'acid', smarts: '[c:1][OX2H1]', pKa0: 9.99, rho: 2.23, para: 'sigma-', name: 'phenol' },
     F001: { kind: 'acid', smarts: '[c:1][CX3](=O)[OX2H1]', pKa0: 4.20, rho: 1.00, para: 'sigma', name: 'benzoic acid' },
     F026: { kind: 'base', smarts: '[c:1][NX3;H2;+0]', pKa0: 4.60, rho: 2.89, para: 'sigma-', name: 'anilinium' } };
+  /* where a fragment's typical value is not the value of the site it marks (tools/pka.py SITE_RULES is the same):
+       - the catch-all α-C–H fragment (F101, 17) yields to the specific one on the same carbon: ketone 19, aryl ketone
+         18.3, ester 25, nitrile 25, sulfone 29 (aldehyde 17). The specific ones above 20 never mark a site themselves;
+         they only give the value of a carbon a fragment of 20 or below marked.
+       - only these fragments mark a CARBON (an α-C–H); every other fragment's acidic H is on its O, N or S, so a
+         fragment with no such H (a silyl ether, an organic azide, a pinacol boronate, a Weinreb amide) marks nothing.
+       - the H of F136 is the acid's O–H (trifluoroacetic acid 0.5), not a trifluoroacetamide's N–H (about 12).
+       - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9–13 (acetylacetone 8.9, ethyl
+         acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N–H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4),
+         an alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol).
+       - no site: F196 / F204 (imines, pKa 11 for an oxime's O–H) match only the C=N, so their 11 landed on the N–H of
+         a C=NH (guanidine, amidine), which is no acid; the oxime O–H is F049's.
+       - a basic N: the catch-all amine fragments yield to the aryl-amine ones on the same N. The primary amine F002
+         (10.7) also matches an aryl NH2, and the tertiary amine F093 (10.0) an N,N-dialkylaniline; a basic site took
+         the most basic of its fragments, so 2,6-dibromoaniline showed 10.7 (measured 0.17) and 4-nitro-N,N-
+         dimethylaniline 10 (measured 0.64). With an aniline fragment (F026 4.6, aminoazine F115 / F183 6.9,
+         2-aminoazole F182 5.4; N,N-dialkylaniline F180 5.1) on the N, the catch-all one gives no value.
+       - extra: groups no fragment of the sheet describes as an acid or base site: values from the
+         IUPAC measured data for molecules where the group is the only ionisable site (median) or, where there are
+         too few, the textbook value — acyclic C–H between two C=O / C≡N 11 (acetylacetone 8.9, ethyl 2-methyl-
+         acetoacetate about 11); the same C–H in a 5- or 6-ring with both C=O (1,3-cyclohexanedione 5.3,
+         2-methylindandione 6.15, barbituric acid 4.0, phenylbutazone 4.5) 5; acyl sulfonamide N–H 4.5 (saccharin
+         1.3); xanthic acid S–H 2.0 (13 measured, median 2.05); dithiocarbamic 4.0; dithiocarboxylic 2.5; thioic
+         S-acid 3.5 (thioacetic acid 3.62); gem-dinitro C–H 3.8 (46 measured, median 3.8); HC(NO2)3 0.1 (0.12);
+         guanidine pKaH 13.6 (7 measured, median 13.6), N-aryl guanidine 10.8 (phenylguanidine 10.77); amidine pKaH 11.5 (16 measured, median 11.4; N-aryl, N-acyl,
+         N–N and N–O ones left to the imine value; guanidines likewise for N-acyl, N–N and N–O). Each marks its first atom; the id is its name. */
+  const SITE_RULES = {
+    generic: new Set(['F101']),
+    alpha: new Set(['F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
+    carbon: new Set(['F018', 'F019', 'F056', 'F101', 'F102', 'F116', 'F125', 'F071', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
+    oxygen: new Set(['F136']),
+    noSite: new Set(['F052', 'F196', 'F204']),
+    value: { F102: 11, F090: 11 },
+    alkylThiol: { F072: 10.5 },
+    baseYield: { F002: ['F026', 'F115', 'F182', 'F183'], F093: ['F180'] },
+    extra: [
+      { kind: 'acid', id: "active methine C–H (CH between two C=O / C≡N)", smarts: "[CX4;H1](-[$([CX3]=[OX1]),$([CX2]#[NX1])])-[$([CX3]=[OX1]),$([CX2]#[NX1])]", value: 11 },
+      { kind: 'acid', id: "ring 1,3-dicarbonyl C–H (1,3-cyclohexanedione, indandione, barbituric acid)", smarts: "[CX4;!H0]1-[CX3](=[OX1])~*~*-[CX3]1=[OX1]", value: 5 },
+      { kind: 'acid', id: "ring 1,3-dicarbonyl C–H (1,3-cyclohexanedione, indandione, barbituric acid)", smarts: "[CX4;!H0]1-[CX3](=[OX1])~*~*~*-[CX3]1=[OX1]", value: 5 },
+      { kind: 'acid', id: "acyl sulfonamide N–H (C(=O)–NH–SO2)", smarts: "[NX3;H1;+0](-[CX3]=[OX1])-[SX4](=[OX1])(=[OX1])", value: 4.5 },
+      { kind: 'acid', id: "xanthic acid S–H (RO–C(=S)–SH)", smarts: "[SX2H1]-[CX3](=[SX1])-[OX2]", value: 2.0 },
+      { kind: 'acid', id: "dithiocarbamic acid S–H (R2N–C(=S)–SH)", smarts: "[SX2H1]-[CX3](=[SX1])-[NX3]", value: 4.0 },
+      { kind: 'acid', id: "dithiocarboxylic acid S–H (R–C(=S)–SH)", smarts: "[SX2H1]-[CX3](=[SX1])-[#6]", value: 2.5 },
+      { kind: 'acid', id: "thioic S-acid S–H (R–C(=O)–SH)", smarts: "[SX2H1]-[CX3]=[OX1]", value: 3.5 },
+      { kind: 'acid', id: "gem-dinitro C–H (C(NO2)2)", smarts: "[CX4;H1,H2;!$(C([N+](=O)[O-])([N+](=O)[O-])[N+](=O)[O-])]([N+](=O)[O-])[N+](=O)[O-]", value: 3.8 },
+      { kind: 'acid', id: "trinitromethyl C–H (HC(NO2)3)", smarts: "[CX4;H1]([N+](=O)[O-])([N+](=O)[O-])[N+](=O)[O-]", value: 0.1 },
+      { kind: 'base', id: "guanidine (substituted or not)", smarts: "[NX2;!a;!$(N-[#7,#8]);!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a)]=[CX3;!a](-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a);!$(N-[#7,#8])])-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a);!$(N-[#7,#8])]", value: 13.6 },
+      { kind: 'base', id: "N-aryl guanidine", smarts: "[NX2;!a;!$(N-[#7,#8]);!$(N-C=[O,S]);!$(N-S(=O)=O)]=[CX3;!a;$(C~[#7]-a),$(C=[#7]-a)](-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-[#7,#8])])-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-[#7,#8])]", value: 10.8 },
+      { kind: 'base', id: "amidine (substituted or not)", smarts: "[NX2;!a;!$(N-[#7,#8]);!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a)]=[CX3;!a](-[#6,#1])-[NX3;!$(N-C=[O,S]);!$(N-S(=O)=O);!$(N-a);!$(N-[#7,#8])]", value: 11.5 }
+    ] };
+  const extraValue = Object.fromEntries(SITE_RULES.extra.map(x => [x.id, x.value]));
   const pkaQ = {}, pkaCache = new Map();
   const qmolOf = (R, sm) => { if (!(sm in pkaQ)) { try { pkaQ[sm] = R.get_qmol(sm); } catch (e) { pkaQ[sm] = null; } } return pkaQ[sm]; };
   const EL = { 1: 'H', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 15: 'P', 16: 'S', 17: 'Cl', 35: 'Br', 53: 'I' };
@@ -1006,20 +1057,51 @@
       const ringCount = new Map(); rings.forEach(r => r.forEach(i => ringCount.set(i, (ringCount.get(i) || 0) + 1)));
       const F = (window.REACTION_RULES || {}).fragments || {};
       const sites = { acid: new Map(), base: new Map() };
+      const SR = SITE_RULES, acidVal = {};             // per site atom: {fragment: its value there}
       for (const [fid, f] of Object.entries(F)) {
-        if (!(f.pKa != null && f.pKa <= 20) && !(f.pKaH != null && f.pKaH >= 0)) continue;
+        const marks = f.pKa != null && f.pKa <= 20 && !SR.noSite.has(fid), names = f.pKa != null && f.pKa > 20 && SR.alpha.has(fid);
+        if (!marks && !names && !(f.pKaH != null && f.pKaH >= 0)) continue;
         const q = qmolOf(R, f.smarts); if (!q) continue;
         for (const mt of matchesOf(m, q)) {
-          if (f.pKa != null && f.pKa <= 20) {
-            const het = mt.atoms.filter(i => ['O', 'N', 'S'].includes(atoms[i].el) && atoms[i].h > 0), car = mt.atoms.filter(i => atoms[i].el === 'C' && atoms[i].h > 0 && !atoms[i].multi && !aromatic.has(i));   // sp3 C: the alpha C, not a formyl C-H
-            const site = het.length ? het[0] : car.length ? car[0] : null;
-            if (site != null) { const s_ = sites.acid.get(site) || { atom: site, fragments: [], typical: f.pKa }; s_.fragments.push(fid); s_.typical = Math.min(s_.typical, f.pKa); sites.acid.set(site, s_); }
+          if (marks || names) {
+            const het = mt.atoms.filter(i => (SR.oxygen.has(fid) ? ['O'] : ['O', 'N', 'S']).includes(atoms[i].el) && atoms[i].h > 0);
+            const car = SR.carbon.has(fid) ? mt.atoms.filter(i => atoms[i].el === 'C' && atoms[i].h > 0 && !atoms[i].multi && !aromatic.has(i)) : [];   // sp3 C: the alpha C, not a formyl C-H
+            let val = SR.value[fid] != null ? SR.value[fid] : f.pKa;
+            if (marks) {
+              const site = het.length ? het[0] : car.length ? car[0] : null;
+              if (site == null) continue;
+              if (SR.alkylThiol[fid] != null && atoms[site].el === 'S' && !atoms[site].nb.some(j => aromatic.has(j))) val = SR.alkylThiol[fid];
+              const s_ = sites.acid.get(site) || { atom: site, fragments: [], typical: val }; s_.fragments.push(fid); sites.acid.set(site, s_);
+              (acidVal[site] = acidVal[site] || {})[fid] = Math.min(val, (acidVal[site] || {})[fid] ?? Infinity);
+            } else for (const c of car) (acidVal[c] = acidVal[c] || {})[fid] = val;   // a value for a carbon another fragment marks
           }
           if (f.pKaH != null && f.pKaH >= 0) {
             const ns = mt.atoms.filter(i => atoms[i].el === 'N' && atoms[i].chg === 0);
             if (ns.length) { const s_ = sites.base.get(ns[0]) || { atom: ns[0], fragments: [], typical: f.pKaH }; s_.fragments.push(fid); s_.typical = Math.max(s_.typical, f.pKaH); sites.base.set(ns[0], s_); }
           }
         }
+      }
+      for (const x of SR.extra) {                       // the site rules for groups no fragment describes
+        for (const mt of matchesOf(m, qmolOf(R, x.smarts))) {
+          const site = mt.atoms[0];
+          if (x.kind === 'base' && atoms[site].chg !== 0) continue;
+          const s_ = sites[x.kind].get(site) || { atom: site, fragments: [], typical: x.value };
+          s_.fragments.push(x.id); sites[x.kind].set(site, s_);
+          if (x.kind === 'acid') (acidVal[site] = acidVal[site] || {})[x.id] = x.value;
+        }
+      }
+      // each acid site's typical value: the most acidic of its fragments, the catch-all α-C–H one only when no specific one is there
+      for (const s_ of sites.acid.values()) {
+        const v = acidVal[s_.atom] || {}, ids = Object.keys(v), own = ids.filter(id => !SR.generic.has(id));
+        const use = own.some(id => SR.alpha.has(id)) ? own : ids;
+        s_.typical = Math.min(...use.map(id => v[id]));
+        s_.fragments = [...new Set(s_.fragments.concat(use))];   // the catch-all one stays listed: a rule that names it still finds the site
+      }
+      // each base site's typical value: the most basic of its fragments, a catch-all amine one only when no aryl-amine one is there
+      for (const s_ of sites.base.values()) {
+        const ids = [...new Set(s_.fragments)];
+        const use = ids.filter(id => !(SR.baseYield[id] || []).some(sp => ids.includes(sp)));
+        s_.typical = Math.max(...use.map(id => (id in extraValue ? extraValue[id] : F[id].pKaH)));
       }
       const hammett = fid => {                           // [{value|null, text, siteAtom}] per occurrence of the fragment's site
         const h = HAMMETT[fid], res = [];
@@ -1096,10 +1178,11 @@
       const M = ((window.PKA_MEASURED || {}).molecules || {})[key];
       // an aldehyde/ketone measured in water is partly hydrated: with no O-H/N-H/S-H of its own, a measured acid value
       // below 15 is the hydrate's O-H (acetaldehyde 13.57); it goes on the carbonyl O (tools/pka.py does the same)
+      // (not when a carbon of its own is that acidic: a 1,3-dicarbonyl's value is its CH2, acetylacetone 8.94)
       const measAcid = M ? (M.acid || []).slice() : [];
       let hydrate = null;
       const co = matchesOf(m, qmolOf(R, '[CX3;$([CH1](=O)[#6]),$([CH2]=O),$(C(=O)([#6])[#6])]=[OX1]'));
-      if (co.length && measAcid.length && Math.min(...measAcid) < 15 && !out.acid.some(x => ['O', 'N', 'S'].includes(atoms[x.atom].el))) {
+      if (co.length && measAcid.length && Math.min(...measAcid) < 15 && !out.acid.some(x => ['O', 'N', 'S'].includes(atoms[x.atom].el) || x.pKa < 15)) {
         const v = Math.min(...measAcid); measAcid.splice(measAcid.indexOf(v), 1);
         hydrate = { atom: co[0].atoms[1], atoms: [co[0].atoms[1]], fragments: [atoms[co[0].atoms[0]].h > 0 ? 'F018' : 'F019'], typical: v, pKa: v,
           source: 'measured (IUPAC Digitized pKa Dataset) in water, where the C=O is partly hydrated: the O–H of the hydrate R2C(OH)2' };

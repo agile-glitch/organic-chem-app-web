@@ -246,10 +246,25 @@ const check = (name, ok, detail) => { n++; if (!ok) { fails++; console.log('FAIL
   const svg = page.locator('.dr-scroll svg'), o = await svg.boundingBox();
   const at = (x, y) => [o.x + x, o.y + y];
   const drag = async (x1, y1, x2, y2) => { await page.mouse.move(...at(x1, y1)); await page.mouse.down(); await page.mouse.move(...at((x1 + x2) / 2, (y1 + y2) / 2), { steps: 3 }); await page.mouse.move(...at(x2, y2), { steps: 3 }); await page.mouse.up(); };
-  await page.locator('.dr-bar button', { hasText: '↷' }).click(); await drag(100, 200, 260, 200);
-  await page.locator('.dr-bar button', { hasText: '⇀' }).click(); await drag(100, 340, 260, 340);
-  const made = await page.evaluate(() => window.Draw.items.map(i => ({ kind: i.kind, bent: i.bent(), head: i.g.querySelectorAll('polygon').length, barb: i.g.querySelectorAll('line').length })));
-  check('toolbar draws a curved arrow (one full head) and a fishhook (one barb), both already bent', made.length === 2 && made[0].kind === 'curved' && made[0].bent && made[0].head === 1 && made[1].kind === 'fishhook' && made[1].bent && made[1].barb === 1 && made[1].head === 0, made);
+  check('no curved-arrow tool in the toolbar (the mechanisms still draw curved arrows)', await page.locator('.dr-bar button', { hasText: '↷' }).count() === 0);
+  // each toolbar arrow is drawn straight and shows its three circles; the tool stays, and its circles still work
+  for (const [k, sym, y] of [['forward', '→', 120], ['equilibrium', '⇌', 220], ['resonance', '↔', 320], ['fishhook', '⇀', 420]]) {
+    await page.locator('.dr-bar button', { hasText: new RegExp('^' + sym + '$') }).click(); await drag(100, y, 260, y);
+    const st = await page.evaluate(() => { const a = window.Draw.items[window.Draw.items.length - 1]; return { kind: a.kind, bent: a.bent(), circles: a.g.querySelectorAll('circle').length, sel: window.Draw.selection.length }; });
+    check(`${k}: drawn straight, selected, three circles`, st.kind === k && !st.bent && st.circles === 3 && st.sel === 1, st);
+    await drag(260, y, 320, y);
+    const len = await page.evaluate(() => { const a = window.Draw.items[window.Draw.items.length - 1]; return Math.round(a.p2.x - a.p1.x); });
+    check(`${k}: dragging the end circle (tool still on) stretches it`, Math.abs(len - 220) < 4 && await page.evaluate(n => window.Draw.items.length === n, [120, 220, 320, 420].indexOf(y) + 1), len);
+    const hm = await page.evaluate(() => window.Draw.items[window.Draw.items.length - 1].handle());
+    await drag(hm.x, hm.y, hm.x, hm.y - 40);
+    check(`${k}: dragging the middle circle bends it`, await page.evaluate(() => window.Draw.items[window.Draw.items.length - 1].bent()));
+  }
+  const fish = await page.evaluate(() => { const a = window.Draw.items[3]; return { head: a.g.querySelectorAll('polygon').length, barb: a.g.querySelectorAll('line').length }; });
+  check('the half-head arrow has one barb, no full head', fish.head === 0 && fish.barb === 1, fish);
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => window.Draw.clearAll());
+  await page.evaluate(() => { const D = window.Draw, a = new D.ArrowItem('curved', { x: 100, y: 200 }, { x: 260, y: 200 }); D.addItem(a); a.autoBend();
+    const f = new D.ArrowItem('fishhook', { x: 100, y: 340 }, { x: 260, y: 340 }); D.addItem(f); f.bend = { x: 0, y: -48 }; f.render(); });
   await page.keyboard.press('Escape');
   const h = await page.evaluate(() => window.Draw.items[0].handle());
   await page.mouse.click(...at(h.x, h.y));

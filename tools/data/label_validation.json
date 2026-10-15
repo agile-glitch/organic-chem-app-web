@@ -1,0 +1,2463 @@
+{
+ "dump": "data/label_dump.json",
+ "display": {
+  "modes": {
+   "index": {
+    "molecules": 181,
+    "drawn": 1908,
+    "left_out": 6,
+    "ambiguous": 0,
+    "in_ring": 6,
+    "far": 0,
+    "edge_ambiguous": 5,
+    "molecules_with_left_out": 5
+   },
+   "cip": {
+    "molecules": 181,
+    "drawn": 43,
+    "left_out": 0,
+    "ambiguous": 0,
+    "in_ring": 0,
+    "far": 0,
+    "edge_ambiguous": 0
+   },
+   "hybridization": {
+    "molecules": 181,
+    "drawn": 1906,
+    "left_out": 8,
+    "ambiguous": 0,
+    "in_ring": 66,
+    "far": 0,
+    "edge_ambiguous": 11,
+    "molecules_with_left_out": 7
+   },
+   "formal": {
+    "molecules": 181,
+    "drawn": 53,
+    "left_out": 0,
+    "ambiguous": 0,
+    "in_ring": 0,
+    "far": 0,
+    "edge_ambiguous": 0
+   },
+   "partial": {
+    "molecules": 181,
+    "drawn": 1888,
+    "left_out": 11,
+    "ambiguous": 2,
+    "in_ring": 46,
+    "far": 0,
+    "edge_ambiguous": 6,
+    "molecules_with_left_out": 8
+   },
+   "oxidation": {
+    "molecules": 181,
+    "drawn": 1906,
+    "left_out": 8,
+    "ambiguous": 0,
+    "in_ring": 7,
+    "far": 0,
+    "edge_ambiguous": 3,
+    "molecules_with_left_out": 7
+   },
+   "lonepairs": {
+    "molecules": 181,
+    "drawn": 1910,
+    "left_out": 4,
+    "ambiguous": 1,
+    "in_ring": 2,
+    "far": 0,
+    "edge_ambiguous": 4,
+    "molecules_with_left_out": 4
+   },
+   "pka": {
+    "molecules": 181,
+    "drawn": 327,
+    "left_out": 2,
+    "ambiguous": 10,
+    "in_ring": 0,
+    "far": 29,
+    "edge_ambiguous": 0,
+    "molecules_with_left_out": 2
+   },
+   "steric": {
+    "molecules": 181,
+    "drawn": 498,
+    "left_out": 83,
+    "ambiguous": 81,
+    "in_ring": 15,
+    "far": 158,
+    "edge_ambiguous": 1,
+    "molecules_with_left_out": 65
+   },
+   "electronic": {
+    "molecules": 181,
+    "drawn": 524,
+    "left_out": 57,
+    "ambiguous": 43,
+    "in_ring": 11,
+    "far": 68,
+    "edge_ambiguous": 1,
+    "molecules_with_left_out": 39
+   },
+   "taft": {
+    "molecules": 181,
+    "drawn": 277,
+    "left_out": 49,
+    "ambiguous": 47,
+    "in_ring": 13,
+    "far": 38,
+    "edge_ambiguous": 1,
+    "molecules_with_left_out": 42
+   }
+  },
+  "ambiguous_examples": {
+   "taft": [
+    "CC(=O)O: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "CC(N)=O: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "C[N+](=O)[O-]: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.99 vs 0.9 bond lengths)",
+    "CC(=O)[O-]: '+0.00/+0.00' for atom 1 sits nearer atom 0 (0.92 vs 0.74 bond lengths)",
+    "CC(=O)Oc1ccccc1C(=O)O: '+0.00/+0.00' for atom 1 sits nearer atom 3 (0.92 vs 0.91 bond lengths)",
+    "OC(=O)C(F)(F)F: '+2.61/−1.16' for atom 1 sits nearer atom 0 (0.83 vs 0.72 bond lengths)"
+   ],
+   "steric": [
+    "CC(=O)Oc1ccccc1C(=O)O: 'moderately hindered' for atom 10 sits nearer atom 8 (1.36 vs 0.83 bond lengths)",
+    "C[C@@H](C(=O)O)N: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
+    "C([C@@H](C(=O)O)N)S: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
+    "C[C@@H](C(=O)O)O: 'hindered' for atom 2 sits nearer atom 4 (0.71 vs 0.71 bond lengths)",
+    "OC(=O)C(F)(F)F: 'very hindered' for atom 1 sits nearer atom 0 (0.98 vs 0.76 bond lengths)",
+    "CC(=O)OCC: 'moderately hindered' for atom 1 sits nearer atom 0 (1.36 vs 0.74 bond lengths)"
+   ],
+   "electronic": [
+    "CC(=O)Oc1ccccc1C(=O)O: 'δ +0.34 Σσ +0.00' for atom 10 sits nearer atom 8 (1.19 vs 0.87 bond lengths)",
+    "OC(=O)c1ccccc1: 'δ +0.34 Σσ +0.00' for atom 1 sits nearer atom 0 (1.19 vs 1.07 bond lengths)",
+    "CC(=O)c1ccccc1: 'δ +0.16 Σσ +0.00' for atom 1 sits nearer atom 0 (1.16 vs 1.05 bond lengths)",
+    "O=C1NS(=O)(=O)c2ccccc21: 'δ +0.27 Σσ +0.00' for atom 1 sits nearer atom 0 (1.12 vs 0.59 bond lengths)",
+    "Cc1cnc2c(O)cccc2c1C: 'δ −0.04' for atom 11 sits nearer atom 10 (0.83 vs 0.72 bond lengths)",
+    "Cc1ccc2nc(Cc3ccccc3)[nH]c2c1: 'δ −0.04 Σσ +0.00' for atom 8 sits nearer atom 13 (1.09 vs 0.8 bond lengths)"
+   ],
+   "partial": [
+    "O=C1NS(=O)(=O)c2ccccc21: '+0.26' for atom 3 sits nearer atom 6 (0.8 vs 0.67 bond lengths)",
+    "CCCCC[PH](=O)O: '+0.19' for atom 5 sits nearer atom 4 (0.92 vs 0.89 bond lengths)"
+   ],
+   "pka": [
+    "CN1CCC(c2ccccc2)(c2ccccc2)CC1: 'pKaH 8.65' for atom 1 sits nearer atom 0 (0.87 vs 0.5 bond lengths)",
+    "c1ccc(CCN2CCCC2)nc1: 'pKaH 9.39' for atom 6 sits nearer atom 5 (0.87 vs 0.5 bond lengths)",
+    "CC(CC(c1ccccc1)c1ccccc1)N1CCOCC1: 'pKaH 6.85' for atom 16 sits nearer atom 21 (0.7 vs 0.55 bond lengths)",
+    "CN1c2ccccc2C(O)(c2ccccc2)c2ccccc21: 'pKaH 9.58' for atom 1 sits nearer atom 0 (0.87 vs 0.5 bond lengths)",
+    "CN1CCOC(CCN(Cc2ccccc2)c2ccccc2)C1: 'pKaH 1.22' for atom 8 sits nearer atom 9 (1.22 vs 1.13 bond lengths)",
+    "C=C1CCN(C)C(C)C1: 'pKaH 9.25' for atom 4 sits nearer atom 5 (0.87 vs 0.5 bond lengths)"
+   ],
+   "lonepairs": [
+    "CC[As](=O)(CC)c1ccccc1[N+](=O)[O-]: '0' for atom 2 sits nearer atom 4 (0.6 vs 0.57 bond lengths)"
+   ]
+  },
+  "angles": {
+   "molecules": 40,
+   "angles": 218,
+   "median": 0.0,
+   "p95": 2.35,
+   "max": 4.35,
+   "over_3": 8,
+   "over_5": 0,
+   "worst": [
+    {
+     "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+     "atoms": [
+      10,
+      9,
+      4
+     ],
+     "app": 120.8,
+     "rdkit": 125.1
+    },
+    {
+     "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+     "atoms": [
+      8,
+      9,
+      10
+     ],
+     "app": 120.8,
+     "rdkit": 116.6
+    },
+    {
+     "smiles": "CC(=O)c1ccccc1",
+     "atoms": [
+      1,
+      3,
+      4
+     ],
+     "app": 118.4,
+     "rdkit": 122.3
+    },
+    {
+     "smiles": "CC(=O)c1ccccc1",
+     "atoms": [
+      1,
+      3,
+      8
+     ],
+     "app": 122.3,
+     "rdkit": 118.4
+    },
+    {
+     "smiles": "Oc1ccc([N+](=O)[O-])cc1",
+     "atoms": [
+      0,
+      1,
+      9
+     ],
+     "app": 117.5,
+     "rdkit": 121.4
+    },
+    {
+     "smiles": "Oc1ccc([N+](=O)[O-])cc1",
+     "atoms": [
+      0,
+      1,
+      2
+     ],
+     "app": 121.3,
+     "rdkit": 117.5
+    },
+    {
+     "smiles": "Oc1ccccc1",
+     "atoms": [
+      0,
+      1,
+      6
+     ],
+     "app": 117.8,
+     "rdkit": 121.4
+    },
+    {
+     "smiles": "Oc1ccccc1",
+     "atoms": [
+      0,
+      1,
+      2
+     ],
+     "app": 121.4,
+     "rdkit": 117.8
+    }
+   ]
+  }
+ },
+ "analysed": 8941,
+ "not_analysed": 0,
+ "not_analysed_examples": [],
+ "checks": {
+  "formal": {
+   "name": "formal",
+   "what": "formal charge vs RDKit Python",
+   "checked": 116344,
+   "agree": 116344,
+   "disagreements": {}
+  },
+  "lonepairs": {
+   "name": "lonepairs",
+   "what": "lone pairs vs the electron count",
+   "checked": 116344,
+   "agree": 116335,
+   "disagreements": {
+    "unusual electron count": {
+     "count": 9,
+     "examples": [
+      "CCN(CC)c1ccc2nc3cc(C)c(N)cc3[o+]c2c1.CCN(CC)c1ccc2nc3cc(C)c(N)cc3[o+]c2c1.[Cl-].[Cl-].[Cl-].[Cl-].[Zn+2] atom 46 (Zn): app None, count 0",
+      "CN(C)c1ccc(/N=N/c2ccc(S(=O)(=O)[O-])cc2)cc1.[Na+] atom 21 (Na): app None, count 0",
+      "O=S(=O)(O)c1ccc(N=Nc2ccc(Nc3ccccc3)cc2)cc1.[Na] atom 25 (Na): app None, count 0",
+      "O=S(=O)([O-])c1cccc(N=Nc2ccc(Nc3ccccc3)cc2)c1.[Na+] atom 25 (Na): app None, count 0",
+      "Cc1c(C2(c3cc(C(C)C)c(O)c(CN(CC(=O)[O-])CC(=O)[O-])c3C)OS(=O)(=O)c3ccccc32)cc(C(C)C)c(O)c1CN(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Na+].[Na+] atom 53 (Na): app None, count 0",
+      "Cc1c(C2(c3cc(C(C)C)c(O)c(CN(CC(=O)[O-])CC(=O)[O-])c3C)OS(=O)(=O)c3ccccc32)cc(C(C)C)c(O)c1CN(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Na+].[Na+] atom 54 (Na): app None, count 0",
+      "Cc1c(C2(c3cc(C(C)C)c(O)c(CN(CC(=O)[O-])CC(=O)[O-])c3C)OS(=O)(=O)c3ccccc32)cc(C(C)C)c(O)c1CN(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Na+].[Na+] atom 55 (Na): app None, count 0",
+      "Cc1c(C2(c3cc(C(C)C)c(O)c(CN(CC(=O)[O-])CC(=O)[O-])c3C)OS(=O)(=O)c3ccccc32)cc(C(C)C)c(O)c1CN(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Na+].[Na+] atom 56 (Na): app None, count 0"
+     ]
+    }
+   }
+  },
+  "oxidation": {
+   "name": "oxidation",
+   "what": "oxidation state vs RDKit CalcOxidationNumbers (atoms whose value does not depend on the Kekulé structure)",
+   "checked": 96173,
+   "agree": 96173,
+   "disagreements": {}
+  },
+  "oxidation_kekule": {
+   "name": "oxidation_kekule",
+   "what": "oxidation state, atoms whose value depends on the Kekulé structure (the app averages; RDKit takes one structure)",
+   "checked": 20171,
+   "agree": 14595,
+   "disagreements": {
+    "C(arom) 3 σ-bonds, next to a π bond": {
+     "count": 5432,
+     "examples": [
+      "c1ccncc1 atom 2 (C): app 0.5, RDKit 1",
+      "c1ccncc1 atom 4 (C): app 0.5, RDKit 0",
+      "Nc1ccc(S(=O)(=O)Nc2ccccn2)cc1 atom 9 (C): app 2.5, RDKit 2",
+      "Nc1ccc(S(=O)(=O)Nc2ccccn2)cc1 atom 13 (C): app 0.5, RDKit 1",
+      "c1cncc([C@@H]2CCCCN2)c1 atom 1 (C): app 0.5, RDKit 0",
+      "c1cncc([C@@H]2CCCCN2)c1 atom 3 (C): app 0.5, RDKit 1",
+      "CC(=O)Nc1ccccn1 atom 4 (C): app 2.5, RDKit 2",
+      "CC(=O)Nc1ccccn1 atom 8 (C): app 0.5, RDKit 1"
+     ]
+    },
+    "N(arom) 2 σ-bonds, next to a π bond": {
+     "count": 144,
+     "examples": [
+      "c1ccnnc1 atom 3 (N): app -1.5, RDKit -2",
+      "c1ccnnc1 atom 4 (N): app -1.5, RDKit -2",
+      "Nc1cccnn1 atom 5 (N): app -1.5, RDKit -1",
+      "Nc1cccnn1 atom 6 (N): app -1.5, RDKit -1",
+      "Nc1ccnnc1 atom 4 (N): app -1.5, RDKit -1",
+      "Nc1ccnnc1 atom 5 (N): app -1.5, RDKit -1",
+      "Cc1ccc(N)nn1 atom 6 (N): app -1.5, RDKit -2",
+      "Cc1ccc(N)nn1 atom 7 (N): app -1.5, RDKit -2"
+     ]
+    }
+   }
+  },
+  "partial": {
+   "name": "partial",
+   "what": "Gasteiger-Marsili charge vs RDKit Python (difference below 0.005; the label shows 2 decimals)",
+   "checked": 115096,
+   "agree": 115096,
+   "disagreements": {}
+  },
+  "hybridization": {
+   "name": "hybridization",
+   "what": "displayed hybridization vs the textbook steric-number rule",
+   "checked": 114277,
+   "agree": 113751,
+   "disagreements": {
+    "S 2 σ-bonds, next to a π bond: app sp3, rule sp2": {
+     "count": 405,
+     "examples": [
+      "Sc1ccccc1 atom 0 (S)",
+      "CC(=O)S atom 3 (S)",
+      "Nc1ccccc1S atom 7 (S)",
+      "CSc1cccc(N)c1 atom 1 (S)",
+      "CSc1ccc(N)cc1 atom 1 (S)",
+      "Sc1ccccn1 atom 0 (S)",
+      "Sc1cccnc1 atom 0 (S)",
+      "Sc1ccncc1 atom 0 (S)"
+     ]
+    },
+    "N 3 σ-bonds: app sp2, rule sp3": {
+     "count": 65,
+     "examples": [
+      "CC(N)=S atom 2 (N)",
+      "NC(N)=S atom 0 (N)",
+      "NC(N)=S atom 2 (N)",
+      "NC(=S)S atom 0 (N)",
+      "NNC(N)=S atom 1 (N)",
+      "NNC(N)=S atom 3 (N)",
+      "NC(=S)C(N)=S atom 0 (N)",
+      "NC(=S)C(N)=S atom 4 (N)"
+     ]
+    },
+    "Se 2 σ-bonds, next to a π bond: app sp3, rule sp2": {
+     "count": 21,
+     "examples": [
+      "C[Se]c1cccc2cccnc12 atom 1 (Se)",
+      "[SeH]c1cccc2cccnc12 atom 0 (Se)",
+      "O=C(O)C[Se]c1ccccc1 atom 4 (Se)",
+      "O=C(O)C[Se]c1ccccc1Cl atom 4 (Se)",
+      "O=C(O)C[Se]c1cccc(Cl)c1 atom 4 (Se)",
+      "O=C(O)C[Se]c1ccc(Cl)cc1 atom 4 (Se)",
+      "O=C(O)C[Se]c1ccccc1Br atom 4 (Se)",
+      "O=C(O)C[Se]c1ccc(Br)cc1 atom 4 (Se)"
+     ]
+    },
+    "O 2 σ-bonds: app sp2, rule sp3": {
+     "count": 16,
+     "examples": [
+      "COC(=S)S atom 1 (O)",
+      "C=CCOC(=S)S atom 3 (O)",
+      "CC(C)OC(=S)S atom 3 (O)",
+      "CCCOC(=S)S atom 3 (O)",
+      "CCOC(=S)SCC(=O)O atom 2 (O)",
+      "CCCCOC(=S)S atom 4 (O)",
+      "CCC(C)OC(=S)S atom 4 (O)",
+      "CC(C)COC(=S)S atom 4 (O)"
+     ]
+    },
+    "P 3 σ-bonds, next to a π bond: app sp3, rule sp2": {
+     "count": 8,
+     "examples": [
+      "OP(O)c1cccc(Cl)c1 atom 1 (P)",
+      "OP(O)c1ccc(Cl)cc1 atom 1 (P)",
+      "OP(O)c1cccc(Br)c1 atom 1 (P)",
+      "O=C(O)c1ccccc1P(O)O atom 9 (P)",
+      "Cc1ccc(P(O)O)cc1 atom 5 (P)",
+      "N#Cc1cccc(P(O)O)c1 atom 7 (P)",
+      "CP(C)c1cccc(O)c1 atom 1 (P)",
+      "CP(C)c1ccc(O)cc1 atom 1 (P)"
+     ]
+    },
+    "S 3 σ-bonds charge +1, next to a π bond: app sp3, rule sp2": {
+     "count": 8,
+     "examples": [
+      "C[S+](C)c1cccc(O)c1 atom 1 (S)",
+      "C[S+](C)c1ccc(O)cc1 atom 1 (S)",
+      "Oc1cccc([SH2+])c1.[I-] atom 6 (S)",
+      "Oc1ccc([SH2+])cc1.[I-] atom 5 (S)",
+      "C[S+](C)c1cccc(C(=O)O)c1 atom 1 (S)",
+      "C[S+](C)c1ccc(C(=O)O)cc1 atom 1 (S)",
+      "Cc1cc(O)ccc1[S+](C)C.[I-] atom 8 (S)",
+      "Cc1ccc(O)cc1[S+](C)C.[I-] atom 8 (S)"
+     ]
+    },
+    "As 3 σ-bonds, next to a π bond: app sp3, rule sp2": {
+     "count": 3,
+     "examples": [
+      "O=C(O)C[As](CC(=O)O)c1ccccc1 atom 4 (As)",
+      "CC(=O)Nc1cc([As]2SCC(CO)S2)ccc1O atom 7 (As)",
+      "O=C(O)CC[As](CCC(=O)O)c1ccc(Cl)cc1 atom 5 (As)"
+     ]
+    }
+   }
+  },
+  "rdkit_hybridization": {
+   "name": "rdkit_hybridization",
+   "what": "the app's port of RDKit's hybridization vs RDKit Python",
+   "checked": 116344,
+   "agree": 116344,
+   "disagreements": {}
+  },
+  "cip": {
+   "name": "cip",
+   "what": "R/S vs RDKit Python CIP labeller (atoms either one labels)",
+   "checked": 1357,
+   "agree": 1357,
+   "disagreements": {}
+  },
+  "ez": {
+   "name": "ez",
+   "what": "E/Z vs RDKit Python CIP labeller (bonds either one labels)",
+   "checked": 87,
+   "agree": 87,
+   "disagreements": {}
+  }
+ },
+ "pka": {
+  "acid": {
+   "all": {
+    "n": 1171,
+    "median_abs_err": 1.14,
+    "within_1": 0.455,
+    "within_2": 0.702,
+    "mean_signed_err": 1.58
+   },
+   "by_method": {
+    "Hammett estimate": {
+     "n": 96,
+     "median_abs_err": 0.08,
+     "within_1": 1.0,
+     "within_2": 1.0,
+     "mean_signed_err": 0.05
+    },
+    "typical value": {
+     "n": 1075,
+     "median_abs_err": 1.28,
+     "within_1": 0.407,
+     "within_2": 0.675,
+     "mean_signed_err": 1.72
+    }
+   },
+   "by_fragment": {
+    "F028": {
+     "n": 357,
+     "median_abs_err": 1.72,
+     "within_1": 0.375,
+     "within_2": 0.552,
+     "mean_signed_err": 2.11,
+     "name": "F028"
+    },
+    "F001": {
+     "n": 308,
+     "median_abs_err": 1.06,
+     "within_1": 0.461,
+     "within_2": 0.828,
+     "mean_signed_err": 1.01,
+     "name": "F001"
+    },
+    "F001+F118": {
+     "n": 139,
+     "median_abs_err": 0.5,
+     "within_1": 0.698,
+     "within_2": 0.885,
+     "mean_signed_err": 0.66,
+     "name": "F001+F118"
+    },
+    "F056+gem-dinitro C–H (C(NO2)2)": {
+     "n": 45,
+     "median_abs_err": 1.12,
+     "within_1": 0.467,
+     "within_2": 0.867,
+     "mean_signed_err": -0.21,
+     "name": "F056+gem-dinitro C–H (C(NO2)2)"
+    },
+    "F021+F095+F121+F185+F187+F202": {
+     "n": 33,
+     "median_abs_err": 0.39,
+     "within_1": 0.909,
+     "within_2": 0.939,
+     "mean_signed_err": 0.21,
+     "name": "F021+F095+F121+F185+F187+F202"
+    },
+    "F021+F095+F123": {
+     "n": 27,
+     "median_abs_err": 0.72,
+     "within_1": 0.704,
+     "within_2": 0.815,
+     "mean_signed_err": 0.99,
+     "name": "F021+F095+F123"
+    },
+    "F072": {
+     "n": 24,
+     "median_abs_err": 0.64,
+     "within_1": 0.708,
+     "within_2": 0.958,
+     "mean_signed_err": 0.57,
+     "name": "F072"
+    },
+    "F123": {
+     "n": 23,
+     "median_abs_err": 1.32,
+     "within_1": 0.391,
+     "within_2": 0.87,
+     "mean_signed_err": 1.42,
+     "name": "F123"
+    },
+    "F003+F014": {
+     "n": 15,
+     "median_abs_err": 1.69,
+     "within_1": 0.4,
+     "within_2": 0.6,
+     "mean_signed_err": 2.27,
+     "name": "F003+F014"
+    },
+    "F063": {
+     "n": 14,
+     "median_abs_err": 3.45,
+     "within_1": 0.214,
+     "within_2": 0.357,
+     "mean_signed_err": 2.36,
+     "name": "F063"
+    },
+    "F076+xanthic acid S–H (RO–C(=S)–SH)": {
+     "n": 13,
+     "median_abs_err": 0.48,
+     "within_1": 0.538,
+     "within_2": 1.0,
+     "mean_signed_err": -0.52,
+     "name": "F076+xanthic acid S–H (RO–C(=S)–SH)"
+    },
+    "F068": {
+     "n": 11,
+     "median_abs_err": 0.52,
+     "within_1": 0.727,
+     "within_2": 0.909,
+     "mean_signed_err": 0.61,
+     "name": "F068"
+    },
+    "F056": {
+     "n": 10,
+     "median_abs_err": 1.94,
+     "within_1": 0.3,
+     "within_2": 0.5,
+     "mean_signed_err": 1.24,
+     "name": "F056"
+    },
+    "F076+dithiocarbamic acid S–H (R2N–C(=S)–SH)": {
+     "n": 10,
+     "median_abs_err": 1.21,
+     "within_1": 0.4,
+     "within_2": 0.8,
+     "mean_signed_err": -1.28,
+     "name": "F076+dithiocarbamic acid S–H (R2N–C(=S)–SH)"
+    },
+    "F021+F095+F121+F185+F186+F187+F202": {
+     "n": 10,
+     "median_abs_err": 1.36,
+     "within_1": 0.1,
+     "within_2": 0.7,
+     "mean_signed_err": 0.41,
+     "name": "F021+F095+F121+F185+F186+F187+F202"
+    }
+   },
+   "worst": [
+    {
+     "smiles": "COC(=O)C[SeH]",
+     "measured": 4.7,
+     "rules": 25,
+     "err": 20.3,
+     "method": "typical value",
+     "fragments": "F101+F139+F193",
+     "quality": "Approximate"
+    },
+    {
+     "smiles": "Cc1ccc2c(c1)S(=O)(=O)CS2(=O)=O",
+     "measured": 12.63,
+     "rules": 29,
+     "err": 16.369999999999997,
+     "method": "typical value",
+     "fragments": "F071+F101",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CC1=C(O)C(C)C1=O",
+     "measured": 2.8,
+     "rules": 19,
+     "err": 16.2,
+     "method": "typical value",
+     "fragments": "F019+F101+F192",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=C1CS(=O)(=O)c2ccccc21",
+     "measured": 2.88,
+     "rules": 18.3,
+     "err": 15.420000000000002,
+     "method": "typical value",
+     "fragments": "F019+F071+F101+F116+F192",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "N#CC1C=CC=C1",
+     "measured": 9.78,
+     "rules": 25,
+     "err": 15.22,
+     "method": "typical value",
+     "fragments": "F101+F194",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCOC(=O)C1=C(O)CNC1=O",
+     "measured": 2.34,
+     "rules": 17,
+     "err": 14.66,
+     "method": "typical value",
+     "fragments": "F021+F095+F185+F186+F202",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=S(O)CO",
+     "measured": 1.65,
+     "rules": 16,
+     "err": 14.35,
+     "method": "typical value",
+     "fragments": "F014",
+     "quality": "Approximate"
+    },
+    {
+     "smiles": "COC(=O)C(C#N)C#N",
+     "measured": -2.8,
+     "rules": 11,
+     "err": 13.8,
+     "method": "typical value",
+     "fragments": "F139+active methine C–H (CH between two C=O / C≡N)",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCOP(=O)(NC(=O)C(F)(F)F)OCC",
+     "measured": 4.16,
+     "rules": 17,
+     "err": 12.84,
+     "method": "typical value",
+     "fragments": "F021+F095",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=S(=O)(O)c1ccc(N=NN(O)c2ccccc2)cc1",
+     "measured": 9.99,
+     "rules": -2.8,
+     "err": -12.79,
+     "method": "typical value",
+     "fragments": "F048",
+     "quality": "Approximate"
+    },
+    {
+     "smiles": "O=C1CC(c2ccccc2)=C1O",
+     "measured": 6.25,
+     "rules": 19,
+     "err": 12.75,
+     "method": "typical value",
+     "fragments": "F019+F101+F192",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCOP(=O)(NC(=O)C(Cl)(Cl)Cl)OCC",
+     "measured": 4.77,
+     "rules": 17,
+     "err": 12.23,
+     "method": "typical value",
+     "fragments": "F021+F095",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=[N+]([O-])C(F)(F)C(O)(C(F)(F)F)C(F)(F)F",
+     "measured": 3.9,
+     "rules": 15.5,
+     "err": 11.6,
+     "method": "typical value",
+     "fragments": "F014+F016+F129",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "O=C(C(F)F)C(F)(F)Cl",
+     "measured": 7.9,
+     "rules": 19,
+     "err": 11.1,
+     "method": "typical value",
+     "fragments": "F019",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "CCC1(c2ccccc2)C(=O)NC(=[Se])NC1=O",
+     "measured": 6.02,
+     "rules": 17,
+     "err": 10.98,
+     "method": "typical value",
+     "fragments": "F021+F095+F185+F202",
+     "quality": "Uncertain"
+    }
+   ],
+   "molecules_with_a_measured_value_and_no_site": {
+    "Very uncertain": 15,
+    "Reliable": 4,
+    "Uncertain": 206,
+    "Approximate": 118,
+    "not stated": 7
+   }
+  },
+  "base": {
+   "all": {
+    "n": 1393,
+    "median_abs_err": 1.32,
+    "within_1": 0.412,
+    "within_2": 0.665,
+    "mean_signed_err": 0.82
+   },
+   "by_method": {
+    "Hammett estimate": {
+     "n": 81,
+     "median_abs_err": 0.22,
+     "within_1": 0.926,
+     "within_2": 1.0,
+     "mean_signed_err": 0.07
+    },
+    "typical value": {
+     "n": 1312,
+     "median_abs_err": 1.44,
+     "within_1": 0.38,
+     "within_2": 0.645,
+     "mean_signed_err": 0.86
+    }
+   },
+   "by_fragment": {
+    "F091": {
+     "n": 303,
+     "median_abs_err": 2.1,
+     "within_1": 0.304,
+     "within_2": 0.482,
+     "mean_signed_err": -0.09,
+     "name": "F091"
+    },
+    "F002+F026": {
+     "n": 228,
+     "median_abs_err": 0.69,
+     "within_1": 0.57,
+     "within_2": 0.794,
+     "mean_signed_err": 0.77,
+     "name": "F002+F026"
+    },
+    "F002+F176": {
+     "n": 164,
+     "median_abs_err": 1.11,
+     "within_1": 0.463,
+     "within_2": 0.835,
+     "mean_signed_err": 1.22,
+     "name": "F002+F176"
+    },
+    "F093+F179": {
+     "n": 121,
+     "median_abs_err": 2.48,
+     "within_1": 0.174,
+     "within_2": 0.43,
+     "mean_signed_err": 2.87,
+     "name": "F093+F179"
+    },
+    "F093": {
+     "n": 106,
+     "median_abs_err": 0.86,
+     "within_1": 0.519,
+     "within_2": 0.726,
+     "mean_signed_err": 1.03,
+     "name": "F093"
+    },
+    "F093+F180": {
+     "n": 76,
+     "median_abs_err": 1.61,
+     "within_1": 0.316,
+     "within_2": 0.671,
+     "mean_signed_err": 0.74,
+     "name": "F093+F180"
+    },
+    "F113": {
+     "n": 60,
+     "median_abs_err": 0.9,
+     "within_1": 0.533,
+     "within_2": 0.883,
+     "mean_signed_err": 0.12,
+     "name": "F113"
+    },
+    "F034+F177": {
+     "n": 56,
+     "median_abs_err": 0.75,
+     "within_1": 0.679,
+     "within_2": 0.804,
+     "mean_signed_err": 0.99,
+     "name": "F034+F177"
+    },
+    "F034+F178": {
+     "n": 55,
+     "median_abs_err": 0.6,
+     "within_1": 0.6,
+     "within_2": 0.818,
+     "mean_signed_err": 1.03,
+     "name": "F034+F178"
+    },
+    "F094": {
+     "n": 53,
+     "median_abs_err": 0.92,
+     "within_1": 0.547,
+     "within_2": 0.736,
+     "mean_signed_err": 0.68,
+     "name": "F094"
+    },
+    "F112": {
+     "n": 40,
+     "median_abs_err": 1.67,
+     "within_1": 0.25,
+     "within_2": 0.675,
+     "mean_signed_err": 1.67,
+     "name": "F112"
+    },
+    "F031": {
+     "n": 34,
+     "median_abs_err": 1.83,
+     "within_1": 0.088,
+     "within_2": 0.559,
+     "mean_signed_err": 1.06,
+     "name": "F031"
+    },
+    "F031+F204": {
+     "n": 27,
+     "median_abs_err": 2.15,
+     "within_1": 0.259,
+     "within_2": 0.37,
+     "mean_signed_err": -1.53,
+     "name": "F031+F204"
+    },
+    "F031+F196": {
+     "n": 17,
+     "median_abs_err": 2.38,
+     "within_1": 0.118,
+     "within_2": 0.118,
+     "mean_signed_err": -0.02,
+     "name": "F031+F196"
+    }
+   },
+   "worst": [
+    {
+     "smiles": "NC1=NN(c2ccccc2)C(=O)C1",
+     "measured": 1.2,
+     "rules": 12.4,
+     "err": 11.200000000000001,
+     "method": "typical value",
+     "fragments": "F031+F098",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "NC1=CC(=O)C(=O)c2ccccc21",
+     "measured": 1.57,
+     "rules": 10.7,
+     "err": 9.129999999999999,
+     "method": "typical value",
+     "fragments": "F002+F127",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "C#CCN(CC#C)CC#C",
+     "measured": 3.09,
+     "rules": 10.75,
+     "err": 7.66,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "ClCCN(CCCl)Cc1ccc2ccccc2c1",
+     "measured": 3.32,
+     "rules": 10.75,
+     "err": 7.43,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "NC1(N)C=CC(S(=O)(=O)O)=CC1",
+     "measured": 3.29,
+     "rules": 10.7,
+     "err": 7.409999999999999,
+     "method": "typical value",
+     "fragments": "F002+F176",
+     "quality": "Approximate"
+    },
+    {
+     "smiles": "Fc1cccc(CN(CCCl)CCCl)c1",
+     "measured": 3.35,
+     "rules": 10.75,
+     "err": 7.4,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "Cc1cc(C)c(CN(CCCl)CCCl)c(C)c1",
+     "measured": 3.4,
+     "rules": 10.75,
+     "err": 7.35,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "ClCCN(CCCl)Cc1ccc(Cl)cc1",
+     "measured": 3.48,
+     "rules": 10.75,
+     "err": 7.27,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "C[n+]1c2ccccc2cc2ccc(N)cc21.[Br-]",
+     "measured": 11.85,
+     "rules": 4.6,
+     "err": -7.25,
+     "method": "typical value",
+     "fragments": "F002+F026",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "Fc1ccccc1CN(CCCl)CCCl",
+     "measured": 3.5,
+     "rules": 10.75,
+     "err": 7.25,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "Cc1ccccc1CN(CCCl)CCCl",
+     "measured": 3.5,
+     "rules": 10.75,
+     "err": 7.25,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "CSc1nc(=N)ccn1C",
+     "measured": 12.43,
+     "rules": 5.2,
+     "err": -7.2299999999999995,
+     "method": "typical value",
+     "fragments": "F091",
+     "quality": "Uncertain"
+    },
+    {
+     "smiles": "ClCCN(CCCl)Cc1cc(Cl)cc2c1OCOC2",
+     "measured": 3.55,
+     "rules": 10.75,
+     "err": 7.2,
+     "method": "typical value",
+     "fragments": "F093+F179",
+     "quality": "not stated"
+    },
+    {
+     "smiles": "C=CCn1cccnc1=NCCC",
+     "measured": 12.25,
+     "rules": 5.2,
+     "err": -7.05,
+     "method": "typical value",
+     "fragments": "F091",
+     "quality": "Approximate"
+    },
+    {
+     "smiles": "CCCc1c(C)nc(=N)n(C)c1C",
+     "measured": 12.21,
+     "rules": 5.2,
+     "err": -7.010000000000001,
+     "method": "typical value",
+     "fragments": "F091",
+     "quality": "Approximate"
+    }
+   ],
+   "molecules_with_a_measured_value_and_no_site": {
+    "Approximate": 60,
+    "not stated": 23,
+    "Uncertain": 81,
+    "Reliable": 2,
+    "Very uncertain": 4
+   }
+  }
+ },
+ "textbook": [
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "hybridization",
+   "expected": "sp",
+   "app": "sp",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "hybridization",
+   "expected": "sp",
+   "app": "sp",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetonitrile",
+   "smiles": "CC#N",
+   "mode": "pka",
+   "expected": "25–31",
+   "app": "25 (typical value for F101, F194)",
+   "ok": true,
+   "why": "α-C–H of a nitrile: 25 (Evans table), 28.9 in water (Richard), 31.3 in DMSO (Bordwell)"
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "mode": "oxidation",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "mode": "oxidation",
+   "expected": -2,
+   "app": -2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethanol",
+   "smiles": "CCO",
+   "mode": "pka",
+   "expected": "15.5–16.5",
+   "app": "15.93 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "formaldehyde",
+   "smiles": "C=O",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "formaldehyde",
+   "smiles": "C=O",
+   "mode": "oxidation",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "formaldehyde",
+   "smiles": "C=O",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "formic acid",
+   "smiles": "OC=O",
+   "mode": "oxidation",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "formic acid",
+   "smiles": "OC=O",
+   "mode": "pka",
+   "expected": "3.6–3.9",
+   "app": "3.74 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "carbon dioxide",
+   "smiles": "O=C=O",
+   "mode": "hybridization",
+   "expected": "sp",
+   "app": "sp",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "carbon dioxide",
+   "smiles": "O=C=O",
+   "mode": "oxidation",
+   "expected": 4,
+   "app": 4,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "carbon dioxide",
+   "smiles": "O=C=O",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methane",
+   "smiles": "C",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methane",
+   "smiles": "C",
+   "mode": "oxidation",
+   "expected": -4,
+   "app": -4,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "tetrachloromethane",
+   "smiles": "ClC(Cl)(Cl)Cl",
+   "mode": "oxidation",
+   "expected": 4,
+   "app": 4,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "tetrachloromethane",
+   "smiles": "ClC(Cl)(Cl)Cl",
+   "mode": "lonepairs",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "tetrachloromethane",
+   "smiles": "ClC(Cl)(Cl)Cl",
+   "mode": "oxidation",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetic acid",
+   "smiles": "CC(=O)O",
+   "mode": "pka",
+   "expected": "4.6–4.9",
+   "app": "4.76 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "benzene",
+   "smiles": "c1ccccc1",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "benzene",
+   "smiles": "c1ccccc1",
+   "mode": "oxidation",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetamide",
+   "smiles": "CC(N)=O",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": "amide N is planar"
+  },
+  {
+   "name": "acetamide",
+   "smiles": "CC(N)=O",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetamide",
+   "smiles": "CC(N)=O",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetamide",
+   "smiles": "CC(N)=O",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "pyridine",
+   "smiles": "c1ccncc1",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "pyridine",
+   "smiles": "c1ccncc1",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "pyridine",
+   "smiles": "c1ccncc1",
+   "mode": "pka",
+   "expected": "5.1–5.35",
+   "app": "5.23 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "pyrrole",
+   "smiles": "c1cc[nH]c1",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": "its lone pair is in the aromatic π system"
+  },
+  {
+   "name": "pyrrole",
+   "smiles": "c1cc[nH]c1",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "furan",
+   "smiles": "c1ccoc1",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "furan",
+   "smiles": "c1ccoc1",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonium",
+   "smiles": "[NH4+]",
+   "mode": "formal",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonium",
+   "smiles": "[NH4+]",
+   "mode": "lonepairs",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonium",
+   "smiles": "[NH4+]",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonium",
+   "smiles": "[NH4+]",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonium",
+   "smiles": "[NH4+]",
+   "mode": "pka",
+   "expected": "9.2–9.3",
+   "app": "9.25 (typical value for F169)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "formal",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "formal",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "formal",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "lonepairs",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "lonepairs",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "oxidation",
+   "expected": -2,
+   "app": -2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "nitromethane",
+   "smiles": "C[N+](=O)[O-]",
+   "mode": "pka",
+   "expected": "10–10.5",
+   "app": "10.23 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetate",
+   "smiles": "CC(=O)[O-]",
+   "mode": "formal",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetate",
+   "smiles": "CC(=O)[O-]",
+   "mode": "lonepairs",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetate",
+   "smiles": "CC(=O)[O-]",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "allene",
+   "smiles": "C=C=C",
+   "mode": "hybridization",
+   "expected": "sp",
+   "app": "sp",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "allene",
+   "smiles": "C=C=C",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "dimethyl sulfoxide",
+   "smiles": "CS(C)=O",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "dimethyl sulfoxide",
+   "smiles": "CS(C)=O",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "dimethyl sulfoxide",
+   "smiles": "CS(C)=O",
+   "mode": "oxidation",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": "Pauling S 2.58 > C 2.55: S keeps the C–S electrons, O takes the S=O pair"
+  },
+  {
+   "name": "dimethyl sulfoxide",
+   "smiles": "CS(C)=O",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": "α-C–H of a sulfoxide, pKa about 35: no label (sites above 20 are not shown)"
+  },
+  {
+   "name": "ethene",
+   "smiles": "C=C",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethene",
+   "smiles": "C=C",
+   "mode": "oxidation",
+   "expected": -2,
+   "app": -2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethyne",
+   "smiles": "C#C",
+   "mode": "hybridization",
+   "expected": "sp",
+   "app": "sp",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethyne",
+   "smiles": "C#C",
+   "mode": "oxidation",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "water",
+   "smiles": "O",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "water",
+   "smiles": "O",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "water",
+   "smiles": "O",
+   "mode": "oxidation",
+   "expected": -2,
+   "app": -2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonia",
+   "smiles": "N",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ammonia",
+   "smiles": "N",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methylamine",
+   "smiles": "CN",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methylamine",
+   "smiles": "CN",
+   "mode": "oxidation",
+   "expected": -2,
+   "app": -2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methylamine",
+   "smiles": "CN",
+   "mode": "pka",
+   "expected": "10.5–10.8",
+   "app": "10.66 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methyl cation",
+   "smiles": "[CH3+]",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methyl cation",
+   "smiles": "[CH3+]",
+   "mode": "formal",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methyl cation",
+   "smiles": "[CH3+]",
+   "mode": "lonepairs",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methyl anion",
+   "smiles": "[CH3-]",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methyl anion",
+   "smiles": "[CH3-]",
+   "mode": "formal",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "methyl anion",
+   "smiles": "[CH3-]",
+   "mode": "lonepairs",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "hydroxide",
+   "smiles": "[OH-]",
+   "mode": "lonepairs",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "hydroxide",
+   "smiles": "[OH-]",
+   "mode": "formal",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "oxidation",
+   "expected": -3,
+   "app": -3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "oxidation",
+   "expected": 1,
+   "app": 1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "oxidation",
+   "expected": -1,
+   "app": -1,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "oxidation",
+   "expected": 0,
+   "app": 0,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "oxidation",
+   "expected": 3,
+   "app": 3,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "lonepairs",
+   "expected": 2,
+   "app": 2,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "hybridization",
+   "expected": "sp3",
+   "app": "sp3",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "pka",
+   "expected": "3.3–3.6",
+   "app": "3.38 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "mode": "pka",
+   "expected": "24–26",
+   "app": "25 (typical value for F101, F138, F193)",
+   "ok": true,
+   "why": "α-C–H of an ester: about 25"
+  },
+  {
+   "name": "L-alanine",
+   "smiles": "C[C@@H](C(=O)O)N",
+   "mode": "cip",
+   "expected": "S",
+   "app": "S",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "L-cysteine",
+   "smiles": "C([C@@H](C(=O)O)N)S",
+   "mode": "cip",
+   "expected": "R",
+   "app": "R",
+   "ok": true,
+   "why": "L-cysteine is R: the CH2SH outranks the CO2H"
+  },
+  {
+   "name": "L-lactic acid",
+   "smiles": "C[C@@H](C(=O)O)O",
+   "mode": "cip",
+   "expected": "S",
+   "app": "S",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "D-glyceraldehyde",
+   "smiles": "C([C@H](C=O)O)O",
+   "mode": "cip",
+   "expected": "R",
+   "app": "R",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "(S)-ibuprofen",
+   "smiles": "C[C@@H](c1ccc(CC(C)C)cc1)C(=O)O",
+   "mode": "cip",
+   "expected": "S",
+   "app": "S",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "(E)-but-2-ene",
+   "smiles": "C/C=C/C",
+   "mode": "ez",
+   "expected": "E",
+   "app": "E",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "(Z)-but-2-ene",
+   "smiles": "C/C=C\\C",
+   "mode": "ez",
+   "expected": "Z",
+   "app": "Z",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "phenol",
+   "smiles": "Oc1ccccc1",
+   "mode": "pka",
+   "expected": "9.8–10.1",
+   "app": "9.99 (measured (IUPAC Digitized pKa Dataset))",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "phenol",
+   "smiles": "Oc1ccccc1",
+   "mode": "hybridization",
+   "expected": "sp2",
+   "app": "sp2",
+   "ok": true,
+   "why": "the O lone pair is conjugated with the ring (textbook convention)"
+  },
+  {
+   "name": "4-nitrophenol",
+   "smiles": "Oc1ccc([N+](=O)[O-])cc1",
+   "mode": "pka",
+   "expected": "7.0–7.3",
+   "app": "7.15 (measured (IUPAC Digitized pKa Dataset); the estimate was 7.1)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "benzoic acid",
+   "smiles": "OC(=O)c1ccccc1",
+   "mode": "pka",
+   "expected": "4.1–4.3",
+   "app": "4.21 (measured (IUPAC Digitized pKa Dataset); the estimate was 4.2)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "trifluoroacetic acid",
+   "smiles": "OC(=O)C(F)(F)F",
+   "mode": "pka",
+   "expected": "0.2–0.6",
+   "app": "0.52 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetone",
+   "smiles": "CC(C)=O",
+   "mode": "pka",
+   "expected": "19–20.5",
+   "app": "20 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetone",
+   "smiles": "CC(C)=O",
+   "mode": "taft",
+   "expected": "σ* +0.00 / Es +0.00",
+   "app": "σ* 0 / Es 0",
+   "ok": true,
+   "why": "two methyl groups: the reference (0, 0)"
+  },
+  {
+   "name": "ethyl acetate",
+   "smiles": "CC(=O)OCC",
+   "mode": "pka",
+   "expected": "24–26",
+   "app": "25 (typical value for F101, F138, F139, F193)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethyl acetate",
+   "smiles": "CC(=O)OCC",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": "the O–CH2 has no acidic H"
+  },
+  {
+   "name": "acetaldehyde",
+   "smiles": "CC=O",
+   "mode": "pka",
+   "expected": "16–17.5",
+   "app": "17 (typical value for F018, F101, F195)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "cyclohexanone",
+   "smiles": "O=C1CCCCC1",
+   "mode": "pka",
+   "expected": "18–20",
+   "app": "19 (typical value for F019, F101, F192)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetophenone",
+   "smiles": "CC(=O)c1ccccc1",
+   "mode": "pka",
+   "expected": "18–19.5",
+   "app": "19.2 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetylacetone",
+   "smiles": "CC(=O)CC(C)=O",
+   "mode": "pka",
+   "expected": "8.5–9.5",
+   "app": "8.94 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "diethyl malonate",
+   "smiles": "CCOC(=O)CC(=O)OCC",
+   "mode": "pka",
+   "expected": "12.5–13.5",
+   "app": "12.9 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "dimethyl sulfone",
+   "smiles": "CS(C)(=O)=O",
+   "mode": "pka",
+   "expected": "28–31.5",
+   "app": "29 (typical value for F071, F101)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "aniline",
+   "smiles": "Nc1ccccc1",
+   "mode": "pka",
+   "expected": "4.5–4.7",
+   "app": "4.6 (measured (IUPAC Digitized pKa Dataset))",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "imidazole",
+   "smiles": "c1cnc[nH]1",
+   "mode": "pka",
+   "expected": "6.9–7.1",
+   "app": "6.97 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "thiophenol",
+   "smiles": "Sc1ccccc1",
+   "mode": "pka",
+   "expected": "6.4–6.8",
+   "app": "6.62 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "ethanethiol",
+   "smiles": "CCS",
+   "mode": "pka",
+   "expected": "10.3–10.8",
+   "app": "10.61 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "TBS ether of ethanol",
+   "smiles": "CCO[Si](C)(C)C(C)(C)C",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "TBS ether of ethanol",
+   "smiles": "CCO[Si](C)(C)C(C)(C)C",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "pivaldehyde",
+   "smiles": "CC(C)(C)C=O",
+   "mode": "taft",
+   "expected": "σ* -0.30 / Es -1.54",
+   "app": "σ* -0.3 / Es -1.54",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "isobutyraldehyde",
+   "smiles": "CC(C)C=O",
+   "mode": "taft",
+   "expected": "σ* -0.19 / Es -0.47",
+   "app": "σ* -0.19 / Es -0.47",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "propanal",
+   "smiles": "CCC=O",
+   "mode": "taft",
+   "expected": "σ* -0.10 / Es -0.07",
+   "app": "σ* -0.1 / Es -0.07",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "chloroacetone",
+   "smiles": "CC(=O)CCl",
+   "mode": "taft",
+   "expected": "σ* +1.05 / Es -0.24",
+   "app": "σ* 1.05 / Es -0.24",
+   "ok": true,
+   "why": "methyl (0, 0) + chloromethyl (1.05, -0.24): Σσ* 1.05, bulkiest Es -0.24"
+  },
+  {
+   "name": "1,3-cyclohexanedione",
+   "smiles": "O=C1CC(=O)CCC1",
+   "mode": "pka",
+   "expected": "4.9–5.6",
+   "app": "5.25 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": "C–H between two ring C=O: 5.26"
+  },
+  {
+   "name": "dimedone",
+   "smiles": "CC1(C)CC(=O)CC(=O)C1",
+   "mode": "pka",
+   "expected": "4.9–5.6",
+   "app": "5.26 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "barbituric acid",
+   "smiles": "O=C1CC(=O)NC(=O)N1",
+   "mode": "pka",
+   "expected": "3.8–5.2",
+   "app": "5 (typical value for F102, ring 1,3-dicarbonyl C–H (1,3-cyclohe)",
+   "ok": true,
+   "why": "C5–H between two C=O in the ring: 4.0"
+  },
+  {
+   "name": "3-methylpentane-2,4-dione",
+   "smiles": "CC(=O)C(C)C(C)=O",
+   "mode": "pka",
+   "expected": "10.5–11.5",
+   "app": "10.79 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "saccharin",
+   "smiles": "O=C1NS(=O)(=O)c2ccccc21",
+   "mode": "pka",
+   "expected": "1.2–2.0",
+   "app": "1.31 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": "acyl sulfonamide N–H"
+  },
+  {
+   "name": "N-acetylbenzenesulfonamide",
+   "smiles": "CC(=O)NS(=O)(=O)c1ccccc1",
+   "mode": "pka",
+   "expected": "3.5–5.5",
+   "app": "4.5 (typical value for F021, F095, F137, acyl sulfonamide N–H (C()",
+   "ok": true,
+   "why": "acyl sulfonamide N–H, about 4.5"
+  },
+  {
+   "name": "methyl xanthic acid",
+   "smiles": "COC(=S)S",
+   "mode": "pka",
+   "expected": "1.4–2.2",
+   "app": "1.55 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "thioacetic acid",
+   "smiles": "CC(=O)S",
+   "mode": "pka",
+   "expected": "3.3–3.8",
+   "app": "3.62 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "dinitromethane",
+   "smiles": "O=[N+]([O-])C[N+](=O)[O-]",
+   "mode": "pka",
+   "expected": "3.4–4.0",
+   "app": "3.6 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "trinitromethane",
+   "smiles": "O=[N+]([O-])C([N+](=O)[O-])[N+](=O)[O-]",
+   "mode": "pka",
+   "expected": "-0.2–0.5",
+   "app": "0.12 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "guanidine",
+   "smiles": "NC(N)=N",
+   "mode": "pka",
+   "expected": "13.3–13.9",
+   "app": "13.59 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "guanidine",
+   "smiles": "NC(N)=N",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": "the =NH of a guanidine is not an acid"
+  },
+  {
+   "name": "pentamethylguanidine",
+   "smiles": "CN=C(N(C)C)N(C)C",
+   "mode": "pka",
+   "expected": "13.3–14.2",
+   "app": "13.8 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "2-methyl-2-imidazoline",
+   "smiles": "CC1=NCCN1",
+   "mode": "pka",
+   "expected": "10.8–11.5",
+   "app": "11.09 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "phenylguanidine",
+   "smiles": "NC(N)=Nc1ccccc1",
+   "mode": "pka",
+   "expected": "10.4–11.2",
+   "app": "10.8 (typical value for F031, F204, N-aryl guanidine)",
+   "ok": true,
+   "why": ""
+  },
+  {
+   "name": "acetone oxime",
+   "smiles": "CC(C)=NO",
+   "mode": "pka",
+   "expected": "10.5–12.6",
+   "app": "12.42 (measured (IUPAC Digitized pKa Dataset); the typical value wa)",
+   "ok": true,
+   "why": "oxime O–H about 12.4"
+  },
+  {
+   "name": "acetone oxime",
+   "smiles": "CC(C)=NO",
+   "mode": "pka",
+   "expected": "no label",
+   "app": null,
+   "ok": true,
+   "why": ""
+  }
+ ],
+ "steric_series": [
+  {
+   "name": "aldehydes",
+   "ok": true,
+   "molecules": [
+    [
+     "CC=O",
+     2,
+     "open"
+    ],
+    [
+     "CCC=O",
+     3,
+     "moderately hindered"
+    ],
+    [
+     "CC(C)C=O",
+     4,
+     "hindered"
+    ],
+    [
+     "CC(C)(C)C=O",
+     4,
+     "hindered"
+    ]
+   ]
+  },
+  {
+   "name": "alkyl bromides (SN2 order)",
+   "ok": true,
+   "molecules": [
+    [
+     "CBr",
+     1,
+     "open"
+    ],
+    [
+     "CCBr",
+     2,
+     "open"
+    ],
+    [
+     "CC(C)Br",
+     3,
+     "moderately hindered"
+    ],
+    [
+     "CC(C)(C)Br",
+     4,
+     "hindered"
+    ]
+   ]
+  },
+  {
+   "name": "amines",
+   "ok": true,
+   "molecules": [
+    [
+     "CCCCN",
+     2,
+     "open"
+    ],
+    [
+     "CCC(C)N",
+     3,
+     "moderately hindered"
+    ],
+    [
+     "CC(C)(C)N",
+     4,
+     "hindered"
+    ]
+   ]
+  },
+  {
+   "name": "ketones",
+   "ok": true,
+   "molecules": [
+    [
+     "CC(C)=O",
+     3,
+     "moderately hindered"
+    ],
+    [
+     "CCC(C)=O",
+     4,
+     "hindered"
+    ],
+    [
+     "CC(C)C(C)=O",
+     5,
+     "very hindered"
+    ],
+    [
+     "CC(C)(C)C(C)=O",
+     5,
+     "very hindered"
+    ]
+   ]
+  }
+ ]
+}

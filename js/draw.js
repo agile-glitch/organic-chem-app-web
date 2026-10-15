@@ -3,8 +3,8 @@
    behaviour, and one tab (it is not numbered Draw1, Draw2: there is only one canvas).
 
    Tools     Select (rectangle over empty space, or over the blank part of a molecule box; Ctrl/Shift adds), Molecule box,
-             Text (x₂ / x² for subscripts and superscripts), → ⇌ ↔ arrows, ↷ ⇀ mechanism arrows (curved: an electron pair
-             moves; fishhook: one electron), • electron, •• lone pair.
+             Text (x₂ / x² for subscripts and superscripts), → ⇌ ↔ arrows, ⇀ half-head arrow (fishhook: one electron; the
+             mechanisms also draw curved arrows: an electron pair moves), • electron, •• lone pair.
    Mechanism Draw.showMechanism(payload) (js/draw_mech.js) lays a reaction's mechanism out here: the Reactions page's
              "Open Mechanism in Draw" button.
    Molecule  double-click a box: type a name, IUPAC name, CAS number or SMILES (suggestions as you type), or draw it in
@@ -691,8 +691,7 @@
     ['arrow-forward', '→', 'Reaction arrow (A). Clicks to straight near horizontal; Shift = 15° steps, Alt = no snapping'],
     ['arrow-equilibrium', '⇌', 'Equilibrium arrow'],
     ['arrow-resonance', '↔', 'Resonance arrow'],
-    ['arrow-curved', '↷', 'Curved arrow (mechanism): an electron pair moves from its tail to its head. Drag the middle to bend it'],
-    ['arrow-fishhook', '⇀', 'Fishhook arrow (mechanism): ONE electron moves (radical steps). Drag the middle to bend it'],
+    ['arrow-fishhook', '⇀', 'Half-head arrow (fishhook): ONE electron moves (radical steps). Drawn straight; drag the middle circle to bend it'],
     ['electron', '•', 'Electron (Q): click to place a single electron dot'],
     ['lonepair', '••', 'Lone pair (E): click to place two dots; drag away from the atom to turn them'],
   ];
@@ -875,6 +874,9 @@
       if (top instanceof MoleculeBox) top.clearLasso();                                        // grabbing the whole molecule drops any lasso picks
       return;
     }
+    /* with an arrow tool, the circles of the arrow just drawn (or any selected one) still work: the end circles stretch
+       it, the middle one bends it; anywhere else starts a new arrow */
+    if (mode.startsWith('arrow-')) for (const it of sel) { const d = it.press(p, e); if (d) { start(d); return; } }
     clearSelection();
     if (mode === 'molecule') {
       rubberEl = h('rect', { fill: 'none', stroke: BLUE, 'stroke-width': 1.5, 'stroke-dasharray': '6 4' }, overlay);
@@ -888,9 +890,11 @@
     } else if (mode === 'text') {
       const tb = new TextBox(''); tb.x = p.x; tb.y = p.y; addItem(tb); setMode('select'); startEditing(tb); e.preventDefault();
     } else if (mode.startsWith('arrow-')) {
-      const ar = addItem(new ArrowItem(mode.slice(6), p, p)), curved = MECH_KINDS.has(ar.kind);   // a mechanism arrow is drawn already bent
+      // every toolbar arrow is drawn straight (a curved arrow, which the mechanisms draw, is born bent); once drawn it is
+      // selected, so its three circles show: drag an end circle to stretch it, the middle one to bend it
+      const ar = addItem(new ArrowItem(mode.slice(6), p, p)), curved = ar.kind === 'curved';
       start({ move: (q, ev) => { ar.setEnd(ar.snapped(ar.p1, q, ev)); if (curved) ar.autoBend(); },
-              up: () => { if (manhattan(ar.p1, ar.p2) < 12) { ar.setEnd({ x: ar.p1.x + (curved ? 90 : 140), y: ar.p1.y }); if (curved) ar.autoBend(); } } });   // the tool stays: Esc or Select to stop
+              up: () => { if (manhattan(ar.p1, ar.p2) < 12) { ar.setEnd({ x: ar.p1.x + (curved ? 90 : 140), y: ar.p1.y }); if (curved) ar.autoBend(); } select(ar); } });   // the tool stays: Esc or Select to stop
     } else if (mode === 'electron' || mode === 'lonepair') {
       const el = addItem(new ElectronItem(mode === 'lonepair', p));
       start({ move: q => { if (manhattan(q, p) >= 10) { el.angle = Math.atan2(q.y - p.y, q.x - p.x) + Math.PI / 2; el.render(); } }, up: () => {} });   // the tool stays: Esc or Select to stop
