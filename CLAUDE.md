@@ -17,6 +17,8 @@ the packing or the prefix changed — in the same change:
 Within format 1 only add items; a change of meaning or packing is a new format number (`AGILES2:`) with its own section.
 The desktop AGILES Viewer (`viewer/agiles_viewer.py` in agile-glitch/AgileSynth) reads codes with its own copy of the
 reader (`read_code()`): when reading changes, update it there too.
+AgileSynth's `docs/` also holds copies of `docs/AGILES1_format.md` and of `AGILES_codes.xlsx`
+(as `AGILES1_example_codes.xlsx`): refresh them there when either changes.
 
 ## The compound library
 
