@@ -15,7 +15,8 @@ const hyb = blank(); hyb[0] = 'sp³'; hyb[1] = 'sp³'; hyb[2] = 'sp³';
 const pka = blank(); pka[2] = 'pKa 15.9';
 const steric = blank(); steric[2] = 'open';
 const partial = blank().map((_, i) => (i < 3 ? ['+0.03', '+0.08', '−0.39'][i] : '+0.05'));
-const sdf = MolCode.build({ molblock: MB, title: 'ethanol', app: '1.0.9 (2026-10-13)', nHeavy: 3, nH: 6,
+const ids = { name: 'ethanol', iupac: 'ethanol', iupac_checked: 'yes', smiles: 'CCO', inchi: 'InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3', inchikey: 'LFQSCWFLJHTTHZ-UHFFFAOYSA-N', cas: '64-17-5' };
+const sdf = MolCode.build({ molblock: MB, title: 'ethanol', app: '1.0.9 (2026-10-13)', nHeavy: 3, nH: 6, ids,
   labels: { hybridization: hyb, pka, steric, partial, formal: blank() }, angles: [{ a: 1, i: 0, j: 2, text: '109.4°' }], notes: ['a note\non two lines'] });
 
 eq('title on line 1', sdf.split('\n')[0], 'ethanol');
@@ -35,6 +36,9 @@ eq('round trip pka', p.labels.pka, pka);
 eq('round trip partial (H too)', p.labels.partial, partial);
 eq('empty mode round trip', p.labels.formal, blank());
 eq('mode not written stays absent', 'taft' in p.labels, false);
+eq('identifiers round trip', p.ids, ids);
+eq('identifier items', sdf.includes('>  <AGILES.inchikey>\nLFQSCWFLJHTTHZ-UHFFFAOYSA-N\n') && sdf.includes('>  <AGILES.cas>\n64-17-5\n'), true);
+eq('unknown identifier left out', MolCode.build({ molblock: MB, nHeavy: 3, nH: 6, ids: { smiles: 'CCO', cas: null } }).includes('AGILES.cas'), false);
 eq('angles', p.angles, [{ a: 1, i: 0, j: 2, text: '109.4°' }]);
 eq('note on one line', p.notes, ['a note on two lines']);
 eq('molblock', p.molblock.startsWith('ethanol\n') && p.molblock.endsWith('M  END\n'), true);

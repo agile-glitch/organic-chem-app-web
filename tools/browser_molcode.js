@@ -37,6 +37,8 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   check('SDF has every label mode', MODES.every(m => sdf.includes(`>  <AGILES.labels.${m}>`)));
   check('SDF has the bond angles', /<AGILES\.labels\.angles>\n\d+ \d+ \d+ [\d.]+°/.test(sdf));
   check('SDF atoms: 13 heavy, 8 H', sdf.includes('>  <AGILES.atoms>\n13 8\n'));
+  check('SDF has the identifiers (IUPAC, SMILES, InChI, InChIKey, CAS)', sdf.includes('>  <AGILES.iupac>\n2-(ethanoyloxy)benzoic acid\n') && sdf.includes('>  <AGILES.smiles_rdkit>\nCC(=O)Oc1ccccc1C(=O)O\n') && /<AGILES\.smiles>\n\S+\n/.test(sdf)
+    && /<AGILES\.inchi>\nInChI=1S\/C9H8O4\//.test(sdf) && sdf.includes('>  <AGILES.inchikey>\nBSYNRYMUTXBXSQ-UHFFFAOYSA-N\n') && sdf.includes('>  <AGILES.cas>\n50-78-2\n'), sdf.slice(sdf.indexOf('AGILES.atoms'), sdf.indexOf('AGILES.labels')));
   const code = await exportAs('code');
   check('code starts AGILES1:', /^AGILES1:[A-Za-z0-9_-]+$/.test(code), code.slice(0, 80));
   console.log('     aspirin: SDF', sdf.length, 'characters, code', code.length);
@@ -74,6 +76,10 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   check('the code\'s changed label is drawn', pk.includes('pKa 99'), pk);
   check('banner lists the difference', /1 of them differ.*pKa on C1: code “pKa 99”, this version “pKa 25”/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
 
+  // a code whose InChIKey is not its structure's says so
+  const code3 = await p.evaluate(s => MolCode.encode(s), sdf.replace('BSYNRYMUTXBXSQ-UHFFFAOYSA-N', 'XXXXXXXXXXXXXX-UHFFFAOYSA-N'));
+  await show(code3);
+  check('a code whose InChIKey does not match is flagged', /InChIKey \(XXXXXXXXXXXXXX-UHFFFAOYSA-N\) is not this structure/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
   // a damaged code is refused with a reason, and the molecule shown stays
   await p.locator('#molInput').fill(code.slice(0, 30)); await p.locator('#molShow').click();
   await p.waitForFunction(() => /damaged|cut short|not a molecule/.test(document.getElementById('molResolved').textContent), null, { timeout: 20000 });

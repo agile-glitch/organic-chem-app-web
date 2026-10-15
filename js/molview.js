@@ -1304,14 +1304,17 @@
       const now = liveLabels(cs, m);
       K.labels[m].forEach((t, i) => { if ((t || '') !== (now[i] || '')) diffs.push({ mode: m, atom: i, code: t, now: now[i] || '' }); });
     }
-    cs.code = { labels: K.labels, angles: K.angles, app: K.app, diffs };
+    cs.code = { labels: K.labels, angles: K.angles, app: K.app, ids: K.ids || {}, diffs };
+    // the code names its molecule (InChIKey): a code whose key is not this structure's has been altered or mixed up
+    const keyNote = K.ids && K.ids.inchikey && r.inchikey && K.ids.inchikey !== r.inchikey
+      ? ` The code's InChIKey (${esc(K.ids.inchikey)}) is not this structure's (${esc(r.inchikey)}): the code may have been changed.` : '';
     const by = K.app ? ` (written by version ${esc(K.app)})` : '';
     const notes = K.notes.length ? ' ' + K.notes.map(esc).join(' ') : '';
-    if (!diffs.length) { cs.codeNote = { kind: 'info', html: `The labels are the AGILES code's own${by}; they are the same as this version works out.${notes}` }; return; }
+    if (!diffs.length) { cs.codeNote = { kind: keyNote ? 'warn' : 'info', html: `The labels are the AGILES code's own${by}; they are the same as this version works out.${notes}${keyNote}` }; return; }
     const say = t => (t ? `“${esc(t)}”` : 'none');
     const shown = diffs.slice(0, 8).map(d => `${CODE_MODE_NAME[d.mode]} on ${esc(atomName(r, d.atom))}: code ${say(d.code)}, this version ${say(d.now)}`);
     cs.codeNote = { kind: 'warn', html: `The labels are the AGILES code's own${by}. ${diffs.length} of them differ from what this version works out, and the drawing shows the code's: ` +
-      shown.join('; ') + (diffs.length > 8 ? `; and ${diffs.length - 8} more` : '') + `. Hovering an atom shows this version's values.${notes}` };
+      shown.join('; ') + (diffs.length > 8 ? `; and ${diffs.length - 8} more` : '') + `. Hovering an atom shows this version's values.${notes}${keyNote}` };
   }
   /* the 3D model the bond angles are measured on, when only the 2D drawing is shown: build it (once) and take its values */
   function modelFor2D(cs) {
@@ -2303,11 +2306,12 @@
      angles of the 3D model (built first if there is none yet: they are measured on it). A molecule read from a code
      keeps the code's labels and angles, so a code made from a code says the same. → SDF text, or null when the
      molecule shown changed meanwhile. */
-  async function codeRecord(cs) {
+  async function codeRecord(cs, opts) {
     const r = cs.record, N = r.atoms.length, labels = {}, notes = [];
     for (const m of window.MolCode.MODES) labels[m] = labelTexts(cs, m);
     let angles = cs.code && cs.code.angles ? cs.code.angles : null;
-    if (!angles) {
+    if (!angles && opts && opts.noAngles) notes.push('No bond angles: written without a 3D model (the tab measures them when the code is shown).');
+    else if (!angles) {
       modelFor2D(cs);
       const B = cs.b3d, t0 = Date.now();
       if (B && !B.done) setStatus('Building the 3D model for the bond angles…', true);
@@ -2323,7 +2327,28 @@
       } else notes.push('No bond angles: ' + (B && B.error ? 'the 3D model could not be built.' : B && !B.done ? 'the 3D model was still being built.' : 'there is no optimised 3D model.'));
     }
     const V = window.APP_VERSION;
-    return window.MolCode.build({ molblock: cs.mb2d, title: titleOf(cs), app: V ? `${V.version} (${V.date})` : '', nHeavy: r.n, nH: N - r.n, labels, angles, notes });
+    return window.MolCode.build({ molblock: cs.mb2d, title: titleOf(cs), app: V ? `${V.version} (${V.date})` : '', nHeavy: r.n, nH: N - r.n, ids: codeIds(cs), labels, angles, notes });
+  }
+  /* the SMILES as the molecule was given: the text typed (when the molecule was read straight from it), else the library
+     entry's SMILES when it is this structure (a name, a CAS number), else the app's own SMILES writer */
+  function givenSmiles(cs) {
+    const r = cs.record;
+    if (r.smilesLoc && r.smilesLoc.text) return r.smilesLoc.text;
+    try {
+      const smi = cs.mol.get_smiles(), g = C.parseSmiles(smi);
+      const e = C.libEntryFor ? C.libEntryFor(g) : null;
+      if (e && e.smiles) { const m = S.R.get_mol(e.smiles); const same = m && m.get_smiles() === smi; if (m) m.delete(); if (same) return e.smiles; }
+      return C.toSmiles ? C.toSmiles(g) : null;
+    } catch (e) { return null; }
+  }
+  /* the names and identifiers the Identity section shows, for the code: common name, IUPAC name (and whether the app's
+     namer could read it back to exactly this structure), canonical SMILES, InChI, InChIKey, CAS number */
+  function codeIds(cs) {
+    const r = cs.record;
+    if (!cs.names) { try { cs.names = MI.names(S.R, cs.mol); } catch (e) { cs.names = { iupac: null, common: null, cas: null }; } }
+    const nm = cs.names || {}, rdkit = (r.smiles && (r.smiles.isomeric || r.smiles.canonical)) || null;
+    return { name: nm.common || null, iupac: nm.iupac || null, iupac_checked: nm.iupac ? (nm.iupacChecked ? 'yes' : 'no') : null,
+      smiles: givenSmiles(cs), smiles_rdkit: rdkit, inchi: r.inchi || null, inchikey: r.inchikey || null, cas: nm.cas || null };
   }
   /* the code copied, and shown in a box where it can be selected by hand (a page without clipboard access) */
   function showCode(code) {
@@ -2490,6 +2515,11 @@
     show: (textOrGraph, opts) => showMolecule(textOrGraph, opts || {}),
     depict2D,
     // for tests (molview_selftest.html, browser checks): the page state and the two views; not for page code
+    // for tools/agiles_table.js: the AGILES code of a molecule as the tab shows it (no 3D model, so no bond angles)
+    agilesFor: async smiles => { const res = await showMolecule(smiles, { view: '2d', source: 'typed' });
+      if (!res.ok || !S.cs || !S.cs.record) return { ok: false, error: res.error || 'not shown' };
+      const sdf = await codeRecord(S.cs, { noAngles: true });
+      return { ok: true, code: await window.MolCode.encode(sdf), ids: codeIds(S.cs), components: S.comps.length }; },
     _debug: { state: S, views: () => ({ v2, v3 }), hover: (hit, x, y) => onHover(hit, x, y, S.view),
       ringCisTrans, ringCandidates, axialOpen, legendInfo, measureText: (atoms, c) => measureText({ atoms }, c || currentConf(S.cs)) },
   };

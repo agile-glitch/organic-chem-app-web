@@ -7,6 +7,8 @@
 
      >  <AGILES.format>         AGILES 1
      >  <AGILES.app>            the app version that wrote it ("1.1.0 (2026-10-15)")
+     >  <AGILES.name> … <AGILES.cas>   the names and identifiers (IDS below: common name, IUPAC name and whether it was
+                                checked, SMILES, InChI, InChIKey, CAS number), one line each, an unknown one left out
      >  <AGILES.atoms>          "13 8": the heavy atoms (the MOL block's atoms 1..13, in its order), then the H atoms 14..21,
                                 one per implicit H, grouped by parent in ascending parent order (as RDKit add_hs numbers them)
      >  <AGILES.labels.MODE>    one line per labelled atom: "<atom number> <label text as the tab shows it>"; an atom with no
@@ -20,14 +22,20 @@
    The code for pasting is  AGILES1:<base64url of the record compressed with raw DEFLATE>  (AGILES, version 1).
    CompressionStream does the DEFLATE (every current browser, Node 18+).
 
-     MolCode.build({molblock, title, app, nHeavy, nH, labels: {mode: string[]}, angles: [{a,i,j,text}] | null, notes: []}) -> SDF text
-     MolCode.parse(text) -> {ok, molblock, app, nHeavy, nH, labels: {mode: string[nHeavy+nH]}, angles, notes, error}
+     MolCode.build({molblock, title, app, nHeavy, nH, ids: {name, iupac, …}, labels: {mode: string[]}, angles: [{a,i,j,text}] | null, notes: []}) -> SDF text
+     MolCode.parse(text) -> {ok, molblock, app, nHeavy, nH, ids, labels: {mode: string[nHeavy+nH]}, angles, notes, error}
      MolCode.hasData(text) -> true when the text is (or starts with) a record this file wrote
      MolCode.isCode(text) -> true for an 'AGILES1:' code (or an older 'ACM1:' one)
      MolCode.encode(sdf) -> Promise<code>      MolCode.decode(code) -> Promise<SDF text>                                    */
 (function (root) {
   'use strict';
   const PREFIX = 'AGILES1:', OLD_PREFIX = 'ACM1:', FORMAT = 'AGILES 1', NS = 'AGILES.', OLD_NS = 'ACM.';
+  /* the molecule's names and identifiers, as the tab's Identity section shows them (each item one line; an unknown one is
+     left out): name (common name), iupac (the app's namer; iupac_checked 'yes' when its name reads back to exactly this
+     structure, 'no' when it could not be checked), smiles (the SMILES as the molecule was given: typed, or the library
+     entry's for a name; else the app's own writer), smiles_rdkit (RDKit's canonical SMILES: how the tab reads the
+     molecule, and the order its drawing numbers the atoms in), inchi, inchikey, cas (from the app's library) */
+  const IDS = ['name', 'iupac', 'iupac_checked', 'smiles', 'smiles_rdkit', 'inchi', 'inchikey', 'cas'];
   const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepairs', 'pka', 'steric', 'electronic', 'taft'];
 
   const item = (name, lines) => `>  <${name}>\n${lines.filter(l => l !== '').join('\n')}${lines.some(l => l !== '') ? '\n' : ''}\n`;
@@ -41,6 +49,8 @@
     let out = mb + item(NS + 'format', [FORMAT]);
     if (o.app) out += item(NS + 'app', [oneLine(o.app)]);
     out += item(NS + 'atoms', [`${o.nHeavy | 0} ${o.nH | 0}`]);
+    const I = o.ids || {};
+    for (const k of IDS) if (I[k] != null && oneLine(I[k]) !== '') out += item(NS + k, [oneLine(I[k])]);
     const L = o.labels || {};
     for (const m of MODES) {
       if (!L[m]) continue;
@@ -99,8 +109,9 @@
         angles.push({ a: +x[1] - 1, i: +x[2] - 1, j: +x[3] - 1, text: x[4] });
       }
     }
-    const app = get('app');
-    return { ok: true, version: +version[1], molblock, app: app ? app.lines.join(' ') : '', nHeavy, nH, labels, angles,
+    const app = get('app'), ids = {};
+    for (const k of IDS) { const it = get(k); if (it && it.lines.length) ids[k] = it.lines.join(' ').trim(); }
+    return { ok: true, version: +version[1], molblock, app: app ? app.lines.join(' ') : '', nHeavy, nH, labels, angles, ids,
       notes: items.filter(x => x.name === NS + 'note' || x.name === OLD_NS + 'note').map(x => x.lines.join(' ')) };
   }
 
@@ -137,6 +148,6 @@
     return sdf;
   }
 
-  const api = { PREFIX, OLD_PREFIX, FORMAT, MODES, build, parse, hasData, isCode, encode, decode };
+  const api = { PREFIX, OLD_PREFIX, FORMAT, MODES, IDS, build, parse, hasData, isCode, encode, decode };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MolCode = api;
 })(typeof window !== 'undefined' ? window : globalThis);
