@@ -33,12 +33,14 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   const sdf = await exportAs('sdfcode');           // builds the 3D model the bond angles are measured on
   const before = await drawn();
   check('bond angles drawn before the code', before.angles.length > 10, before.angles);
-  check('SDF has the MOL block and the format item', /M {2}END\n>  <ACM\.format>\nAgileCHEM molecule code 1/.test(sdf), sdf.slice(0, 300));
-  check('SDF has every label mode', MODES.every(m => sdf.includes(`>  <ACM.labels.${m}>`)));
-  check('SDF has the bond angles', /<ACM\.labels\.angles>\n\d+ \d+ \d+ [\d.]+°/.test(sdf));
-  check('SDF atoms: 13 heavy, 8 H', sdf.includes('>  <ACM.atoms>\n13 8\n'));
+  check('SDF has the MOL block and the format item', /M {2}END\n>  <AGILES\.format>\nAGILES 1/.test(sdf), sdf.slice(0, 300));
+  check('SDF has every label mode', MODES.every(m => sdf.includes(`>  <AGILES.labels.${m}>`)));
+  check('SDF has the bond angles', /<AGILES\.labels\.angles>\n\d+ \d+ \d+ [\d.]+°/.test(sdf));
+  check('SDF atoms: 13 heavy, 8 H', sdf.includes('>  <AGILES.atoms>\n13 8\n'));
+  check('SDF has the identifiers (IUPAC, SMILES, InChI, InChIKey, CAS)', sdf.includes('>  <AGILES.iupac>\n2-(ethanoyloxy)benzoic acid\n') && sdf.includes('>  <AGILES.smiles_rdkit>\nCC(=O)Oc1ccccc1C(=O)O\n') && /<AGILES\.smiles>\n\S+\n/.test(sdf)
+    && /<AGILES\.inchi>\nInChI=1S\/C9H8O4\//.test(sdf) && sdf.includes('>  <AGILES.inchikey>\nBSYNRYMUTXBXSQ-UHFFFAOYSA-N\n') && sdf.includes('>  <AGILES.cas>\n50-78-2\n'), sdf.slice(sdf.indexOf('AGILES.atoms'), sdf.indexOf('AGILES.labels')));
   const code = await exportAs('code');
-  check('code starts ACM1:', /^ACM1:[A-Za-z0-9_-]+$/.test(code), code.slice(0, 80));
+  check('code starts AGILES1:', /^AGILES1:[A-Za-z0-9_-]+$/.test(code), code.slice(0, 80));
   console.log('     aspirin: SDF', sdf.length, 'characters, code', code.length);
 
   // a different molecule, then the code back
@@ -46,10 +48,10 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   check('ethanol shown in between', await p.evaluate(() => MolView._debug.state.cs.record.n) === 3);
   await show(code);
   check('the code shows aspirin again', await p.evaluate(() => MolView._debug.state.cs.record.n) === 13);
-  check('read from a molecule code', /molecule code/.test(await p.textContent('#molResolved')), await p.textContent('#molResolved'));
+  check('read from a molecule code', /AGILES code/.test(await p.textContent('#molResolved')), await p.textContent('#molResolved'));
   const after = await drawn();
   for (const m of MODES.concat('angles')) check(`same ${m} labels after the code`, JSON.stringify(after[m]) === JSON.stringify(before[m]), { before: before[m], after: after[m] });
-  check('banner: the labels are the code\'s and agree', /molecule code's own.*same as this version/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
+  check('banner: the labels are the code\'s and agree', /AGILES code's own.*same as this version/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
 
   // pasting the code into the box shows it at once
   await show('ethanol');
@@ -65,8 +67,8 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   check('the SDF file opens with the code\'s labels', !!(await p.evaluate(() => MolView._debug.state.cs.code)));
 
   // a code whose labels differ from this version's: the drawing shows the code's, the banner lists the difference
-  check('the pKa labels hold "1 pKa 25"', /<ACM\.labels\.pka>\n(?:.+\n)*1 pKa 25\n/.test(sdf));
-  const changed = sdf.replace(/(<ACM\.labels\.pka>\n(?:.+\n)*)1 pKa 25\n/, '$11 pKa 99\n');
+  check('the pKa labels hold "1 pKa 25"', /<AGILES\.labels\.pka>\n(?:.+\n)*1 pKa 25\n/.test(sdf));
+  const changed = sdf.replace(/(<AGILES\.labels\.pka>\n(?:.+\n)*)1 pKa 25\n/, '$11 pKa 99\n');
   const code2 = await p.evaluate(s => MolCode.encode(s), changed);
   await show(code2);
   const pk = await p.evaluate(() => { const sel = document.getElementById('molLabels'); sel.value = 'pka'; sel.dispatchEvent(new Event('change'));
@@ -74,6 +76,10 @@ const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepa
   check('the code\'s changed label is drawn', pk.includes('pKa 99'), pk);
   check('banner lists the difference', /1 of them differ.*pKa on C1: code “pKa 99”, this version “pKa 25”/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
 
+  // a code whose InChIKey is not its structure's says so
+  const code3 = await p.evaluate(s => MolCode.encode(s), sdf.replace('BSYNRYMUTXBXSQ-UHFFFAOYSA-N', 'XXXXXXXXXXXXXX-UHFFFAOYSA-N'));
+  await show(code3);
+  check('a code whose InChIKey does not match is flagged', /InChIKey \(XXXXXXXXXXXXXX-UHFFFAOYSA-N\) is not this structure/.test(await p.textContent('#molBanners')), await p.textContent('#molBanners'));
   // a damaged code is refused with a reason, and the molecule shown stays
   await p.locator('#molInput').fill(code.slice(0, 30)); await p.locator('#molShow').click();
   await p.waitForFunction(() => /damaged|cut short|not a molecule/.test(document.getElementById('molResolved').textContent), null, { timeout: 20000 });

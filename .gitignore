@@ -11,3 +11,7 @@ tools/data/label_display.json
 tools/data/label_dump_diverse.json
 tools/data/label_display_diverse.json
 tools/data/label_molecules.json
+tools/data/agiles_table.json
+tools/data/library_candidates.json
+tools/data/library_keys.json
+tools/data/starting_material_counts.json

@@ -988,6 +988,8 @@
        - only these fragments mark a CARBON (an α-C–H); every other fragment's acidic H is on its O, N or S, so a
          fragment with no such H (a silyl ether, an organic azide, a pinacol boronate, a Weinreb amide) marks nothing.
        - the H of F136 is the acid's O–H (trifluoroacetic acid 0.5), not a trifluoroacetamide's N–H (about 12).
+       - so is the H of F119 (α-amino acid, 3.6: the CO2H) and F129 (1,2-amino alcohol, 15.5: the OH): their first H-bearing
+         atom is the N, which put alanine's 2.35 on its NH2 and left the CO2H a typical 4.8.
        - values for the site where the sheet's number is not: a 1,3-dicarbonyl CH2 9–13 (acetylacetone 8.9, ethyl
          acetoacetate 10.7, diethyl malonate 13), a 2-/4-pyridone N–H 11 (2-pyridone 11.7, 4-pyridone 11.1, uracil 9.4),
          an alkyl thiol 10.5 (ethanethiol 10.6; thiophenol 6.6 is the sheet's value, kept for an aryl thiol).
@@ -1011,7 +1013,7 @@
     generic: new Set(['F101']),
     alpha: new Set(['F071', 'F116', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
     carbon: new Set(['F018', 'F019', 'F056', 'F101', 'F102', 'F116', 'F125', 'F071', 'F138', 'F139', 'F192', 'F193', 'F194', 'F195']),
-    oxygen: new Set(['F136']),
+    oxygen: new Set(['F136', 'F119', 'F129']),
     noSite: new Set(['F052', 'F196', 'F204']),
     value: { F102: 11, F090: 11 },
     alkylThiol: { F072: 10.5 },

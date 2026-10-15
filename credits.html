@@ -12,6 +12,14 @@ h2{margin-top:28px}
 hand-written rules and from models learned from text-mined patent data, and they can be wrong or incomplete. Use it for learning and exploration, check anything that
 matters against the primary literature or a qualified chemist, and do not rely on it for safety decisions or laboratory work.</p>
 </div>
+<h2>Compound library</h2>
+<ul>
+<li><b>Approved drugs</b> (<code>data/library_more.js</code>, tag <i>drugs</i>): the structures and preferred names of the approved small-molecule drugs in
+  <b>ChEMBL</b> (EMBL-EBI, chembl.ebi.ac.uk), as distributed with datamol (Apache 2.0). ChEMBL data are licensed under
+  <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>; each entry keeps its ChEMBL ID as an other name.</li>
+<li><b>Building blocks</b> (<code>data/library_more.js</code>, tag <i>building blocks</i>): the starting materials the learned patent reactions below use most;
+  named by the app's own IUPAC namer, each name checked by reading it back (the app's parser, or OPSIN: D. M. Lowe et al., <i>J. Chem. Inf. Model.</i> 2011, 51, 739; MIT).</li>
+</ul>
 <h2>Reaction data</h2>
 <ul>
 <li><b>Open Reaction Database</b> (open-reaction-database.org), CC BY-SA 4.0. The reaction knowledge base
