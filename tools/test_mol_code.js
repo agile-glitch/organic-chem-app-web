@@ -1,4 +1,4 @@
-// Unit tests for js/mol_code.js (molecule code: SDF record with labels, and its compressed ACM1: form).   node tools/test_mol_code.js
+// Unit tests for js/mol_code.js (molecule code: SDF record with labels, and its compressed AGILES1: form).   node tools/test_mol_code.js
 const path = require('path');
 const MolCode = require(path.join(__dirname, '..', 'js', 'mol_code.js'));
 let fails = 0, n = 0;
@@ -19,11 +19,11 @@ const sdf = MolCode.build({ molblock: MB, title: 'ethanol', app: '1.0.9 (2026-10
   labels: { hybridization: hyb, pka, steric, partial, formal: blank() }, angles: [{ a: 1, i: 0, j: 2, text: '109.4°' }], notes: ['a note\non two lines'] });
 
 eq('title on line 1', sdf.split('\n')[0], 'ethanol');
-eq('MOL block kept', sdf.includes('  1  2  1  0\n  2  3  1  0\nM  END\n>  <ACM.format>\nAgileCHEM molecule code 1\n'), true);
+eq('MOL block kept', sdf.includes('  1  2  1  0\n  2  3  1  0\nM  END\n>  <AGILES.format>\nAGILES 1\n'), true);
 eq('ends with $$$$', sdf.endsWith('\n$$$$\n'), true);
-eq('label lines', sdf.includes('>  <ACM.labels.pka>\n3 pKa 15.9\n\n'), true);
-eq('empty mode is an empty item', sdf.includes('>  <ACM.labels.formal>\n\n'), true);
-eq('label with a space', sdf.includes('>  <ACM.labels.steric>\n3 open\n'), true);
+eq('label lines', sdf.includes('>  <AGILES.labels.pka>\n3 pKa 15.9\n\n'), true);
+eq('empty mode is an empty item', sdf.includes('>  <AGILES.labels.formal>\n\n'), true);
+eq('label with a space', sdf.includes('>  <AGILES.labels.steric>\n3 open\n'), true);
 eq('hasData', [MolCode.hasData(sdf), MolCode.hasData(MB)], [true, false]);
 
 const p = MolCode.parse(sdf);
@@ -43,16 +43,21 @@ eq('CRLF read', MolCode.parse(sdf.replace(/\n/g, '\r\n')).labels.pka, pka);
 // errors
 eq('no M END', MolCode.parse('hello').ok, false);
 eq('plain MOL, no data', MolCode.parse(MB).ok, false);
-eq('newer version refused', /version 2/.test(MolCode.parse(sdf.replace('molecule code 1', 'molecule code 2')).error), true);
+eq('newer version refused', /version 2/.test(MolCode.parse(sdf.replace('AGILES 1', 'AGILES 2')).error), true);
 eq('atom out of range', MolCode.parse(sdf.replace('3 pKa 15.9', '12 pKa 15.9')).ok, false);
 eq('build needs M END', (() => { try { MolCode.build({ molblock: 'x' }); return 'built'; } catch (e) { return 'threw'; } })(), 'threw');
 
 (async () => {
   const code = await MolCode.encode(sdf);
-  eq('code prefix', code.startsWith('ACM1:'), true);
-  eq('isCode', [MolCode.isCode(code), MolCode.isCode('  ' + code + ' '), MolCode.isCode('CCO'), MolCode.isCode('ACM1:ab+c')], [true, true, false, false]);
+  eq('code prefix', code.startsWith('AGILES1:'), true);
+  eq('isCode', [MolCode.isCode(code), MolCode.isCode('  ' + code + ' '), MolCode.isCode('CCO'), MolCode.isCode('AGILES1:ab+c')], [true, true, false, false]);
   eq('code shorter than the record', code.length < sdf.length, true);
   eq('decode gives the record back', await MolCode.decode(code), sdf);
+  // codes and records written before the rename (ACM1:, ACM.* items, "AgileCHEM molecule code 1") are still read
+  const oldSdf = sdf.replace(/<AGILES\./g, '<ACM.').replace('AGILES 1', 'AgileCHEM molecule code 1');
+  const oldCode = 'ACM1:' + (await MolCode.encode(oldSdf)).slice('AGILES1:'.length);
+  eq('old ACM1: code read', MolCode.isCode(oldCode), true);
+  eq('old record parsed', MolCode.parse(await MolCode.decode(oldCode)).labels.pka, pka);
   let err = '';
   try { await MolCode.decode(code.slice(0, 40)); } catch (e) { err = e.message; }
   eq('cut-short code refused', /damaged|cut short|not a molecule/.test(err), true);

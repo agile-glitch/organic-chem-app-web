@@ -64,7 +64,7 @@
     angles: 'bond angles — the angle between two bonds at an atom, measured on the 3D model (lowest-energy conformer found, MMFF94); in the 2D drawing each number sits in the wedge between the two bonds, in 3D it is drawn on the model',
     electrons: 'electrons — each lone pair as two dots (the bonds are the bonding pairs)',
     pka: 'pKa of each acidic site and pKaH of each basic site, in THIS molecule',
-    steric: 'steric crowding at the reacting atom of each fragment, in THIS molecule (open / moderately hindered / hindered / very hindered)',
+    steric: 'steric crowding at the reacting atom of each fragment, in THIS molecule (open / mod. hindered = moderately hindered / hindered / v. hindered = very hindered; hover an atom for the full words)',
     electronic: 'electronic effects at the reacting atom of each fragment, in THIS molecule (partial charge, ring Σσ, conjugation)',
     taft: 'Taft parameters of the groups on the reacting atom of each fragment, in THIS molecule, shown as Σσ*/Es: Σσ* (polar, > 0 pulls electrons, < 0 pushes) / Es of the bulkiest group (steric, more negative = bulkier); CH3 = 0 for both, – = no value' };
 
@@ -255,8 +255,8 @@
         }
       }
       if (!m) throw new Error(source === 'file' ? 'RDKit could not read this MOL/SDF file.' : 'RDKit could not read this MOL text.');
-      info.via = source === 'file' ? 'MOL/SDF file' : source === 'pasted' ? 'pasted MOL text' : source === 'code' ? 'molecule code' : 'MOL text';
-      if (source === 'code') info.label = 'Read from a molecule code';
+      info.via = source === 'file' ? 'MOL/SDF file' : source === 'pasted' ? 'pasted MOL text' : source === 'code' ? 'AGILES code' : 'MOL text';
+      if (source === 'code') info.label = 'Read from an AGILES code';
       if (count > 1) info.notes.push({ kind: 'info', html: `The SDF holds ${count} records; the first one is shown.` });
       return { mol: m, info, block };
     }
@@ -334,7 +334,7 @@
       return { ok: false, error: 'RDKit could not start: ' + e.message };
     }
     if (req !== S.req) return { ok: false, error: 'superseded by a newer request' };
-    // a molecule code (ACM1:…): unpacked to its SDF record, which is then read like pasted MOL text
+    // an AGILES code (AGILES1:…, or ACM1:… from before the rename): unpacked to its SDF record, which is then read like pasted MOL text
     if (typeof input === 'string' && window.MolCode && window.MolCode.isCode(input)) {
       try { input = await window.MolCode.decode(input); } catch (e) {
         if (req === S.req) { restoreStatus(); showError(e.message); }
@@ -1257,7 +1257,10 @@
     for (const s_ of cs.pka.base) for (const a of s_.atoms || [s_.atom]) if (a < N) out[a] = (out[a] ? out[a] + ' / ' : '') + 'pKaH ' + String(s_.pKa).replace('-', '−');
     return out;
   }
-  /* 'Steric' / 'Electronic' labels: on each fragment's reacting atom (js/reactions.js effectsOfMol) */
+  /* 'Steric' / 'Electronic' labels: on each fragment's reacting atom (js/reactions.js effectsOfMol). The steric words are
+     shortened on the drawing (the hover card keeps them whole): "moderately hindered" is 2.4 bonds wide and was left out
+     for want of room more often than any other label */
+  const STERIC_SHORT = { 'moderately hindered': 'mod. hindered', 'very hindered': 'v. hindered' };
   function effectLabels(cs, kind) {
     const N = cs.record.atoms.length, out = new Array(N).fill('');
     for (const e of cs.effects || []) {
@@ -1267,7 +1270,7 @@
         out[e.atom] = t.sigmaStar == null && t.EsMin == null ? '' : `${t.sigmaStar != null ? sg(t.sigmaStar) : '–'}/${t.EsMin != null ? sg(t.EsMin) : '–'}`;   // σ*/Es: short, so it fits beside a crowded atom
         continue;
       }
-      out[e.atom] = kind === 'steric' ? e.steric.cls : (e.electronic.charge != null ? `δ ${e.electronic.charge >= 0 ? '+' : '−'}${Math.abs(e.electronic.charge).toFixed(2)}` : '')
+      out[e.atom] = kind === 'steric' ? (STERIC_SHORT[e.steric.cls] || e.steric.cls) : (e.electronic.charge != null ? `δ ${e.electronic.charge >= 0 ? '+' : '−'}${Math.abs(e.electronic.charge).toFixed(2)}` : '')
         + (kind === 'electronic' && e.electronic.sigma != null ? ` Σσ ${e.electronic.sigma >= 0 ? '+' : '−'}${Math.abs(e.electronic.sigma).toFixed(2)}` : '');
     }
     return out;
@@ -1290,10 +1293,10 @@
     cs.code = null; cs.codeNote = null;
     const K = S.code;
     if (!K) return;
-    if (!K.ok) { cs.codeNote = { kind: 'warn', html: `The structure was read, but its molecule-code labels were not: ${esc(K.error)} The labels shown are this version's.` }; return; }
+    if (!K.ok) { cs.codeNote = { kind: 'warn', html: `The structure was read, but its AGILES labels were not: ${esc(K.error)} The labels shown are this version's.` }; return; }
     const r = cs.record, N = r.atoms.length;
     if (S.comps.length !== 1 || K.nHeavy !== r.n || K.nHeavy + K.nH !== N) {
-      cs.codeNote = { kind: 'warn', html: `The molecule code's labels are for ${K.nHeavy} heavy atoms and ${K.nH} H, but the structure read has ${r.n} and ${N - r.n}, so they are not used. The labels shown are this version's.` };
+      cs.codeNote = { kind: 'warn', html: `The AGILES code's labels are for ${K.nHeavy} heavy atoms and ${K.nH} H, but the structure read has ${r.n} and ${N - r.n}, so they are not used. The labels shown are this version's.` };
       return;
     }
     const diffs = [];
@@ -1304,10 +1307,10 @@
     cs.code = { labels: K.labels, angles: K.angles, app: K.app, diffs };
     const by = K.app ? ` (written by version ${esc(K.app)})` : '';
     const notes = K.notes.length ? ' ' + K.notes.map(esc).join(' ') : '';
-    if (!diffs.length) { cs.codeNote = { kind: 'info', html: `The labels are the molecule code's own${by}; they are the same as this version works out.${notes}` }; return; }
+    if (!diffs.length) { cs.codeNote = { kind: 'info', html: `The labels are the AGILES code's own${by}; they are the same as this version works out.${notes}` }; return; }
     const say = t => (t ? `“${esc(t)}”` : 'none');
     const shown = diffs.slice(0, 8).map(d => `${CODE_MODE_NAME[d.mode]} on ${esc(atomName(r, d.atom))}: code ${say(d.code)}, this version ${say(d.now)}`);
-    cs.codeNote = { kind: 'warn', html: `The labels are the molecule code's own${by}. ${diffs.length} of them differ from what this version works out, and the drawing shows the code's: ` +
+    cs.codeNote = { kind: 'warn', html: `The labels are the AGILES code's own${by}. ${diffs.length} of them differ from what this version works out, and the drawing shows the code's: ` +
       shown.join('; ') + (diffs.length > 8 ? `; and ${diffs.length - 8} more` : '') + `. Hovering an atom shows this version's values.${notes}` };
   }
   /* the 3D model the bond angles are measured on, when only the 2D drawing is shown: build it (once) and take its values */
@@ -2135,7 +2138,7 @@
   /* ================================================================ controls */
   function exportOptions() {
     const cs = S.cs, has3D = !!(cs && currentConf(cs));
-    const code = window.MolCode ? [['code', 'Molecule code (copy)', true], ['sdfcode', 'SDF with all labels', true]] : [];
+    const code = window.MolCode ? [['code', 'AGILES code (copy)', true], ['sdfcode', 'AGILES file (SDF with all labels)', true]] : [];
     if (S.view === '2d') return [['png2d', 'PNG image'], ['svg', 'SVG image'], ['mol2d', 'MOL file (2D)']].concat(code);
     return [['png3d', 'PNG image', has3D], ['mol3d', 'MOL file (3D, with H)', has3D], ['xyz', 'XYZ file', has3D], ['sdf', 'SDF (all conformers)', !!(cs && cs.b3d && cs.b3d.confs.some(c => c.source === 'OpenChemLib'))]].concat(code);
   }
@@ -2296,7 +2299,7 @@
     } catch (e) { addBanner3D(cs, 'error', 'Export failed: ' + esc(e.message || e)); renderBanners(); }
   }
 
-  /* ---- the molecule code (js/mol_code.js): the 2D MOL block with every label mode's labels for every atom, and the bond
+  /* ---- the AGILES code (js/mol_code.js): the 2D MOL block with every label mode's labels for every atom, and the bond
      angles of the 3D model (built first if there is none yet: they are measured on it). A molecule read from a code
      keeps the code's labels and angles, so a code made from a code says the same. → SDF text, or null when the
      molecule shown changed meanwhile. */
@@ -2325,7 +2328,7 @@
   /* the code copied, and shown in a box where it can be selected by hand (a page without clipboard access) */
   function showCode(code) {
     const box = $('molResolved');
-    box.innerHTML = '<span class="mv-via">Molecule code</span> <input class="mv-code" readonly spellcheck="false"> <span class="mv-dim"></span>';
+    box.innerHTML = '<span class="mv-via">AGILES code</span> <input class="mv-code" readonly spellcheck="false"> <span class="mv-dim"></span>';
     const inp = box.querySelector('.mv-code'), msg = box.querySelector('.mv-dim');
     inp.value = code;
     inp.addEventListener('focus', () => inp.select());
