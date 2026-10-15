@@ -20,6 +20,11 @@ COLS = [('Name', 'name'), ('AGILES code', 'code'), ('IUPAC name', 'iupac'), ('IU
         ('Formula (with charge)', 'formula'), ('Isotopic formula', 'isotopic_formula'), ('Molecular weight', 'mw'), ('Monoisotopic mass', 'monoisotopic')]
 
 
+NOTE = ('These are EXAMPLE molecules: the {n:,} compounds of the app\'s library. AGILES1 codes are not limited to them. '
+        'Every molecule the Molecule tab can show (typed, named, opened from a file, or drawn in the Sketcher) has an AGILES1 '
+        'code: show it and choose Export → AGILES code (copy).')
+
+
 def unpack(code):
     b = code.split(':', 1)[1]
     return zlib.decompress(base64.urlsafe_b64decode(b + '=' * (-len(b) % 4)), -15).decode('utf-8')
@@ -68,18 +73,24 @@ def main():
     with open(csvp, 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f); w.writerow([c for c, _ in COLS])
         for g in good: w.writerow([g[k] for _, k in COLS])
+    global NOTE
+    NOTE = NOTE.format(n=len(good))
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font, PatternFill
     wb = Workbook(); ws = wb.active; ws.title = 'AGILES codes'
+    ws.append([NOTE]); ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(COLS))
+    ws['A1'].font = Font(bold=True, color='7A5B00'); ws['A1'].fill = PatternFill('solid', fgColor='FFF7E0')
+    ws['A1'].alignment = Alignment(wrap_text=True, vertical='center'); ws.row_dimensions[1].height = 48
     ws.append([c for c, _ in COLS])
-    for c in ws[1]: c.font = Font(bold=True, color='FFFFFF'); c.fill = PatternFill('solid', fgColor='2F5D50')
+    for c in ws[2]: c.font = Font(bold=True, color='FFFFFF'); c.fill = PatternFill('solid', fgColor='2F5D50')
     for g in good: ws.append([g[k] for _, k in COLS])
     for col, wdt in zip('ABCDEFGHIJKLM', (28, 60, 40, 10, 40, 40, 50, 30, 14, 16, 14, 14, 16)): ws.column_dimensions[col].width = wdt
-    ws.freeze_panes = 'C2'; ws.auto_filter.ref = ws.dimensions
-    for row in ws.iter_rows(min_row=2, min_col=2, max_col=2):
+    ws.freeze_panes = 'C3'; ws.auto_filter.ref = f'A2:{chr(64 + len(COLS))}{ws.max_row}'
+    for row in ws.iter_rows(min_row=3, min_col=2, max_col=2):
         for c in row: c.alignment = Alignment(wrap_text=False)
     about = wb.create_sheet('About')
     for line in [
+        NOTE,
         'AGILES codes for the compounds of the app\'s library, made by the Molecule tab itself (tools/agiles_table.js, tools/agiles_table.py).',
         'Paste an AGILES code (it starts with AGILES1:) into the Molecule tab\'s box: the molecule comes back drawn as it was, with every label and these identifiers.',
         'The codes hold no bond angles (no 3D model was built for them); the tab measures the angles when a code is shown.',
