@@ -15,6 +15,8 @@ the packing or the prefix changed — in the same change:
    `python tools/agiles_doc.py` (must say it is in step), `node tools/test_mol_code.js` and
    `node tools/browser_molcode.js http://localhost:8000/app.html`.
 Within format 1 only add items; a change of meaning or packing is a new format number (`AGILES2:`) with its own section.
+The desktop AGILES Viewer (`viewer/agiles_viewer.py` in agile-glitch/AgileSynth) reads codes with its own copy of the
+reader (`read_code()`): when reading changes, update it there too.
 
 ## The compound library
 
