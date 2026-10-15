@@ -3,6 +3,7 @@
 // the tab measures them when a code is shown). tools/agiles_table.py then writes the spreadsheet and checks every code.
 //   python tools/serve.py   (another terminal)
 //   node tools/agiles_table.js [http://localhost:8000/app.html] [--names "aspirin,caffeine"] [--limit N] [--out tools/data/agiles_table.json]
+//        [--reuse tools/data/agiles_table.json]   keep the rows of an earlier run whose name, SMILES and app version are unchanged
 const fs = require('fs'), path = require('path');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
@@ -19,16 +20,22 @@ const limit = +opt('--limit', 0), out = opt('--out', path.join(__dirname, 'data'
   let list = names ? names.split(',').map(n => ({ name: n.trim(), input: n.trim() }))
     : await p.evaluate(() => window.Chem.MOL_LIBRARY.map(e => ({ name: e.name, input: e.smiles, smiles: e.smiles, libCas: e.cas || null })));
   if (limit) list = list.slice(0, limit);
-  const rows = [], t0 = Date.now();
+  const old = new Map(), reuse = opt('--reuse', ''), ver = await p.evaluate(() => window.APP_VERSION && window.APP_VERSION.version);
+  if (reuse && fs.existsSync(reuse)) {
+    const prev = JSON.parse(fs.readFileSync(reuse, 'utf8'));
+    if (prev.version === ver) for (const r of prev.rows) old.set(r.name + '\t' + r.input, r);
+  }
+  const rows = [], t0 = Date.now(); let kept = 0;
   for (let k = 0; k < list.length; k++) {
-    const e = list[k];
+    const e = list[k], was = old.get(e.name + '\t' + e.input);
+    if (was) { rows.push(Object.assign({}, was, { libCas: e.libCas || null })); kept++; continue; }
     const r = await p.evaluate(async x => { try { return await MolView.agilesFor(x); } catch (err) { return { ok: false, error: String(err && err.message || err) }; } }, e.input);
     rows.push(Object.assign({ name: e.name, input: e.input, libCas: e.libCas || null }, r));
     if (k % 50 === 0 || k === list.length - 1) process.stdout.write(`\r${k + 1}/${list.length} molecules, ${((Date.now() - t0) / 1000).toFixed(0)} s`);
   }
   console.log();
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, JSON.stringify({ base, made: new Date().toISOString(), rows }));
-  console.log(`wrote ${out}: ${rows.filter(r => r.ok).length} of ${rows.length} with a code` + (errs.length ? `; page errors: ${errs.slice(0, 3).join(' | ')}` : ''));
+  fs.writeFileSync(out, JSON.stringify({ base, version: ver, made: new Date().toISOString(), rows }));
+  console.log(`wrote ${out}: ${rows.filter(r => r.ok).length} of ${rows.length} with a code (${kept} kept from ${reuse || 'no earlier run'})` + (errs.length ? `; page errors: ${errs.slice(0, 3).join(' | ')}` : ''));
   await b.close();
 })();
