@@ -2327,13 +2327,34 @@
       } else notes.push('No bond angles: ' + (B && B.error ? 'the 3D model could not be built.' : B && !B.done ? 'the 3D model was still being built.' : 'there is no optimised 3D model.'));
     }
     const V = window.APP_VERSION;
-    return window.MolCode.build({ molblock: cs.mb2d, title: titleOf(cs), app: V ? `${V.version} (${V.date})` : '', nHeavy: r.n, nH: N - r.n, ids: codeIds(cs), labels, angles, notes });
+    return window.MolCode.build({ molblock: openDoubleBonds(cs),  title: titleOf(cs), app: V ? `${V.version} (${V.date})` : '', nHeavy: r.n, nH: N - r.n, hParents: r.atoms.slice(r.n).map(a => a.parent), ids: codeIds(cs), labels, angles, notes });
+  }
+  /* The drawing must be this molecule and no other: a double bond whose E/Z the input leaves open is drawn one way or the
+     other, and a MOL reader takes the drawn geometry as given. Such bonds get the V2000 stereo flag 3 ("either"), so the
+     code's drawing reads back as E/Z unspecified (vitamin D3's ring C=C, one of lycopene's), not as one isomer. */
+  function openDoubleBonds(cs) {
+    const r = cs.record, open = new Set(r.bonds.filter(b => b.ez === 'unspecified').map(b => Math.min(b.a, b.b) + 1 + '-' + (Math.max(b.a, b.b) + 1)));
+    if (!open.size) return cs.mb2d;
+    const L = cs.mb2d.split('\n'), counts = L[3] || '';
+    if (/V3000/.test(counts)) return cs.mb2d;
+    const na = +counts.slice(0, 3), nb = +counts.slice(3, 6);
+    for (let k = 4 + na; k < 4 + na + nb; k++) {
+      const a = +L[k].slice(0, 3), b = +L[k].slice(3, 6), o = +L[k].slice(6, 9);
+      if (o === 2 && open.has(Math.min(a, b) + '-' + Math.max(a, b))) L[k] = L[k].slice(0, 9) + '  3' + L[k].slice(12);
+    }
+    return L.join('\n');
   }
   /* the SMILES as the molecule was given: the text typed (when the molecule was read straight from it), else the library
      entry's SMILES when it is this structure (a name, a CAS number), else the app's own SMILES writer */
   function givenSmiles(cs) {
     const r = cs.record;
-    if (r.smilesLoc && r.smilesLoc.text) return r.smilesLoc.text;
+    if (r.smilesLoc && r.smilesLoc.text) {
+      const t = r.smilesLoc.text;
+      if (!t.includes('.')) return t;
+      // a salt or mixture: the part of the text that is this component (the code describes the component shown)
+      const mine = cs.mol.get_smiles();
+      for (const f of t.split('.')) { let m = null; try { m = S.R.get_mol(f); if (m && m.get_smiles() === mine) return f; } catch (e) {} finally { if (m) m.delete(); } }
+    }
     try {
       const smi = cs.mol.get_smiles(), g = C.parseSmiles(smi);
       const e = C.libEntryFor ? C.libEntryFor(g) : null;
@@ -2345,10 +2366,14 @@
      namer could read it back to exactly this structure), canonical SMILES, InChI, InChIKey, CAS number */
   function codeIds(cs) {
     const r = cs.record;
+    // the namer takes seconds to minutes on large molecules: above the tab's own limit there is no IUPAC name (as in the panel)
+    if (!cs.names && cs.heavy > NAMER_MAX_HEAVY) cs.names = { iupac: null, iupacNote: `not attempted: more than ${NAMER_MAX_HEAVY} heavy atoms`, common: null, cas: null };
     if (!cs.names) { try { cs.names = MI.names(S.R, cs.mol); } catch (e) { cs.names = { iupac: null, common: null, cas: null }; } }
     const nm = cs.names || {}, rdkit = (r.smiles && (r.smiles.isomeric || r.smiles.canonical)) || null;
     return { name: nm.common || null, iupac: nm.iupac || null, iupac_checked: nm.iupac ? (nm.iupacChecked ? 'yes' : 'no') : null,
-      smiles: givenSmiles(cs), smiles_rdkit: rdkit, inchi: r.inchi || null, inchikey: r.inchikey || null, cas: nm.cas || null };
+      smiles: givenSmiles(cs), smiles_rdkit: rdkit, inchi: r.inchi || null, inchikey: r.inchikey || null, cas: nm.cas || null,
+      formula: r.formula || null, isotopic_formula: r.isotopicFormula || null, mw: r.mw && r.mw.rounded != null ? `${r.mw.rounded.toFixed(2)} g/mol` : null,
+      monoisotopic: r.monoisotopic != null ? `${r.monoisotopic.toFixed(4)} Da` : null };
   }
   /* the code copied, and shown in a box where it can be selected by hand (a page without clipboard access) */
   function showCode(code) {

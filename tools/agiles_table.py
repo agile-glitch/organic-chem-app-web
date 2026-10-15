@@ -1,7 +1,10 @@
 """The AGILES spreadsheet: every compound of the app's library with its AGILES code and identifiers, from
 tools/agiles_table.js (the Molecule tab's own values), each code checked before it is written:
   - the code unpacks (raw DEFLATE, base64url) to an AGILES record whose items are the row's identifiers;
-  - RDKit Python reads the row's SMILES (as given) and RDKit SMILES as the same molecule, whose InChIKey is the row's.
+  - RDKit Python reads the row's SMILES (as given) and RDKit SMILES as the same molecule, whose InChIKey is the row's;
+  - the drawing represents itself: the code's MOL block alone (atoms, bonds, wedges, 2D coordinates, nothing else) is
+    read by RDKit Python as a molecule with the same full InChIKey, so its stereo (R/S from the wedges, E/Z from the
+    double bonds' drawn geometry) is that molecule's and no other's.
 
   python tools/agiles_table.py [tools/data/agiles_table.json]   -> AGILES_codes.xlsx, AGILES_codes.csv
 """
@@ -13,7 +16,8 @@ RDLogger.DisableLog('rdApp.*')
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.dirname(HERE)
 COLS = [('Name', 'name'), ('AGILES code', 'code'), ('IUPAC name', 'iupac'), ('IUPAC name checked', 'iupac_checked'),
-        ('SMILES (as given)', 'smiles'), ('SMILES (RDKit canonical)', 'smiles_rdkit'), ('InChI', 'inchi'), ('InChIKey', 'inchikey'), ('CAS number', 'cas')]
+        ('SMILES (as given)', 'smiles'), ('SMILES (RDKit canonical)', 'smiles_rdkit'), ('InChI', 'inchi'), ('InChIKey', 'inchikey'), ('CAS number', 'cas'),
+        ('Formula (with charge)', 'formula'), ('Isotopic formula', 'isotopic_formula'), ('Molecular weight', 'mw'), ('Monoisotopic mass', 'monoisotopic')]
 
 
 def unpack(code):
@@ -42,7 +46,8 @@ def main():
         row = {'name': r['name'], 'code': r['code'], **{k: ids.get(k) or '' for _, k in COLS if k not in ('name', 'code')}}
         why = None
         try:
-            it = items(unpack(r['code']))
+            sdf = unpack(r['code'])
+            it = items(sdf)
             for _, k in COLS[2:]:
                 if (it.get('AGILES.' + k) or '') != row[k]: why = f'the code\'s {k} is not the row\'s'; break
         except Exception as e:
@@ -52,6 +57,11 @@ def main():
             if m1 is None or m2 is None: why = 'RDKit Python cannot read a SMILES'
             elif Chem.MolToSmiles(m1) != Chem.MolToSmiles(m2): why = 'the two SMILES are not the same molecule'
             elif row['inchikey'] and rdinchi.MolToInchiKey(m2) != row['inchikey']: why = 'the InChIKey is not the SMILES\' molecule'
+            else:
+                md = Chem.MolFromMolBlock(sdf.split('M  END')[0] + 'M  END\n')
+                if md is None: why = 'RDKit Python cannot read the drawing (MOL block)'
+                elif row['inchikey'] and rdinchi.MolToInchiKey(md) != row['inchikey']:
+                    why = f'the drawing reads as another molecule or stereoisomer ({rdinchi.MolToInchiKey(md)})'
         (bad.append((r['name'], why)) if why else good.append(row))
     good.sort(key=lambda x: x['name'].lower())
     xlsx, csvp = os.path.join(APP, 'AGILES_codes.xlsx'), os.path.join(APP, 'AGILES_codes.csv')
@@ -64,7 +74,7 @@ def main():
     ws.append([c for c, _ in COLS])
     for c in ws[1]: c.font = Font(bold=True, color='FFFFFF'); c.fill = PatternFill('solid', fgColor='2F5D50')
     for g in good: ws.append([g[k] for _, k in COLS])
-    for col, wdt in zip('ABCDEFGHI', (28, 60, 40, 10, 40, 40, 50, 30, 14)): ws.column_dimensions[col].width = wdt
+    for col, wdt in zip('ABCDEFGHIJKLM', (28, 60, 40, 10, 40, 40, 50, 30, 14, 16, 14, 14, 16)): ws.column_dimensions[col].width = wdt
     ws.freeze_panes = 'C2'; ws.auto_filter.ref = ws.dimensions
     for row in ws.iter_rows(min_row=2, min_col=2, max_col=2):
         for c in row: c.alignment = Alignment(wrap_text=False)
@@ -76,7 +86,7 @@ def main():
         'IUPAC name: the app\'s namer; "no" in the checked column means its name could not be read back to confirm it (shown "unchecked" in the app). A blank cell: no name.',
         'SMILES (as given): the library\'s own SMILES. SMILES (RDKit canonical): how the tab reads the molecule and numbers its atoms in the drawing.',
         'CAS number: from the app\'s library; a blank cell: the library has none for this compound.',
-        f'Every code was unpacked and checked: its identifiers are the row\'s, both SMILES are one molecule, and that molecule\'s InChIKey (RDKit) is the row\'s. {len(good):,} rows; {len(bad)} compounds left out (no code or a check failed).',
+        f'Every code was unpacked and checked: its identifiers are the row\'s, both SMILES are one molecule whose InChIKey (RDKit) is the row\'s, and the drawing alone (the MOL block: atoms, bonds, wedges, coordinates) reads back as that same molecule and stereoisomer. {len(good):,} rows; {len(bad)} compounds left out (no code or a check failed).',
     ]: about.append([line])
     about.column_dimensions['A'].width = 160
     wb.save(xlsx)

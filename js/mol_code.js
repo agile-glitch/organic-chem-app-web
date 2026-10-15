@@ -7,6 +7,7 @@
 
      >  <AGILES.format>         AGILES 1
      >  <AGILES.app>            the app version that wrote it ("1.1.0 (2026-10-15)")
+     >  <AGILES.h_parents>      the parent of each H atom (nHeavy+1 … nHeavy+nH), as atom numbers, in one line
      >  <AGILES.name> … <AGILES.cas>   the names and identifiers (IDS below: common name, IUPAC name and whether it was
                                 checked, SMILES, InChI, InChIKey, CAS number), one line each, an unknown one left out
      >  <AGILES.atoms>          "13 8": the heavy atoms (the MOL block's atoms 1..13, in its order), then the H atoms 14..21,
@@ -34,8 +35,11 @@
      left out): name (common name), iupac (the app's namer; iupac_checked 'yes' when its name reads back to exactly this
      structure, 'no' when it could not be checked), smiles (the SMILES as the molecule was given: typed, or the library
      entry's for a name; else the app's own writer), smiles_rdkit (RDKit's canonical SMILES: how the tab reads the
-     molecule, and the order its drawing numbers the atoms in), inchi, inchikey, cas (from the app's library) */
-  const IDS = ['name', 'iupac', 'iupac_checked', 'smiles', 'smiles_rdkit', 'inchi', 'inchikey', 'cas'];
+     molecule, and the order its drawing numbers the atoms in), inchi, inchikey, cas (from the app's library), formula
+     (Hill order, plain digits, charge at the end: C9H8O4, C2H3O2-), isotopic_formula (only for an isotope-labelled molecule,
+     isotopes after their element, subscript digits, as the tab writes it: CHD₃O), mw (molecular weight as the tab shows it: "180.16 g/mol"),
+     monoisotopic ("180.0423 Da"; for an isotope-labelled molecule the exact mass of that isotopologue) */
+  const IDS = ['name', 'iupac', 'iupac_checked', 'smiles', 'smiles_rdkit', 'inchi', 'inchikey', 'cas', 'formula', 'isotopic_formula', 'mw', 'monoisotopic'];
   const MODES = ['cip', 'hybridization', 'formal', 'partial', 'oxidation', 'lonepairs', 'pka', 'steric', 'electronic', 'taft'];
 
   const item = (name, lines) => `>  <${name}>\n${lines.filter(l => l !== '').join('\n')}${lines.some(l => l !== '') ? '\n' : ''}\n`;
@@ -49,6 +53,7 @@
     let out = mb + item(NS + 'format', [FORMAT]);
     if (o.app) out += item(NS + 'app', [oneLine(o.app)]);
     out += item(NS + 'atoms', [`${o.nHeavy | 0} ${o.nH | 0}`]);
+    if (o.hParents && o.hParents.length) out += item(NS + 'h_parents', [o.hParents.map(x => x + 1).join(' ')]);
     const I = o.ids || {};
     for (const k of IDS) if (I[k] != null && oneLine(I[k]) !== '') out += item(NS + k, [oneLine(I[k])]);
     const L = o.labels || {};
@@ -109,9 +114,11 @@
         angles.push({ a: +x[1] - 1, i: +x[2] - 1, j: +x[3] - 1, text: x[4] });
       }
     }
+    const hp = get('h_parents');
+    const hParents = hp ? hp.lines.join(' ').trim().split(/\s+/).map(x => +x - 1) : null;
     const app = get('app'), ids = {};
     for (const k of IDS) { const it = get(k); if (it && it.lines.length) ids[k] = it.lines.join(' ').trim(); }
-    return { ok: true, version: +version[1], molblock, app: app ? app.lines.join(' ') : '', nHeavy, nH, labels, angles, ids,
+    return { ok: true, version: +version[1], molblock, app: app ? app.lines.join(' ') : '', nHeavy, nH, hParents, labels, angles, ids,
       notes: items.filter(x => x.name === NS + 'note' || x.name === OLD_NS + 'note').map(x => x.lines.join(' ')) };
   }
 
