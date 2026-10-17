@@ -5105,12 +5105,31 @@ function makeChem() {
       return best;
     };
 
+    /* The branch that leads on to the most atoms is drawn first, so it takes
+       the zigzag and the small groups (a Br, an OH, a methyl) hang off the
+       skeleton, whatever order the SMILES listed them in. Otherwise
+       Br[C@@H](c1ccccc1)[C@H](Br)c1ccccc1 put Br–C–C–Ph on the zigzag and
+       bent Ph–C–C–Ph into a U: meso-stilbene dibromide then shows both Br on
+       wedges, which reads as the wrong isomer, where the skeleton drawn as a
+       zigzag shows the textbook wedge and dash. Ties keep the bond order. */
+    const adj = new Map(g.atoms.map(a => [a.id, adjOf(a.id)]));
+    const reach = (from, start) => {
+      const seen = new Set([from, start]), st = [start];
+      let k = 0;
+      while (st.length) {
+        k++;
+        adj.get(st.pop()).forEach(x => { if (!seen.has(x) && !placed.has(x)) { seen.add(x); st.push(x); } });
+      }
+      return k;
+    };
     const queue = [...placed];
     if (!queue.length) { setPos(g.atoms[0].id, 0, 0); queue.push(g.atoms[0].id); }
     while (queue.length) {
       const pid = queue.shift();
       const p = byId.get(pid);
-      adjOf(pid).forEach(nb => {
+      const next = adj.get(pid).filter(nb => !placed.has(nb));
+      const size = new Map(next.map(nb => [nb, reach(pid, nb)]));
+      next.sort((x, y) => size.get(y) - size.get(x)).forEach(nb => {
         if (placed.has(nb)) return;
         const th = dirFor(pid);
         setPos(nb, p.x + L * Math.cos(th), p.y + L * Math.sin(th));
@@ -5789,6 +5808,15 @@ function makeChem() {
       const px = A.x + t * ux, py = A.y + t * uy;
       p.x = 2 * px - p.x;
       p.y = 2 * py - p.y;
+    });
+    /* a reflection inverts every stereocentre it moves: swap each moved
+       centre's wedges and dashes so only this bond's E/Z changes. Without
+       it C/C=C\[C@H](O)CC, whose alkene the layout draws trans first, came
+       out as the other enantiomer, and in a macrocycle (natamycin), where
+       the far side is the whole ring, every centre did */
+    const movedSet = new Set(moved);
+    g.bonds.forEach(b => {
+      if (movedSet.has(b.narrow) && (b.stereo === 'wedge' || b.stereo === 'dash')) b.stereo = b.stereo === 'wedge' ? 'dash' : 'wedge';
     });
   }
 
