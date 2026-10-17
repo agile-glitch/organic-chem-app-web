@@ -13897,7 +13897,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
        2-oxa-6-azaspiro[3.3]heptane). FUSED_TPL is tried first, so the names it gave stay as they were. */
     let RP = null;
     /* the order of a locant: 4 < 4a < 4b < 5 */
-    const LOCNUM = L => { const m = /^(\d+)([a-z]?)$/.exec(String(L)); return m ? +m[1] + (m[2] ? (m[2].charCodeAt(0) - 96) / 100 : 0) : NaN; };
+    const LOCNUM = L => { const m = /^(\d+)([a-z]?)('*)$/.exec(String(L)); return m ? +m[1] + (m[2] ? (m[2].charCodeAt(0) - 96) / 100 : 0) + m[3].length / 1000 : NaN; };
     const censusKey = els => { const c = {}; els.forEach(e => { c[e] = (c[e] || 0) + 1; }); return Object.keys(c).sort().map(k => k + c[k]).join(''); };
     const REPLACEMENT = { O: 'oxa', S: 'thia', N: 'aza', P: 'phospha' };
     const REPL_ORDER = ['O', 'S', 'N', 'P'];
@@ -14187,6 +14187,117 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
     }
 
     /* every way this ring system can be read as one of the learned parents */
+    /* ---- spiro unions of two ring components (IUPAC P-24.5): spiro[cyclohexane-1,1'-indene] -----------------------
+       The system is split at its spiro atom; each component is named as a parent of its own (a learned parent, a von
+       Baeyer name or a cycloalkane), the second one's locants primed; the components are cited in alphabetical order.
+       The spiro atom is sp3 but never written: it takes the indicated hydrogen when the parent has one
+       (spiro[cyclohexane-1,1'-indene]), else the other sp3 atoms are hydro prefixes, one more indicated hydrogen when
+       their number is odd (3',4'-dihydro-2'H-spiro[cyclohexane-1,1'-naphthalene]); all of it goes in front. */
+    function ringBlocks(sys, adjIn) {
+      /* the biconnected blocks of the ring system (Tarjan) */
+      const idx = new Map(), low = new Map(), blocks = [], stack = [];
+      let t = 0;
+      const dfs = (u, parent) => {
+        idx.set(u, t); low.set(u, t); t++;
+        for (const v of adjIn(u)) {
+          if (v === parent) continue;
+          if (!idx.has(v)) {
+            stack.push([u, v]); dfs(v, u);
+            low.set(u, Math.min(low.get(u), low.get(v)));
+            if (low.get(v) >= idx.get(u)) {
+              const comp = new Set(); let e;
+              do { e = stack.pop(); comp.add(e[0]); comp.add(e[1]); } while (!(e[0] === u && e[1] === v));
+              blocks.push([...comp]);
+            }
+          } else if (idx.get(v) < idx.get(u)) { stack.push([u, v]); low.set(u, Math.min(low.get(u), idx.get(v))); }
+        }
+      };
+      dfs(sys[0], null);
+      return blocks.filter(b => b.length >= 3);
+    }
+    /* the sp3 atoms of a component other than the spiro atom, written as indicated hydrogen and hydro prefixes */
+    function spiroHydro(rest, k, ih0) {
+      const opt = (ihs, hyd) => hyd.length % 2 ? null : { ih: ihs, hydro: hyd };
+      if (k >= 1) { const o = opt(rest.slice(0, k - 1), rest.slice(k - 1)); if (o) return o; }   // the spiro atom carries the indicated H
+      let ihs = rest.slice(0, k), hyd = rest.slice(k);
+      if (hyd.length % 2) { ihs = ihs.concat(hyd.slice(0, 1)); hyd = hyd.slice(1); }             // one added indicated hydrogen
+      return { ih: ihs, hydro: hyd };
+    }
+    function componentReadings(block, spiro, elOf, adjIn, unsatOf, bondOrderOf) {
+      const bset = new Set(block);
+      const adjB = id => adjIn(id).filter(x => bset.has(x));
+      const nbonds = block.reduce((t, id) => t + adjB(id).length, 0) / 2;
+      const out = [];
+      if (nbonds === block.length && block.every(id => elOf(id) === 'C')) {
+        /* a cycloalkane / cycloalkene component, numbered from the spiro atom */
+        const n = block.length;
+        if (!STEMS[n]) return [];
+        for (const first of adjB(spiro)) {
+          const order = [spiro, first];
+          while (order.length < n) { const nx = adjB(order[order.length - 1]).find(x => !order.includes(x)); if (nx === undefined) return []; order.push(nx); }
+          const dbl = [];
+          for (let k = 0; k < n; k++) { const o = bondOrderOf(order[k], order[(k + 1) % n]); if (o === 3) return []; if (o === 2) dbl.push(k + 1); }
+          const unsat = !dbl.length ? 'an' : dbl.length === 1 ? '-' + dbl[0] + '-en' : 'a-' + dbl.join(',') + '-' + MULT[dbl.length] + 'en';
+          out.push({ atomLoc: new Map(order.map((id, k) => [id, String(k + 1)])), bare: 'cyclo' + STEMS[n] + unsat + 'e', ih: [], hydro: [], dblKey: dbl });
+        }
+        return out;
+      }
+      const R = ringParents();
+      const pos = new Map(block.map((id, i) => [id, i]));
+      const mel = block.map(elOf), madj = block.map(id => adjB(id).map(x => pos.get(x))), msat = block.map(id => !unsatOf(id));
+      for (const t of R.el.get(censusKey(mel)) || []) {
+        if (t.el.length !== block.length || t.b.length !== nbonds) continue;
+        matchTemplate(t, mel, madj, msat, true, map => {
+          const atomLoc = new Map(), num = new Map();
+          for (let i = 0; i < map.length; i++) { atomLoc.set(block[map[i]], t.loc[i]); num.set(block[map[i]], t._num[i]); }
+          const sp3 = []; for (let i = 0; i < map.length; i++) if (msat[map[i]] && !t.sat[i]) sp3.push(block[map[i]]);
+          if (!sp3.includes(spiro)) return false;
+          const rest = sp3.filter(x => x !== spiro).sort((x, y) => num.get(x) - num.get(y));
+          const free = map.filter((_, i) => !t.sat[i]).length;
+          if (t.satName && sp3.length === free) { out.push({ atomLoc, bare: t.satName, ih: [], hydro: [], dblKey: [] }); return true; }
+          if (t.satOnly) return false;
+          if (t.ih > 2) return false;
+          const h = spiroHydro(rest, t.ih);
+          if (h.hydro.length && !HYDRO_MULT[h.hydro.length]) return false;
+          out.push({ atomLoc, bare: t.nm, ih: h.ih, hydro: h.hydro, dblKey: h.hydro.map(x => num.get(x)) });
+          return true;
+        }, 240);
+      }
+      if (out.length) return out;
+      /* a polycyclic component without a learned parent: its von Baeyer name */
+      for (const c of vonBaeyerCandidates(block, elOf, adjB, bondOrderOf)) out.push({ atomLoc: c.atomLoc, bare: c.name, ih: [], hydro: [], dblKey: c.hydroNum });
+      return out;
+    }
+    function spiroCandidates(sys, elOf, adjIn, unsatOf, bondOrderOf) {
+      const blocks = ringBlocks(sys, adjIn);
+      if (blocks.length !== 2) return [];                    // (two components; dispiro systems are not named yet)
+      const shared = blocks[0].filter(x => blocks[1].includes(x));
+      if (shared.length !== 1) return [];
+      const spiro = shared[0];
+      const comp = blocks.map(b => componentReadings(b, spiro, elOf, adjIn, unsatOf, bondOrderOf));
+      if (!comp[0].length || !comp[1].length) return [];
+      const key = r => r.bare.replace(/^[\d,]+-/, '').replace(/[\[\]()]/g, '');
+      const out = [];
+      for (const ra of comp[0]) for (const rb of comp[1]) {
+        if (out.length >= 480) break;
+        if (key(ra) === key(rb)) return [];                  // (spirobi[…] not named yet)
+        const [A, B] = key(ra) < key(rb) ? [ra, rb] : [rb, ra];   // alphabetical: the first one unprimed
+        const atomLoc = new Map(), atomNum = new Map();
+        A.atomLoc.forEach((L, id) => { atomLoc.set(id, L); atomNum.set(id, LOCNUM(L)); });
+        B.atomLoc.forEach((L, id) => { if (id !== spiro) { atomLoc.set(id, L + "'"); atomNum.set(id, LOCNUM(L + "'")); } });
+        const sa = A.atomLoc.get(spiro), sb = B.atomLoc.get(spiro) + "'";
+        const hydro = A.hydro.concat(B.hydro).sort((x, y) => atomNum.get(x) - atomNum.get(y));
+        const ih = A.ih.concat(B.ih).sort((x, y) => atomNum.get(x) - atomNum.get(y));
+        if (hydro.length && !HYDRO_MULT[hydro.length]) continue;
+        const hyTxt = hydro.length ? hydro.map(id => atomLoc.get(id)).join(',') + '-' + HYDRO_MULT[hydro.length] + 'hydro' : '';
+        const ihTxt = ih.length ? ih.map(id => atomLoc.get(id) + 'H').join(',') : '';
+        const name = hyTxt + (ihTxt ? (hyTxt ? '-' : '') + ihTxt + '-' : '') + 'spiro[' + A.bare + '-' + sa + ',' + sb + '-' + B.bare + ']';
+        out.push({ atomLoc, atomNum, learned: true, skeleton: true, ihLoc: null, ihNum: null, hydro: hydro.map(id => atomLoc.get(id)),
+                   hydroNum: hydro.map(id => atomNum.get(id)), hetKey: [[LOCNUM(sa), LOCNUM(sb)], ih.map(id => atomNum.get(id))], name });
+      }
+      return out;
+    }
+
     function learnedCandidates(sys, elOf, adjIn, unsatOf, bondOrderOf) {
       const R = ringParents();
       const pos = new Map(sys.map((id, i) => [id, i]));
@@ -14275,6 +14386,8 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           if (!cands.length) cands = learnedCandidates(sys, el, adjIn, unsatOf, bondOrder);
           /* nothing else fits: the von Baeyer name, which every polycyclic system has */
           if (!cands.length) cands = vonBaeyerCandidates(sys, el, adjIn, bondOrder);
+          /* a spiro union of two components (von Baeyer has no name for a spiro atom) */
+          if (!cands.length) cands = spiroCandidates(sys, el, adjIn, unsatOf, bondOrder);
           if (!cands.length) throw new Error('fused or bridged ring');
           return { atoms: sys, set: sset, het: sys.filter(id => el(id) !== 'C'), aromatic: sys.every(unsatOf), fused: cands };
         }
