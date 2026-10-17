@@ -16,8 +16,8 @@ indicated hydrogen), and the locant of every atom. Kinds:
           (7-oxabicyclo[2.2.1]heptane), so a skeleton template is all carbon
   spiro   monospiro skeletons (spiro[4.5]decane), heteroatoms by replacement prefixes (2-oxa-6-azaspiro[3.3]heptane)
 
-    python tools/ring_parents/learn.py            writes the generated table into js/chem.js (between its RING_PARENTS
-                                                  markers), and the full table to tools/ring_parents/out/ring_parents.json
+    python tools/ring_parents/learn.py            writes data/ring_parents.js (loaded with js/chem.js), and the full
+                                                  table to tools/ring_parents/out/ring_parents.json
 Needs Java and OPSIN (as tools/namer_bench/bench.py) and RDKit (to tell structures apart).
 """
 import itertools, json, os, re, subprocess, sys
@@ -189,13 +189,19 @@ PREFIXES = [  # (prefix, its own locant count (0: benzo/naphtho by letters only)
     ('[1,2,3]triazolo', 5), ('tetrazolo', 5), ('[1,2,4]triazino', 6), ('[1,3]dioxolo', 5), ('[1,4]dioxino', 6),
     ('[1,4]oxazino', 6), ('[1,4]thiazino', 6), ('pyrano', 6), ('thiopyrano', 6), ('azepino', 7), ('oxepino', 7),
     ('[1,2,5]oxadiazolo', 5), ('[1,2,5]thiadiazolo', 5), ('[1,3,4]thiadiazolo', 5), ('[1,3,4]oxadiazolo', 5),
-    ('indolo', 9), ('quinolino', 10), ('isoquinolino', 10)]
+    ('indolo', 9), ('quinolino', 10), ('isoquinolino', 10), ('cycloocta', 0), ('cyclopropa', 0), ('thiepino', 7),
+    ('[1,4]diazepino', 7), ('[1,4]oxazepino', 7), ('[1,4]thiazepino', 7)]
 BASES = ['pyridine', 'pyrimidine', 'pyrazine', 'pyridazine', '1,2,4-triazine', '1,3,5-triazine', 'pyrrole', 'imidazole',
          'pyrazole', 'furan', 'thiophene', '1,3-oxazole', '1,3-thiazole', '1,2-oxazole', '1,2-thiazole', '1,2,4-triazole',
          '1,2,3-triazole', '1,2,5-oxadiazole', '1,2,5-thiadiazole', '1,3,4-thiadiazole', '1,3,4-oxadiazole', 'tetrazole',
          'pyran', 'thiopyran', 'azepine', 'oxepine', '1,4-oxazine', '1,4-thiazine', '1,4-dioxine', '1,3-dioxole',
          '1,4-diazepine', '1,4-oxazepine', '1,3-diazepine', 'indole', 'quinoline', 'isoquinoline', 'quinazoline',
-         'quinoxaline', 'benzimidazole', 'indazole', 'purine', 'carbazole', 'phthalazine', 'pteridine', 'naphthyridine']
+         'quinoxaline', 'benzimidazole', 'indazole', 'purine', 'carbazole', 'phthalazine', 'pteridine', 'naphthyridine',
+         # all-carbon bases (steroids are cyclopenta[a]phenanthrenes) and benzo-named bases for a third ring
+         'naphthalene', 'phenanthrene', 'anthracene', 'indene', 'azulene', 'fluorene', 'pentalene', 'heptalene',
+         'acenaphthylene', 'phenalene', '[1,4]benzodiazepine', '[1,4]benzoxazepine', '[1,5]benzodiazepine',
+         '[1,4]benzoxazine', '[1,4]benzothiazine', '[1,3]benzoxazole', '[1,3]benzothiazole', '[1]benzofuran',
+         '[1]benzothiophene', '[2]benzopyran', '[1]benzopyran', '[3]benzazepine', '[2]benzazepine', '[1]benzazepine']
 
 
 def component_info(mol):
@@ -231,7 +237,9 @@ PREFIX_PARENT = {'benzo': 'benzene', 'naphtho': 'naphthalene', 'cyclopenta': 'cy
                  '[1,4]thiazino': '1,4-thiazine', 'pyrano': 'pyran', 'thiopyrano': 'thiopyran', 'azepino': 'azepine',
                  'oxepino': 'oxepine', '[1,2,5]oxadiazolo': '1,2,5-oxadiazole', '[1,2,5]thiadiazolo': '1,2,5-thiadiazole',
                  '[1,3,4]thiadiazolo': '1,3,4-thiadiazole', '[1,3,4]oxadiazolo': '1,3,4-oxadiazole', 'indolo': 'indole',
-                 'quinolino': 'quinoline', 'isoquinolino': 'isoquinoline'}
+                 'quinolino': 'quinoline', 'isoquinolino': 'isoquinoline', 'cycloocta': 'cyclooctatetraene',
+                 'cyclopropa': 'cyclopropene', 'thiepino': 'thiepine', '[1,4]diazepino': '1,4-diazepine',
+                 '[1,4]oxazepino': '1,4-oxazepine', '[1,4]thiazepino': '1,4-thiazepine'}
 
 
 def fusion_names(info):
@@ -244,6 +252,7 @@ def fusion_names(info):
         for base in BASES:
             bi = info.get(base)
             if not pi or not bi or not senior(bi, pi): continue
+            if pre == 'benzo' and 'benz' in base: continue
             nb_ = bi['size'] + bi['rings'] - 1                       # peripheral bonds (enough letters)
             bname = re.sub(r"^([0-9,]+)-", lambda m: "[" + m.group(1) + "]", base)   # 1,3-oxazole is cited as [1,3]oxazole
             for L in letters[:min(nb_, 14)]:
@@ -255,6 +264,71 @@ def fusion_names(info):
                         if 1 <= y <= nloc: out.append(((L, (min(x, y), x, y)), f'{pre}[{x},{y}-{L}]{bname}'))
     out.sort(key=lambda t: t[0])
     return [n for _, n in out]
+
+
+MULTI_P = [('cyclohepta', 7), ('cyclopenta', 5), ('cycloocta', 8), ('pyrido', 6), ('thieno', 5), ('furo', 5), ('pyrrolo', 5),
+           ('imidazo', 5), ('oxepino', 7), ('thiepino', 7), ('azepino', 7), ('pyrano', 6), ('[1,4]diazepino', 7),
+           ('[1,4]oxazepino', 7)]
+MULTI_B = ['pyridine', 'pyrimidine', 'pyrazine', 'thiophene', 'furan', 'pyrrole', 'imidazole', '[1,3]thiazole', '[1,3]oxazole',
+           'pyrazole', 'azepine', '[1,2,4]triazole', 'pyridazine']
+DIBENZO_B = ['azepine', 'oxepine', 'thiepine', '[1,4]oxazepine', '[1,4]diazepine', '[1,4]thiazepine', '[1,5]diazocine',
+             'azocine', 'oxocine', 'pyran', 'thiopyran', '[1,4]dioxine', '[1,4]oxazine', '[1,4]thiazine', '[1,4]dithiine',
+             'pyrrole', 'furan', 'thiophene', 'pyridine', '[1,3]dioxole', '[1,4]dioxocine', '[7]annulene', '[8]annulene',
+             '[1,4]diazocine', '[1,2]diazepine', '[1,3]diazepine', 'pyrazine']
+
+
+def multi_names():
+    """three-component fusion names: dibenzo[b,f]X and benzo[x,y]P[a,b-L]B (5H-benzo[5,6]cyclohepta[1,2-b]pyridine)"""
+    out = []
+    L = 'abcdefghij'
+    for b in DIBENZO_B:
+        for i in range(7):
+            for j in range(i + 2, 9):
+                out.append(f'dibenzo[{L[i]},{L[j]}]{b}')
+    for pre, n in MULTI_P:
+        bonds = [(k, k % n + 1) for k in range(1, n + 1)]
+        for b in MULTI_B:
+            for x, y in bonds:
+                for a_, c_ in bonds:
+                    if {x, y} & {a_, c_}: continue
+                    for xy in ((x, y), (y, x)):
+                        for ac in ((a_, c_), (c_, a_)):
+                            for Lb in L[:6]:
+                                out.append(((Lb, min(ac), ac, min(xy), xy), f'benzo[{xy[0]},{xy[1]}]{pre}[{ac[0]},{ac[1]}-{Lb}]{b}'))
+    dib = [n for n in out if isinstance(n, str)]
+    rest = [n for _, n in sorted(t for t in out if not isinstance(t, str))]
+    return dib + rest
+
+
+BRIDGED_PARENTS = ['naphthalene', 'anthracene', 'phenanthrene', '1H-indene', 'quinoline', 'isoquinoline', '1-benzazepine',
+                   '2-benzazepine', '3-benzazepine', '3-benzazocine', '2-benzazocine', '5H-benzo[7]annulene',
+                   'benzofuro[3,2-e]isoquinoline', 'phenanthridine', 'acridine', '9H-carbazole', 'azulene', '1-benzofuran',
+                   '1-benzothiophene', '1H-indole', 'quinolizine', 'indolizine', '1,5-naphthyridine', 'quinazoline',
+                   '5H-cyclohepta[b]pyridine', '5H-dibenzo[a,d][7]annulene', 'pentalene', 'benzo[f]quinoline',
+                   '1H-1,4-benzodiazepine', 'indeno[1,2-b]indole', '1H-benzimidazole', '2H-1-benzopyran']
+BRIDGES = ['methano', 'ethano', 'epoxy', 'epimino', 'epithio', 'propano', 'etheno', 'epoxymethano', 'iminomethano',
+           'methanoxymethano', 'iminoethano', 'ethanediylidene']
+
+
+def parent_max_locant(pm):
+    return max(int(a[1]) for a in pm['atoms'] if a[1] and a[1].isdigit())
+
+
+def bridged_names(parents_parsed):
+    """bridged fused names: 1,4-methanonaphthalene, 9,10-ethanoanthracene, 4,12-methanobenzofuro[3,2-e]isoquinoline:
+    a bridge between any two atoms of the parent that are not neighbours"""
+    out = []
+    for nm, pm in parents_parsed:
+        if not pm: continue
+        bare = re.sub(r'^(\d+[a-z]?H,?)+-', '', nm)
+        locs = [a[1] for a in pm['atoms'] if a[1]]
+        adj = {(pm['atoms'][i][1], pm['atoms'][j][1]) for i, j, _ in pm['bonds']}
+        for i, x in enumerate(locs):
+            for y in locs[i + 1:]:
+                if (x, y) in adj or (y, x) in adj: continue
+                for br in BRIDGES:
+                    out.append(f'{x},{y}-{br}{bare}')
+    return out
 
 
 def benzo_name(t):
@@ -283,6 +357,17 @@ def vb_names():
             'tricyclo[4.3.1.1~3,8~]undecane', 'pentacyclo[4.2.0.0~2,5~.0~3,8~.0~4,7~]octane', 'tricyclo[1.1.1.0~1,3~]pentane',
             'tricyclo[3.1.1.0~3,6~]heptane', 'tricyclo[4.1.0.0~2,7~]heptane', 'bicyclo[2.2.2]octane']
     return out
+
+
+def macrocycle_names():
+    """rings of 11 to 30 atoms: heteroatoms by replacement prefixes (1,4,7,10,13,16-hexaoxacyclooctadecane)"""
+    return ['cyclo' + ALKANE_BIG[n] for n in range(11, 31)]
+
+
+ALKANE_BIG = {11: 'undecane', 12: 'dodecane', 13: 'tridecane', 14: 'tetradecane', 15: 'pentadecane', 16: 'hexadecane',
+              17: 'heptadecane', 18: 'octadecane', 19: 'nonadecane', 20: 'icosane', 21: 'henicosane', 22: 'docosane',
+              23: 'tricosane', 24: 'tetracosane', 25: 'pentacosane', 26: 'hexacosane', 27: 'heptacosane', 28: 'octacosane',
+              29: 'nonacosane', 30: 'triacontane'}
 
 
 def spiro_names():
@@ -353,8 +438,35 @@ def learn():
         else:
             t.pop('fusionName')
 
-    # von Baeyer and spiro skeletons (all carbon)
-    for kind, names in (('vb', vb_names()), ('spiro', spiro_names())):
+    # three-component fusions and bridged fused parents
+    multi = multi_names()
+    print(f'multi-component fusions: {len(multi)} names tried', flush=True)
+    for nm, pm in zip(multi, opsin_parse(multi)):
+        if pm: keep(template(nm, pm, 'fused'), 3)
+    bp = opsin_parse(BRIDGED_PARENTS)
+    for nm, pm in zip(BRIDGED_PARENTS, bp):
+        if not pm: print('  OPSIN does not read', nm)
+    br = bridged_names(list(zip(BRIDGED_PARENTS, bp)))
+    print(f'bridged fused: {len(br)} names tried', flush=True)
+    top = {re.sub(r'^(\d+[a-z]?H,?)+-', '', nm): parent_max_locant(pm) for nm, pm in zip(BRIDGED_PARENTS, bp) if pm}
+    for nm, pm in zip(br, opsin_parse(br)):
+        if not pm: continue
+        t = template(nm, pm, 'fused')
+        if not t: continue
+        # the bridge's own atoms (numbered after the fused system's) are sp3 by definition: not indicated hydrogen
+        mx = next((v for k, v in top.items() if nm.endswith(k)), None)
+        if mx is None: continue
+        unsat = set()
+        for i, j, o in pm['bonds']:
+            if o >= 2: unsat |= {i, j}
+        for i, L in enumerate(t['loc']):
+            if L.isdigit() and int(L) > mx and i not in unsat and not t['sat'][i]:
+                t['sat'][i] = 1; t['ih'] -= 1
+        if t['ih'] < 0: continue
+        keep(t, 4)
+
+    # von Baeyer, spiro and large-ring skeletons (all carbon)
+    for kind, names in (('vb', vb_names() + macrocycle_names()), ('spiro', spiro_names())):
         ok = 0
         for nm, pm in zip(names, opsin_parse(names)):
             t = template(nm, pm, kind)
@@ -364,37 +476,65 @@ def learn():
     return out
 
 
+EL_CODE = {'Se': 'e', 'Te': 't', 'Si': 'i', 'As': 'a', 'Ge': 'g', 'B': 'B', 'C': 'C', 'N': 'N', 'O': 'O', 'S': 'S', 'P': 'P'}
+B36 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+LOCNUM = lambda L: (int(re.match(r'\d+', L).group()), L[len(re.match(r'\d+', L).group()):])
+
+
+def compress_locants(locs):
+    """1,2,3,3a,4,5,6,7,7a -> 1-3,3a,4-7,7a"""
+    out, run = [], []
+    def flush():
+        if len(run) > 2: out.append(f'{run[0]}-{run[-1]}')
+        else: out.extend(str(x) for x in run)
+        run.clear()
+    for L in locs:
+        if L.isdigit() and run and int(L) == run[-1] + 1: run.append(int(L)); continue
+        flush()
+        if L.isdigit(): run.append(int(L))
+        else: out.append(L)
+    flush()
+    return ','.join(out)
+
+
 def to_js(tpls):
-    """the compact table written into js/chem.js: one string per template
-       kind|name (no indicated hydrogen)|elements(,)|bonds i-j(,)|always-sp3 atoms(,)|indicated hydrogens|locants(,)|
-       saturated name (monocycles; '!' + name: the saturated ring only)"""
+    """the compact table written to data/ring_parents.js: one string per parent, atoms in locant order,
+       kind(m f v s)|name (no indicated hydrogen)|elements (one character each)|bonds (two base-62 digits each)|
+       always-sp3 atoms (base-62 digits)|indicated hydrogens|locants (runs as 1-4)|saturated name (monocycles; '!' +
+       name: the saturated ring only)"""
     rows = []
     for t in tpls:
-        rows.append('|'.join([t['kind'], t['nm'], ','.join(t['el']), ','.join(f'{i}-{j}' for i, j in t['b']),
-                              ','.join(str(i) for i, s in enumerate(t['sat']) if s), str(t['ih']), ','.join(t['loc']),
+        order = sorted(range(len(t['el'])), key=lambda i: LOCNUM(t['loc'][i]))
+        new = {old: k for k, old in enumerate(order)}
+        if len(order) > len(B36): continue
+        el = ''.join(EL_CODE[t['el'][i]] for i in order)
+        bonds = ''.join(B36[a] + B36[b] for a, b in sorted(tuple(sorted((new[i], new[j]))) for i, j in t['b']))
+        sat = ''.join(B36[new[i]] for i, v in enumerate(t['sat']) if v)
+        locs = compress_locants([t['loc'][i] for i in order])
+        rows.append('|'.join([t['kind'][0], t['nm'], el, bonds, ''.join(sorted(sat, key=B36.index)), str(t['ih']), locs,
                               t.get('satName', '') if not t.get('satOnly') else '!' + t['nm']]))
     return rows
 
 
 def main():
-    tpls = learn()
+    js_out = os.path.join(HERE, 'out', 'ring_parents.json')
+    if '--from-json' in sys.argv:                                         # rewrite the table without asking OPSIN again
+        tpls = json.load(open(js_out, encoding='utf-8'))
+    else:
+        tpls = learn()
     counts = {}
     for t in tpls: counts[t['kind']] = counts.get(t['kind'], 0) + 1
     print('templates:', counts, flush=True)
     os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)                 # (the full table, for inspection; not kept in git)
-    with open(os.path.join(HERE, 'out', 'ring_parents.json'), 'w', encoding='utf-8') as f:
+    with open(js_out, 'w', encoding='utf-8') as f:
         json.dump(tpls, f, ensure_ascii=False, indent=0)
     rows = to_js(tpls)
-    js = os.path.join(REPO, 'js', 'chem.js')
-    s = open(js, encoding='utf-8').read()
-    a, b = '/* RING_PARENTS:BEGIN', '/* RING_PARENTS:END */'
-    if a not in s: raise SystemExit('js/chem.js has no RING_PARENTS markers')
-    i, j = s.index(a), s.index(b)
-    block = (a + ' (generated by tools/ring_parents/learn.py from OPSIN: do not edit by hand) */\n'
-             '    const RING_PARENTS_RAW = ' + json.dumps(rows, ensure_ascii=False, separators=(',', ':')).replace('","', '",\n      "') + ';\n    ')
-    s = s[:i] + block + s[j:]
-    open(js, 'w', encoding='utf-8', newline='\n').write(s)
-    print(f'js/chem.js: {len(rows)} ring parents, {len(block) / 1e3:.0f} kB')
+    out = os.path.join(REPO, 'data', 'ring_parents.js')
+    text = ('/* generated by tools/ring_parents/learn.py from OPSIN: do not edit by hand. The ring parents the IUPAC namer '
+            '(js/chem.js) knows, one string each: kind|name|elements|bonds|sp3 atoms|indicated H|locants|saturated name */\n'
+            'window.RING_PARENTS=' + json.dumps(rows, ensure_ascii=False, separators=(',', ':')).replace('","', '",\n"') + ';\n')
+    open(out, 'w', encoding='utf-8', newline='\n').write(text)
+    print(f'data/ring_parents.js: {len(rows)} ring parents, {len(text) / 1e6:.2f} MB')
 
 
 if __name__ == '__main__':

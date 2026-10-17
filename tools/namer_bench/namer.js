@@ -7,6 +7,8 @@ const ctx = { window: {}, console: { log() {}, warn() {}, error() {}, info() {} 
 ctx.self = ctx.globalThis = ctx;
 vm.createContext(ctx);
 const CHEM = process.env.CHEM_JS || path.join(__dirname, '..', '..', 'js', 'chem.js');
+const RINGS = process.env.RING_PARENTS_JS || path.join(path.dirname(CHEM), '..', 'data', 'ring_parents.js');
+if (fs.existsSync(RINGS)) vm.runInContext(fs.readFileSync(RINGS, 'utf8'), ctx, { filename: 'ring_parents.js' });   // the namer's ring parents
 vm.runInContext(fs.readFileSync(CHEM, 'utf8'), ctx, { filename: 'chem.js' });
 const C = ctx.window.Chem;
 
