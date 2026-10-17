@@ -73,7 +73,7 @@ def name_all(items):
                        capture_output=True, text=True, encoding='utf-8')
     out = {}
     for line in p.stdout.splitlines():
-        d = json.loads(line); out[d['id']] = (d.get('name'), d.get('error'))
+        d = json.loads(line); out[d['id']] = (d.get('name'), (d.get('why') and ('namer: ' + d['why'])) or d.get('error'))
     return out
 
 

@@ -13675,7 +13675,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
   const STEMS = ['', 'meth', 'eth', 'prop', 'but', 'pent', 'hex', 'hept', 'oct', 'non', 'dec',
                  'undec', 'dodec', 'tridec', 'tetradec', 'pentadec', 'hexadec', 'heptadec', 'octadec', 'nonadec', 'icos',
                  'henicos', 'docos', 'tricos', 'tetracos', 'pentacos', 'hexacos', 'heptacos', 'octacos', 'nonacos', 'triacont'];
-  const MULT = ['', '', 'di', 'tri', 'tetra', 'penta', 'hexa'];
+  const MULT = ['', '', 'di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa', 'nona', 'deca', 'undeca', 'dodeca', 'trideca', 'tetradeca', 'pentadeca', 'hexadeca'];
   const HALO = { F: 'fluoro', Cl: 'chloro', Br: 'bromo', I: 'iodo' };
 
   function componentsOf(g) {
@@ -13899,8 +13899,8 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
     /* the order of a locant: 4 < 4a < 4b < 5 */
     const LOCNUM = L => { const m = /^(\d+)([a-z]?)$/.exec(String(L)); return m ? +m[1] + (m[2] ? (m[2].charCodeAt(0) - 96) / 100 : 0) : NaN; };
     const censusKey = els => { const c = {}; els.forEach(e => { c[e] = (c[e] || 0) + 1; }); return Object.keys(c).sort().map(k => k + c[k]).join(''); };
-    const REPLACEMENT = { O: 'oxa', S: 'thia', N: 'aza' };
-    const REPL_ORDER = ['O', 'S', 'N'];
+    const REPLACEMENT = { O: 'oxa', S: 'thia', N: 'aza', P: 'phospha' };
+    const REPL_ORDER = ['O', 'S', 'N', 'P'];
     /* the table is data/ring_parents.js (window.RING_PARENTS, loaded before this file): one string per parent,
        kind(m f v s)|name|elements (one character each)|bonds (two base-62 digits each)|always-sp3 atoms|indicated
        hydrogens|locants (runs written 1-4)|saturated name. Without it the namer names what FUSED_TPL covers */
@@ -14018,6 +14018,174 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       const name = repl + (/ane$/.test(t.nm) ? stem + unsat + 'e' : t.nm);
       return { t, atomLoc, atomNum, learned: true, skeleton: true, ihLoc: null, ihNum: null, hydro: [], hydroNum: dbl.map(d => d.num), hetKey: [hetSet, hetOrder], name };
     }
+    /* ---- von Baeyer names for ANY polycyclic system (IUPAC P-23.2), when no learned parent fits ----------------
+       The main ring holds as many atoms as possible (Rule A), the main bridge is as large as possible (B) and divides
+       the main ring as symmetrically as possible (C), and the superscripts are as low as possible (D). Numbering: from a
+       main bridgehead round the longer segment, then the shorter, then the main bridge from the end nearer atom 1;
+       the secondary bridges follow, independent before dependent and larger before smaller, each from the end nearer
+       the higher-numbered bridgehead. Every numbering that ties on A-D is returned: heteroatoms (replacement
+       prefixes), double bonds and substituents then choose, as for any parent. */
+    const VB_MULT = { 2: 'bi', 3: 'tri', 4: 'tetra', 5: 'penta', 6: 'hexa', 7: 'hepta', 8: 'octa', 9: 'nona', 10: 'deca', 11: 'undeca', 12: 'dodeca' };
+    const SUPERSCRIPT = s => String(s).replace(/[0-9]/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]);
+    function vonBaeyerNumberings(n, adj) {
+      const nbonds = adj.reduce((s, a) => s + a.length, 0) / 2, rings = nbonds - n + 1;
+      if (rings < 2 || !VB_MULT[rings] || !STEMS[n]) return [];
+      let budget = 300000;
+      /* Rule A: the longest cycles */
+      let best = 0, cycles = [];
+      for (let s = 0; s < n; s++) {
+        const path = [s], on = new Set([s]);
+        const dfs = u => {
+          if (--budget < 0) throw new Error('von Baeyer budget');
+          for (const v of adj[u]) {
+            if (v === s && path.length >= 3) {
+              if (path[1] < path[path.length - 1]) {          // each cycle once (one direction)
+                if (path.length > best) { best = path.length; cycles = []; }
+                if (path.length === best) cycles.push(path.slice());
+              }
+              continue;
+            }
+            if (v <= s || on.has(v)) continue;
+            path.push(v); on.add(v); dfs(v); path.pop(); on.delete(v);
+          }
+        };
+        dfs(s);
+      }
+      if (!cycles.length) return [];
+      const edgeKey = (x, y) => x < y ? x + '-' + y : y + '-' + x;
+      const out = [];
+      let bestKey = null;
+      for (const cyc of cycles) {
+        const L = cyc.length, pos = new Map(cyc.map((a, i) => [a, i]));
+        const cycEdges = new Set(cyc.map((a, i) => edgeKey(a, cyc[(i + 1) % L])));
+        /* Rule B: the main bridge, the longest path between two main-ring atoms through atoms off the ring */
+        let bridges = [], blen = -1;
+        for (let i = 0; i < L; i++) {
+          const u = cyc[i];
+          for (const v of adj[u]) if (pos.has(v) && pos.get(v) > i && !cycEdges.has(edgeKey(u, v))) {
+            if (0 > blen) { blen = 0; bridges = []; }
+            if (blen === 0) bridges.push([u, [], v]);
+          }
+          const walk = (x, inner, seen) => {
+            if (--budget < 0) throw new Error('von Baeyer budget');
+            for (const y of adj[x]) {
+              if (seen.has(y)) continue;
+              if (pos.has(y)) {
+                if (inner.length && y !== u && pos.get(y) > i) {
+                  if (inner.length > blen) { blen = inner.length; bridges = []; }
+                  if (inner.length === blen) bridges.push([u, inner.slice(), y]);
+                }
+                continue;
+              }
+              seen.add(y); inner.push(y); walk(y, inner, seen); inner.pop(); seen.delete(y);
+            }
+          };
+          walk(u, [], new Set([u]));
+        }
+        for (const [u, inner, v] of bridges) {
+          const i = pos.get(u), j = pos.get(v);
+          const s1 = j - i - 1, s2 = L - 2 - s1;                // the two segments
+          /* every numbering of main ring and main bridge: either bridgehead as 1, the longer segment first */
+          const opts = [];
+          for (const [h1, h2] of [[u, v], [v, u]]) {
+            const p1 = pos.get(h1);
+            for (const dir of [1, -1]) {
+              const ring = []; for (let k = 0; k < L; k++) ring.push(cyc[((p1 + dir * k) % L + L) % L]);
+              const at2 = ring.indexOf(h2);
+              const segA = at2 - 1, segB = L - 1 - at2;
+              if (segA < segB) continue;                       // the longer segment is numbered first
+              const br = h1 === u ? inner : inner.slice().reverse();   // from the end nearer atom 1
+              opts.push(ring.concat(br));
+            }
+          }
+          for (const main of opts) {
+            const loc = new Map(main.map((a, k) => [a, k + 1]));
+            const usedE = new Set(cycEdges);
+            for (let k = 0; k <= inner.length; k++) {
+              const x = k === 0 ? u : inner[k - 1], y = k === inner.length ? v : inner[k];
+              usedE.add(edgeKey(x, y));
+            }
+            /* the secondary bridges: first found (independent before dependent, larger before smaller), then
+               numbered in decreasing order of their higher-numbered bridgehead, each from that end (OPSIN's
+               reading of P-23.2.6) */
+            const mainSet = new Set(main);
+            const inSk = new Set(main);
+            const ind = x => mainSet.has(x.from) && mainSet.has(x.to);
+            const betterBridge = (c, d) => ind(c) !== ind(d) ? ind(c) : c.inner.length > d.inner.length;
+            const found = [];
+            let ok = true;
+            while (inSk.size < n || usedE.size < nbonds) {
+              let cand = null;
+              for (const a0 of inSk) for (const b0 of adj[a0]) {
+                if (usedE.has(edgeKey(a0, b0))) continue;
+                if (inSk.has(b0)) { const c = { from: a0, inner: [], to: b0 }; if (!cand || betterBridge(c, cand)) cand = c; continue; }
+                const walk2 = (x, inner2, seen) => {          // a path of new atoms from a0 to another skeleton atom
+                  if (--budget < 0) throw new Error('von Baeyer budget');
+                  for (const y of adj[x]) {
+                    if (seen.has(y) || usedE.has(edgeKey(x, y))) continue;
+                    if (inSk.has(y)) { const c = { from: a0, inner: inner2.slice(), to: y }; if (y !== a0 && (!cand || betterBridge(c, cand))) cand = c; continue; }
+                    seen.add(y); inner2.push(y); walk2(y, inner2, seen); inner2.pop(); seen.delete(y);
+                  }
+                };
+                walk2(b0, [b0], new Set([a0, b0]));
+              }
+              if (!cand) { ok = false; break; }
+              cand.inner.forEach(x => inSk.add(x));
+              const chain = [cand.from, ...cand.inner, cand.to];
+              for (let k = 0; k < chain.length - 1; k++) usedE.add(edgeKey(chain[k], chain[k + 1]));
+              found.push(cand);
+            }
+            const bridgesOut = [];
+            while (ok && found.length) {
+              let pick = -1, pv = null;
+              found.forEach((c, k) => {
+                if (!loc.has(c.from) || !loc.has(c.to)) return;
+                const v = [Math.max(loc.get(c.from), loc.get(c.to)), Math.min(loc.get(c.from), loc.get(c.to))];
+                if (pick < 0 || v[0] > pv[0] || (v[0] === pv[0] && v[1] > pv[1])) { pick = k; pv = v; }
+              });
+              if (pick < 0) { ok = false; break; }
+              const c = found.splice(pick, 1)[0];
+              const [lo, hi] = loc.get(c.from) < loc.get(c.to) ? [c.from, c.to] : [c.to, c.from];
+              const atoms = c.from === hi ? c.inner : c.inner.slice().reverse();   // from the end at the higher bridgehead
+              atoms.forEach(x => loc.set(x, loc.size + 1));
+              bridgesOut.push({ size: atoms.length, sup: [loc.get(lo), loc.get(hi)] });
+            }
+            if (!ok || loc.size !== n) continue;
+            const a = Math.max(s1, s2), b = Math.min(s1, s2);
+            const secs = bridgesOut.slice().sort((x, y) => (y.size - x.size) || (x.sup[0] - y.sup[0]) || (x.sup[1] - y.sup[1]));
+            const desc = [a, b, inner.length, ...secs.map(x => x.size + SUPERSCRIPT(x.sup.join(',')))].join('.');
+            const supers = bridgesOut.flatMap(x => x.sup).sort((p, q) => p - q);
+            /* A and B are already the best; C: the most symmetric division; D: the lowest superscripts */
+            const key = [[-b], supers];
+            const c = bestKey ? cmpKey(key, bestKey) : -1;
+            if (c < 0) { bestKey = key; out.length = 0; }
+            if (c <= 0) out.push({ loc, name: VB_MULT[rings] + 'cyclo[' + desc + ']' + STEMS[n] + 'ane' });
+          }
+        }
+      }
+      return out;
+    }
+    /* readings of a ring system by its von Baeyer names (as skeletonReading: replacement prefixes, -ene) */
+    function vonBaeyerCandidates(sys, elOf, adjIn, bondOrderOf) {
+      const pos = new Map(sys.map((id, i) => [id, i]));
+      const adj = sys.map(id => adjIn(id).map(x => pos.get(x)));
+      let nums;
+      try { nums = vonBaeyerNumberings(sys.length, adj); } catch (e) { return []; }
+      const out = [], seen = new Set();
+      const b = []; adj.forEach((a, i) => a.forEach(j => { if (i < j) b.push([i, j]); }));
+      for (const nm of nums) {
+        const loc = sys.map((_, i) => String(nm.loc.get(i)));
+        const key = nm.name + '|' + loc.join(',');
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const t = { nm: nm.name, loc, _num: loc.map(Number), b };
+        const r = skeletonReading(t, sys, sys.map((_, i) => i), elOf, bondOrderOf);
+        if (r) out.push(r);
+        if (out.length >= 240) break;
+      }
+      return out;
+    }
+
     /* every way this ring system can be read as one of the learned parents */
     function learnedCandidates(sys, elOf, adjIn, unsatOf, bondOrderOf) {
       const R = ringParents();
@@ -14037,9 +14205,9 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       }
       return out;
     }
-    const RANK = { acid: 10, sulfonic: 9.7, sulfonamide: 9.6, anhydride: 9.5, ester: 9, amide: 8, urea: 7.9, guanidine: 7.8, nitrile: 7, aldehyde: 6, ketone: 5, alcohol: 4, thiol: 3, amine: 2, imine: 1.5, ringium: 2 };
+    const RANK = { acid: 10, sulfonic: 9.7, sulfonamide: 9.6, anhydride: 9.5, ester: 9, amide: 8, urea: 7.9, guanidine: 7.8, nitrile: 7, aldehyde: 6, ketone: 5, alcohol: 4, thiol: 3, amine: 2, imine: 1.5, ringium: 2, phosphonic: 9.65 };
     const BIS = { 2: 'bis', 3: 'tris', 4: 'tetrakis', 5: 'pentakis', 6: 'hexakis' };
-    const ELEMS = new Set(['C', 'N', 'O', 'S', 'F', 'Cl', 'Br', 'I']);
+    const ELEMS = new Set(['C', 'N', 'O', 'S', 'F', 'Cl', 'Br', 'I', 'P']);
     /* a substituent name turned back into its parent hydride, for the sulfinyl / sulfonyl style:
        methyl → methane, phenyl → benzene, propan-2-yl → propane-2-, cyclohexyl → cyclohexane */
     const HYDRIDE_OF = nm => {
@@ -14097,13 +14265,16 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           const sset = new Set(sys);
           const unsatOf = id => nb.get(id).some(n => sset.has(n.id) && n.o === 2);
           const adjIn = id => nb.get(id).filter(n => sset.has(n.id)).map(n => n.id);
-          let cands = fusedCandidates(sys, el, adjIn, unsatOf);
+          const W0 = typeof window !== 'undefined' ? window : {};
+          let cands = W0.NAMER_FORCE_VON_BAEYER ? vonBaeyerCandidates(sys, el, adjIn, bondOrder) : fusedCandidates(sys, el, adjIn, unsatOf);   // (the switch: tools/namer_bench, testing only)
           /* an old template with no locant for a stereocentre (decalin's 4a, 8a) would leave its R/S out */
           if (cands.length && sys.some(id => !cands[0].atomLoc.has(id) && isStereocenter(g, A.get(id)))) {
             const lc = learnedCandidates(sys, el, adjIn, unsatOf, bondOrder);
             if (lc.length) cands = lc;
           }
           if (!cands.length) cands = learnedCandidates(sys, el, adjIn, unsatOf, bondOrder);
+          /* nothing else fits: the von Baeyer name, which every polycyclic system has */
+          if (!cands.length) cands = vonBaeyerCandidates(sys, el, adjIn, bondOrder);
           if (!cands.length) throw new Error('fused or bridged ring');
           return { atoms: sys, set: sset, het: sys.filter(id => el(id) !== 'C'), aromatic: sys.every(unsatOf), fused: cands };
         }
@@ -14237,6 +14408,17 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
         keep.nsubs = nb.get(nId).filter(m => m.id !== keep.c).map(m => m.id);
         list.slice(1).forEach(gr => groups.splice(groups.indexOf(gr), 1));
       });
+      /* –P(=O)(OH)2 on a carbon: a phosphonic acid, named R-phosphonic acid ((4-amino-1-hydroxy-1-phosphonobutyl)-
+         phosphonic acid); a second one stays a prefix, phosphono ("1,1-bis(phosphono)…-ol" OPSIN reads otherwise) */
+      g.atoms.forEach(a => {
+        if (a.element !== 'C') return;
+        nb.get(a.id).forEach(n => {
+          if (el(n.id) !== 'P' || deg(n.id) !== 4 || n.o !== 1) return;
+          const os = nb.get(n.id).filter(m => el(m.id) === 'O');
+          if (os.length === 3 && os.filter(m => m.o === 2 && deg(m.id) === 1).length === 1 && os.filter(m => m.o === 1 && deg(m.id) === 1 && H(m.id) === 1).length === 2)
+            groups.push({ type: 'phosphonic', c: a.id, p: n.id, used: new Set([n.id, ...os.map(m => m.id)]) });
+        });
+      });
       /* a ring N+ (pyridinium, 1,1-dimethylpiperidinium): the cation, named -ium on its ring */
       g.atoms.forEach(a => { if (a.element === 'N' && a.charge === 1 && ringIds.has(a.id) && !isNitroN(a.id)) groups.push({ type: 'ringium', c: a.id, used: new Set(), cation: true }); });
       groups.forEach(gr => gr.used.forEach(id => used.add(id)));
@@ -14250,6 +14432,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       const principals = groups.filter(gr => gr.type === principalType && chargeOf(gr) === principalCharge);
       /* every other charge must be named by a prefix the namer has (oxido, carboxylato, sulfonato, azaniumyl) */
       if (groups.some(gr => gr.type === 'ringium' && !principals.includes(gr))) throw new Error('ring cation as a prefix');
+      if (principalType === 'ringium' && principals.length > 1) throw new Error('several ring cations');
 
       /* ---- parent selection ---- */
       let parent;                                   // { kind:'chain'|'ring', atoms:[ordered ids], ring }
@@ -14271,7 +14454,10 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       function isEsterAlkylCarbon() { return false; }
       const unsatCount = p => { let n = 0; for (let i = 0; i < p.length - 1; i++) if (bondOrder(p[i], p[i + 1]) > 1) n++; return n; };
 
-      if (principalType === 'urea' || principalType === 'guanidine') {
+      if (principalType === 'phosphonic') {
+        principals.splice(1);                       // one is the parent's acid; any other is a phosphono prefix
+        parent = { kind: 'phosphonic' };
+      } else if (principalType === 'urea' || principalType === 'guanidine') {
         if (principals.length !== 1) throw new Error('several ' + principalType + ' groups');
         parent = { kind: principalType };
       } else if (principals.length && ringIds.has(principals[0].c) && !['acid', 'anhydride', 'ester', 'amide', 'nitrile', 'aldehyde'].includes(principalType)) {
@@ -14309,7 +14495,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       const inParent = new Set();
       function subName(x, from, depth) {
         /* returns { name, alpha, compound, stereo } for the group starting at atom x, attached to `from` */
-        if (depth > 6) throw new Error('too deep');
+        if (depth > 24) throw new Error('too deep');   // (six levels stopped glycosides and peptides)
         const e = el(x);
         if (e === 'F' || e === 'Cl' || e === 'Br' || e === 'I') return { name: HALO[e], alpha: HALO[e] };
         if (e === 'O') {
@@ -14356,12 +14542,28 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
             }
             if (!partner) throw new Error('sulfonyl group');
             const r = subName(partner.id, x, depth + 1);
+            /* methanesulfonyl, benzenesulfonyl from a chain or benzene; a ring group otherwise in brackets,
+               (1H-1,3-benzodiazol-2-yl)sulfinyl ("benzodiazol-2-anesulfinyl" was no name at all) */
+            if (/-\d+[a-z]?'*-yl$/.test(r.name) && !/(a[nr]|en)-\d+-yl$/.test(r.name)) return { name: '(' + r.name + ')' + suf, alpha: ALPHA_STRIP(r.name) + suf, compound: true };
             const hyd = HYDRIDE_OF(r.name);
             return { name: hyd + suf, alpha: ALPHA_STRIP(hyd) + suf, compound: true };
           }
           const other = nb.get(x).find(n => n.id !== from && el(n.id) !== 'O') || nb.get(x).find(n => n.id !== from);
           const r = subName(other.id, x, depth + 1);
           return { name: r.name + 'sulfanyl', alpha: ALPHA_STRIP(r.name) + 'sulfanyl', compound: true };
+        }
+        if (e === 'P') {
+          /* –P(=O)(OH)2 phosphono; –P(=O)XY phosphoryl with what it carries: dimethoxyphosphoryl,
+             [hydroxy(methoxy)phosphoryl]; through an O, phosphonooxy */
+          const dO = nb.get(x).filter(n => el(n.id) === 'O' && n.o === 2 && deg(n.id) === 1);
+          const rest = nb.get(x).filter(n => n.id !== from && !dO.some(o => o.id === n.id));
+          if (dO.length !== 1 || deg(x) !== 4 || rest.some(n => n.o !== 1) || bondOrder(x, from) !== 1) throw new Error('phosphorus group');
+          const parts = rest.map(n => (el(n.id) === 'O' && deg(n.id) === 1) ? (A.get(n.id).charge ? null : { name: 'hydroxy', alpha: 'hydroxy' }) : subName(n.id, x, depth + 1));
+          if (parts.some(q => !q)) throw new Error('phosphate anion');
+          /* (compound, so two of them are bis(phosphono): "diphosphono" reads as the P–O–P group) */
+          if (parts.every(q => q.name === 'hydroxy')) return { name: 'phosphono', alpha: 'phosphono', compound: true };
+          const txt = nSubsText(parts);
+          return { name: txt + 'phosphoryl', alpha: ALPHA_STRIP(txt) + 'phosphoryl', compound: true };
         }
         if (e === 'N') {
           const os = nb.get(x).filter(n => el(n.id) === 'O');
@@ -14387,6 +14589,11 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           if (others.length === 1 && others[0].o === 2 && cumulC(others[0].id)) {
             const t = nb.get(others[0].id).some(n => el(n.id) === 'S') ? 'isothiocyanato' : 'isocyanato';
             return { name: t, alpha: t };
+          }
+          /* –N=C<: the carbon is an ylidene on the amino N, (imidazolidin-2-ylidene)amino, (propan-2-ylidene)amino */
+          if (others.length === 1 && others[0].o === 2 && el(others[0].id) === 'C') {
+            const r = subName(others[0].id, x, depth + 1);
+            return { name: '(' + r.name + ')amino', alpha: ALPHA_STRIP(r.name) + 'amino', compound: true };
           }
           if (others.some(n => n.o !== 1)) throw new Error('amino group with a multiple bond');
           const txt = nSubsText(others.map(n => subName(n.id, x, depth + 1)));
@@ -14708,7 +14915,14 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       let out;
       const pieces = [];                         // [{text, atoms}] in name order, before bracket nesting
       const push = (text, atoms) => { if (text) pieces.push({ text, atoms }); };
-      if (parent.kind === 'urea' || parent.kind === 'guanidine') {
+      if (parent.kind === 'phosphonic') {
+        const p = principals[0];
+        inParent.clear(); [p.p, ...p.used].forEach(id => inParent.add(id));
+        const r = subName(p.c, p.p, 1);
+        push((r.compound ? '(' + r.name + ')' : r.name), branchAtoms(p.c, p.p));
+        push('phosphonic acid', princAtoms);
+        out = pieces.map(x => x.text).join('');
+      } else if (parent.kind === 'urea' || parent.kind === 'guanidine') {
         /* N-phenylurea, N,N-dimethyl-N'-phenylurea, N-(pyridin-3-yl)guanidine: the substituents of each N, the N with
            the most first (N, N', then N'' for the =N of a guanidine) */
         const p = principals[0];
@@ -14755,6 +14969,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
             skipAtoms.add(p0.rO);
             const other = chainSub(p0.r, p0.o, 1, true);
             skipAtoms.delete(p0.rO);
+            if (best.subs.length || other.pre || other.stereo) throw new Error('substituted anhydride');
             const mine = trunk + 'oic', theirs = other.pre + other.stem + other.unsat + 'oic';
             core = mine === theirs ? mine + ' anhydride' : [mine, theirs].sort().join(' ') + ' anhydride';
             anhydrideTail = true;
@@ -14934,7 +15149,20 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
     }
     /* the CIP ranking of each centre is worked out once per molecule (the namer asks for it on every path it tries) */
     const withCip = (g, f) => { const prev = CIP_CACHE; CIP_CACHE = { g, m: new Map() }; try { return f(); } finally { CIP_CACHE = prev; } };
-    return { name: g => { const r = retainedName(g); if (r) return r; return withCip(g, () => name(g)); }, nameParts: g => withCip(g, () => nameParts(g)) };
+    /* a sulfoxide drawn charge-separated (S+–O−) is the same molecule as S=O: named from a copy written that way */
+    function neutralSulfoxides(g) {
+      const pairs = g.bonds.filter(b => b.order === 1 && [b.a, b.b].some(id => { const a = g.atoms.find(x => x.id === id); return a && a.element === 'S' && a.charge === 1; }) &&
+        [b.a, b.b].some(id => { const a = g.atoms.find(x => x.id === id); return a && a.element === 'O' && a.charge === -1 && g.bonds.filter(c => c.a === id || c.b === id).length === 1; }));
+      if (!pairs.length) return g;
+      const h = { atoms: g.atoms.map(a => Object.assign({}, a)), bonds: g.bonds.map(b => Object.assign({}, b)), nextId: g.nextId };
+      pairs.forEach(b0 => {
+        const b = h.bonds[g.bonds.indexOf(b0)]; b.order = 2;
+        [b.a, b.b].forEach(id => { const a = h.atoms.find(x => x.id === id); if (a.element === 'S' || a.element === 'O') a.charge = 0; });
+      });
+      return h;
+    }
+    return { name: g0 => { const g = neutralSulfoxides(g0); const r = retainedName(g); if (r) return r; return withCip(g, () => name(g)); },
+             nameParts: g0 => { const g = neutralSulfoxides(g0); return withCip(g, () => nameParts(g)); } };
   })();
 
   function iupacName(g) {
@@ -15615,6 +15843,8 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
            bondBetween, formula, findGroups, groupSummary, findFunctionalGroups, groupContaining, FG_COLORS, RULES, render, renderFit,
            _iu2: IU2.name, displayNameFor, parseSmiles, toSmiles, layoutGraph, canonicalKey, sameMolecule,
            searchMolecule, parseIupacName, COMMON_NAMES, commonNameFor, nameFailed, nameSegments, IUPAC_FULL,
+           /* why the systematic namer could not name g (null when it can): for tools/namer_bench */
+           iupacNameError: g => { try { IU2.name(g); return null; } catch (e) { return String(e && e.message || e); } },
            toMolfile, parseMolfile, looksLikeMolfile,
            bridgedRing, ACID_REAGENTS, resolveAcidReagent, buildAcidDehydration, customNucleophileSpec, casFor, libEntryFor, casChecksumOk, looksLikeCAS, trueRingAtoms, ringSystemsOf, orderCycle, seniorRingSystem, fusionPlan, ringsOfSystem,
            BOND_ENERGY, CH_ENERGY, bondInventory, kcal,
