@@ -5897,6 +5897,10 @@ function makeChem() {
       p.x = 2 * px - p.x;
       p.y = 2 * py - p.y;
     });
+    /* a mirror image inverts every stereocentre it carries: its wedges and dashes swap, so each keeps its R/S
+       (a SMILES with a Z double bond before a stereocentre was read as the other enantiomer) */
+    const movedSet = new Set(moved);
+    g.bonds.forEach(b => { if (b.stereo && movedSet.has(b.narrow)) b.stereo = b.stereo === 'wedge' ? 'dash' : b.stereo === 'dash' ? 'wedge' : b.stereo; });
   }
 
   /* honour every [nZ]/[nE] the parser stored on atoms */
@@ -14379,7 +14383,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           const W0 = typeof window !== 'undefined' ? window : {};
           let cands = W0.NAMER_FORCE_VON_BAEYER ? vonBaeyerCandidates(sys, el, adjIn, bondOrder) : fusedCandidates(sys, el, adjIn, unsatOf);   // (the switch: tools/namer_bench, testing only)
           /* an old template with no locant for a stereocentre (decalin's 4a, 8a) would leave its R/S out */
-          if (cands.length && sys.some(id => !cands[0].atomLoc.has(id) && isStereocenter(g, A.get(id)))) {
+          if (cands.length && sys.some(id => !cands[0].atomLoc.has(id) && (isStereocenter(g, A.get(id)) || nb.get(id).some(n => !sset.has(n.id))))) {
             const lc = learnedCandidates(sys, el, adjIn, unsatOf, bondOrder);
             if (lc.length) cands = lc;
           }
@@ -14464,8 +14468,11 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
         /* a lactam is named the same way: oxindole is 2,3-dihydro-1H-indol-2-one */
         if (nN && ringIds.has(c) && ringIds.has(nN.id) && rings.some(rr => rr.set.has(c) && rr.set.has(nN.id))) { groups.push({ type: 'ketone', c, used: new Set([dblO.id]) }); return; }
         if (nN && nC <= 1) { groups.push({ type: 'amide', c, used: new Set([dblO.id, nN.id]), n: nN.id }); return; }
-        if (nC <= 1 && !ringIds.has(c)) { groups.push({ type: 'aldehyde', c, used: new Set([dblO.id]) }); return; }
-        if (nC === 1 && ringIds.has(c)) { groups.push({ type: 'aldehyde', c, used: new Set([dblO.id]) }); return; }
+        /* an aldehyde only when the C=O carbon carries nothing else: R–C(=O)–SR' is not a carbaldehyde (its S was lost) */
+        const bare = nb.get(c).every(n => n.id === dblO.id || el(n.id) === 'C');
+        if (nC <= 1 && !ringIds.has(c) && (bare || nC === 0)) { groups.push({ type: 'aldehyde', c, used: new Set([dblO.id]) }); return; }
+        if (nC === 1 && ringIds.has(c) && bare) { groups.push({ type: 'aldehyde', c, used: new Set([dblO.id]) }); return; }
+        if (!bare && nb.get(c).some(n => ringIds.has(n.id)) && !ringIds.has(c)) return;      // a substituent on its ring instead
         groups.push({ type: 'ketone', c, used: new Set([dblO.id]) });
       });
       /* a GUANIDINE, (R2N)2C=NR (no atom of it in a ring): named as guanidine with N / N' / N'' prefixes. Read as
