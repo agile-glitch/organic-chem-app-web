@@ -17,6 +17,11 @@ What is where:
 
 Checks (all run the real page in a headless browser or the real code in Node):
 
+The browser checks use Playwright: `npm install` once (it goes into `node_modules/`, ignored by git), then
+`npx playwright install chromium`. Where Playwright's own Chromium will not start (on one Windows PC it fails with a
+"side-by-side configuration" error), point the checks at an installed Chrome:
+`CHROMIUM="C:/Program Files/Google/Chrome/Application/chrome.exe" node tools/browser_tests.js …`.
+
 ```
 python tools/serve.py &
 node tools/browser_tests.js    http://localhost:8000/app.html  # the Reactions page's own suite: every workbook reaction + feature cases (231)
