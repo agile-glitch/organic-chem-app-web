@@ -17,3 +17,4 @@ tools/data/library_keys.json
 tools/data/starting_material_counts.json
 # namer bench reports (rebuild with python tools/namer_bench/bench.py)
 tools/namer_bench/out/
+tools/ring_parents/out/
