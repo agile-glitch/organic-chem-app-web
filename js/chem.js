@@ -13780,7 +13780,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       });
       return out;
     }
-    const RANK = { acid: 10, sulfonic: 9.7, sulfonamide: 9.6, anhydride: 9.5, ester: 9, amide: 8, nitrile: 7, aldehyde: 6, ketone: 5, alcohol: 4, thiol: 3, amine: 2, imine: 1.5 };
+    const RANK = { acid: 10, sulfonic: 9.7, sulfonamide: 9.6, anhydride: 9.5, ester: 9, amide: 8, urea: 7.9, guanidine: 7.8, nitrile: 7, aldehyde: 6, ketone: 5, alcohol: 4, thiol: 3, amine: 2, imine: 1.5 };
     const BIS = { 2: 'bis', 3: 'tris', 4: 'tetrakis', 5: 'pentakis', 6: 'hexakis' };
     const ELEMS = new Set(['C', 'N', 'O', 'S', 'F', 'Cl', 'Br', 'I']);
     /* a substituent name turned back into its parent hydride, for the sulfinyl / sulfonyl style:
@@ -13834,6 +13834,9 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       });
       const ringOf = id => rings.find(r => r.set.has(id));
 
+      /* the C of –N=C=O / –N=C=S (isocyanato, isothiocyanato): never a chain carbon or an imine */
+      const cumulC = id => el(id) === 'C' && deg(id) === 2 && nb.get(id).some(n => el(n.id) === 'N' && n.o === 2) &&
+        nb.get(id).some(n => (el(n.id) === 'O' || el(n.id) === 'S') && n.o === 2 && deg(n.id) === 1);
       /* ---- characteristic groups on carbons ---- */
       const groups = [];                         // { type, c (carbon), used:Set(atom ids folded into the group), extra }
       const used = new Set();
@@ -13858,6 +13861,16 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           if (rDbl) { if (!groups.some(gr => gr.type === 'anhydride' && gr.o === sglO.id)) groups.push({ type: 'anhydride', c, used: new Set([dblO.id, sglO.id]), o: sglO.id, r: r.id, rO: rDbl.id }); return; }
           groups.push({ type: 'ester', c, used: new Set([dblO.id, sglO.id]), o: sglO.id, r: r.id }); return;
         }
+        /* a UREA, R2N–C(=O)–NR2 (not in a ring): named as urea with N / N' prefixes. A carbonyl between a
+           ring N and an open N is a carboxamide on the ring (piperidine-1-carboxamide); between two ring N's,
+           a methanone (di(piperidin-1-yl)methanone) */
+        { const nNs = nb.get(c).filter(n => el(n.id) === 'N' && n.o === 1 && !A.get(n.id).charge);
+          if (nNs.length === 2 && !ringIds.has(c)) {
+            const inR = nNs.filter(n => ringIds.has(n.id));
+            if (inR.length === 2) { groups.push({ type: 'ketone', c, used: new Set([dblO.id]) }); return; }
+            if (inR.length === 1) { const o = nNs.find(n => !ringIds.has(n.id)); groups.push({ type: 'amide', c, used: new Set([dblO.id, o.id]), n: o.id }); return; }
+            groups.push({ type: 'urea', c, used: new Set([dblO.id, nNs[0].id, nNs[1].id]), ns: nNs.map(n => n.id) }); return;
+          } }
         /* an acyl group on a ring NITROGEN: the ring is the parent and the group hangs off the N,
            so N-formylpiperidine is piperidine-1-carbaldehyde. Named as an amide instead, the
            N-substituent walk sets off round the ring and arrives back at the acyl carbon, which
@@ -13875,6 +13888,15 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
         if (nC === 1 && ringIds.has(c)) { groups.push({ type: 'aldehyde', c, used: new Set([dblO.id]) }); return; }
         groups.push({ type: 'ketone', c, used: new Set([dblO.id]) });
       });
+      /* a GUANIDINE, (R2N)2C=NR (no atom of it in a ring): named as guanidine with N / N' / N'' prefixes. Read as
+         an amine and an imine on one carbon, its =N was lost */
+      g.atoms.forEach(a => {
+        if (a.element !== 'C' || ringIds.has(a.id) || deg(a.id) !== 3) return;
+        const ns = nb.get(a.id).filter(n => el(n.id) === 'N' && !A.get(n.id).charge && !ringIds.has(n.id));
+        const dbl = ns.filter(n => n.o === 2), sgl = ns.filter(n => n.o === 1);
+        if (ns.length !== 3 || dbl.length !== 1 || sgl.length !== 2 || groups.some(gr => ns.some(n => gr.used.has(n.id)))) return;
+        groups.push({ type: 'guanidine', c: a.id, used: new Set(ns.map(n => n.id)), ns: [...sgl.map(n => n.id), dbl[0].id] });
+      });
       g.atoms.forEach(a => {
         if (a.element !== 'C') return;
         const t = nb.get(a.id).find(n => el(n.id) === 'N' && n.o === 3 && deg(n.id) === 1);
@@ -13882,13 +13904,14 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
         /* –SO₃H: a sulfonic acid, senior to everything but a carboxylic acid; –SO₂NR₂: a sulfonamide */
         nb.get(a.id).forEach(n => { if (el(n.id) === 'S' && isSulfo(n.id)) groups.push({ type: 'sulfonic', c: a.id, used: new Set([n.id, ...nb.get(n.id).filter(m => el(m.id) === 'O').map(m => m.id)]) }); });
         nb.get(a.id).forEach(n => { if (el(n.id) !== 'S' || deg(n.id) !== 4) return; const os = nb.get(n.id).filter(m => el(m.id) === 'O' && m.o === 2 && deg(m.id) === 1), nn = nb.get(n.id).find(m => el(m.id) === 'N' && m.o === 1);
-          if (os.length === 2 && nn) groups.push({ type: 'sulfonamide', c: a.id, used: new Set([n.id, nn.id, ...os.map(m => m.id)]), n: nn.id, s: n.id }); });
+          /* on a ring N the ring is the parent instead: 1-(ethanesulfonyl)piperidine */
+          if (os.length === 2 && nn && !ringIds.has(nn.id)) groups.push({ type: 'sulfonamide', c: a.id, used: new Set([n.id, nn.id, ...os.map(m => m.id)]), n: nn.id, s: n.id }); });
       });
       g.atoms.forEach(a => {
         if (a.element !== 'C') return;
         nb.get(a.id).forEach(n => {
           /* an imine C=N–R (or C=NH): named with the suffix -imine on the carbon, the N-substituent in front */
-          if (el(n.id) === 'N' && n.o === 2 && !A.get(n.id).charge && !ringIds.has(n.id) && !groups.some(gr => gr.used.has(n.id))) {
+          if (el(n.id) === 'N' && n.o === 2 && !A.get(n.id).charge && !ringIds.has(n.id) && !cumulC(a.id) && !groups.some(gr => gr.used.has(n.id))) {
             const others = nb.get(n.id).filter(m => m.id !== a.id);
             if (others.every(m => el(m.id) === 'C' && m.o === 1)) groups.push({ type: 'imine', c: a.id, used: new Set([n.id]), n: n.id, nsubs: others.map(m => m.id) });
           }
@@ -13919,7 +13942,10 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
 
       /* ---- parent selection ---- */
       let parent;                                   // { kind:'chain'|'ring', atoms:[ordered ids], ring }
-      const chainCarbon = id => el(id) === 'C' && !ringIds.has(id);
+      /* a C≡N carbon is in a chain only when the nitrile is the principal group: otherwise it is part of the prefix
+         "cyano" (which brings its own carbon), and counting it in the chain as well named one carbon too many */
+      const nitrileC = id => nb.get(id).some(n => el(n.id) === 'N' && n.o === 3 && deg(n.id) === 1);
+      const chainCarbon = id => el(id) === 'C' && !ringIds.has(id) && (principalType === 'nitrile' || !nitrileC(id)) && !cumulC(id);
       const allChains = (mustHave) => {
         const paths = [];
         const dfs = (id, visited, path) => {
@@ -13934,7 +13960,10 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       function isEsterAlkylCarbon() { return false; }
       const unsatCount = p => { let n = 0; for (let i = 0; i < p.length - 1; i++) if (bondOrder(p[i], p[i + 1]) > 1) n++; return n; };
 
-      if (principals.length && ringIds.has(principals[0].c) && !['acid', 'anhydride', 'ester', 'amide', 'nitrile', 'aldehyde'].includes(principalType)) {
+      if (principalType === 'urea' || principalType === 'guanidine') {
+        if (principals.length !== 1) throw new Error('several ' + principalType + ' groups');
+        parent = { kind: principalType };
+      } else if (principals.length && ringIds.has(principals[0].c) && !['acid', 'anhydride', 'ester', 'amide', 'nitrile', 'aldehyde'].includes(principalType)) {
         parent = { kind: 'ring', ring: ringOf(principals[0].c) };
       } else if (principals.length && ['acid', 'anhydride', 'ester', 'amide', 'nitrile', 'aldehyde'].includes(principalType) && principals.some(p => nb.get(p.c).some(n => ringIds.has(n.id) && (el(n.id) === 'C' || el(n.id) === 'N')) && !nb.get(p.c).some(n => chainCarbon(n.id)))) {
         /* the group carbon hangs straight off a ring: cyclohexanecarboxylic acid, benzaldehyde, benzonitrile */
@@ -13996,7 +14025,23 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           const partner = nb.get(x).find(n => n.id !== from && el(n.id) === 'C');
           if (sOs.length) {
             const suf = sOs.length >= 2 ? 'sulfonyl' : 'sulfinyl';
-            if (!partner) return { name: suf, alpha: suf };
+            /* what the S(=O) carries on its far side: a carbon (methanesulfonyl), a ring N (pyrrolidin-1-ylsulfonyl)
+               or an open N (dimethylsulfamoyl). A bare "sulfonyl" here named the far side away */
+            const far = nb.get(x).filter(n => n.id !== from && !sOs.some(o => o.id === n.id));
+            if (far.length !== 1 || far[0].o !== 1) throw new Error('sulfonyl group');
+            if (el(far[0].id) === 'N') {
+              if (ringIds.has(far[0].id)) { const rr = ringSub(far[0].id, x, depth + 1); return { name: rr.name + suf, alpha: ALPHA_STRIP(rr.name) + suf, compound: true }; }
+              if (suf !== 'sulfonyl') throw new Error('sulfinamide');
+              const ons = nb.get(far[0].id).filter(n => n.id !== x);
+              if (ons.some(n => n.o !== 1)) throw new Error('sulfamoyl group with a multiple bond');
+              const txt = nSubsText(ons.map(n => subName(n.id, far[0].id, depth + 1)));
+              return { name: txt + 'sulfamoyl', alpha: ALPHA_STRIP(txt) + 'sulfamoyl', compound: true };
+            }
+            if (el(far[0].id) === 'O' || el(far[0].id) === 'S') {   /* –S(=O)2–O–R methoxysulfonyl, –S(=O)2–S–R (methylsulfanyl)sulfonyl */
+              const r = subName(far[0].id, x, depth + 1);
+              return { name: (r.compound ? '(' + r.name + ')' : r.name) + suf, alpha: ALPHA_STRIP(r.name) + suf, compound: true };
+            }
+            if (!partner) throw new Error('sulfonyl group');
             const r = subName(partner.id, x, depth + 1);
             const hyd = HYDRIDE_OF(r.name);
             return { name: hyd + suf, alpha: ALPHA_STRIP(hyd) + suf, compound: true };
@@ -14009,23 +14054,34 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           const os = nb.get(x).filter(n => el(n.id) === 'O');
           if (os.length === 2) return { name: 'nitro', alpha: 'nitro' };
           if (os.length === 1 && os[0].o === 2) return { name: 'nitroso', alpha: 'nitroso' };
-          if (bondOrder(x, from) === 3) return { name: 'cyano', alpha: 'cyano' };   // reached from the far side — should not happen
+          if (bondOrder(x, from) === 3) throw new Error('nitrile nitrogen as a substituent');   // the C≡N carbon belongs to "cyano"
           if (ringIds.has(x)) return ringSub(x, from, depth);
           const others = nb.get(x).filter(n => n.id !== from);
+          /* =N– on a carbon is an IMINO group: =NH imino, =N–OH hydroxyimino (an oxime), =N–CH3 methylimino.
+             Named "amino" it read as a single bond, and an oxime came out as a hydroxyamine (C–NH–OH) */
+          if (bondOrder(x, from) === 2) {
+            if (!others.length) return { name: 'imino', alpha: 'imino' };
+            if (others.length > 1 || others[0].o !== 1) throw new Error('imino group');
+            const r = subName(others[0].id, x, depth + 1);
+            return { name: (r.compound ? '(' + r.name + ')' : r.name) + 'imino', alpha: ALPHA_STRIP(r.name) + 'imino', compound: true };
+          }
           if (!others.length) return { name: 'amino', alpha: 'amino' };
-          const parts = others.map(n => subName(n.id, x, depth + 1));
-          const grouped = new Map(); parts.forEach(p => { grouped.set(p.name, (grouped.get(p.name) || 0) + 1); });
-          const ents = [...grouped.entries()].sort((p, q) => ALPHA_STRIP(p[0]) < ALPHA_STRIP(q[0]) ? -1 : 1);
-          /* TWO different substituents on one nitrogen have to be separated by brackets, or the
-             name reads as one long chain: carbamimidoyl(methyl)amino, not carbamimidoylmethylamino */
-          const txt = ents.map(([nm, k], i) => {
-            const cmp = parts.find(p => p.name === nm).compound;
-            const body = cmp ? '(' + nm + ')' : (ents.length > 1 && i > 0 ? '(' + nm + ')' : nm);
-            return (k > 1 ? (cmp ? BIS[k] : MULT[k]) : '') + body;
-          }).join('');
+          if (others.length === 1 && others[0].o === 2 && cumulC(others[0].id)) {
+            const t = nb.get(others[0].id).some(n => el(n.id) === 'S') ? 'isothiocyanato' : 'isocyanato';
+            return { name: t, alpha: t };
+          }
+          if (others.some(n => n.o !== 1)) throw new Error('amino group with a multiple bond');
+          const txt = nSubsText(others.map(n => subName(n.id, x, depth + 1)));
           return { name: txt + 'amino', alpha: ALPHA_STRIP(txt) + 'amino', compound: true };
         }
         /* carbon */
+        if (bondOrder(x, from) === 2) {
+          /* a carbon on the parent through a DOUBLE bond is an ylidene: methylidene, ethylidene, propan-2-ylidene,
+             cyclohexylidene. Named methyl / ethyl the double bond was lost */
+          const r = ringIds.has(x) ? ringSub(x, from, depth) : chainSub(x, from, depth);
+          if (!/yl$/.test(r.name)) throw new Error('ylidene');
+          return { name: r.name + 'idene', alpha: ALPHA_STRIP(r.name + 'idene'), compound: r.compound };
+        }
         if (ringIds.has(x)) return ringSub(x, from, depth);
         /* –C(=NH)NH₂ is CARBAMIMIDOYL (the amidine / guanidine prefix), not "(amino)(amino)methyl" */
         { const dN = nb.get(x).find(n => el(n.id) === 'N' && n.o === 2), sN = nb.get(x).find(n => el(n.id) === 'N' && n.o === 1 && deg(n.id) === 1);
@@ -14036,6 +14092,15 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           /* an acyl group seen from the heteroatom it sits on: R–C(=O)– = alkanoyl (ethanoyloxy, N-ethanoyl…) */
           const rc = nb.get(x).find(n => n.id !== from && n.id !== dblO.id);
           if (!rc) return { name: 'formyl', alpha: 'formyl' };
+          /* –X–C(=O)–N< (a urea or carbamate seen from X): carbamoyl; –X–C(=O)–O–R: alkoxycarbonyl (Boc is
+             tert-butoxycarbonyl). Walked as a carbon chain they became "aminomethanamide" and the like */
+          if (el(rc.id) === 'N' && rc.o === 1) return carbamoylName(x, rc.id, depth);
+          if (el(rc.id) === 'O' && rc.o === 1) {
+            if (deg(rc.id) === 1) return { name: 'carboxy', alpha: 'carboxy' };
+            const r = subName(nb.get(rc.id).find(n => n.id !== x).id, rc.id, depth + 1);
+            return { name: (r.compound ? '(' + r.name + ')' : r.name) + 'oxycarbonyl', alpha: ALPHA_STRIP(r.name) + 'oxycarbonyl', compound: true };
+          }
+          if (el(rc.id) !== 'C') throw new Error('acyl group on ' + el(rc.id));
           if (ringIds.has(rc.id)) { const rr = ringSub(rc.id, x, depth + 1); if (rr.name === 'phenyl') return { name: 'benzoyl', alpha: 'benzoyl' }; return { name: rr.name + 'carbonyl', alpha: ALPHA_STRIP(rr.name) + 'carbonyl', compound: true }; }
           skipAtoms.add(dblO.id);                          // the =O is part of the acyl name, not an oxo prefix
           const ch = chainSub(x, from, depth, true);        // numbered from the carbonyl carbon
@@ -14047,13 +14112,35 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           const sglO = nb.get(x).find(n => el(n.id) === 'O' && n.o === 1);
           if (sglO && deg(sglO.id) === 1) return { name: 'carboxy', alpha: 'carboxy' };
           if (sglO) { const r = subName(nb.get(sglO.id).find(n => n.id !== x).id, sglO.id, depth + 1); return { name: (r.compound ? '(' + r.name + ')' : r.name) + 'oxycarbonyl', alpha: ALPHA_STRIP(r.name) + 'oxycarbonyl', compound: true }; }
-          const nN = nb.get(x).find(n => el(n.id) === 'N');
-          if (nN) return { name: 'carbamoyl', alpha: 'carbamoyl' };
+          const nN = nb.get(x).find(n => el(n.id) === 'N' && n.o === 1);
+          if (nN) return carbamoylName(x, nN.id, depth);
           if (deg(x) === 2) return { name: 'formyl', alpha: 'formyl' };
         }
         const tN = nb.get(x).find(n => el(n.id) === 'N' && n.o === 3);
         if (tN && deg(x) === 2) return { name: 'cyano', alpha: 'cyano' };
         return chainSub(x, from, depth);
+      }
+      /* the substituents on one nitrogen, as they go in front of amino / carbamoyl: methyl, dimethyl,
+         methyl(phenyl), (pyridin-2-yl). TWO different substituents have to be separated by brackets, or the
+         name reads as one long chain: carbamimidoyl(methyl)amino, not carbamimidoylmethylamino */
+      function nSubsText(parts) {
+        const grouped = new Map(); parts.forEach(p => { grouped.set(p.name, (grouped.get(p.name) || 0) + 1); });
+        const ents = [...grouped.entries()].sort((p, q) => ALPHA_STRIP(p[0]) < ALPHA_STRIP(q[0]) ? -1 : 1);
+        return ents.map(([nm, k], i) => {
+          const cmp = parts.find(p => p.name === nm).compound;
+          const body = cmp ? '(' + nm + ')' : (ents.length > 1 && i > 0 ? '(' + nm + ')' : nm);
+          return (k > 1 ? (cmp ? BIS[k] : MULT[k]) : '') + body;
+        }).join('');
+      }
+      /* –C(=O)–N< : carbamoyl with whatever is on its nitrogen (dimethylcarbamoyl, (pyridin-2-yl)carbamoyl), or
+         ring-N-ylcarbonyl when the N is in a ring (piperidin-1-ylcarbonyl). Plain "carbamoyl" dropped them all */
+      function carbamoylName(x, nId, depth) {
+        if (ringIds.has(nId)) { const rr = ringSub(nId, x, depth + 1); return { name: rr.name + 'carbonyl', alpha: ALPHA_STRIP(rr.name) + 'carbonyl', compound: true }; }
+        const others = nb.get(nId).filter(n => n.id !== x);
+        if (others.some(n => n.o !== 1)) throw new Error('carbamoyl group with a multiple bond');
+        if (!others.length) return { name: 'carbamoyl', alpha: 'carbamoyl' };
+        const txt = nSubsText(others.map(n => subName(n.id, nId, depth + 1)));
+        return { name: txt + 'carbamoyl', alpha: ALPHA_STRIP(txt) + 'carbamoyl', compound: true };
       }
       function ringSub(x, from, depth) {
         const r = ringOf(x);
@@ -14280,7 +14367,28 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       let out;
       const pieces = [];                         // [{text, atoms}] in name order, before bracket nesting
       const push = (text, atoms) => { if (text) pieces.push({ text, atoms }); };
-      if (parent.kind === 'chain') {
+      if (parent.kind === 'urea' || parent.kind === 'guanidine') {
+        /* N-phenylurea, N,N-dimethyl-N'-phenylurea, N-(pyridin-3-yl)guanidine: the substituents of each N, the N with
+           the most first (N, N', then N'' for the =N of a guanidine) */
+        const p = principals[0];
+        inParent.clear(); [p.c, ...p.used].forEach(id => inParent.add(id));
+        const per = p.ns.map(nId => ({ nId, subs: nb.get(nId).filter(m => m.id !== p.c).map(m => Object.assign(subName(m.id, nId, 1), { atoms: branchAtoms(m.id, nId).concat([nId]) })) }));
+        const single = per.slice(0, 2).sort((a, b) => (b.subs.length - a.subs.length) || ((a.subs.map(x => x.alpha).sort()[0] || '~') < (b.subs.map(x => x.alpha).sort()[0] || '~') ? -1 : 1));
+        const ordered = single.concat(per.slice(2));
+        const PRIMES = ['N', "N'", "N''"];
+        const grouped = new Map();
+        ordered.forEach((q, i) => q.subs.forEach(sb => {
+          if (!grouped.has(sb.name)) grouped.set(sb.name, { alpha: sb.alpha, compound: sb.compound, locs: [], atoms: [] });
+          const gi = grouped.get(sb.name); gi.locs.push(PRIMES[i]); gi.atoms.push(...sb.atoms);
+        }));
+        [...grouped.entries()].sort((a, b) => a[1].alpha < b[1].alpha ? -1 : a[1].alpha > b[1].alpha ? 1 : 0).forEach(([nm, gi], i) => {
+          const k = gi.locs.length;
+          if (i) push('-', null);
+          push(gi.locs.join(',') + '-' + (k > 1 ? (gi.compound ? BIS[k] : MULT[k]) : '') + (gi.compound ? '(' + nm + ')' : nm), gi.atoms);
+        });
+        push(parent.kind, princAtoms);
+        out = pieces.map(x => x.text).join('');
+      } else if (parent.kind === 'chain') {
         let best = null;
         parent.cands.forEach(path => [path, path.slice().reverse()].forEach(p => { const d = describeChain(p, new Set(), 0, null); if (!best || cmpKey(d.key, best.key) < 0) best = d; }));
         inParent.clear(); best.path.forEach(id => inParent.add(id));
@@ -14383,13 +14491,22 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
           return words.map(w => w.text).join(' ') + ' ' + nm;
         }
         if (principalType === 'amine' || principalType === 'imine' || principalType === 'amide' || principalType === 'sulfonamide') {
-          const p = principals[0];
-          const nsubs = (principalType === 'amine' || principalType === 'imine') ? p.nsubs : nb.get(p.n).filter(x => x.id !== p.c && x.id !== p.s).map(x => x.id);
-          if (!nsubs.length) return nm;
-          const parts = nsubs.map(id => Object.assign(subName(id, p.n, 1), { atoms: branchAtoms(id, p.n).concat([p.n]) }));
-          const grouped = new Map(); parts.forEach(q => { if (!grouped.has(q.name)) grouped.set(q.name, { k: 0, atoms: [] }); const gi = grouped.get(q.name); gi.k++; gi.atoms.push(...q.atoms); });
+          /* the substituents on the N of EVERY principal group: with several groups each N is told apart by its
+             position (N1,N3-dimethylbenzene-1,3-dicarboxamide); only the first group's were named before */
+          const parts = [];
+          /* the principal groups the parent carries (a group whose carbon is elsewhere is named as a prefix) */
+          const atOf = p => { let at = order.indexOf(p.c); if (at < 0 && ringAttachedExo && ringAttachedExo.has(p.c)) { const anchor = nb.get(p.c).find(x => order.includes(x.id)); at = anchor ? order.indexOf(anchor.id) : -1; } return at; };
+          const onParent = principals.filter(p => atOf(p) >= 0);
+          onParent.forEach(p => {
+            const nsubs = (principalType === 'amine' || principalType === 'imine') ? (p.nsubs || []) : nb.get(p.n).filter(x => x.id !== p.c && x.id !== p.s).map(x => x.id);
+            if (!nsubs.length) return;
+            const L = onParent.length > 1 ? 'N' + (atOf(p) + 1) : 'N';
+            nsubs.forEach(id => parts.push(Object.assign(subName(id, p.n, 1), { L, atoms: branchAtoms(id, p.n).concat([p.n]) })));
+          });
+          if (!parts.length) return nm;
+          const grouped = new Map(); parts.forEach(q => { if (!grouped.has(q.name)) grouped.set(q.name, { k: 0, locs: [], atoms: [] }); const gi = grouped.get(q.name); gi.k++; gi.locs.push(q.L); gi.atoms.push(...q.atoms); });
           const lead = [];
-          const txt = [...grouped.entries()].sort((a, b) => ALPHA_STRIP(a[0]) < ALPHA_STRIP(b[0]) ? -1 : 1).map(([q, gi], i) => { const k = gi.k; const cmp = parts.find(z => z.name === q).compound; const t = (k > 1 ? 'N,N-' : 'N-') + (cmp ? (k > 1 ? BIS[k] : '') + '(' + q + ')' : (k > 1 ? MULT[k] : '') + q); if (i) lead.push({ text: '-', atoms: null }); lead.push({ text: t, atoms: gi.atoms }); return t; }).join('-');
+          const txt = [...grouped.entries()].sort((a, b) => ALPHA_STRIP(a[0]) < ALPHA_STRIP(b[0]) ? -1 : 1).map(([q, gi], i) => { const k = gi.k; const cmp = parts.find(z => z.name === q).compound; const t = gi.locs.join(',') + '-' + (cmp ? (k > 1 ? BIS[k] : '') + '(' + q + ')' : (k > 1 ? MULT[k] : '') + q); if (i) lead.push({ text: '-', atoms: null }); lead.push({ text: t, atoms: gi.atoms }); return t; }).join('-');
           /* a hyphen between the N-prefix and a name that starts with a locant: N-phenyl-1-phenylmethanimine */
           const glue = /^\d/.test(nm) ? '-' : '';
           if (glue) lead.push({ text: '-', atoms: null });
