@@ -13806,7 +13806,7 @@ edta|O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O|xiwihvi6n1s1|C10H16N2O8|acids,amines|e
       { nm:'naphthacene', el:'CCCCCCCCCCCCCCCCCC', b:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,0],[17,4],[15,6],[13,8]], sat:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], loc:{'1':0,'2':1,'3':2,'4':3,'5':5,'6':7,'7':9,'8':10,'9':11,'10':12,'11':14,'12':16} },
       { nm:'triphenylene', el:'CCCCCCCCCCCCCCCCCC', b:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,0],[4,17],[10,5],[16,11]], sat:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], loc:{'1':0,'2':1,'3':2,'4':3,'5':6,'6':7,'7':8,'8':9,'9':12,'10':13,'11':14,'12':15} },
     ];
-    const HYDRO_MULT = { 2: 'di', 4: 'tetra', 6: 'hexa', 8: 'octa', 10: 'deca', 12: 'dodeca', 14: 'tetradeca' };
+    const HYDRO_MULT = { 2: 'di', 4: 'tetra', 6: 'hexa', 8: 'octa', 10: 'deca', 12: 'dodeca', 14: 'tetradeca', 16: 'hexadeca', 18: 'octadeca', 20: 'icosa', 22: 'docosa', 24: 'tetracosa' };
     FUSED_TPL.forEach(t => {
       const m = /^(\d+)H-/.exec(t.nm);
       t._ih = m ? m[1] : null;                     // the indicated hydrogen, which may move
