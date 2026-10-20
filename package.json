@@ -1,0 +1,8 @@
+{
+  "name": "organic-chem-app-web",
+  "private": true,
+  "description": "The browser checks under tools/ (browser_*.js, library_keys.js, agiles_table.js ...) drive the page with Playwright.",
+  "devDependencies": {
+    "playwright": "1.48.2"
+  }
+}
